@@ -17,6 +17,13 @@ required_root_files=(
 )
 
 expected_skills=(
+  shopify-va
+  shopify-product-research
+  shopify-product-listing
+  shopify-catalog-operations
+  shopify-merchandising
+  shopify-order-operations
+  shopify-va-training
   shopify-store-audit
   shopify-cro
   shopify-product-page
@@ -62,8 +69,8 @@ for skill_name in "${expected_skills[@]}"; do
   description="$(sed -n 's/^description:[[:space:]]*//p' "$skill_file" | head -n 1)"
   if [[ -z "$description" ]]; then
     fail "$skill_name has no one-line description"
-  elif (( ${#description} > 1024 )); then
-    fail "$skill_name description exceeds 1024 characters"
+  elif (( ${#description} > 200 )); then
+    fail "$skill_name description exceeds the 200-character cross-platform limit"
   fi
 
   frontmatter_closers="$(sed -n '2,$p' "$skill_file" | grep -c '^---$' || true)"

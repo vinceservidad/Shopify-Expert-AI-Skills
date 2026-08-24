@@ -4,14 +4,27 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-25
+
 ### Added
 
 - Prominent root-level usage guide with no-code Claude installation, ChatGPT configuration, first-run instructions, authorization guidance, and troubleshooting.
-- Copy-and-paste prompt library covering all twelve skills.
+- Copy-and-paste prompt library covering all nineteen skills.
+- `shopify-va` owner skill for routine-task intake, specialist routing, permission checks, execution-state tracking, QA, and handoff.
+- `shopify-product-research` for evidence-led opportunity, competitor, supplier, economics, risk, and validation work.
+- `shopify-product-listing` for source-backed product creation, updates, publishing states, and QA.
+- `shopify-catalog-operations` for governed bulk edits, CSV work, taxonomy, metafields, variants, and reconciliation.
+- `shopify-merchandising` for assortment, collections, sorting, product cards, bundles, cross-sells, and upsells.
+- `shopify-order-operations` for permissioned order, payment, fulfillment, return, refund, cancellation, and exception workflows.
+- `shopify-va-training` for role charters, SOPs, practice, assessment, access progression, and coaching.
+- Behavioral scenarios for VA routing and each new specialist workflow.
+- Dated first-party Shopify sources for products, taxonomy, CSV, collections, inventory, orders, roles, and permissions.
 
 ### Changed
 
 - Added a visible Start here section to the top of the README.
+- Repositioned the repository for both Shopify virtual assistants and accountable specialists.
+- Tightened validation to a 200-character cross-platform skill-description limit.
 
 ## [0.1.0] - 2026-08-25
 

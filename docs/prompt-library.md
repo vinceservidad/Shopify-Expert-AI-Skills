@@ -2,6 +2,144 @@
 
 Replace the bracketed fields and attach the evidence named in the request. Keep the work read-only unless you intentionally authorize a specific external change.
 
+## Shopify VA
+
+```text
+Use the shopify-va skill.
+
+Turn this Shopify VA request into an authorized, verifiable task plan:
+[paste the task list].
+
+Target store: [store].
+Business purpose: [purpose].
+Sources: [documents, exports, pages, orders, or policies].
+Available role and permissions: [permissions].
+Authorization: [read-only, draft-only, save inactive, or exact approved action].
+Acceptance criteria: [criteria].
+
+Route each task to the correct specialist skill. Identify missing inputs,
+permission gaps, risks, approvals, QA, rollback, and the required terminal
+state. Do not expand the VA's access or report completion without verification.
+```
+
+## Product research
+
+```text
+Use the shopify-product-research skill.
+
+Research and validate this product opportunity: [concept].
+Market and customer: [details].
+Customer job or problem: [job].
+Business model and channels: [details].
+Required economics: [named profit definition and constraints].
+Evidence: [store data, search, research, reviews, competitors, marketplaces,
+supplier documents, quotes, costs, operations, returns, and claims].
+
+Separate observed facts, estimates, patterns, inferences, assumptions, and
+unknowns. Do not invent demand, sales, supplier reliability, certifications,
+costs, margins, or customer language. Recommend reject, research further,
+sample, demand test, pilot, or proceed, with risks, validation, authorization,
+and stopping rules.
+```
+
+## Product listing
+
+```text
+Use the shopify-product-listing skill.
+
+Create or update a listing for [product] in [target store].
+Mode: [new product or update existing product ID/handle].
+Approved source: [product sheet or system].
+Fields: [content, media, category, attributes, product type, vendor, collections,
+tags, metafields, variants, SKU, barcode, price, cost, tax, inventory, locations,
+shipping, weight, purchase options, SEO, template, status, markets, and channels].
+Authorization: [draft-only or exact approved save/publication].
+
+Build a source-to-field map, flag missing or conflicting data, check duplicates,
+and produce the listing and QA record. Never invent product or commercial facts.
+Distinguish draft, saved, active, published, live, feed, and verified states.
+```
+
+## Catalog operations
+
+```text
+Use the shopify-catalog-operations skill.
+
+Plan and quality-check this bulk catalog change: [change].
+Target store: [store].
+Current export: [file and date].
+Source file: [file and owner].
+Identifiers: [product ID, variant ID, SKU, barcode, handle, or approved key].
+Fields and transformations: [details].
+Scope and exclusions: [details].
+Authorization: [read-only, dry run, pilot, or exact approved batch].
+
+Profile the data, define update and null behavior, produce a dry-run and
+exception report, isolate high-risk fields, create a pilot and batch plan,
+and define backup, rollback, stopping rules, and post-change reconciliation.
+Do not overwrite, publish, archive, delete, change handles, or alter inventory
+without exact authorization.
+```
+
+## Merchandising
+
+```text
+Use the shopify-merchandising skill.
+
+Build a merchandising plan for [surface, collection, campaign, or season].
+Customer task and market: [details].
+Business objective: [primary business outcome].
+Evidence: [products, sales, demand, margin definition, inventory, returns,
+seasonality, collections, navigation, search, theme, apps, and feeds].
+Constraints: [inventory, fulfillment, price, brand, and dates].
+
+Define product roles, collection membership or source, sort logic, filters,
+product-card requirements, out-of-stock behavior, bundles, cross-sells,
+upsells, fallbacks, commercial and inventory guardrails, measurement,
+authorization, rollback, and live QA. Do not call products best sellers,
+high margin, or trending without a defined source, scope, and period.
+```
+
+## Order operations
+
+```text
+Use the shopify-order-operations skill.
+
+Review this order operation read-only before any action:
+Order: [store and order identifier].
+Customer request: [request].
+Verified state: [payment, fulfillment, return, refund, items, inventory,
+shipping, carrier, fraud or dispute, and third-party fulfillment].
+Applicable policy: [policy and version].
+Available permissions: [permissions].
+
+Separate customer statements from verified facts. Explain the proposed action,
+money, inventory, fulfillment, notification, and third-party effects. State the
+exact permission and approval required. Do not edit, capture, fulfill, cancel,
+refund, restock, delete, contact, or change personal data without explicit
+authorization. Define post-action verification.
+```
+
+## VA training
+
+```text
+Use the shopify-va-training skill.
+
+Build a competency-based training program for [Shopify VA role].
+Assigned tasks: [tasks].
+Excluded tasks: [tasks].
+Store and app context: [details].
+Policies and SOPs: [sources].
+Initial permissions: [permissions].
+Risks and quality requirements: [details].
+Training environment: [test, sanitized, or supervised production].
+
+Create the role charter, learning modules, SOPs, normal and exception
+simulations, knowledge checks, performance rubric, QA, coaching, access
+progression, competency record, and review schedule. Do not equate quiz
+completion with production readiness or grant access without owner approval.
+```
+
 ## Store audit
 
 ```text

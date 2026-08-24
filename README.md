@@ -1,6 +1,8 @@
 # Shopify Expert AI Skills for ChatGPT & Claude
 
-A modular set of AI skills for Shopify audits, conversion work, product pages, creative strategy, paid media, SEO, lifecycle marketing, automation, support, analytics, and theme development.
+For Shopify virtual assistants, specialists, agencies, developers, and store operators.
+
+A modular set of AI skills for Shopify virtual assistants and experts across product research, listings, catalogs, merchandising, orders, audits, growth, support, analytics, automation, and theme development.
 
 The repository is built as an operating system, not a prompt pack. Each skill defines when it applies, the evidence it needs, the decisions it can support, the actions that require approval, and a consistent output contract.
 
@@ -22,9 +24,11 @@ For ready-to-copy requests, open the [`Prompt library`](docs/prompt-library.md).
 
 ## Release status
 
-Version `0.1.0` is the first usable foundation:
+Version `0.2.0` expands the system for Shopify VAs and specialists:
 
-- 12 standalone Agent Skills packages
+- 19 standalone Agent Skills packages
+- a Shopify VA owner skill for intake, routing, execution tracking, QA, and handoff
+- focused product research, listing, catalog, merchandising, order, and VA-training workflows
 - progressive disclosure through focused reference files
 - ChatGPT and Claude setup guidance
 - shared terminology, evidence, authorization, and platform-currency contracts
@@ -37,6 +41,13 @@ These skills improve structure and decision quality. They do not guarantee corre
 
 | Skill | Use it for | Main output |
 | --- | --- | --- |
+| [`shopify-va`](skills/shopify-va/) | Mixed routine Shopify VA task intake, routing, execution tracking, QA, and handoff | Verified VA task record and escalation |
+| [`shopify-product-research`](skills/shopify-product-research/) | Product opportunity, customer, demand, competitor, supplier, economics, and risk research | Product validation brief |
+| [`shopify-product-listing`](skills/shopify-product-listing/) | Product creation and updates across content, taxonomy, variants, pricing, inventory, SEO, and channels | Source-backed product listing and QA |
+| [`shopify-catalog-operations`](skills/shopify-catalog-operations/) | Bulk products, taxonomy, tags, metafields, variants, CSV imports, and data quality | Governed bulk-change plan and reconciliation |
+| [`shopify-merchandising`](skills/shopify-merchandising/) | Assortment, collections, sorting, product cards, bundles, cross-sells, and upsells | Merchandising plan with commercial guardrails |
+| [`shopify-order-operations`](skills/shopify-order-operations/) | Orders, payments, fulfillment, edits, returns, refunds, cancellations, and exceptions | Verified order action or escalation record |
+| [`shopify-va-training`](skills/shopify-va-training/) | VA onboarding, SOPs, simulations, quizzes, permissions, QA, and coaching | Competency-based training program |
 | [`shopify-store-audit`](skills/shopify-store-audit/) | Whole-store UX, merchandising, trust, performance, and measurement audits | Evidence-led issue register and action plan |
 | [`shopify-cro`](skills/shopify-cro/) | Funnel diagnosis and controlled conversion experiments | Prioritized experiment backlog |
 | [`shopify-product-page`](skills/shopify-product-page/) | Product-page structure, copy, proof, offer, and mobile UX | Page brief or revised copy draft |

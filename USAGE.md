@@ -8,6 +8,13 @@ Start with the skill that owns the result you need.
 
 | Your task | Choose this skill |
 | --- | --- |
+| Manage or route a mixed Shopify VA task list | `shopify-va` |
+| Research and validate a product opportunity | `shopify-product-research` |
+| Create or update product listings | `shopify-product-listing` |
+| Clean, import, or update a product catalog in bulk | `shopify-catalog-operations` |
+| Plan collections, sorting, bundles, and recommendations | `shopify-merchandising` |
+| Review orders, fulfillment, returns, refunds, or cancellations | `shopify-order-operations` |
+| Train, onboard, and assess Shopify VAs | `shopify-va-training` |
 | Audit the entire store | `shopify-store-audit` |
 | Diagnose a funnel or plan an experiment | `shopify-cro` |
 | Audit or rewrite a product page | `shopify-product-page` |
@@ -22,6 +29,8 @@ Start with the skill that owns the result you need.
 | Reconcile Shopify, GA4, ads, email, and business data | `shopify-analytics` |
 
 Use one owner skill first. Add a second specialist only when it contributes a distinct part of the decision.
+
+Use `shopify-va` when the request contains several routine admin tasks or the correct specialist is unclear. It will normalize the work and route each task without expanding the VA's permissions.
 
 Example:
 
@@ -170,6 +179,16 @@ This is guided use, not automatic skill installation. Restate the selected skill
 ## What evidence should you provide?
 
 Use only what the task requires.
+
+### Shopify VA, products, catalogs, merchandising, or orders
+
+- task list, target store, role, permissions, approver, and acceptance criteria
+- approved product source sheet, specifications, claims, media, price, inventory, and channel plan
+- current product or catalog export before a bulk update
+- customer, demand, competitor, supplier, and economics evidence for product research
+- assortment, collection, sales, margin, inventory, and seasonality evidence for merchandising
+- exact order state, policy, payment, fulfillment, return, refund, inventory, and third-party evidence for order work
+- current SOPs, training environment, task risks, and QA criteria for VA training
 
 ### Store audit or CRO
 

@@ -37,6 +37,14 @@ Reviewed 2026-08-25:
 | Shopify Flow | <https://shopify.dev/docs/apps/build/flow> | Trigger, condition, action, and template concepts |
 | Shopify theme architecture | <https://shopify.dev/docs/storefronts/themes/architecture> | Layouts, templates, sections, blocks, snippets, assets, and configuration |
 | Shopify JSON templates | <https://shopify.dev/docs/storefronts/themes/architecture/templates/json-templates> | Current JSON-template structure and documented limits |
+| Shopify products | <https://help.shopify.com/en/manual/products/add-update-products> | Product creation, update, status, availability, tags, SEO, archive, and deletion entry points |
+| Shopify product details | <https://help.shopify.com/en/manual/products/details/product-details-page> | Product content, media, taxonomy, pricing, inventory, variants, metafields, SEO, status, and publishing surfaces |
+| Shopify category metafields | <https://help.shopify.com/en/manual/custom-data/metafields/category-metafields> | Current relationship between standard taxonomy, category attributes, and variant options |
+| Shopify product CSV | <https://help.shopify.com/en/manual/products/import-export/using-csv> | Current product CSV fields, metafields, import, export, and overwrite considerations |
+| Shopify collections | <https://help.shopify.com/en/manual/products/collections> | Current collection-model rollout, sources, conditions, sorting, publishing, and storefront use |
+| Shopify inventory | <https://help.shopify.com/en/manual/products/inventory> | Current inventory management, locations, quantities, reports, and workflow entry points |
+| Shopify orders | <https://help.shopify.com/en/manual/fulfillment/managing-orders> | Current order, payment, fulfillment, edit, return, refund, cancellation, and fraud-management surfaces |
+| Shopify roles and permissions | <https://help.shopify.com/en/manual/your-account/users/roles/permissions/store-permissions> | Current granular Products, Orders, Inventory, Catalogs, Content, and other store permissions |
 
 Google Ads, Meta Ads, GA4, email-provider, app, or policy claims must add their own dated first-party source before being treated as current.
 
