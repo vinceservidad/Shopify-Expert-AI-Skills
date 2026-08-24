@@ -7,6 +7,7 @@ failures=0
 
 required_root_files=(
   README.md
+  USAGE.md
   CONTRIBUTING.md
   CHANGELOG.md
   GLOSSARY.md

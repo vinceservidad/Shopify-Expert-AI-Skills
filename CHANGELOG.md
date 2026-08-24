@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Added
+
+- Prominent root-level usage guide with no-code Claude installation, ChatGPT configuration, first-run instructions, authorization guidance, and troubleshooting.
+- Copy-and-paste prompt library covering all twelve skills.
+
+### Changed
+
+- Added a visible Start here section to the top of the README.
+
 ## [0.1.0] - 2026-08-25
 
 ### Added

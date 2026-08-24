@@ -4,6 +4,22 @@ A modular set of AI skills for Shopify audits, conversion work, product pages, c
 
 The repository is built as an operating system, not a prompt pack. Each skill defines when it applies, the evidence it needs, the decisions it can support, the actions that require approval, and a consistent output contract.
 
+## Start here
+
+**New user:** Open the complete [`How to use these skills`](USAGE.md) guide.
+
+It includes:
+
+- no-code Claude installation
+- ChatGPT Custom GPT and Project setup
+- the exact files to upload
+- how to choose the right skill
+- a first working example
+- authorization and privacy guidance
+- troubleshooting
+
+For ready-to-copy requests, open the [`Prompt library`](docs/prompt-library.md).
+
 ## Release status
 
 Version `0.1.0` is the first usable foundation:
@@ -39,6 +55,7 @@ These skills improve structure and decision quality. They do not guarantee corre
 ```text
 Shopify-Expert-AI-Skills/
 ├── README.md
+├── USAGE.md
 ├── CONTRIBUTING.md
 ├── CHANGELOG.md
 ├── GLOSSARY.md
@@ -47,6 +64,7 @@ Shopify-Expert-AI-Skills/
 ├── docs/
 │   ├── getting-started.md
 │   ├── ai-agent-setup.md
+│   ├── prompt-library.md
 │   ├── business-context-template.md
 │   ├── evidence-and-authorization.md
 │   └── skill-writing-guide.md
@@ -65,6 +83,8 @@ Shopify-Expert-AI-Skills/
 Every `SKILL.md` follows the open [Agent Skills specification](https://agentskills.io/specification). The entrypoint stays concise, while conditional procedures and templates live under `references/`.
 
 ## Quick start
+
+If this is your first time, use [`USAGE.md`](USAGE.md). The short version is below.
 
 ### Claude Skills
 
@@ -149,6 +169,8 @@ The validator checks required files, skill naming, frontmatter, reference links,
 
 ## Documentation
 
+- [`How to use these skills`](USAGE.md)
+- [`Copy-and-paste prompt library`](docs/prompt-library.md)
 - [`Getting started`](docs/getting-started.md)
 - [`ChatGPT and Claude setup`](docs/ai-agent-setup.md)
 - [`Business context template`](docs/business-context-template.md)
