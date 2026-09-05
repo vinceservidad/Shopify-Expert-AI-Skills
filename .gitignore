@@ -3,3 +3,5 @@ dist/
 *.zip
 __pycache__/
 .venv/
+.venv312/
+.bundle/

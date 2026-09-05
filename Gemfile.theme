@@ -1,0 +1,4 @@
+source 'https://rubygems.org'
+
+# Official Shopify Liquid core, not Shopify's proprietary storefront runtime.
+gem 'liquid', '5.13.0'
