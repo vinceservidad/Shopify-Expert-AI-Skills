@@ -1,10 +1,10 @@
 ---
 name: shopify-analytics
-description: Reconciles Shopify, GA4, ad, email, and business data to diagnose performance changes. Use for reporting and root-cause analysis, not platform totals in isolation.
+description: Analyzes Shopify performance, top-selling products, and profit changes. Reconciles store, GA4, ad, and email data for reporting and root-cause analysis.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Shopify Analytics
@@ -35,6 +35,12 @@ Collect the decision, primary business outcome, source systems, schemas or expor
 7. Recommend a measurement repair, business action, or controlled test with owner, guardrails, and verification.
 
 Read [references/reporting-framework.md](references/reporting-framework.md) for metric and report design. Read [references/diagnosis-framework.md](references/diagnosis-framework.md) for root-cause analysis.
+
+## Worked example
+
+Read [references/worked-example.md](references/worked-example.md) for a complete synthetic case, supplied inputs, expected outcome, and acceptance checks. Treat its facts and thresholds as example-specific, not merchant evidence or default policy.
+
+For top-selling-product requests, state whether the ranking uses net sales, net units, or a named contribution metric. Show a second ranking when it changes the answer. Do not invent product-level media allocation to label a revenue winner the most profitable.
 
 ## Output contract
 

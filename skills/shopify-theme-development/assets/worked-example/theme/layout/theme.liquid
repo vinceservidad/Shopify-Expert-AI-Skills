@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title | escape }}</title>
+    <link rel="canonical" href="{{ canonical_url }}">
+    {{ content_for_header }}
+    <script src="{{ 'skills-variant-picker.js' | asset_url }}" defer="defer"></script>
+    <style>
+      body { font-family: sans-serif; max-width: 48rem; margin: 0 auto; padding: 1.5rem; }
+      nav { display: flex; flex-wrap: wrap; gap: 1rem; margin-block: 1.5rem; }
+      nav a, button { display: inline-block; padding: .75rem 1rem; }
+      [aria-current="true"] { font-weight: bold; outline: 2px solid currentColor; }
+      :focus-visible { outline: 3px solid currentColor; outline-offset: 4px; }
+    </style>
+  </head>
+  <body><main>{{ content_for_layout }}</main></body>
+</html>

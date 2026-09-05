@@ -1,0 +1,81 @@
+{
+  "synthetic": true,
+  "authorization": "read-only",
+  "currency": "GBP",
+  "target_store": "fictional-training-store",
+  "schema_note": "Normalized dry-run records, NOT a Shopify product CSV or Admin API payload. IDs are synthetic.",
+  "scope": {
+    "allowed_fields": [
+      "price",
+      "compare_at_price"
+    ]
+  },
+  "before": [
+    {
+      "variant_id": "101",
+      "product_id": "p1",
+      "handle": "field-mug",
+      "sku": "MUG-SAND",
+      "option": "Sand",
+      "price": "24.00",
+      "compare_at_price": "30.00",
+      "inventory_quantity": 12
+    },
+    {
+      "variant_id": "102",
+      "product_id": "p1",
+      "handle": "field-mug",
+      "sku": "MUG-MOSS",
+      "option": "Moss",
+      "price": "26.00",
+      "compare_at_price": "30.00",
+      "inventory_quantity": 7
+    },
+    {
+      "variant_id": "103",
+      "product_id": "p2",
+      "handle": "field-bottle",
+      "sku": "BOTTLE",
+      "option": "Default Title",
+      "price": "40.00",
+      "compare_at_price": null,
+      "inventory_quantity": 15
+    },
+    {
+      "variant_id": "104",
+      "product_id": "p3",
+      "handle": "field-tote",
+      "sku": "TOTE",
+      "option": "Default Title",
+      "price": "10.00",
+      "compare_at_price": "15.00",
+      "inventory_quantity": 30
+    }
+  ],
+  "requested_changes": [
+    {
+      "variant_id": "101",
+      "set": {
+        "price": "26.00"
+      }
+    },
+    {
+      "variant_id": "102",
+      "set": {
+        "price": ""
+      }
+    },
+    {
+      "variant_id": "103",
+      "set": {
+        "sku": "NEW-SKU"
+      }
+    },
+    {
+      "variant_id": "104",
+      "clear": [
+        "compare_at_price"
+      ]
+    }
+  ]
+}

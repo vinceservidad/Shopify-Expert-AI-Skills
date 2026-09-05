@@ -4,7 +4,7 @@ description: Audits a Shopify store across customer journey, merchandising, trus
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.0"
+  version: "0.1.1"
 ---
 
 # Shopify Store Audit
@@ -45,6 +45,10 @@ Continue safely when inputs are missing. Name the gaps that could change priorit
 8. Produce an approval-gated action plan with verification and rollback.
 
 For lenses and prioritization, read [references/frameworks.md](references/frameworks.md). For page and system coverage, read [references/checklist.md](references/checklist.md).
+
+## Worked example
+
+Read [references/worked-example.md](references/worked-example.md) for a complete synthetic case, supplied inputs, expected outcome, and acceptance checks. Treat its facts and thresholds as example-specific, not merchant evidence or default policy.
 
 ## Output contract
 

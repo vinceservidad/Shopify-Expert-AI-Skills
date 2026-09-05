@@ -1,0 +1,46 @@
+name: Worked examples
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: worked-examples-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  examples:
+    name: Synthetic data and browser examples
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: "true"
+      SHOPIFY_CLI_NO_ANALYTICS: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+      - name: Install browser test dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt -r requirements-browser.txt
+          python -m playwright install --with-deps chromium
+      - name: Check authored data examples
+        run: python scripts/worked_examples.py
+      - name: Run all repository regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Check example JavaScript syntax
+        run: node --check skills/shopify-theme-development/assets/worked-example/theme/assets/skills-variant-picker.js
+      - name: Test variant behavior in synthetic Chromium harness
+        run: python -m unittest discover -s tests/browser -p 'check_*.py' -v
+      - name: Check example Liquid and JSON using Shopify CLI
+        run: npx --yes @shopify/cli@4.1.0 theme check --path skills/shopify-theme-development/assets/worked-example/theme --fail-level error --no-color

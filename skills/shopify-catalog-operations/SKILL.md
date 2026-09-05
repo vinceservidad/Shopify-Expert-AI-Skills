@@ -4,7 +4,7 @@ description: Governs and executes bulk Shopify catalog work across products, tax
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # Shopify Catalog Operations
@@ -35,6 +35,10 @@ Collect target store, business purpose, source and destination schema, authorita
 7. Re-export or re-query the authoritative state, reconcile counts and fields, and verify channels or feeds where required.
 
 Read [references/catalog-governance.md](references/catalog-governance.md) for field and taxonomy rules. Use [references/bulk-operations.md](references/bulk-operations.md) for CSV, bulk-edit, pilot, rollback, and reconciliation.
+
+## Worked example
+
+Read [references/worked-example.md](references/worked-example.md) for a complete synthetic case, supplied inputs, expected outcome, and acceptance checks. Treat its facts and thresholds as example-specific, not merchant evidence or default policy.
 
 ## Output contract
 
