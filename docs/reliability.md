@@ -85,11 +85,13 @@ before local browser checks; [adapter limits](theme-verification.md) remain expl
 | Structure and standalone packaging | All 19 skills | Tooling integrity |
 | Written behavioral scenarios | Original 21 across all 19 skills plus a catalog-recovery exercise | Unrun unless separately recorded and reviewed |
 | Deeper authored worked examples | Five priority skills | Teaching data and implementation checks |
-| Fresh model comparison cases | Two cases per priority skill | Actual outputs/reviews and sample-bound results required |
+| Recorded model comparison | Ten distinct cases across five priority skills, 60 responses | Sample-bound, answer-withheld and model-judged |
+| Targeted catalog revision follow-up | Two new cases, 12 responses | Different rubric; separate diagnostic comparison |
 | Hosted Shopify/editor/cart workflow | No designated development store in this change | Unverified |
 
 Each recorded experiment identifies the source revision, requested model,
 surface/settings, dates, exact prompts, complete outputs, reviewer and failures.
+The [results report](../evals/RESULTS.md) preserves failures and grading sensitivity.
 Results must compare the same tasks/settings without skill text before claiming
 measured added value. The remaining fourteen skills do not inherit model-evaluation
 passes from the priority five. Expand those cases when the next supported workflow

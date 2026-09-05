@@ -35,7 +35,7 @@ python scripts/model_evaluations.py freeze evals/results/<run-name> --model <ava
 
 Freeze records the base commit, source hashes, full task inputs, rubric, exact
 materialized prompts, CLI version, requested model, settings, randomized order,
-opaque response IDs, pass threshold and stopping rules. Commit this frozen plan
+opaque response IDs, a fixed run plan, pass threshold and zero-retry policy. Commit this frozen plan
 before running. Git history provides the audit anchor; an editable checksum alone
 does not prove independence. Never overwrite a frozen experiment.
 

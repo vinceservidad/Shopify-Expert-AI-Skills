@@ -8,6 +8,11 @@ with/without comparisons and blinded criteria-level reviews. The original author
 examples and their replay statuses remain in `worked-examples.json`; the new
 experiment does not relabel them or the 21 core scenarios as executed.
 
+Read the [recorded results and limitations](RESULTS.md) for the initial 60-response
+comparison, secondary judgment audit and separate 12-response catalog follow-up.
+Their substantive model grades remain distinct from the offline integrity check
+performed by CI.
+
 ## How to run a scenario
 
 1. Use a clean conversation or isolated workspace.

@@ -1,0 +1,206 @@
+{
+  "kind": "hypothetical_sensitivity_not_regraded_results",
+  "scope": "All secondary-marked ambiguities changed to pass together; original primary grades remain unchanged. This does not audit all potential grading errors.",
+  "ambiguous_criteria": [
+    {
+      "response_id": "response-017a16893efa7f4c5db0",
+      "criterion_id": "defect-versus-report"
+    },
+    {
+      "response_id": "response-aa06054dd1fe2e78b744",
+      "criterion_id": "meaningful-tests"
+    },
+    {
+      "response_id": "response-c61f9f956a23bf49a2b0",
+      "criterion_id": "reconciliation"
+    }
+  ],
+  "primary_arms": {
+    "without_skill": {
+      "planned": 30,
+      "completed": 30,
+      "passes": 17,
+      "failures": 13,
+      "strict_all_criteria_passes": 1,
+      "critical_failure_responses": 10,
+      "mean_score": 78.667,
+      "failure_rate": 0.4333
+    },
+    "with_skill": {
+      "planned": 30,
+      "completed": 30,
+      "passes": 23,
+      "failures": 7,
+      "strict_all_criteria_passes": 9,
+      "critical_failure_responses": 6,
+      "mean_score": 85.5,
+      "failure_rate": 0.2333
+    }
+  },
+  "all_ambiguous_pass_arms": {
+    "without_skill": {
+      "planned": 30,
+      "completed": 30,
+      "passes": 18,
+      "failures": 12,
+      "strict_all_criteria_passes": 1,
+      "critical_failure_responses": 9,
+      "mean_score": 80.0,
+      "failure_rate": 0.4
+    },
+    "with_skill": {
+      "planned": 30,
+      "completed": 30,
+      "passes": 23,
+      "failures": 7,
+      "strict_all_criteria_passes": 10,
+      "critical_failure_responses": 6,
+      "mean_score": 86.0,
+      "failure_rate": 0.2333
+    }
+  },
+  "primary_case_scores": [
+    {
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "without_skill": 83.33333333333333,
+      "with_skill": 100.0,
+      "delta": 16.667
+    },
+    {
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "without_skill": 83.33333333333333,
+      "with_skill": 96.66666666666667,
+      "delta": 13.333
+    },
+    {
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "without_skill": 90.0,
+      "with_skill": 90.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "without_skill": 75.0,
+      "with_skill": 85.0,
+      "delta": 10.0
+    },
+    {
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "without_skill": 85.0,
+      "with_skill": 85.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "without_skill": 48.333333333333336,
+      "with_skill": 50.0,
+      "delta": 1.667
+    },
+    {
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "without_skill": 85.0,
+      "with_skill": 90.0,
+      "delta": 5.0
+    },
+    {
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "without_skill": 85.0,
+      "with_skill": 85.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "without_skill": 78.33333333333333,
+      "with_skill": 83.33333333333333,
+      "delta": 5.0
+    },
+    {
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "without_skill": 73.33333333333333,
+      "with_skill": 90.0,
+      "delta": 16.667
+    }
+  ],
+  "all_ambiguous_pass_case_scores": [
+    {
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "without_skill": 83.33333333333333,
+      "with_skill": 100.0,
+      "delta": 16.667
+    },
+    {
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "without_skill": 83.33333333333333,
+      "with_skill": 96.66666666666667,
+      "delta": 13.333
+    },
+    {
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "without_skill": 90.0,
+      "with_skill": 90.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "without_skill": 75.0,
+      "with_skill": 85.0,
+      "delta": 10.0
+    },
+    {
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "without_skill": 85.0,
+      "with_skill": 85.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "without_skill": 55.0,
+      "with_skill": 50.0,
+      "delta": -5.0
+    },
+    {
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "without_skill": 85.0,
+      "with_skill": 95.0,
+      "delta": 10.0
+    },
+    {
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "without_skill": 85.0,
+      "with_skill": 85.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "without_skill": 85.0,
+      "with_skill": 83.33333333333333,
+      "delta": -1.667
+    },
+    {
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "without_skill": 73.33333333333333,
+      "with_skill": 90.0,
+      "delta": 16.667
+    }
+  ]
+}

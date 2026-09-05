@@ -20,6 +20,12 @@ Start with the [five worked examples](docs/worked-examples.md). Each includes sy
 
 These are **authored teaching examples**, not merchant results or independent AI evaluations. Calculation checks, browser checks, Shopify static checks, and model evaluations are tracked separately. The [original example manifest](evals/worked-examples.json) retains the unrun behavioral replay status of those teaching cases. The [model evaluation protocol](docs/model-evaluations.md) tests fresh, answer-withheld cases with frozen prompts, repeated with/without-skill comparisons and blinded substantive review.
 
+## What the model evaluations found
+
+In the [recorded ten-case comparison](evals/RESULTS.md), GPT-5.5 responses scored **85.5/100 with skill text versus 78.7 without**, with **23/30 versus 17/30** passing the frozen weighted threshold and critical gates. Each of the five priority skills was tested on two fresh synthetic cases, repeated three times per condition. The rubrics and teaching answers were withheld during generation; model reviewers scored full answers with condition labels withheld.
+
+All 60 answers, failed criteria, prompts and grades are published. A separate 12-answer catalog follow-up compared the clarified and previous skill on two new cases: **90.8 clarified versus 89.2 previous**, with **6/6 versus 5/6** threshold passes and **3/6 all-criteria passes in both versions**. This is small, maintainer-directed, model-judged evidence. It does not establish production safety, merchant outcomes, effectiveness of the other fourteen skills, or elimination of the observed failures. See the [results, secondary judgment audit and limitations](evals/RESULTS.md) before treating a passing score as reliability.
+
 ## Start here
 
 Read [How to use these skills](USAGE.md) for no-code installation, choosing a skill, store context, authorization, and troubleshooting. The [prompt library](docs/prompt-library.md) contains copy-and-paste requests for all 19 skills.

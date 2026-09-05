@@ -110,6 +110,12 @@ def check(directory: Path):
     # Type-sensitive equality also rejects true substituted for 1 or false for 0.
     if json.dumps(actual, sort_keys=True, allow_nan=False) != json.dumps(expected, sort_keys=True, allow_nan=False):
         raise ValueError("Published summary does not match actual responses and reviews")
+    if (directory / "adjudication.json").exists() or (directory / "sensitivity.json").exists():
+        from evaluation_sensitivity import sensitivity
+        read_strict(directory / "adjudication.json")
+        recorded_sensitivity = read_strict(directory / "sensitivity.json")
+        if json.dumps(recorded_sensitivity, sort_keys=True) != json.dumps(sensitivity(directory), sort_keys=True):
+            raise ValueError("Sensitivity report does not match preserved primary and secondary evidence")
     counts = Counter(record["status"] for record in response_records.values())
     counts["missing"] = len(manifest["jobs"]) - len(response_records)
     return {"run": directory.name, "distinct_cases": len(manifest["cases"]),
