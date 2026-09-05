@@ -2,24 +2,53 @@
 
 Replace the bracketed fields and attach the evidence named in the request. Keep the work read-only unless you intentionally authorize a specific external change.
 
+## Shopify Store Operating Lifecycle
+
+Use this when the work spans several stages, skills, sessions, or handoffs.
+
+```text
+Use the shopify-va skill and its Shopify Store Operating Lifecycle:
+CONTEXT → GOAL → DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE.
+
+This is a state model, not a checklist. Continue from the current verified state
+and start at the earliest unresolved stage that can materially change the next decision.
+
+Initiative: [work].
+Role: [merchant, freelancer, agency, VA, developer, marketer, or operator].
+Target store / market / environment: [scope].
+Current lifecycle stage, if known: [stage].
+Business objective or exact finished state: [goal].
+Evidence / source of truth: [sources].
+Authorization: [read-only, draft-only, save inactive, or exact approved action].
+Acceptance / verification: [what must be true and how it will be checked].
+
+Route each substantive decision to the specialist skill that owns it. Keep
+strategy, planning, implementation, verification, measurement, and optimization
+separate. Do not repeat completed stages without a decision-relevant reason.
+Do not treat role, admin access, or lifecycle stage as permission for a live change.
+```
+
 ## Shopify VA
 
 ```text
 Use the shopify-va skill.
 
-Turn this Shopify VA request into an authorized, verifiable task plan:
+Turn this Shopify VA or mixed Shopify request into an authorized, verifiable task plan:
 [paste the task list].
 
 Target store: [store].
 Business purpose: [purpose].
+Current lifecycle stage, if known: [stage].
 Sources: [documents, exports, pages, orders, or policies].
 Available role and permissions: [permissions].
 Authorization: [read-only, draft-only, save inactive, or exact approved action].
 Acceptance criteria: [criteria].
 
-Route each task to the correct specialist skill. Identify missing inputs,
-permission gaps, risks, approvals, QA, rollback, and the required terminal
-state. Do not expand the VA's access or report completion without verification.
+Identify the earliest unresolved lifecycle stage, then route each substantive
+decision to the correct specialist skill. Identify missing inputs, permission
+gaps, risks, approvals, QA, rollback, verification, measurement requirements,
+and the required terminal state. Do not expand access or report completion
+without verification.
 ```
 
 ## Product research
