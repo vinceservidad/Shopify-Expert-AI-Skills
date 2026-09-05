@@ -1,10 +1,50 @@
 # Shopify Expert AI Skills for ChatGPT & Claude
 
-19 focused skills for Shopify virtual assistants, specialists, agencies, developers, and store operators.
+19 focused skills plus one shared operating lifecycle for Shopify merchants, freelancers, virtual assistants, agencies, developers, marketers, specialists, and store operators.
 
-Audit stores, prepare product listings, review bulk changes, reconcile performance, and debug themes with clear evidence and approval boundaries. Each skill defines when to use it, what evidence it needs, how to approach the task, and what a useful result must include.
+Audit stores, prepare product listings, review bulk changes, reconcile performance, debug themes, and coordinate multi-skill work with clear evidence and approval boundaries. Each skill defines when to use it, what evidence it needs, how to approach the task, and what a useful result must include.
 
 **This is a toolkit for supervised work, not an autonomous store operator.** Installing a skill does not connect Shopify, grant permissions, or guarantee a correct answer.
+
+## One operating lifecycle for every Shopify role
+
+Use the shared **Shopify Store Operating Lifecycle** for work that spans decisions, implementation, verification, or learning:
+
+```text
+CONTEXT
+  ↓
+GOAL
+  ↓
+DIAGNOSE
+  ↓
+STRATEGY
+  ↓
+PLAN
+  ↓
+IMPLEMENT
+  ↓
+VERIFY
+  ↓
+MEASURE
+  ↓
+OPTIMIZE
+  ↺
+```
+
+This is a **state model, not a mandatory nine-step checklist**. Start at the earliest unresolved stage that can materially change the decision.
+
+Examples:
+
+- a Liquid bug may start at `DIAGNOSE → PLAN → IMPLEMENT → VERIFY`
+- an approved product listing may use `CONTEXT → PLAN → IMPLEMENT → VERIFY`
+- a store performance decline may use `DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE`
+- a simple support draft may start and finish at `IMPLEMENT`
+
+The same framework works for different roles without flattening authority. Merchants and accountable owners approve material business tradeoffs; freelancers and agencies work within client scope; VAs execute defined procedures and escalate exceptions; developers own technical implementation within approved scope; specialists keep their domain decisions.
+
+The canonical lifecycle lives in [`shopify-va/references/store-operating-lifecycle.md`](skills/shopify-va/references/store-operating-lifecycle.md). Use the [`Shopify Initiative Record`](skills/shopify-va/references/initiative-record.md) when work spans several stages, skills, sessions, or handoffs.
+
+The lifecycle does **not** create nine new skills. `shopify-va` coordinates mixed routine work and lifecycle state; the 19 specialist skills still own their decisions.
 
 ## See the work, not just the prompts
 
@@ -28,15 +68,15 @@ All 60 answers, failed criteria, prompts and grades are published. A separate 12
 
 ## Start here
 
-Read [How to use these skills](USAGE.md) for no-code installation, choosing a skill, store context, authorization, and troubleshooting. The [prompt library](docs/prompt-library.md) contains copy-and-paste requests for all 19 skills.
+Read [How to use these skills](USAGE.md) for the operating lifecycle, no-code installation, choosing a skill, store context, authorization, and troubleshooting. The [prompt library](docs/prompt-library.md) contains copy-and-paste requests for all 19 skills.
 
-For a mixed routine task list, start with `shopify-va`. For a specific result, choose the specialist that owns it. For example, `shopify-analytics` owns a reconciled performance diagnosis; `shopify-google-ads` can contribute campaign evidence without producing a second conflicting report.
+For a mixed routine task list or a multi-stage initiative, start with `shopify-va`. For a specific result, choose the specialist that owns it. For example, `shopify-analytics` owns a reconciled performance diagnosis; `shopify-google-ads` can contribute campaign evidence without producing a second conflicting report.
 
 ## Skill catalog
 
 | Skill | Use it for | Main output |
 | --- | --- | --- |
-| [shopify-va](skills/shopify-va/) | Mixed routine VA tasks, routing, execution tracking, QA and handoff | Verified task record and escalation |
+| [shopify-va](skills/shopify-va/) | Mixed routine VA tasks, lifecycle coordination, routing, execution tracking, QA and handoff | Verified task/initiative record and escalation |
 | [shopify-product-research](skills/shopify-product-research/) | Customer, demand, competitor, supplier, economics and risk research | Product validation brief |
 | [shopify-product-listing](skills/shopify-product-listing/) | Product content, taxonomy, variants, pricing, inventory, SEO and channels | Source-backed listing draft and QA |
 | [shopify-catalog-operations](skills/shopify-catalog-operations/) | Bulk products, taxonomy, tags, metafields, variants, imports and data quality | Governed change plan and reconciliation |
@@ -69,7 +109,7 @@ python -m pip install -r requirements-dev.txt
 ./scripts/package-skill.sh shopify-store-audit
 ```
 
-The archive is created in `dist/`. Upload that individual skill ZIP, not the entire repository. Packaging runs validation first and includes the skill's references, assets and license. The five worked-example skills carry their teaching evidence inside their own packages.
+The archive is created in `dist/`. Upload that individual skill ZIP, not the entire repository. Packaging runs validation first and includes the skill's references, assets and license. The five worked-example skills carry their teaching evidence inside their own packages. Packaging `shopify-va` also includes the store operating lifecycle and initiative-record references.
 
 ### ChatGPT
 
@@ -90,11 +130,15 @@ Missing information should reduce confidence or limit scope, not produce invente
 ## Operating rules
 
 1. Start read-only and separate facts, calculations, inferences, assumptions and unknowns.
-2. Name the revenue or profit definition. Do not add overlapping attributed revenue across platforms.
-3. Treat tracking defects, attribution differences and real business changes as separate questions.
-4. Require explicit scope and approval before changing a live store, theme, campaign, budget, workflow, offer or customer record.
-5. Distinguish drafted, saved, published, processing, live and verified states. Preserve unrelated work.
-6. Never invent customer language, results, benchmarks, claims, margins, credentials or causality.
+2. Use the lifecycle statefully: start at the earliest unresolved stage, not automatically at context.
+3. Diagnose before broad changes when the cause is unresolved.
+4. Name the revenue or profit definition. Do not add overlapping attributed revenue across platforms.
+5. Treat tracking defects, attribution differences and real business changes as separate questions.
+6. Require explicit scope and approval before changing a live store, theme, campaign, budget, workflow, offer or customer record.
+7. Keep implementation, verification and measurement distinct. A successful save or publish does not prove the business outcome.
+8. Distinguish drafted, saved, configured, previewed, uploaded, published, enabled, sent, processing, live and verified states where relevant. Preserve unrelated work.
+9. Never invent customer language, results, benchmarks, claims, margins, credentials or causality.
+10. Preserve role boundaries: merchant/client approval is not implied by freelancer, VA, developer or agency access.
 
 See [Evidence and authorization](docs/evidence-and-authorization.md), [the glossary](GLOSSARY.md), [knowledge taxonomy](KNOWLEDGE-TAXONOMY.md), and [platform currency](PLATFORM-CURRENCY.md).
 
@@ -118,6 +162,9 @@ skills/<skill-name>/
   SKILL.md
   references/
   assets/worked-example/   # present in the five example skills
+skills/shopify-va/references/
+  store-operating-lifecycle.md
+  initiative-record.md
 scripts/                  # validation, packaging and example checks
 tests/                    # tooling and synthetic-data regressions
   browser/                # synthetic DOM and actual Liquid output
@@ -129,9 +176,9 @@ docs/                     # setup, context, usage and reliability
 
 ## Project status and contributing
 
-The catalog remains at 19 skills. The priority is depth and evidence, not more skill names. See [CHANGELOG.md](CHANGELOG.md) for development changes and [Repository reliability](docs/reliability.md) for tooling setup and limitations.
+The catalog remains at 19 skills. The priority is depth, evidence, orchestration, and verification, not more skill names. See [CHANGELOG.md](CHANGELOG.md) for development changes and [Repository reliability](docs/reliability.md) for tooling setup and limitations.
 
-Contributions should improve correctness, evidence handling, usefulness, triggering or testability. Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing procedures. Do not convert synthetic examples into claimed merchant results or fabricate completed evaluations.
+Contributions should improve correctness, evidence handling, usefulness, triggering, lifecycle coordination, or testability. Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing procedures. Do not convert synthetic examples into claimed merchant results or fabricate completed evaluations.
 
 ## License
 
