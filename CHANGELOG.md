@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Fixed
+
+- Parse YAML frontmatter instead of extracting fields with text matching; reject malformed YAML, duplicate keys, incorrect types, and unsupported fields.
+- Check missing local references even when the entire reference directory is absent, and reject symlinks and links outside a standalone skill.
+- Validate before packaging and preserve the last successful archive when validation or writing fails.
+- Describe the 200-character description ceiling as repository policy rather than a universal cross-platform limit.
+
+### Added
+
+- Fifty-one synthetic regression tests for validation, packaging, failure handling, and archive isolation.
+- GitHub Actions checks on Linux and macOS, including packaging and isolated validation of every skill.
+- Pinned tooling dependency, reproducible ZIP ordering and timestamps, bundled license, and contributor setup instructions.
+- Reliability guide separating structural checks from unrun model evaluations and identifying five existing skills for deeper examples.
+
 ## [0.2.0] - 2026-08-25
 
 ### Added
