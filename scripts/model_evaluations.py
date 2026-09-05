@@ -61,6 +61,8 @@ def skill_context(root: Path, skill: str) -> tuple[str, dict]:
     directory = root / "skills" / skill
     if not re.fullmatch(r"shopify-[a-z-]+", skill) or not directory.is_dir():
         raise ValueError("Unknown skill")
+    if directory.is_symlink() or (directory / "references").is_symlink():
+        raise ValueError("Symlinked context directory")
     files = [directory / "SKILL.md"] + sorted((directory / "references").glob("*.md"))
     parts, hashes = [], {}
     for path in files:
@@ -73,6 +75,27 @@ def skill_context(root: Path, skill: str) -> tuple[str, dict]:
         # This removes only the teaching heading/link paragraph, not later procedure text.
         text = re.sub(r"^## Worked example\n\nRead \[references/worked-example\.md\].*?\n", "", raw, flags=re.M)
         parts.append(f"--- {path.relative_to(directory)} ---\n{text}")
+    return "\n\n".join(parts), hashes
+
+
+def historical_skill_context(root: Path, skill: str, revision: str):
+    """Read the same declared context from an immutable prior Git revision."""
+    prefix = f"skills/{skill}/"
+    entries = subprocess.check_output(["git", "ls-tree", "-r", revision, "--", prefix], cwd=root, text=True).splitlines()
+    modes = {entry.split("\t", 1)[1]: entry.split()[0] for entry in entries}
+    selected = [name for name in modes if name == prefix + "SKILL.md" or
+                (name.startswith(prefix + "references/") and len(Path(name[len(prefix):]).parts) == 2
+                 and name.endswith(".md") and not name.endswith("/worked-example.md"))]
+    if prefix + "SKILL.md" not in selected:
+        raise ValueError("Historical skill entrypoint missing")
+    parts, hashes = [], {}
+    for name in sorted(selected):
+        if modes[name] == "120000":
+            raise ValueError("Historical symlink is not allowed in evaluation context")
+        raw = subprocess.check_output(["git", "show", f"{revision}:{name}"], cwd=root, text=True)
+        hashes[name] = digest(raw)
+        text = re.sub(r"^## Worked example\n\nRead \[references/worked-example\.md\].*?\n", "", raw, flags=re.M)
+        parts.append(f"--- {name[len(prefix):]} ---\n{text}")
     return "\n\n".join(parts), hashes
 
 
@@ -94,31 +117,42 @@ def validate_cases(cases, rubrics):
             raise ValueError("Criterion weights must total 100")
 
 
-def freeze(root: Path, output: Path, repeats=3, seed=20260906, model="gpt-5.5", effort="medium"):
+def freeze(root: Path, output: Path, repeats=3, seed=20260906, model="gpt-5.5", effort="medium",
+           cases_path=None, rubric_path=None, compare_revision=None):
     if output.exists():
         raise ValueError("Refusing to overwrite a frozen experiment")
     if type(repeats) is not int or repeats < 1:
         raise ValueError("Repeat count must be positive")
-    cases = read_json(root / "evals/holdout/cases.json")["cases"]
-    rubrics = read_json(root / "evals/holdout/rubric.json")["rubrics"]
+    if bool(cases_path) != bool(rubric_path):
+        raise ValueError("Both alternate cases and rubric paths are required")
+    cases = read_json(cases_path or root / "evals/holdout/cases.json")["cases"]
+    rubrics = read_json(rubric_path or root / "evals/holdout/rubric.json")["rubrics"]
     validate_cases(cases, rubrics)
     rng = random.Random(seed)
-    contexts, sources = {}, {}
+    contexts, sources, historical, historical_sources = {}, {}, {}, {}
+    arms = ARMS
+    if compare_revision:
+        compare_revision = subprocess.check_output(["git", "rev-parse", "--verify", compare_revision + "^{commit}"], cwd=root, text=True).strip()
+        arms = ("previous_skill", "revised_skill")
     for skill in sorted({c["skill"] for c in cases}):
         contexts[skill], hashes = skill_context(root, skill)
         sources.update(hashes)
+        if compare_revision:
+            historical[skill], hashes = historical_skill_context(root, skill, compare_revision)
+            historical_sources.update(hashes)
     prompts, jobs = {}, []
     for case in cases:
         common = case["request"] + "\n\nSupplied evidence:\n" + json.dumps(case["evidence"], indent=2, ensure_ascii=False)
-        for arm in ARMS:
+        for arm in arms:
             prompt = SYSTEM + "\n\n"
-            if arm == "with_skill":
-                prompt += "Apply the following skill procedure and domain references:\n" + contexts[case["skill"]] + "\n\nTask:\n"
+            if arm != "without_skill":
+                context = historical[case["skill"]] if arm == "previous_skill" else contexts[case["skill"]]
+                prompt += "Apply the following skill procedure and domain references:\n" + context + "\n\nTask:\n"
             prompt += common
             key = case["id"] + "--" + arm
             prompts[key] = prompt
         for repeat in range(1, repeats + 1):
-            order = list(ARMS)
+            order = list(arms)
             rng.shuffle(order)
             for arm in order:
                 jobs.append({"id": f"response-{rng.getrandbits(80):020x}", "case_id": case["id"],
@@ -127,6 +161,7 @@ def freeze(root: Path, output: Path, repeats=3, seed=20260906, model="gpt-5.5", 
     rng.shuffle(jobs)
     manifest = {
         "schema_version": 1, "kind": "maintainer_authored_hidden_answer_comparison",
+        "arms": arms, "comparison_revision": compare_revision, "historical_sources": historical_sources,
         "created_at": utc(), "base_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
         "model": model, "model_identity_evidence": "Exact model requested in CLI; response JSONL does not expose a server model identifier",
         "reasoning_effort": effort, "surface": "Codex CLI response-only",
@@ -158,7 +193,10 @@ def verify_frozen(directory: Path):
         raise ValueError("Frozen prompt hash mismatch")
     validate_cases(manifest["cases"], manifest["rubrics"])
     jobs = manifest["jobs"]
-    expected = {(c["id"], arm, r) for c in manifest["cases"] for arm in ARMS for r in range(1, manifest["repeats"] + 1)}
+    arms = tuple(manifest.get("arms", ARMS))
+    if arms not in (ARMS, ("previous_skill", "revised_skill")):
+        raise ValueError("Unsupported comparison arms")
+    expected = {(c["id"], arm, r) for c in manifest["cases"] for arm in arms for r in range(1, manifest["repeats"] + 1)}
     actual = [(j["case_id"], j["arm"], j["repeat"]) for j in jobs]
     if len(set(j["id"] for j in jobs)) != len(jobs) or len(actual) != len(expected) or set(actual) != expected:
         raise ValueError("Incomplete, duplicate or invalid planned jobs")
@@ -331,8 +369,9 @@ def summarize(directory: Path, reviews: Path):
                     row["critical_failures"].append(criterion["id"])
             row["passed"] = row["score"] >= manifest["pass_threshold"] and not row["critical_failures"]
         rows.append(row)
+    arm_names = tuple(manifest.get("arms", ARMS))
     arms = {}
-    for arm in ARMS:
+    for arm in arm_names:
         values = [r for r in rows if r["arm"] == arm]
         arms[arm] = {"planned": len(values), "completed": sum(r["status"] == "completed" for r in values),
                      "passes": sum(r["passed"] for r in values), "failures": sum(not r["passed"] for r in values),
@@ -342,9 +381,9 @@ def summarize(directory: Path, reviews: Path):
                      "failure_rate": round(sum(not r["passed"] for r in values) / len(values), 4)}
     paired = []
     for case in manifest["cases"]:
-        means = {arm: sum(r["score"] for r in rows if r["case_id"] == case["id"] and r["arm"] == arm) / manifest["repeats"] for arm in ARMS}
+        means = {arm: sum(r["score"] for r in rows if r["case_id"] == case["id"] and r["arm"] == arm) / manifest["repeats"] for arm in arm_names}
         paired.append({"case_id": case["id"], "skill": case["skill"], **means,
-                       "delta": round(means["with_skill"] - means["without_skill"], 3)})
+                       "delta": round(means[arm_names[1]] - means[arm_names[0]], 3)})
     return {"schema_version": 1, "manifest_sha256": digest((directory / "manifest.json").read_bytes()),
             "reviews_sha256": digest(reviews.read_bytes()), "arms": arms, "case_paired_scores": paired,
             "rows": rows, "distinct_cases": len(paired),
@@ -359,6 +398,9 @@ def main():
     p.add_argument("--repeats", type=int, default=3)
     p.add_argument("--model", required=True, help="Exact model ID verified available in the local CLI")
     p.add_argument("--effort", default="medium")
+    p.add_argument("--cases", type=Path)
+    p.add_argument("--rubric", type=Path)
+    p.add_argument("--compare-revision", help="Compare this immutable prior skill revision against current skill text")
     p = sub.add_parser("run")
     p.add_argument("directory", type=Path)
     p.add_argument("--workers", type=int, choices=range(1, 5), default=2)
@@ -372,7 +414,8 @@ def main():
     p.add_argument("output", type=Path)
     args = parser.parse_args()
     if args.action == "freeze":
-        freeze(ROOT, args.output, args.repeats, model=args.model, effort=args.effort)
+        freeze(ROOT, args.output, args.repeats, model=args.model, effort=args.effort,
+               cases_path=args.cases, rubric_path=args.rubric, compare_revision=args.compare_revision)
     elif args.action == "run":
         run(args.directory, args.workers, args.timeout)
     elif args.action == "blind":

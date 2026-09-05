@@ -44,10 +44,20 @@ Review completeness, validity, uniqueness, consistency, conformity, referential 
 ```yaml
 record_identifier:
 field:
+before_value_and_source:
 current_value:
+current_value_source_and_time:
 proposed_value:
+proposal_purpose_and_authorization:
 issue:
 source_conflict:
 risk:
 owner_decision_required:
 ```
+
+For post-change review, `current_value` is the latest authoritative observation,
+not the backup or intended value. `proposed_value` is the candidate correction,
+not a replay of the failed mutation. Keep these directions consistent with the
+narrative. Restore only the approved affected fields; a backup does not authorize
+overwriting later legitimate changes. Label a recovery target as unknown when
+competing source versions or approvals prevent a supported choice.

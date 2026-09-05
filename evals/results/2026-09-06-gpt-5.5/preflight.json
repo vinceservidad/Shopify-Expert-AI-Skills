@@ -1,0 +1,36 @@
+{
+  "scope": "Availability/isolation probes only; no evaluation cases or answer keys supplied. These are excluded from the 60 predeclared task attempts.",
+  "claude_code": {
+    "cli_version": "2.1.259",
+    "status": "blocked_before_benchmark",
+    "observed_message": "You've hit your weekly limit \u00b7 resets 11am (Asia/Manila)",
+    "calls": 1,
+    "task": "Reply with exactly READY."
+  },
+  "codex": {
+    "cli_version": "0.149.1",
+    "calls": 4,
+    "probes": [
+      {
+        "purpose": "initial CLI availability",
+        "status": "completed; automatic skill catalog still loaded so rejected as isolated runner"
+      },
+      {
+        "purpose": "skill/memory/plugin isolation",
+        "status": "completed; no tool or skill-catalog error events"
+      },
+      {
+        "model_requested": "gpt-6-astra",
+        "status": "rejected_by_service",
+        "observed_message": "The 'gpt-6-astra' model requires a newer version of Codex. Please upgrade to the latest app or CLI and try again."
+      },
+      {
+        "model_requested": "gpt-5.5",
+        "reasoning_effort": "medium",
+        "status": "completed",
+        "observed_response": "READY"
+      }
+    ]
+  },
+  "credential_handling": "Used existing authenticated local CLIs; no credentials, account identity or authentication files are included."
+}

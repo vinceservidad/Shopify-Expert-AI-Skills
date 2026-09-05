@@ -50,3 +50,16 @@ rollback:
 - inspect representative admin records and live pages
 - verify collection rules, theme dependencies, apps, feeds, and automation where in scope
 - stop subsequent batches on unexpected overwrite, deletion, duplication, publication, inventory, or price behavior
+
+For a failed pilot, show each record's approved target, latest observed fields,
+protected-field deviations and downstream state. A correctly unchanged no-op is
+not a missing write; a correct target field does not make a record conforming if
+another protected field drifted. Report transport counts, actual field changes,
+fully conforming records and downstream verification separately.
+
+Draft recovery as explicit current-to-target field changes, citing the backup
+and any later authorized edits. Obtain approval for corrective writes, then
+re-query corrected and protected fields, check the relevant downstream output,
+and repeat a bounded pilot. Keep broad execution stopped until the deviation is
+explained and the agreed acceptance checks pass. Existing authorization for
+read-only investigation does not require another write approval.

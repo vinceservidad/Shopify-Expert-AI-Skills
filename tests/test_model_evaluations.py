@@ -83,6 +83,141 @@ class ModelEvaluationTests(unittest.TestCase):
         model_eval.write_json(path, {"reviews": reviews})
         return path, reviews
 
+    def git(self, *arguments):
+        return subprocess.check_output(
+            ["git", *arguments], cwd=self.root, text=True, stderr=subprocess.PIPE).strip()
+
+    def commit_fixture(self):
+        self.git("init", "-q")
+        self.git("add", ".")
+        self.git("-c", "user.name=Evaluation Fixture", "-c", "user.email=fixture@example.invalid",
+                 "commit", "-qm", "Synthetic evaluation source")
+        return self.git("rev-parse", "HEAD")
+
+    def freeze_git_fixture(self, output, **arguments):
+        real_check_output = subprocess.check_output
+
+        def local_metadata_only(command, **kwargs):
+            if command[0] == "codex":
+                return "fixture-cli-version\n"
+            kwargs.setdefault("stderr", subprocess.PIPE)
+            return real_check_output(command, **kwargs)
+
+        with patch.object(model_eval.subprocess, "check_output", side_effect=local_metadata_only):
+            return model_eval.freeze(self.root, output, **arguments)
+
+    def test_revision_comparison_freezes_commit_and_both_source_versions(self):
+        previous = self.commit_fixture()
+        source = self.root / "skills/shopify-store-audit/references/ordinary.md"
+        source.write_text("Revised operational guidance.")
+        output = Path(self.temporary.name) / "revision-comparison"
+        manifest = self.freeze_git_fixture(output, compare_revision="HEAD")
+        prompts = model_eval.read_json(output / "prompts.json")
+        self.assertEqual(manifest["comparison_revision"], previous)
+        self.assertEqual(manifest["arms"], ("previous_skill", "revised_skill"))
+        self.assertIn("Ordinary domain reference.", prompts["audit-case--previous_skill"])
+        self.assertNotIn("Revised operational guidance.", prompts["audit-case--previous_skill"])
+        self.assertIn("Revised operational guidance.", prompts["audit-case--revised_skill"])
+        self.assertNotIn("Ordinary domain reference.", prompts["audit-case--revised_skill"])
+        self.assertNotEqual(
+            manifest["sources"]["skills/shopify-store-audit/references/ordinary.md"],
+            manifest["historical_sources"]["skills/shopify-store-audit/references/ordinary.md"])
+        for prompt in prompts.values():
+            for forbidden in ("HIDDEN_RUBRIC_SENTINEL", "TEACHING_ANSWER_SENTINEL",
+                              "ASSET_ANSWER_SENTINEL", "references/worked-example.md"):
+                self.assertNotIn(forbidden, prompt)
+            self.assertIn("Preserve this later operating rule.", prompt)
+        # Moving HEAD and editing current files must not change the already-frozen treatment.
+        self.git("add", ".")
+        self.git("-c", "user.name=Evaluation Fixture", "-c", "user.email=fixture@example.invalid",
+                 "commit", "-qm", "Move mutable revision")
+        self.assertNotEqual(self.git("rev-parse", "HEAD"), previous)
+        source.write_text("A third, unfrozen operating rule.")
+        frozen, frozen_prompts = model_eval.verify_frozen(output)
+        self.assertEqual(frozen["comparison_revision"], previous)
+        self.assertEqual(frozen_prompts, prompts)
+        historical, _ = model_eval.historical_skill_context(self.root, "shopify-store-audit", previous)
+        self.assertIn("Ordinary domain reference.", historical)
+        self.assertNotIn("A third, unfrozen operating rule.", historical)
+
+    def test_historical_context_matches_current_reference_depth(self):
+        directory = self.root / "skills/shopify-store-audit/references/nested"
+        directory.mkdir()
+        (directory / "private-to-another-procedure.md").write_text("NESTED_CONTEXT_SENTINEL")
+        previous = self.commit_fixture()
+        current, current_hashes = model_eval.skill_context(self.root, "shopify-store-audit")
+        historical, historical_hashes = model_eval.historical_skill_context(
+            self.root, "shopify-store-audit", previous)
+        self.assertEqual(current, historical)
+        self.assertEqual(current_hashes, historical_hashes)
+        self.assertNotIn("NESTED_CONTEXT_SENTINEL", historical)
+
+    def test_historical_context_rejects_selected_symlink(self):
+        directory = self.root / "skills/shopify-store-audit/references"
+        (directory / "linked.md").symlink_to("ordinary.md")
+        previous = self.commit_fixture()
+        with self.assertRaises(ValueError):
+            model_eval.historical_skill_context(self.root, "shopify-store-audit", previous)
+
+    def test_alternate_case_and_rubric_paths_must_be_paired(self):
+        cases = Path(self.temporary.name) / "alternate-cases.json"
+        rubrics = Path(self.temporary.name) / "alternate-rubric.json"
+        alternate_case = {**self.cases[0], "id": "fresh-audit", "request": "Fresh scenario request."}
+        alternate_rubric = {**self.rubrics[0], "id": "fresh-audit"}
+        model_eval.write_json(cases, {"cases": [alternate_case]})
+        model_eval.write_json(rubrics, {"rubrics": [alternate_rubric]})
+        output = Path(self.temporary.name) / "alternate-experiment"
+        for arguments in ({"cases_path": cases}, {"rubric_path": rubrics}):
+            with self.subTest(arguments=arguments), self.assertRaisesRegex(ValueError, "Both alternate"):
+                model_eval.freeze(self.root, output, **arguments)
+            self.assertFalse(output.exists())
+        with patch.object(model_eval.subprocess, "check_output", return_value="fixture-version\n"):
+            manifest = model_eval.freeze(self.root, output, cases_path=cases, rubric_path=rubrics)
+        self.assertEqual([case["id"] for case in manifest["cases"]], ["fresh-audit"])
+        self.assertEqual([rubric["id"] for rubric in manifest["rubrics"]], ["fresh-audit"])
+        self.assertEqual(len(manifest["jobs"]), 6)
+
+    def test_revision_plan_summary_uses_declared_labels_and_delta_direction(self):
+        self.commit_fixture()
+        self.output = Path(self.temporary.name) / "comparison-summary"
+        self.manifest = self.freeze_git_fixture(self.output, compare_revision="HEAD")
+        jobs = self.manifest["jobs"]
+        expected = {(case["id"], arm, repeat) for case in self.cases
+                    for arm in ("previous_skill", "revised_skill") for repeat in range(1, 4)}
+        self.assertEqual({(job["case_id"], job["arm"], job["repeat"]) for job in jobs}, expected)
+        self.assertEqual(len(jobs), len(expected))
+        path, reviews = self.populate()
+        previous_ids = {job["id"] for job in jobs if job["arm"] == "previous_skill"}
+        for review in reviews:
+            if review["id"] in previous_ids:
+                review["criteria"][2]["passed"] = False
+        model_eval.write_json(path, {"reviews": reviews})
+        summary = model_eval.summarize(self.output, path)
+        self.assertEqual(set(summary["arms"]), {"previous_skill", "revised_skill"})
+        self.assertEqual(summary["arms"]["previous_skill"]["planned"], 6)
+        self.assertEqual(summary["arms"]["revised_skill"]["planned"], 6)
+        self.assertEqual(summary["arms"]["previous_skill"]["mean_score"], 80)
+        self.assertEqual(summary["arms"]["revised_skill"]["mean_score"], 100)
+        self.assertTrue(all(row["delta"] == 20 for row in summary["case_paired_scores"]))
+        self.assertTrue(all("without_skill" not in row for row in summary["case_paired_scores"]))
+
+    def test_legacy_manifest_without_arm_metadata_keeps_original_summary(self):
+        path, _ = self.populate()
+        before = model_eval.summarize(self.output, path)
+        self.change_manifest(lambda manifest: manifest.pop("arms", None))
+        after = model_eval.summarize(self.output, path)
+        self.assertEqual(before["arms"], after["arms"])
+        self.assertEqual(before["case_paired_scores"], after["case_paired_scores"])
+        self.assertEqual(before["rows"], after["rows"])
+        self.assertEqual(set(after["arms"]), set(model_eval.ARMS))
+
+    def test_invalid_source_revision_does_not_create_experiment(self):
+        self.commit_fixture()
+        output = Path(self.temporary.name) / "invalid-revision"
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.freeze_git_fixture(output, compare_revision="does-not-exist")
+        self.assertFalse(output.exists())
+
     def test_freeze_balances_arms_repetitions_and_is_reproducible(self):
         jobs = self.manifest["jobs"]
         expected = {(case["id"], arm, repeat) for case in self.cases
@@ -179,7 +314,9 @@ class ModelEvaluationTests(unittest.TestCase):
                 self.assertTrue(problems)
 
     def test_parse_codex_rejects_malformed_or_non_object_events(self):
-        for stream in ("not-json", "[]", "null", '"text"'):
+        for stream in ("not-json", "[]", "null", '"text"',
+                       '{"type":"item.completed","item":{"type":"agent_message","text":null}}',
+                       '{"type":"item.completed","item":{"type":"agent_message","text":[]}}'):
             with self.subTest(stream=stream), self.assertRaises(ValueError):
                 model_eval.parse_codex(stream, 0)
 
@@ -230,6 +367,14 @@ class ModelEvaluationTests(unittest.TestCase):
             model_eval.records(self.output, self.manifest)
         model_eval.write_json(self.output / "responses/orphan.json", {"id": "orphan"})
         with self.assertRaisesRegex(ValueError, "Orphan"):
+            model_eval.records(self.output, self.manifest)
+
+    def test_response_integrity_preserves_failure_diagnostics(self):
+        job = self.manifest["jobs"][0]
+        record = self.record(job, status="invalid")
+        record.update(diagnostics="altered diagnostic", diagnostics_sha256=model_eval.digest("original"))
+        model_eval.write_json(self.output / "responses" / (job["id"] + ".json"), record)
+        with self.assertRaisesRegex(ValueError, "Diagnostics integrity"):
             model_eval.records(self.output, self.manifest)
 
     def test_blinded_packet_contains_no_arm_or_prompt_and_only_completed_outputs(self):

@@ -1,7 +1,8 @@
 # Repository reliability
 
-The next priority is reliable existing skills, not a larger catalog. This change
-hardens validation and packaging without changing the nineteen skill procedures.
+The catalog remains at nineteen skills. Validation, packaging, authored examples,
+recorded model evaluations and theme integration checks are separate evidence
+layers; passing one does not substitute for another.
 
 ## Tooling setup
 
@@ -72,18 +73,24 @@ Keep `evals/core-scenarios.md` results at `needs-review` until actual responses 
 been saved and reviewed. Do not turn the synthetic tooling fixtures into claimed
 merchant results or completed model evaluations.
 
-## Next depth milestone
+## Depth and remaining coverage
 
-Keep the existing catalog and concentrate worked examples on these five skills:
+The five priority skills now have [authored worked examples](worked-examples.md)
+and a separate [answer-withheld comparison protocol](model-evaluations.md). The
+theme example additionally renders actual source through official Liquid core
+before local browser checks; [adapter limits](theme-verification.md) remain explicit.
 
-| Skill | Evidence needed before calling the example tested |
-| --- | --- |
-| Store audit | Supplied page evidence, bounded findings, and a reviewed priority decision |
-| Product listing | Approved source sheet, field mapping, missing-field handling, and verified draft |
-| Catalog operations | Before/after data, dry-run differences, exceptions, and reconciliation |
-| Theme development | Reproduction, scoped diff, theme checks, and rendered-state verification |
-| Analytics | Synthetic or sanitized inputs, known calculations, reconciliation, and reviewed diagnosis |
+| Coverage | Scope | Evidence boundary |
+| --- | --- | --- |
+| Structure and standalone packaging | All 19 skills | Tooling integrity |
+| Written behavioral scenarios | Original 21 across all 19 skills plus a catalog-recovery exercise | Unrun unless separately recorded and reviewed |
+| Deeper authored worked examples | Five priority skills | Teaching data and implementation checks |
+| Fresh model comparison cases | Two cases per priority skill | Actual outputs/reviews and sample-bound results required |
+| Hosted Shopify/editor/cart workflow | No designated development store in this change | Unverified |
 
-Each behavioral record should identify the skill version, model, surface, date,
-input evidence, complete output, reviewer, result, and remaining failure. Compare
-with the same task without the skill before claiming measured added value.
+Each recorded experiment identifies the source revision, requested model,
+surface/settings, dates, exact prompts, complete outputs, reviewer and failures.
+Results must compare the same tasks/settings without skill text before claiming
+measured added value. The remaining fourteen skills do not inherit model-evaluation
+passes from the priority five. Expand those cases when the next supported workflow
+or observed failure calls for it, and add fresh cases after any rubric-driven tuning.

@@ -18,7 +18,7 @@ Start with the [five worked examples](docs/worked-examples.md). Each includes sy
 | [Store audit](skills/shopify-store-audit/references/worked-example.md) | Prioritize an obstructed purchase control and conflicting delivery copy without inventing conversion impact. |
 | [Theme development](skills/shopify-theme-development/references/worked-example.md) | Keep variant price, form ID and availability aligned through selection, history changes and component re-insertion. |
 
-These are **authored teaching examples**, not merchant results or independent AI evaluations. Calculation checks, browser checks, Shopify static checks, and model evaluations are tracked separately. The [evaluation manifest](evals/worked-examples.json) keeps independent model testing at `not_run` until actual responses are saved and reviewed.
+These are **authored teaching examples**, not merchant results or independent AI evaluations. Calculation checks, browser checks, Shopify static checks, and model evaluations are tracked separately. The [original example manifest](evals/worked-examples.json) retains the unrun behavioral replay status of those teaching cases. The [model evaluation protocol](docs/model-evaluations.md) tests fresh, answer-withheld cases with frozen prompts, repeated with/without-skill comparisons and blinded substantive review.
 
 ## Start here
 
@@ -98,9 +98,10 @@ See [Evidence and authorization](docs/evidence-and-authorization.md), [the gloss
 ./scripts/validate-repository.sh
 python -m unittest discover -s tests -v
 python scripts/worked_examples.py
+python scripts/check_evaluation_evidence.py
 ```
 
-Repository checks cover frontmatter, naming, references, package integrity and failure handling. Data-example tests verify authored calculations and mappings. Browser and Shopify Theme Check instructions are in [Worked examples](docs/worked-examples.md). GitHub workflows check all 19 packaged skills independently of the repository-root documentation.
+Repository checks cover frontmatter, naming, references, package integrity and failure handling. Data-example tests verify authored calculations and mappings. [Theme verification](docs/theme-verification.md) now includes actual-source rendering through Shopify's official Liquid core, explicit local adapters, browser checks and separate Theme Check. GitHub workflows check all 19 packaged skills and recompute recorded evaluation summaries offline; CI does not make model calls or award substantive grades.
 
 A passing build does not establish that an AI can operate a real store reliably. The [behavioral scenarios](evals/core-scenarios.md) require actual model outputs and substantive review. Do not mark them passed because an answer uses expected headings or reproduces an available answer key.
 
@@ -113,7 +114,8 @@ skills/<skill-name>/
   assets/worked-example/   # present in the five example skills
 scripts/                  # validation, packaging and example checks
 tests/                    # tooling and synthetic-data regressions
-  browser/                # separate Chromium DOM tests
+  browser/                # synthetic DOM and actual Liquid output
+  theme/                  # official Liquid core renderer regressions
 evals/                    # behavioral rubrics and evaluation status
 docs/                     # setup, context, usage and reliability
 .github/workflows/        # repository and worked-example checks

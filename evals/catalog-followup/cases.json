@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "request": "Review the four-record pilot and decide whether the remaining catalog should proceed. Give an operational exception table, reconcile the counts, and prepare the next recovery and verification steps. State precisely which changes and outcomes are supported by the packet. This is a response-only review; do not perform external writes.",
+      "evidence": {
+        "provenance": "Synthetic store, records, approval and execution packet. The supplied normalized fields are not a Shopify CSV or API payload, and no account access is available.",
+        "store": "Fictional Alder & Arc, Canada, CAD, America/Toronto",
+        "field_contract": "custom.care_insert is an internal fulfillment metafield identifying the care card to pack. weight_grams is the protected shipping weight. Variant ID is the authoritative record key. The adapter is intended to update only explicitly named fields.",
+        "pilot_approval": "Set custom.care_insert to CARD-REV-B on variants K610, K620, K630 and K640. Preserve all other fields. No wider batch was approved. Recovery writes are not approved in this response-only review.",
+        "captured_before": {
+          "artifact": "alder-pilot-before-2026-08-11T09-00.json",
+          "recoverable": true,
+          "rows": [
+            {"variant_id": "K610", "custom.care_insert": "CARD-REV-B", "weight_grams": 180},
+            {"variant_id": "K620", "custom.care_insert": "CARD-REV-A", "weight_grams": 260},
+            {"variant_id": "K630", "custom.care_insert": "CARD-REV-A", "weight_grams": 640},
+            {"variant_id": "K640", "custom.care_insert": "CARD-REV-A", "weight_grams": 910}
+          ]
+        },
+        "transport_receipt": {"submitted_records": 4, "reported_success": 4, "reported_failure": 0, "operation_status": "complete"},
+        "authoritative_saved_requery": {
+          "captured_at": "2026-08-11T09:12:00-04:00",
+          "rows": [
+            {"variant_id": "K610", "custom.care_insert": "CARD-REV-B", "weight_grams": 180},
+            {"variant_id": "K620", "custom.care_insert": "CARD-REV-A", "weight_grams": 260},
+            {"variant_id": "K630", "custom.care_insert": "CARD-REV-B", "weight_grams": 460},
+            {"variant_id": "K640", "custom.care_insert": "CARD-REV-B", "weight_grams": 910}
+          ]
+        },
+        "fulfillment_consumer": [
+          {"variant_id": "K610", "status": "Rechecked: CARD-REV-B and 180 grams, unchanged from the earlier record."},
+          {"variant_id": "K620", "status": "Rechecked: CARD-REV-A and 260 grams."},
+          {"variant_id": "K630", "status": "Update queued; consumer card code and weight have not been rechecked."},
+          {"variant_id": "K640", "status": "Update processing; consumer card code has not been rechecked."}
+        ],
+        "unknowns": ["actual submitted field payloads", "whether another writer changed K630", "when downstream processing will finish", "owner approval for any corrective writes", "canonical checkout shipping behavior after the weight drift"]
+      }
+    },
+    {
+      "id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "request": "Prepare the exact selective rollback plan for the operator from this incident packet. Explain which evidence each value comes from, what must remain intact, and the checks required before and after the operator applies the plan. Report the current and proposed states. This task is response-only and cannot execute the rollback.",
+      "evidence": {
+        "provenance": "Synthetic incident, store and approval records. These are normalized review records, not an executable Shopify import. No external writes have occurred during this review.",
+        "store": "Fictional Bay Loom Home, New Zealand, NZD, Pacific/Auckland",
+        "field_contract": "Variant ID is the authoritative key. custom.care_mode is approved product care metadata. Prices are NZD. The field-patch adapter changes only supplied fields. Restoring a whole snapshot would overwrite every field present in that snapshot.",
+        "backup_at_10_00": {
+          "artifact": "bayloom-before-2026-08-19T10-00.json",
+          "recoverable": true,
+          "rows": [
+            {"variant_id": "M901", "custom.care_mode": "spot_clean", "price": "135.00", "tags": ["runner"]},
+            {"variant_id": "M902", "custom.care_mode": "hand_wash", "price": "89.00", "tags": ["cushion"]},
+            {"variant_id": "M903", "custom.care_mode": "wipe_clean", "price": "34.00", "tags": ["tray"]}
+          ]
+        },
+        "incident_at_10_10": "An incorrect bulk payload set custom.care_mode to machine_wash on M901 and M902. That care-mode change was not authorized. M903 was outside the payload.",
+        "separate_approved_changes_at_10_20": [
+          {"approval_id": "PRICE-118", "variant_id": "M901", "change": "Set price to 149.00 NZD; approved by merchandising owner."},
+          {"approval_id": "TAG-042", "variant_id": "M902", "change": "Append spring_edit while keeping cushion; approved by catalog owner."}
+        ],
+        "approved_recovery_specification_at_10_30": "Prepare a field-only restoration of custom.care_mode for M901 and M902 to the approved values in the 10:00 backup. Retain the independently approved 10:20 changes and all other current fields. Do not touch M903. The operator will execute only after reviewing this plan; this response-only task has no write authorization.",
+        "authoritative_saved_requery_at_10_40": [
+          {"variant_id": "M901", "custom.care_mode": "machine_wash", "price": "149.00", "tags": ["runner"]},
+          {"variant_id": "M902", "custom.care_mode": "machine_wash", "price": "89.00", "tags": ["cushion", "spring_edit"]},
+          {"variant_id": "M903", "custom.care_mode": "wipe_clean", "price": "34.00", "tags": ["tray"]}
+        ],
+        "downstream_state": "The storefront care-text cache and fulfillment export last refreshed at 09:50. Their state after the incident or any future recovery has not been inspected.",
+        "unknowns": ["changes occurring after the 10:40 re-query", "operator execution time", "downstream refresh completion and rendered care wording after recovery"]
+      }
+    }
+  ]
+}

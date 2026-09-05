@@ -126,6 +126,26 @@ Use findings to choose narrow skill changes and new held-out retests. Do not tun
 to this answer key and then call another run on the same cases independent validation.
 No numeric repository rating is produced by this benchmark.
 
+## Targeted previous-versus-revised comparison
+
+When a recorded failure supports a skill correction, freeze different tasks and
+compare the prior and revised skill text on those same tasks. The optional mode
+below reads previous entrypoints/domain references from an immutable Git revision;
+both conditions receive skill guidance. It is not a second without-skill baseline.
+
+```bash
+python scripts/model_evaluations.py freeze evals/results/<followup-name> --model <available-model-id> --effort medium --repeats 3 --cases evals/catalog-followup/cases.json --rubric evals/catalog-followup/rubric.json --compare-revision <previous-commit>
+```
+
+The same isolation, response retention, blinding, scoring and integrity rules apply.
+The catalog follow-up uses two new targeted cases and twelve planned calls, with
+`previous_skill` and `revised_skill` conditions. Its more atomic criteria distinguish
+ordinary omissions from affirmative critical errors; scores must not be compared
+numerically with the original ten-case rubric. Its case selection is informed by
+the first pilot, so it is a targeted diagnostic comparison, not untouched evidence
+of broad generalization. Preserve the original pilot and any secondary-adjudication
+results separately, including when a correction shows no advantage.
+
 ## Sources and scope
 
 - [Codex configuration schema](https://developers.openai.com/codex/config-schema.json), reviewed September 6, 2026, plus installed `codex exec --help` and `codex features list`: available isolation and execution controls. Exact support is version-dependent.
