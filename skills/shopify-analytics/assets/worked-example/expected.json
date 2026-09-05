@@ -1,0 +1,89 @@
+{
+  "periods": {
+    "previous": {
+      "net_sales": "10000.00",
+      "pre_media_contribution": "4300.00",
+      "media_cost": "2000.00",
+      "contribution_after_media": "2300.00",
+      "ranked_by_net_sales": [
+        {
+          "product_id": "mug",
+          "net_sales": "5000.00",
+          "net_units": 230
+        },
+        {
+          "product_id": "bottle",
+          "net_sales": "3400.00",
+          "net_units": 95
+        },
+        {
+          "product_id": "tote",
+          "net_sales": "1600.00",
+          "net_units": 180
+        }
+      ],
+      "ranked_by_net_units": [
+        "mug",
+        "tote",
+        "bottle"
+      ]
+    },
+    "current": {
+      "net_sales": "11000.00",
+      "pre_media_contribution": "4732.00",
+      "media_cost": "3000.00",
+      "contribution_after_media": "1732.00",
+      "ranked_by_net_sales": [
+        {
+          "product_id": "mug",
+          "net_sales": "5400.00",
+          "net_units": 250
+        },
+        {
+          "product_id": "bottle",
+          "net_sales": "4200.00",
+          "net_units": 115
+        },
+        {
+          "product_id": "tote",
+          "net_sales": "1400.00",
+          "net_units": 160
+        }
+      ],
+      "ranked_by_net_units": [
+        "mug",
+        "tote",
+        "bottle"
+      ]
+    }
+  },
+  "net_sales_change_pct": "10.00",
+  "contribution_change": "-568.00",
+  "contribution_change_pct": "-24.70",
+  "bridge": {
+    "pre_media_change": "432.00",
+    "additional_media_cost": "1000.00"
+  },
+  "attribution_views": [
+    {
+      "source": "Google Ads",
+      "reported_value": "6000.00",
+      "definition": "Attributed conversion value; fixture 30-day click window.",
+      "additive": false
+    },
+    {
+      "source": "Meta Ads",
+      "reported_value": "4500.00",
+      "definition": "Attributed conversion value; fixture 7-day click and 1-day view windows.",
+      "additive": false
+    },
+    {
+      "source": "Email",
+      "reported_value": "2500.00",
+      "definition": "Attributed conversion value; fixture 5-day click window.",
+      "additive": false
+    }
+  ],
+  "causal_claim": false,
+  "external_state": "unchanged"
+}

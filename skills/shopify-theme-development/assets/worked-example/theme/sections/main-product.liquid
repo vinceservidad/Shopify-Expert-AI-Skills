@@ -1,0 +1,47 @@
+{% comment %}
+  Synthetic teaching theme. Adapt to the existing theme; do not replace its product form.
+  Only a small single-option product without selling plans or variant-specific media.
+{% endcomment %}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- assign default_variant = product.variants | where: 'available', true | first -%}
+{%- if default_variant == nil -%}{%- assign default_variant = product.variants.first -%}{%- endif -%}
+{%- assign form_id = 'SkillsProductForm-' | append: section.id -%}
+<skills-variant-picker data-update-url="true" data-default-variant="{{ default_variant.id }}">
+  <h1>{{ product.title | escape }}</h1>
+  <p data-price>{% if current_variant %}{{ current_variant.price | money | escape }}{% endif %}</p>
+  <nav aria-label="{{ 'products.product.choose_variant' | t | escape }}">
+    {% for variant in product.variants %}
+      <a href="{{ product.url }}?variant={{ variant.id }}"
+         data-variant-id="{{ variant.id }}"
+         data-price="{{ variant.price | money | escape }}"
+         data-available="{{ variant.available }}"
+         {% if variant.id == current_variant.id %}aria-current="true"{% endif %}>
+        {{ variant.title | escape }}
+      </a>
+    {% endfor %}
+  </nav>
+  {% form 'product', product, id: form_id %}
+    <input type="hidden" name="id" value="{{ current_variant.id }}" {% unless current_variant %}disabled{% endunless %}>
+    <button type="submit" name="add"
+            data-add-label="{{ 'products.product.add_to_cart' | t | escape }}"
+            data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}"
+            data-unavailable-label="{{ 'products.product.unavailable' | t | escape }}"
+            {% unless current_variant.available %}disabled{% endunless %}>
+      {% if current_variant == nil %}
+        {{ 'products.product.unavailable' | t }}
+      {% elsif current_variant.available %}
+        {{ 'products.product.add_to_cart' | t }}
+      {% else %}
+        {{ 'products.product.sold_out' | t }}
+      {% endif %}
+    </button>
+  {% endform %}
+  <p data-status role="status" aria-live="polite" aria-atomic="true"></p>
+</skills-variant-picker>
+{% schema %}
+{
+  "name": "Variant example",
+  "settings": [],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

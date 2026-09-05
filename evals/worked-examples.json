@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "example_kind": "authored_synthetic_reference",
+  "not_claimed": [
+    "merchant_results",
+    "independent_model_evaluation",
+    "conversion_improvement",
+    "live_store_verification"
+  ],
+  "examples": [
+    {
+      "skill": "shopify-store-audit",
+      "reference": "skills/shopify-store-audit/references/worked-example.md",
+      "input": "skills/shopify-store-audit/assets/worked-example/input.json",
+      "expected": "skills/shopify-store-audit/assets/worked-example/expected.json",
+      "behavioral_evaluation": {
+        "status": "not_run",
+        "model": null,
+        "surface": null,
+        "output_artifact": null,
+        "reviewer": null,
+        "reviewed_on": null
+      }
+    },
+    {
+      "skill": "shopify-product-listing",
+      "reference": "skills/shopify-product-listing/references/worked-example.md",
+      "input": "skills/shopify-product-listing/assets/worked-example/input.json",
+      "expected": "skills/shopify-product-listing/assets/worked-example/expected.json",
+      "behavioral_evaluation": {
+        "status": "not_run",
+        "model": null,
+        "surface": null,
+        "output_artifact": null,
+        "reviewer": null,
+        "reviewed_on": null
+      }
+    },
+    {
+      "skill": "shopify-catalog-operations",
+      "reference": "skills/shopify-catalog-operations/references/worked-example.md",
+      "input": "skills/shopify-catalog-operations/assets/worked-example/input.json",
+      "expected": "skills/shopify-catalog-operations/assets/worked-example/expected.json",
+      "behavioral_evaluation": {
+        "status": "not_run",
+        "model": null,
+        "surface": null,
+        "output_artifact": null,
+        "reviewer": null,
+        "reviewed_on": null
+      }
+    },
+    {
+      "skill": "shopify-theme-development",
+      "reference": "skills/shopify-theme-development/references/worked-example.md",
+      "input": "skills/shopify-theme-development/assets/worked-example/input.json",
+      "expected": null,
+      "behavioral_evaluation": {
+        "status": "not_run",
+        "model": null,
+        "surface": null,
+        "output_artifact": null,
+        "reviewer": null,
+        "reviewed_on": null
+      }
+    },
+    {
+      "skill": "shopify-analytics",
+      "reference": "skills/shopify-analytics/references/worked-example.md",
+      "input": "skills/shopify-analytics/assets/worked-example/input.json",
+      "expected": "skills/shopify-analytics/assets/worked-example/expected.json",
+      "behavioral_evaluation": {
+        "status": "not_run",
+        "model": null,
+        "surface": null,
+        "output_artifact": null,
+        "reviewer": null,
+        "reviewed_on": null
+      }
+    }
+  ]
+}

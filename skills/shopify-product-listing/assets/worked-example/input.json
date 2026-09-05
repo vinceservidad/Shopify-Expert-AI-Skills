@@ -1,0 +1,47 @@
+{
+  "synthetic": true,
+  "authorization": "draft-only",
+  "target_store": "fictional-training-store",
+  "currency": "GBP",
+  "approved_source": {
+    "title": "Field Ceramic Mug | 350 ml",
+    "handle": "field-ceramic-mug",
+    "vendor": "Field Studio (fictional)",
+    "capacity_ml": 350,
+    "material": "ceramic",
+    "finish": "matte",
+    "product_category": null,
+    "variants": [
+      {
+        "sku": "FIELD-SAND-350",
+        "color": "Sand",
+        "price": "24.00",
+        "barcode": null,
+        "weight_grams": null,
+        "inventory_quantity": null
+      },
+      {
+        "sku": "FIELD-MOSS-350",
+        "color": "Moss",
+        "price": "26.00",
+        "barcode": null,
+        "weight_grams": null,
+        "inventory_quantity": null
+      }
+    ]
+  },
+  "existing_handles": [],
+  "existing_skus": [],
+  "store_policy": {
+    "required_before_publication": [
+      "weight_grams",
+      "inventory_quantity",
+      "product_category"
+    ],
+    "note": "This is a fictional merchant policy, not a list of fields Shopify universally requires."
+  },
+  "unverified_requested_claims": [
+    "Dishwasher safe",
+    "Keeps drinks warm for hours"
+  ]
+}
