@@ -1,6 +1,37 @@
 # How to Use Shopify Expert AI Skills
 
-This guide shows exactly how to install and use the skills in Claude and ChatGPT. No Shopify connection is required for read-only analysis. You provide the store evidence you want the assistant to examine.
+This guide shows how merchants, freelancers, agencies, Shopify VAs, developers, marketers, and store operators can use the skills in Claude and ChatGPT. No Shopify connection is required for read-only analysis. You provide the store evidence you want the assistant to examine.
+
+## Start with the Shopify Store Operating Lifecycle
+
+Use this lifecycle to decide **where the work is now** before choosing what happens next:
+
+```text
+CONTEXT → GOAL → DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE ↺
+```
+
+It is a state model, not a checklist. Start at the earliest unresolved stage that can materially change the decision.
+
+Examples:
+
+- **Theme bug:** `DIAGNOSE → PLAN → IMPLEMENT → VERIFY`
+- **Approved listing:** `CONTEXT → PLAN → IMPLEMENT → VERIFY`
+- **Store performance decline:** `DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE`
+- **Simple draft reply:** `IMPLEMENT`
+
+Use [`skills/shopify-va/references/store-operating-lifecycle.md`](skills/shopify-va/references/store-operating-lifecycle.md) for the full stage contracts, role boundaries, and examples. Use the [`Shopify Initiative Record`](skills/shopify-va/references/initiative-record.md) when the work spans several stages, skills, sessions, or handoffs.
+
+### Role boundaries still matter
+
+The same lifecycle works for different people, but authority does not automatically transfer:
+
+- **Merchant / client / accountable owner:** approves material business tradeoffs and live scope.
+- **Freelancer / agency / specialist:** works within the engagement, evidence, access, and approval actually granted.
+- **Shopify VA:** executes defined procedures, routes specialist decisions, verifies terminal states, and escalates exceptions.
+- **Developer:** owns technical diagnosis and implementation within approved technical scope, not commercial or publishing authority by default.
+- **Marketer / operator:** connects storefront, merchandising, lifecycle, acquisition, and analytics without treating attributed platform metrics as additive business truth.
+
+A lifecycle stage never authorizes a live change by itself.
 
 ## Choose one skill
 
@@ -8,7 +39,7 @@ Start with the skill that owns the result you need.
 
 | Your task | Choose this skill |
 | --- | --- |
-| Manage or route a mixed Shopify VA task list | `shopify-va` |
+| Manage or route a mixed Shopify VA task list or multi-stage routine initiative | `shopify-va` |
 | Research and validate a product opportunity | `shopify-product-research` |
 | Create or update product listings | `shopify-product-listing` |
 | Clean, import, or update a product catalog in bulk | `shopify-catalog-operations` |
@@ -30,12 +61,13 @@ Start with the skill that owns the result you need.
 
 Use one owner skill first. Add a second specialist only when it contributes a distinct part of the decision.
 
-Use `shopify-va` when the request contains several routine admin tasks or the correct specialist is unclear. It will normalize the work and route each task without expanding the VA's permissions.
+Use `shopify-va` when the request contains several routine admin tasks, spans several lifecycle stages, or the correct specialist is unclear. It will normalize the work, identify the current lifecycle stage, and route each task without expanding permissions.
 
 Example:
 
 - `shopify-analytics` owns the answer to “Why did profit fall?”
 - `shopify-google-ads` contributes query, product, campaign, and measurement evidence.
+- `shopify-va` may coordinate the handoff if the work also includes an approved catalog or theme action.
 
 ## Option 1: Install a skill in Claude
 
@@ -84,6 +116,8 @@ Upload the generated file from:
 dist/shopify-store-audit.zip
 ```
 
+Package `shopify-va` when you want the lifecycle, mixed-task routing, initiative record, and VA operating checklists together.
+
 ### Your first Claude request
 
 After enabling the skill, send:
@@ -106,6 +140,27 @@ needed before implementation.
 ```
 
 If the skill does not activate automatically, name it explicitly as shown above.
+
+### Lifecycle coordination request
+
+For mixed or ongoing Shopify work:
+
+```text
+Use the shopify-va skill and its Shopify Store Operating Lifecycle.
+
+Continue this initiative from the current verified state.
+Do not restart stages that are already satisfied.
+
+Current work: [describe initiative]
+Store / market: [scope]
+Current lifecycle stage, if known: [stage]
+Evidence / source of truth: [sources]
+Authorization: [read-only, draft-only, or exact approved action]
+
+Identify the earliest unresolved stage that can change the next decision,
+route each substantive decision to the correct specialist, and keep
+implementation, verification, measurement, and optimization separate.
+```
 
 ## Option 2: Use a skill in ChatGPT
 
@@ -140,6 +195,8 @@ performance, measurement, and operational evidence. Starts read-only
 and separates facts from assumptions.
 ```
 
+If you want one GPT for mixed routine Shopify work, use `shopify-va` plus all of its references so the lifecycle and routing rules stay together.
+
 ### ChatGPT Project setup
 
 Use this when you want one workspace for a specific Shopify store.
@@ -156,7 +213,9 @@ Read only the reference files required by the current request.
 Start read-only unless I explicitly approve a named external change.
 Separate observed facts, calculations, inferences, assumptions, and unknowns.
 Never invent store data, customer language, performance, claims, margins,
-benchmarks, credentials, or causality.
+benchmarks, credentials, causality, implementation state, or verification.
+If the Shopify Store Operating Lifecycle is supplied, start at the earliest
+unresolved stage rather than forcing every request through all stages.
 ```
 
 6. Start with one of the prompts in [`docs/prompt-library.md`](docs/prompt-library.md).
@@ -182,7 +241,7 @@ Use only what the task requires.
 
 ### Shopify VA, products, catalogs, merchandising, or orders
 
-- task list, target store, role, permissions, approver, and acceptance criteria
+- task list, target store, role, permissions, approver, acceptance criteria, and current lifecycle stage when continuing prior work
 - approved product source sheet, specifications, claims, media, price, inventory, and channel plan
 - current product or catalog export before a bulk update
 - customer, demand, competitor, supplier, and economics evidence for product research
@@ -255,7 +314,7 @@ Implement only the following approved change in the named target:
 rollback, and verify the authoritative saved or live state afterward.
 ```
 
-Approval for one change does not authorize nearby changes.
+Approval for one change does not authorize nearby changes. Reaching `IMPLEMENT` in the lifecycle does not replace explicit approval.
 
 ## Recommended request structure
 
@@ -264,14 +323,17 @@ Use this template for stronger results:
 ```text
 Use: [skill name]
 
+Current lifecycle stage, if known:
+[context, goal, diagnose, strategy, plan, implement, verify, measure, optimize]
+
 Decision or deliverable:
 [what you need]
 
-Business objective:
-[primary business outcome]
+Business objective or exact finished state:
+[primary business outcome or technical/operational result]
 
 Scope:
-[store, market, device, products, channels, and customer type]
+[store, market, environment, device, products, channels, and customer type]
 
 Period and comparison:
 [dates]
@@ -285,10 +347,15 @@ Commercial definition:
 Authorization:
 [read-only, draft-only, or exact approved implementation]
 
+Acceptance / verification:
+[what must be true and how the authoritative state will be checked]
+
 Output:
 Separate observed facts, calculations, inferences, assumptions, and unknowns.
-Give me the decision, evidence, recommended action, guardrails, stopping rule,
-authorization required, and verification method.
+Start at the earliest unresolved lifecycle stage. Give me the decision, evidence,
+recommended action, guardrails, stopping rule, authorization required,
+implementation state, verification method, measurement requirement, and next
+stage only when useful.
 ```
 
 ## What the skills do not do automatically
@@ -301,6 +368,8 @@ Installing a skill does not automatically:
 - change a live store or advertising account
 - send customer messages
 - publish a theme or workflow
+- verify a live state that was not actually inspected
+- measure a business outcome before data is available and mature
 - guarantee correct recommendations or commercial results
 
 The skill supplies the procedure and decision rules. Data access and external actions depend on the tools, account permissions, and authorization available in the AI product you are using.
@@ -339,6 +408,10 @@ That is expected when a missing input could change the decision. You can provide
 ### The assistant will not make a live change
 
 The skills start read-only. Give explicit approval that names the target and exact change only when you want an external action and the AI product has an authorized connection to perform it.
+
+### The assistant restarts the whole lifecycle every time
+
+Tell it to continue from the current verified state. The lifecycle is not a checklist; stages already satisfied should not be repeated unless new evidence invalidates them.
 
 ## Ready-to-use prompts
 
