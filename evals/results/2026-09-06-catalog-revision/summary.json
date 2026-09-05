@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "manifest_sha256": "a3f8a7b14a8e700edd9acfd4182c7acbb94b0522e331be0370398d1525dc08e9",
+  "reviews_sha256": "d7f2f93bd8be2ef3d755d137dc27732d09be6a3940247b98a1dc431812a268c9",
+  "arms": {
+    "previous_skill": {
+      "planned": 6,
+      "completed": 6,
+      "passes": 5,
+      "failures": 1,
+      "strict_all_criteria_passes": 3,
+      "critical_failure_responses": 0,
+      "mean_score": 89.167,
+      "failure_rate": 0.1667
+    },
+    "revised_skill": {
+      "planned": 6,
+      "completed": 6,
+      "passes": 6,
+      "failures": 0,
+      "strict_all_criteria_passes": 3,
+      "critical_failure_responses": 0,
+      "mean_score": 90.833,
+      "failure_rate": 0.0
+    }
+  },
+  "case_paired_scores": [
+    {
+      "case_id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "previous_skill": 78.33333333333333,
+      "revised_skill": 81.66666666666667,
+      "delta": 3.333
+    },
+    {
+      "case_id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "previous_skill": 100.0,
+      "revised_skill": 100.0,
+      "delta": 0.0
+    }
+  ],
+  "rows": [
+    {
+      "id": "response-ad5d1d9c44f51e4f8c5e",
+      "case_id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "revised_skill",
+      "prompt_key": "catalog-followup-selective-rollback--revised_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-e00edc2a660d419e825e",
+      "case_id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "revised_skill",
+      "prompt_key": "catalog-followup-care-insert-pilot--revised_skill",
+      "score": 80,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-e52f144a7a0a2b52bc38",
+      "case_id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "previous_skill",
+      "prompt_key": "catalog-followup-selective-rollback--previous_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-4cc1b740c072e36ce22f",
+      "case_id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "previous_skill",
+      "prompt_key": "catalog-followup-care-insert-pilot--previous_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-0349972b8a7699e708e4",
+      "case_id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "previous_skill",
+      "prompt_key": "catalog-followup-care-insert-pilot--previous_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-96940a074efc190909dc",
+      "case_id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "revised_skill",
+      "prompt_key": "catalog-followup-care-insert-pilot--revised_skill",
+      "score": 80,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-0d9ec68acc0af8902202",
+      "case_id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "revised_skill",
+      "prompt_key": "catalog-followup-care-insert-pilot--revised_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-39790d71f0dbe10c7964",
+      "case_id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "previous_skill",
+      "prompt_key": "catalog-followup-selective-rollback--previous_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-60ade201af9069396565",
+      "case_id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "revised_skill",
+      "prompt_key": "catalog-followup-selective-rollback--revised_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-95af74988d474e624891",
+      "case_id": "catalog-followup-care-insert-pilot",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "previous_skill",
+      "prompt_key": "catalog-followup-care-insert-pilot--previous_skill",
+      "score": 65,
+      "passed": false,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-142b710eac65b59ea3d1",
+      "case_id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "previous_skill",
+      "prompt_key": "catalog-followup-selective-rollback--previous_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-f2e54259ad1c7d70a817",
+      "case_id": "catalog-followup-selective-rollback",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "revised_skill",
+      "prompt_key": "catalog-followup-selective-rollback--revised_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    }
+  ],
+  "distinct_cases": 2,
+  "interpretation": "Descriptive sample only; repeated responses are clustered within cases. No population failure rate, causal business outcome, or universal skill uplift is established."
+}

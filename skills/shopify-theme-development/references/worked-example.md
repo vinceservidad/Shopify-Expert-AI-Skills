@@ -41,7 +41,9 @@ An `AbortController` removes listeners when the element disconnects, and the reg
 
 ## Test boundaries and rollout
 
-The repository browser suite uses the real JavaScript with a synthetic HTML harness. It tests DOM behavior, keyboard activation, history, no-JavaScript link navigation, and a 390 px layout. **That harness is not Shopify's Liquid renderer.** Theme Check is a separate static check on the Liquid/JSON source. Neither check proves an actual theme editor, real cart, market pricing, or live store works.
+The repository retains 12 checks using the real JavaScript with a synthetic HTML harness. It also renders the actual JSON template, Liquid section and layout with Shopify's official open-source Liquid core, then runs 17 Chromium checks on that output. These cover the original 12 behaviors plus a direct sold-out deep link, fresh section replacement, unique form IDs, escaped supplied titles, and a browser POST captured on localhost.
+
+**The Liquid core is authentic; Shopify-specific extensions and data are explicit local test adapters.** Product forms, schema handling, money/translation/asset filters and product/request objects are modeled narrowly for this fixture. Nineteen renderer regressions check state rendering and reject invalid or unsupported inputs. Theme Check remains a separate Shopify-owned static check. These are authored integration checks, not independent model evaluations, actual theme-editor operation, Shopify cart acceptance, market-pricing verification or live-store evidence. See the repository's [theme verification evidence and reproduction guide](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/theme-verification.md) for the exact boundaries.
 
 This deliberately small example excludes variant-specific media, selling plans, bundles, app blocks, multi-option pickers and high-variant products. Do not transplant it into those cases. The minimal theme is not a replacement for Dawn or an existing merchant theme.
 

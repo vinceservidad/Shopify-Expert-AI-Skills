@@ -2,6 +2,17 @@
 
 The scenarios in this directory are behavioral reviews, not automated claims that a model is correct.
 
+The [answer-withheld protocol](../docs/model-evaluations.md) adds fresh cases in
+[`holdout/`](holdout/README.md), a frozen repeat plan, actual model responses,
+with/without comparisons and blinded criteria-level reviews. The original authored
+examples and their replay statuses remain in `worked-examples.json`; the new
+experiment does not relabel them or the 21 core scenarios as executed.
+
+Read the [recorded results and limitations](RESULTS.md) for the initial 60-response
+comparison, secondary judgment audit and separate 12-response catalog follow-up.
+Their substantive model grades remain distinct from the offline integrity check
+performed by CI.
+
 ## How to run a scenario
 
 1. Use a clean conversation or isolated workspace.

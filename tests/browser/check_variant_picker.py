@@ -46,13 +46,15 @@ nav{{display:flex;flex-wrap:wrap;gap:1rem;margin-block:1.5rem}}a,button{{padding
 
 
 class Handler(BaseHTTPRequestHandler):
+    renderer = staticmethod(markup)
+
     def do_GET(self):
         request = urlsplit(self.path)
         if request.path == '/skills-variant-picker.js':
             body, content_type = JAVASCRIPT, 'text/javascript; charset=utf-8'
         elif request.path == DATA['product_path']:
             selected = parse_qs(request.query).get('variant', [DATA['default_variant']])[0]
-            body, content_type = markup(selected), 'text/html; charset=utf-8'
+            body, content_type = self.renderer(selected), 'text/html; charset=utf-8'
         else:
             self.send_error(404); return
         self.send_response(200); self.send_header('Content-Type', content_type); self.end_headers()
@@ -62,18 +64,22 @@ class Handler(BaseHTTPRequestHandler):
 
 
 class VariantBrowserTests(unittest.TestCase):
+    handler_class = Handler
+
     @classmethod
     def setUpClass(cls):
-        cls.server = ThreadingHTTPServer(('127.0.0.1', 0), Handler)
+        cls.server = ThreadingHTTPServer(('127.0.0.1', 0), cls.handler_class)
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True); cls.thread.start()
+        cls.addClassCleanup(cls.close_server)
         cls.origin = f'http://127.0.0.1:{cls.server.server_port}'
         cls.playwright = sync_playwright().start()
+        cls.addClassCleanup(cls.playwright.stop)
         args = {'headless': True}
         if os.getenv('BROWSER_EXECUTABLE'): args['executable_path'] = os.environ['BROWSER_EXECUTABLE']
         cls.browser = cls.playwright.chromium.launch(**args)
+        cls.addClassCleanup(cls.browser.close)
     @classmethod
-    def tearDownClass(cls):
-        cls.browser.close(); cls.playwright.stop()
+    def close_server(cls):
         cls.server.shutdown(); cls.server.server_close(); cls.thread.join()
     def setUp(self):
         self.context = self.browser.new_context(viewport={'width':390,'height':844})

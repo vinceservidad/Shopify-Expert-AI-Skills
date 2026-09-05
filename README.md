@@ -18,7 +18,13 @@ Start with the [five worked examples](docs/worked-examples.md). Each includes sy
 | [Store audit](skills/shopify-store-audit/references/worked-example.md) | Prioritize an obstructed purchase control and conflicting delivery copy without inventing conversion impact. |
 | [Theme development](skills/shopify-theme-development/references/worked-example.md) | Keep variant price, form ID and availability aligned through selection, history changes and component re-insertion. |
 
-These are **authored teaching examples**, not merchant results or independent AI evaluations. Calculation checks, browser checks, Shopify static checks, and model evaluations are tracked separately. The [evaluation manifest](evals/worked-examples.json) keeps independent model testing at `not_run` until actual responses are saved and reviewed.
+These are **authored teaching examples**, not merchant results or independent AI evaluations. Calculation checks, browser checks, Shopify static checks, and model evaluations are tracked separately. The [original example manifest](evals/worked-examples.json) retains the unrun behavioral replay status of those teaching cases. The [model evaluation protocol](docs/model-evaluations.md) tests fresh, answer-withheld cases with frozen prompts, repeated with/without-skill comparisons and blinded substantive review.
+
+## What the model evaluations found
+
+In the [recorded ten-case comparison](evals/RESULTS.md), GPT-5.5 responses scored **85.5/100 with skill text versus 78.7 without**, with **23/30 versus 17/30** passing the frozen weighted threshold and critical gates. Each of the five priority skills was tested on two fresh synthetic cases, repeated three times per condition. The rubrics and teaching answers were withheld during generation; model reviewers scored full answers with condition labels withheld.
+
+All 60 answers, failed criteria, prompts and grades are published. A separate 12-answer catalog follow-up compared the clarified and previous skill on two new cases: **90.8 clarified versus 89.2 previous**, with **6/6 versus 5/6** threshold passes and **3/6 all-criteria passes in both versions**. This is small, maintainer-directed, model-judged evidence. It does not establish production safety, merchant outcomes, effectiveness of the other fourteen skills, or elimination of the observed failures. See the [results, secondary judgment audit and limitations](evals/RESULTS.md) before treating a passing score as reliability.
 
 ## Start here
 
@@ -98,9 +104,10 @@ See [Evidence and authorization](docs/evidence-and-authorization.md), [the gloss
 ./scripts/validate-repository.sh
 python -m unittest discover -s tests -v
 python scripts/worked_examples.py
+python scripts/check_evaluation_evidence.py
 ```
 
-Repository checks cover frontmatter, naming, references, package integrity and failure handling. Data-example tests verify authored calculations and mappings. Browser and Shopify Theme Check instructions are in [Worked examples](docs/worked-examples.md). GitHub workflows check all 19 packaged skills independently of the repository-root documentation.
+Repository checks cover frontmatter, naming, references, package integrity and failure handling. Data-example tests verify authored calculations and mappings. [Theme verification](docs/theme-verification.md) now includes actual-source rendering through Shopify's official Liquid core, explicit local adapters, browser checks and separate Theme Check. GitHub workflows check all 19 packaged skills and recompute recorded evaluation summaries offline; CI does not make model calls or award substantive grades.
 
 A passing build does not establish that an AI can operate a real store reliably. The [behavioral scenarios](evals/core-scenarios.md) require actual model outputs and substantive review. Do not mark them passed because an answer uses expected headings or reproduces an available answer key.
 
@@ -113,7 +120,8 @@ skills/<skill-name>/
   assets/worked-example/   # present in the five example skills
 scripts/                  # validation, packaging and example checks
 tests/                    # tooling and synthetic-data regressions
-  browser/                # separate Chromium DOM tests
+  browser/                # synthetic DOM and actual Liquid output
+  theme/                  # official Liquid core renderer regressions
 evals/                    # behavioral rubrics and evaluation status
 docs/                     # setup, context, usage and reliability
 .github/workflows/        # repository and worked-example checks

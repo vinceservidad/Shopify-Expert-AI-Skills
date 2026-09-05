@@ -45,6 +45,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate all repository skills
         run: bash scripts/validate-repository.sh
+      - name: Verify recorded model evidence without model calls
+        run: python scripts/check_evaluation_evidence.py
       - name: Package every skill
         shell: bash
         run: |

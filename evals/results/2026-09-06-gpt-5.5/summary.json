@@ -1,0 +1,859 @@
+{
+  "schema_version": 1,
+  "manifest_sha256": "d69bbc9f6a89258ed12961ab87b66459d053d62fd265b2d388c6aad9aed82700",
+  "reviews_sha256": "208ea15218f228d163c2afab304d1a44894a8732dd106eb43f102e17f85538ad",
+  "arms": {
+    "without_skill": {
+      "planned": 30,
+      "completed": 30,
+      "passes": 17,
+      "failures": 13,
+      "strict_all_criteria_passes": 1,
+      "critical_failure_responses": 10,
+      "mean_score": 78.667,
+      "failure_rate": 0.4333
+    },
+    "with_skill": {
+      "planned": 30,
+      "completed": 30,
+      "passes": 23,
+      "failures": 7,
+      "strict_all_criteria_passes": 9,
+      "critical_failure_responses": 6,
+      "mean_score": 85.5,
+      "failure_rate": 0.2333
+    }
+  },
+  "case_paired_scores": [
+    {
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "without_skill": 83.33333333333333,
+      "with_skill": 100.0,
+      "delta": 16.667
+    },
+    {
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "without_skill": 83.33333333333333,
+      "with_skill": 96.66666666666667,
+      "delta": 13.333
+    },
+    {
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "without_skill": 90.0,
+      "with_skill": 90.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "without_skill": 75.0,
+      "with_skill": 85.0,
+      "delta": 10.0
+    },
+    {
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "without_skill": 85.0,
+      "with_skill": 85.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "without_skill": 48.333333333333336,
+      "with_skill": 50.0,
+      "delta": 1.667
+    },
+    {
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "without_skill": 85.0,
+      "with_skill": 90.0,
+      "delta": 5.0
+    },
+    {
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "without_skill": 85.0,
+      "with_skill": 85.0,
+      "delta": 0.0
+    },
+    {
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "without_skill": 78.33333333333333,
+      "with_skill": 83.33333333333333,
+      "delta": 5.0
+    },
+    {
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "without_skill": 73.33333333333333,
+      "with_skill": 90.0,
+      "delta": 16.667
+    }
+  ],
+  "rows": [
+    {
+      "id": "response-b2811c9c8631aec4efdd",
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "catalog-key-null-dryrun--with_skill",
+      "score": 75,
+      "passed": false,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-f683d442242a8a2d54d2",
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "listing-scoped-update--without_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-6e2490226374a452e725",
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "analytics-event-reconciliation--with_skill",
+      "score": 65,
+      "passed": false,
+      "critical_failures": [
+        "defect-versus-report"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-47da675f9a016a1f36e3",
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "analytics-ranking-economics--without_skill",
+      "score": 70,
+      "passed": false,
+      "critical_failures": [
+        "cost-calculation",
+        "controlled-decision"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-a5a8d177eea8cb95a8f8",
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "analytics-ranking-economics--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-e52f144a7a0a2b52bc38",
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "audit-market-promise--without_skill",
+      "score": 70,
+      "passed": false,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-39790d71f0dbe10c7964",
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "audit-market-promise--without_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-ad5d1d9c44f51e4f8c5e",
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "audit-market-promise--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-e00edc2a660d419e825e",
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "audit-traffic-mix--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-71fe1d0f2e0ee179f31a",
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "theme-editor-block-preservation--with_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-5387276c55c2297c0a5f",
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "analytics-ranking-economics--with_skill",
+      "score": 70,
+      "passed": false,
+      "critical_failures": [
+        "cost-calculation",
+        "controlled-decision"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-3d8258a9cb402fdb8f75",
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "listing-scoped-update--without_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-e05a86ce0164d95220e3",
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "listing-kit-readiness--without_skill",
+      "score": 75,
+      "passed": false,
+      "critical_failures": [
+        "state-auth"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-97ee0976a54d153c5a69",
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "analytics-ranking-economics--without_skill",
+      "score": 80,
+      "passed": false,
+      "critical_failures": [
+        "cost-calculation"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-ce8a6a0e5cd526dc75c2",
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "catalog-pilot-reconcile--with_skill",
+      "score": 55,
+      "passed": false,
+      "critical_failures": [
+        "unapproved-price"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-fb67da96ecbd8d052943",
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "listing-scoped-update--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-7f43398bd0f4a0864228",
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "theme-instance-lifecycle--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-0e8d311600af2cbfdc3b",
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "listing-kit-readiness--without_skill",
+      "score": 75,
+      "passed": false,
+      "critical_failures": [
+        "state-auth"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-412f3a4c0c1975409156",
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "theme-editor-block-preservation--with_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-47d58057fdea3d2dac77",
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "analytics-ranking-economics--without_skill",
+      "score": 70,
+      "passed": false,
+      "critical_failures": [
+        "cost-calculation",
+        "controlled-decision"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-bd46fecfc37f8befcd3f",
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "theme-editor-block-preservation--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-d8b68068633379583458",
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "listing-kit-readiness--without_skill",
+      "score": 75,
+      "passed": false,
+      "critical_failures": [
+        "state-auth"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-96940a074efc190909dc",
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "audit-traffic-mix--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-f5468e1f20c6b3f204bd",
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "listing-scoped-update--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-4cc1b740c072e36ce22f",
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "audit-traffic-mix--without_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-7f295bcea6407e54139b",
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "theme-instance-lifecycle--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-e57222b593a7954746e3",
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "catalog-key-null-dryrun--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-f2cfdf4853a6a1080d54",
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "theme-editor-block-preservation--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-82b2746bb1f127272b5f",
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "catalog-key-null-dryrun--without_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-eb310bf4149c0cd96730",
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "theme-editor-block-preservation--with_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-017a16893efa7f4c5db0",
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "analytics-event-reconciliation--without_skill",
+      "score": 65,
+      "passed": false,
+      "critical_failures": [
+        "defect-versus-report"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-005a7b24ce83dbb22f06",
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "theme-instance-lifecycle--with_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-a1ea2bcc8f6625e90b50",
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "theme-instance-lifecycle--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-142b710eac65b59ea3d1",
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "audit-market-promise--without_skill",
+      "score": 80,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-9ddef14543dc126c28f1",
+      "case_id": "theme-editor-block-preservation",
+      "skill": "shopify-theme-development",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "theme-editor-block-preservation--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-f2e54259ad1c7d70a817",
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "audit-market-promise--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-4a82309c6e52d36c9264",
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "analytics-event-reconciliation--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-6fe47dd2259a8760df36",
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "listing-scoped-update--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-60ade201af9069396565",
+      "case_id": "audit-market-promise",
+      "skill": "shopify-store-audit",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "audit-market-promise--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-7658a79dd0e015bf2f32",
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "catalog-pilot-reconcile--with_skill",
+      "score": 40,
+      "passed": false,
+      "critical_failures": [
+        "unapproved-price",
+        "states"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-8150814e4089b58c5419",
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "catalog-key-null-dryrun--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-c1d9078299c72b40c879",
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "catalog-pilot-reconcile--without_skill",
+      "score": 55,
+      "passed": false,
+      "critical_failures": [
+        "unapproved-price"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-589057dd7a640ebe52e2",
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "theme-instance-lifecycle--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-aa06054dd1fe2e78b744",
+      "case_id": "theme-instance-lifecycle",
+      "skill": "shopify-theme-development",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "theme-instance-lifecycle--with_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-36d11843e8880c886fe2",
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "analytics-event-reconciliation--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-e5c8b0ab11dceebe0d54",
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "catalog-pilot-reconcile--without_skill",
+      "score": 55,
+      "passed": false,
+      "critical_failures": [
+        "unapproved-price"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-c61f9f956a23bf49a2b0",
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "catalog-pilot-reconcile--without_skill",
+      "score": 35,
+      "passed": false,
+      "critical_failures": [
+        "unapproved-price"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-0a510c0f25203428b9fd",
+      "case_id": "listing-scoped-update",
+      "skill": "shopify-product-listing",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "listing-scoped-update--without_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-95af74988d474e624891",
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "audit-traffic-mix--without_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-a5876c443052bcec1b87",
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "repeat": 1,
+      "arm": "without_skill",
+      "prompt_key": "catalog-key-null-dryrun--without_skill",
+      "score": 75,
+      "passed": false,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-90f1a1ce2b7fdda37097",
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "listing-kit-readiness--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-4244acd5398666c830f3",
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "analytics-event-reconciliation--with_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-c444eedd5d738f691ecb",
+      "case_id": "analytics-ranking-economics",
+      "skill": "shopify-analytics",
+      "repeat": 3,
+      "arm": "with_skill",
+      "prompt_key": "analytics-ranking-economics--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-31291cdf968f42cca19a",
+      "case_id": "catalog-key-null-dryrun",
+      "skill": "shopify-catalog-operations",
+      "repeat": 3,
+      "arm": "without_skill",
+      "prompt_key": "catalog-key-null-dryrun--without_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-d027581c832661cfa4b4",
+      "case_id": "catalog-pilot-reconcile",
+      "skill": "shopify-catalog-operations",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "catalog-pilot-reconcile--with_skill",
+      "score": 55,
+      "passed": false,
+      "critical_failures": [
+        "unapproved-price"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-0349972b8a7699e708e4",
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "audit-traffic-mix--without_skill",
+      "score": 70,
+      "passed": false,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-59538a4a94d15d11fae7",
+      "case_id": "analytics-event-reconciliation",
+      "skill": "shopify-analytics",
+      "repeat": 2,
+      "arm": "without_skill",
+      "prompt_key": "analytics-event-reconciliation--without_skill",
+      "score": 85,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-0d9ec68acc0af8902202",
+      "case_id": "audit-traffic-mix",
+      "skill": "shopify-store-audit",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "audit-traffic-mix--with_skill",
+      "score": 100,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    },
+    {
+      "id": "response-686c7bd964a309eaecc4",
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "repeat": 1,
+      "arm": "with_skill",
+      "prompt_key": "listing-kit-readiness--with_skill",
+      "score": 75,
+      "passed": false,
+      "critical_failures": [
+        "state-auth"
+      ],
+      "status": "completed"
+    },
+    {
+      "id": "response-b27acdc210a137e87d52",
+      "case_id": "listing-kit-readiness",
+      "skill": "shopify-product-listing",
+      "repeat": 2,
+      "arm": "with_skill",
+      "prompt_key": "listing-kit-readiness--with_skill",
+      "score": 90,
+      "passed": true,
+      "critical_failures": [],
+      "status": "completed"
+    }
+  ],
+  "distinct_cases": 10,
+  "interpretation": "Descriptive sample only; repeated responses are clustered within cases. No population failure rate, causal business outcome, or universal skill uplift is established."
+}

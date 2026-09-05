@@ -4,7 +4,7 @@ description: Governs and executes bulk Shopify catalog work across products, tax
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # Shopify Catalog Operations
@@ -32,7 +32,7 @@ Collect target store, business purpose, source and destination schema, authorita
 4. Produce a dry-run change set and high-risk field report.
 5. Test a reversible representative subset and verify saved and downstream states.
 6. Execute the authorized scope in controlled batches with logs and stopping rules.
-7. Re-export or re-query the authoritative state, reconcile counts and fields, and verify channels or feeds where required.
+7. Re-export or re-query the authoritative state. Count intended changes, actual field changes and fully conforming records separately; verify channels or feeds where required. For a failed pilot, distinguish the captured before value, latest observed value and proposed recovery target before requesting a corrective write.
 
 Read [references/catalog-governance.md](references/catalog-governance.md) for field and taxonomy rules. Use [references/bulk-operations.md](references/bulk-operations.md) for CSV, bulk-edit, pilot, rollback, and reconciliation.
 
