@@ -14,7 +14,7 @@ Contributions should improve a repeatable Shopify workflow without expanding a s
 
 Each skill must:
 
-- use a lowercase, hyphenated folder name under 64 characters
+- use a lowercase, hyphenated folder name of 1-64 characters
 - contain `SKILL.md` with matching `name` and a discriminating `description`
 - use only Agent Skills frontmatter fields
 - keep important instructions in the entrypoint and conditional detail in `references/`
@@ -39,13 +39,24 @@ When a change alters a decision rule, evidence standard, platform claim, or auth
 
 ## Validation
 
-Run:
+Use Python 3.11 or newer. Set up the tooling once from the repository root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
+```
+
+Before contributing or packaging, run:
 
 ```bash
 ./scripts/validate-repository.sh
+python -m unittest discover -s tests -v
 ```
 
-When the `skills-ref` validator is available, also run it against every changed skill. The local validator does not prove behavioral quality.
+Packaging runs repository validation automatically. Add a regression test when changing validation or packaging behavior. GitHub Actions runs the tests, validates all nineteen skills, and checks every generated archive in isolation on Linux and macOS.
+
+The 200-character description ceiling is a repository policy, not the Agent Skills specification's 1,024-character maximum. When the `skills-ref` validator is available, also run it against every changed skill. Neither structural checker proves behavioral quality. See [Repository reliability](docs/reliability.md) for setup, guarantees, limitations, and the next depth milestone.
 
 ## Pull request notes
 

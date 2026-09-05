@@ -1,0 +1,72 @@
+name: Repository checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repository-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: "3.11"
+          - os: macos-latest
+            python: "3.13"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - name: Install tooling dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Check shell syntax
+        run: bash -n scripts/validate-repository.sh scripts/package-skill.sh
+      - name: Run regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate all repository skills
+        run: bash scripts/validate-repository.sh
+      - name: Package every skill
+        shell: bash
+        run: |
+          for skill in skills/*; do
+            bash scripts/package-skill.sh "$(basename "$skill")"
+          done
+      - name: Validate every extracted standalone archive
+        shell: bash
+        run: |
+          PYTHONPATH=scripts python - <<'PY'
+          from pathlib import Path
+          from tempfile import TemporaryDirectory
+          from zipfile import ZipFile
+          from validate_repository import EXPECTED_SKILLS, validate_skill
+          archives = sorted(Path("dist").glob("*.zip"))
+          assert len(archives) == len(EXPECTED_SKILLS), "Missing skill archives"
+          for archive in archives:
+              with TemporaryDirectory() as temporary:
+                  with ZipFile(archive) as zipped:
+                      assert zipped.testzip() is None, archive
+                      zipped.extractall(temporary)
+                  errors = validate_skill(Path(temporary) / archive.stem)
+                  assert not errors, f"{archive}: {errors}"
+                  print(f"Verified standalone archive: {archive.name}")
+          PY
