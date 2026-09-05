@@ -9,7 +9,7 @@
       this.controller?.abort();
       this.form = this.querySelector('form');
       this.input = this.form?.querySelector('input[name="id"]');
-      this.price = this.querySelector('[data-price]');
+      this.price = this.querySelector('[data-current-price]');
       this.button = this.form?.querySelector('button[type="submit"]');
       this.status = this.querySelector('[data-status]');
       if (!this.input || !this.price || !this.button || !this.status) return;

@@ -8,7 +8,7 @@
 {%- assign form_id = 'SkillsProductForm-' | append: section.id -%}
 <skills-variant-picker data-update-url="true" data-default-variant="{{ default_variant.id }}">
   <h1>{{ product.title | escape }}</h1>
-  <p data-price>{% if current_variant %}{{ current_variant.price | money | escape }}{% endif %}</p>
+  <p data-current-price>{% if current_variant %}{{ current_variant.price | money | escape }}{% endif %}</p>
   <nav aria-label="{{ 'products.product.choose_variant' | t | escape }}">
     {% for variant in product.variants %}
       <a href="{{ product.url }}?variant={{ variant.id }}"

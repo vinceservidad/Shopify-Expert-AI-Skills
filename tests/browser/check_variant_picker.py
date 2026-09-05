@@ -37,7 +37,7 @@ nav{{display:flex;flex-wrap:wrap;gap:1rem;margin-block:1.5rem}}a,button{{padding
 <script src="/skills-variant-picker.js" defer></script></head><body><main>
 <p>Synthetic browser fixture. No store connection.</p>
 <skills-variant-picker data-update-url="true" data-default-variant="101">
-<h1>{escape(DATA['product_title'])}</h1><p data-price>{escape(variant['price']) if variant else ''}</p>
+<h1>{escape(DATA['product_title'])}</h1><p data-current-price>{escape(variant['price']) if variant else ''}</p>
 <nav aria-label="Choose a color">{links}</nav>
 <form action="/cart/add" method="post"><input type="hidden" name="id" value="{variant['id'] if variant else ''}" {'disabled' if not variant else ''}>
 <button type="submit" name="add" data-add-label="Add to cart" data-sold-out-label="Sold out" data-unavailable-label="Unavailable" {'disabled' if not available else ''}>{label}</button></form>
@@ -86,7 +86,7 @@ class VariantBrowserTests(unittest.TestCase):
         self.assertEqual(self.errors, [])
     def state(self, selector='skills-variant-picker'):
         return self.page.locator(selector).evaluate("""el => ({id:el.querySelector('[name=id]').value,
-          price:el.querySelector('[data-price]').textContent,
+          price:el.querySelector('[data-current-price]').textContent,
           disabled:el.querySelector('button').disabled,
           submittedId:new FormData(el.querySelector('form')).get('id')})""")
     def test_initial_variant(self):
@@ -134,7 +134,7 @@ class VariantBrowserTests(unittest.TestCase):
             page=context.new_page();page.goto(self.origin+DATA['product_path'])
             page.get_by_role('link',name='Moss',exact=True).click()
             self.assertEqual(page.locator('input[name=id]').get_attribute('value'),'102')
-            self.assertEqual(page.locator('[data-price]').inner_text(),'£26.00')
+            self.assertEqual(page.locator('[data-current-price]').inner_text(),'£26.00')
         finally: context.close()
     def test_title_treated_as_text_not_html(self):
         self.page.get_by_role('link',name='Moss',exact=True).evaluate("el=>el.textContent='Moss <img src=x>'")
