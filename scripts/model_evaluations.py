@@ -407,7 +407,8 @@ def validate_judge_output(parsed, rubric, response):
         return "criteria must be a list"
     expected_ids = {c["id"] for c in rubric["criteria"]}
     actual_ids = {m.get("id") for m in marks}
-    if actual_ids != expected_ids:
+    # Length guard also rejects duplicates whose id set still matches, which summarize forbids.
+    if len(marks) != len(rubric["criteria"]) or actual_ids != expected_ids:
         return f"criterion ID mismatch: expected {sorted(expected_ids)}, got {sorted(actual_ids)}"
     for mark in marks:
         if type(mark.get("passed")) is not bool:

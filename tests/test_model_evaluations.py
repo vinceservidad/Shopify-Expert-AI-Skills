@@ -520,6 +520,17 @@ class ModelEvaluationTests(unittest.TestCase):
             {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
         self.assertIn("non-empty", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "resp"))
 
+    def test_validate_judge_output_rejects_duplicate_criterion_preserving_id_set(self):
+        rubric = deepcopy(self.rubrics[0])
+        rubric["criteria"] = rubric["criteria"][:2]
+        for c in rubric["criteria"]:
+            c["description"] = "d"
+        parsed = {"criteria": [
+            {"id": "truth", "passed": True, "evidence_quote": "resp", "rationale": "r"},
+            {"id": "decision", "passed": True, "evidence_quote": "resp", "rationale": "r"},
+            {"id": "decision", "passed": False, "evidence_quote": "", "rationale": "r"}]}
+        self.assertIn("mismatch", model_eval.validate_judge_output(parsed, rubric, "resp"))
+
     def test_validate_judge_output_rejects_nonverbatim_quote(self):
         parsed = {"criteria": [
             {"id": "truth", "passed": False, "evidence_quote": "not in response", "rationale": "r"},
