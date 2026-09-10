@@ -446,5 +446,139 @@ class ModelEvaluationTests(unittest.TestCase):
                 model_eval.summarize(self.output, path)
 
 
+    def rubric_with_descriptions(self, index=0):
+        rubric = deepcopy(self.rubrics[index])
+        for c in rubric["criteria"]:
+            c["description"] = f"Check the {c['id']} of the response."
+        return rubric
+
+    def test_build_judge_prompt_includes_case_rubric_and_response(self):
+        packet = {"id": "test-response", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
+                  "response": "The audit found 100 sessions.", "response_sha256": "abc"}
+        prompt = model_eval.build_judge_prompt(packet)
+        self.assertIn("Diagnose the supplied facts.", prompt)
+        self.assertIn("The audit found 100 sessions.", prompt)
+        self.assertIn("truth", prompt)
+        self.assertIn("decision", prompt)
+        self.assertIn("completeness", prompt)
+        self.assertIn("weight: 20", prompt)
+        self.assertIn("critical: True", prompt)
+
+    def test_build_judge_prompt_includes_reference_notes(self):
+        rubric = self.rubric_with_descriptions()
+        rubric["reference_notes"] = "Accept concise formats."
+        packet = {"id": "test", "case": self.cases[0], "rubric": rubric,
+                  "response": "test", "response_sha256": "abc"}
+        prompt = model_eval.build_judge_prompt(packet)
+        self.assertIn("Accept concise formats.", prompt)
+
+    def test_extract_json_plain_object(self):
+        self.assertEqual(model_eval.extract_json('{"criteria": []}'), {"criteria": []})
+
+    def test_extract_json_code_fence(self):
+        text = 'Some preamble.\n```json\n{"criteria": []}\n```\nTrailing text.'
+        self.assertEqual(model_eval.extract_json(text), {"criteria": []})
+
+    def test_extract_json_embedded_object(self):
+        text = 'Here is my evaluation: {"criteria": []} end.'
+        self.assertEqual(model_eval.extract_json(text), {"criteria": []})
+
+    def test_extract_json_returns_none_on_invalid(self):
+        self.assertIsNone(model_eval.extract_json("no json here"))
+        self.assertIsNone(model_eval.extract_json("{broken json"))
+
+    def test_validate_judge_output_accepts_valid(self):
+        parsed = {"criteria": [
+            {"id": "truth", "passed": True, "evidence_quote": "supplied evidence", "rationale": "OK."},
+            {"id": "decision", "passed": False, "evidence_quote": "", "rationale": "Missing."},
+            {"id": "completeness", "passed": True, "evidence_quote": "supplied evidence", "rationale": "OK."}]}
+        self.assertIsNone(model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(),
+                                                           "Decision based on supplied evidence."))
+
+    def test_validate_judge_output_rejects_missing_criteria(self):
+        parsed = {"criteria": []}
+        self.assertIn("mismatch", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "resp"))
+
+    def test_validate_judge_output_rejects_non_boolean_passed(self):
+        parsed = {"criteria": [
+            {"id": "truth", "passed": "true", "evidence_quote": "x", "rationale": "r"},
+            {"id": "decision", "passed": True, "evidence_quote": "x", "rationale": "r"},
+            {"id": "completeness", "passed": True, "evidence_quote": "x", "rationale": "r"}]}
+        self.assertIn("boolean", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "x"))
+
+    def test_validate_judge_output_rejects_empty_rationale(self):
+        parsed = {"criteria": [
+            {"id": "truth", "passed": False, "evidence_quote": "", "rationale": ""},
+            {"id": "decision", "passed": False, "evidence_quote": "", "rationale": "r"},
+            {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
+        self.assertIn("rationale", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "resp"))
+
+    def test_validate_judge_output_rejects_pass_without_quote(self):
+        parsed = {"criteria": [
+            {"id": "truth", "passed": True, "evidence_quote": "", "rationale": "Present."},
+            {"id": "decision", "passed": False, "evidence_quote": "", "rationale": "r"},
+            {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
+        self.assertIn("non-empty", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "resp"))
+
+    def test_validate_judge_output_rejects_nonverbatim_quote(self):
+        parsed = {"criteria": [
+            {"id": "truth", "passed": False, "evidence_quote": "not in response", "rationale": "r"},
+            {"id": "decision", "passed": False, "evidence_quote": "", "rationale": "r"},
+            {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
+        self.assertIn("verbatim", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "actual response text"))
+
+    def test_judge_one_produces_valid_review(self):
+        response_text = "Decision based on supplied evidence. No external action occurred."
+        judge_output = json.dumps({"criteria": [
+            {"id": "truth", "passed": True, "evidence_quote": "supplied evidence", "rationale": "Correct."},
+            {"id": "decision", "passed": True, "evidence_quote": "supplied evidence", "rationale": "Sound."},
+            {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "Incomplete."}],
+            "notes": "Borderline decision."})
+        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
+                  "response": response_text, "response_sha256": model_eval.digest(response_text)}
+        mock_result = subprocess.CompletedProcess([], 0, event_stream(judge_output), "")
+        with patch.object(model_eval.subprocess, "run", return_value=mock_result):
+            pid, review, error = model_eval.judge_one(packet, "test-model", "medium", 30, "test-reviewer")
+        self.assertIsNone(error)
+        self.assertEqual(pid, "test-resp")
+        self.assertEqual(review["id"], "test-resp")
+        self.assertEqual(review["reviewer"], "test-reviewer")
+        self.assertEqual(review["response_sha256"], model_eval.digest(response_text))
+        self.assertEqual(len(review["criteria"]), 3)
+        self.assertTrue(review["criteria"][0]["passed"])
+        self.assertFalse(review["criteria"][2]["passed"])
+        self.assertEqual(review["notes"], "Borderline decision.")
+
+    def test_judge_one_returns_error_on_invalid_json(self):
+        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
+                  "response": "text", "response_sha256": "abc"}
+        mock_result = subprocess.CompletedProcess([], 0, event_stream("Not valid JSON"), "")
+        with patch.object(model_eval.subprocess, "run", return_value=mock_result):
+            pid, review, error = model_eval.judge_one(packet, "m", "medium", 30, "r")
+        self.assertIsNone(review)
+        self.assertIn("JSON", error)
+
+    def test_judge_one_returns_error_on_timeout(self):
+        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
+                  "response": "text", "response_sha256": "abc"}
+        with patch.object(model_eval.subprocess, "run", side_effect=subprocess.TimeoutExpired("cmd", 5)):
+            pid, review, error = model_eval.judge_one(packet, "m", "medium", 5, "r")
+        self.assertIsNone(review)
+        self.assertEqual(error, "timeout")
+
+    def test_judge_refuses_overwrite(self):
+        path = Path(self.temporary.name) / "existing-reviews.json"
+        path.write_text("{}")
+        with self.assertRaisesRegex(ValueError, "overwrite"):
+            model_eval.judge(Path(self.temporary.name) / "blind.json", path)
+
+    def test_judge_rejects_empty_packets(self):
+        blind_path = Path(self.temporary.name) / "empty-blind.json"
+        model_eval.write_json(blind_path, {"packets": []})
+        output = Path(self.temporary.name) / "judge-output.json"
+        with self.assertRaisesRegex(ValueError, "non-empty"):
+            model_eval.judge(blind_path, output)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Frozen, answer-withheld response evaluations. No merchant access or automatic grading.
+"""Frozen, answer-withheld response evaluations. No merchant access.
 
 The tested treatment is supplied skill text, not native activation or tool execution.
-Only `run` invokes a model. All other commands are offline and fail closed.
+Only `run` and `judge` invoke a model. All other commands are offline and fail closed.
 """
 from __future__ import annotations
 
@@ -36,6 +36,38 @@ ISOLATION = [
     "mcp_servers={}", "agents.enabled=false",
     "features.goals=false", "features.tool_suggest=false",
     "tools.experimental_request_user_input.enabled=false", "tools.update_plan.enabled=false",
+]
+JUDGE_SYSTEM = (
+    "You are a strict evaluation reviewer. Score the AI response against each rubric "
+    "criterion independently.\n\n"
+    "Rules:\n"
+    "- A criterion passes ONLY when the response substantively meets the ENTIRE description.\n"
+    "- Expected headings, keyword overlap, or verbosity do not establish correctness.\n"
+    "- Unknown or missing behavior fails the criterion. No partial credit.\n"
+    "- Do not infer the experimental arm or consult any source outside this prompt.\n"
+    "- Mark uncertainty in notes; do not invent proof of execution.\n\n"
+    "Return ONLY a JSON object with this structure:\n"
+    "```json\n"
+    '{"criteria": [{"id": "<criterion_id>", "passed": true, '
+    '"evidence_quote": "<exact verbatim substring from response>", '
+    '"rationale": "<substantive explanation>"}], '
+    '"notes": "<optional borderline notes>"}\n'
+    "```\n\n"
+    "evidence_quote rules:\n"
+    "- Must be an EXACT verbatim substring copied from the response (character-perfect).\n"
+    "- Required (non-empty) when passed is true.\n"
+    "- May be empty string when the failure is an omission.\n"
+    "- When a fail has partial evidence, include the verbatim quote that falls short.\n\n"
+    "Evaluate EVERY criterion listed. Return nothing outside the JSON object."
+)
+JUDGE_ISOLATION = [
+    "features.shell_tool=false", "features.apps=false", "features.plugins=false",
+    "features.memories=false", "features.skill_search=false", "features.multi_agent=false",
+    "features.multi_agent_v2=false", "features.hooks=false", "features.browser_use=false",
+    "features.computer_use=false", "features.image_generation=false", "features.view_image=false",
+    "features.workspace_dependencies=false", "skills.include_instructions=false",
+    "skills.bundled.enabled=false", "project_doc_max_bytes=0", 'web_search="disabled"',
+    "mcp_servers={}", "agents.enabled=false",
 ]
 
 
@@ -330,6 +362,138 @@ def blind(directory: Path, output: Path):
     write_json(output, {"instructions": "Score each criterion substantively as true/false; include a verbatim evidence quote and rationale. Unknown/missing behavior fails the criterion. Do not infer arm or read source manifests. Mark uncertainty in notes; do not invent proof of execution.", "packets": packets})
 
 
+def build_judge_prompt(packet):
+    case, rubric = packet["case"], packet["rubric"]
+    lines = ["## Task given to the model\n", case["request"],
+             "\n\n## Evidence supplied to the model\n",
+             json.dumps(case["evidence"], indent=2, ensure_ascii=False),
+             "\n\n## Model response to evaluate\n", packet["response"],
+             "\n\n## Rubric criteria\n"]
+    for c in rubric["criteria"]:
+        lines.append(f"- **{c['id']}** (weight: {c['weight']}, critical: {c['critical']}): {c['description']}")
+    if rubric.get("reference_notes"):
+        lines.append(f"\n## Reviewer reference notes\n\n{rubric['reference_notes']}")
+    lines.append("\nScore every criterion above. Return only the JSON object.")
+    return "\n".join(lines)
+
+
+def extract_json(text):
+    text = text.strip()
+    if text.startswith("{"):
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            pass
+    match = re.search(r"```(?:json)?\s*\n?(\{.*?\})\s*\n?```", text, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(1))
+        except json.JSONDecodeError:
+            pass
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            pass
+    return None
+
+
+def validate_judge_output(parsed, rubric, response):
+    if not isinstance(parsed, dict) or "criteria" not in parsed:
+        return "missing criteria key"
+    marks = parsed["criteria"]
+    if not isinstance(marks, list):
+        return "criteria must be a list"
+    expected_ids = {c["id"] for c in rubric["criteria"]}
+    actual_ids = {m.get("id") for m in marks}
+    if actual_ids != expected_ids:
+        return f"criterion ID mismatch: expected {sorted(expected_ids)}, got {sorted(actual_ids)}"
+    for mark in marks:
+        if type(mark.get("passed")) is not bool:
+            return f"{mark.get('id')}: passed must be boolean"
+        if not mark.get("rationale"):
+            return f"{mark.get('id')}: rationale is required"
+        quote = mark.get("evidence_quote", "")
+        if mark["passed"] and not quote:
+            return f"{mark.get('id')}: passed criterion requires non-empty evidence_quote"
+        if quote and quote not in response:
+            return f"{mark.get('id')}: evidence_quote not found verbatim in response"
+    return None
+
+
+def judge_one(packet, model, effort, timeout, reviewer_id):
+    prompt = JUDGE_SYSTEM + "\n\n" + build_judge_prompt(packet)
+    started = utc()
+    with tempfile.TemporaryDirectory(prefix="shopify-judge-") as temporary:
+        command = ["codex", "exec", "--ignore-user-config", "--ignore-rules", "--ephemeral",
+                   "--skip-git-repo-check", "-s", "read-only", "-C", temporary,
+                   "-m", model, "-c", "model_reasoning_effort=" + json.dumps(effort), "--json"]
+        for setting in JUDGE_ISOLATION:
+            command += ["-c", setting]
+        command += ["-"]
+        try:
+            result = subprocess.run(command, input=prompt, text=True, capture_output=True,
+                                    timeout=timeout, env={**os.environ, "RUST_LOG": "error"})
+            response_text, _, problems = parse_codex(result.stdout, result.returncode)
+        except subprocess.TimeoutExpired:
+            return packet["id"], None, "timeout"
+        except (OSError, ValueError) as error:
+            return packet["id"], None, str(error)
+    if problems:
+        return packet["id"], None, f"invocation: {', '.join(problems)}"
+    parsed = extract_json(response_text)
+    if parsed is None:
+        return packet["id"], None, "no JSON extracted from judge output"
+    error = validate_judge_output(parsed, packet["rubric"], packet["response"])
+    if error:
+        return packet["id"], None, error
+    review = {"id": packet["id"], "reviewer": reviewer_id, "reviewed_at": started,
+              "response_sha256": packet["response_sha256"],
+              "criteria": [{"id": m["id"], "passed": m["passed"],
+                            "evidence_quote": m.get("evidence_quote", ""),
+                            "rationale": m["rationale"]} for m in parsed["criteria"]]}
+    if parsed.get("notes"):
+        review["notes"] = parsed["notes"]
+    return packet["id"], review, None
+
+
+def judge(blinded: Path, output: Path, model="gpt-6-astra", effort="medium",
+          workers=2, timeout=300, retries=1):
+    if output.exists():
+        raise ValueError("Refusing to overwrite existing reviews")
+    packets = read_json(blinded)
+    if "packets" not in packets or not packets["packets"]:
+        raise ValueError("Blinded file must contain non-empty packets")
+    reviewer_id = f"{model} / automated judge; blinded model reviewer"
+
+    def process(packet):
+        for attempt in range(1 + retries):
+            pid, review, error = judge_one(packet, model, effort, timeout, reviewer_id)
+            if review is not None:
+                return pid, review, None
+            if attempt < retries:
+                time.sleep(2 ** attempt)
+        return pid, None, error
+
+    reviews, failures = [], []
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        for pid, review, error in pool.map(process, packets["packets"]):
+            if review:
+                reviews.append(review)
+                print(f"{pid}: scored", flush=True)
+            else:
+                failures.append((pid, error))
+                print(f"{pid}: FAILED - {error}", flush=True)
+    if failures:
+        print(f"\n{len(failures)} of {len(packets['packets'])} reviews failed:", flush=True)
+        for pid, error in failures:
+            print(f"  {pid}: {error}", flush=True)
+        raise ValueError(f"{len(failures)} reviews could not be completed")
+    write_json(output, {"reviews": reviews})
+    print(f"\n{len(reviews)} reviews written to {output}", flush=True)
+
+
 def summarize(directory: Path, reviews: Path):
     manifest, _ = verify_frozen(directory)
     response_records = records(directory, manifest)
@@ -408,6 +572,14 @@ def main():
     p = sub.add_parser("blind")
     p.add_argument("directory", type=Path)
     p.add_argument("output", type=Path)
+    p = sub.add_parser("judge")
+    p.add_argument("blinded", type=Path, help="Blinded packets file from the blind command")
+    p.add_argument("output", type=Path, help="Output reviews JSON path")
+    p.add_argument("--model", default="gpt-6-astra", help="Judge model (should differ from generator)")
+    p.add_argument("--effort", default="medium")
+    p.add_argument("--workers", type=int, choices=range(1, 5), default=2)
+    p.add_argument("--timeout", type=int, default=300)
+    p.add_argument("--retries", type=int, default=1, help="Retries per packet on validation failure")
     p = sub.add_parser("summarize")
     p.add_argument("directory", type=Path)
     p.add_argument("reviews", type=Path)
@@ -420,6 +592,9 @@ def main():
         run(args.directory, args.workers, args.timeout)
     elif args.action == "blind":
         blind(args.directory, args.output)
+    elif args.action == "judge":
+        judge(args.blinded, args.output, model=args.model, effort=args.effort,
+              workers=args.workers, timeout=args.timeout, retries=args.retries)
     else:
         write_json(args.output, summarize(args.directory, args.reviews))
 
