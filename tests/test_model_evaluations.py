@@ -570,14 +570,32 @@ class ModelEvaluationTests(unittest.TestCase):
         path = Path(self.temporary.name) / "existing-reviews.json"
         path.write_text("{}")
         with self.assertRaisesRegex(ValueError, "overwrite"):
-            model_eval.judge(Path(self.temporary.name) / "blind.json", path)
+            model_eval.judge(Path(self.temporary.name) / "blind.json", path, "test-model")
 
     def test_judge_rejects_empty_packets(self):
         blind_path = Path(self.temporary.name) / "empty-blind.json"
         model_eval.write_json(blind_path, {"packets": []})
         output = Path(self.temporary.name) / "judge-output.json"
         with self.assertRaisesRegex(ValueError, "non-empty"):
-            model_eval.judge(blind_path, output)
+            model_eval.judge(blind_path, output, "test-model")
+
+    def test_judge_cli_requires_explicit_model(self):
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/model_evaluations.py"), "judge",
+             "blind.json", "reviews.json"],
+            capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--model", result.stderr)
+
+    def test_judge_one_surfaces_cli_diagnostic_on_failure(self):
+        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
+                  "response": "text", "response_sha256": "abc"}
+        unavailable = subprocess.CompletedProcess(
+            [], 1, "", "The 'some-model' model requires a newer version of Codex.")
+        with patch.object(model_eval.subprocess, "run", return_value=unavailable):
+            pid, review, error = model_eval.judge_one(packet, "some-model", "medium", 30, "r")
+        self.assertIsNone(review)
+        self.assertIn("requires a newer version of Codex", error)
 
 
 if __name__ == "__main__":

@@ -436,12 +436,16 @@ def judge_one(packet, model, effort, timeout, reviewer_id):
             result = subprocess.run(command, input=prompt, text=True, capture_output=True,
                                     timeout=timeout, env={**os.environ, "RUST_LOG": "error"})
             response_text, _, problems = parse_codex(result.stdout, result.returncode)
+            stderr = result.stderr
         except subprocess.TimeoutExpired:
             return packet["id"], None, "timeout"
         except (OSError, ValueError) as error:
             return packet["id"], None, str(error)
     if problems:
-        return packet["id"], None, f"invocation: {', '.join(problems)}"
+        # Surface the CLI's own diagnostic (e.g. an unavailable model) instead of substituting.
+        detail = stderr.replace(str(Path.home()), "<user-home>").strip().replace("\n", " ")
+        detail = f"; {detail[:300]}" if detail else ""
+        return packet["id"], None, f"invocation: {', '.join(problems)}{detail}"
     parsed = extract_json(response_text)
     if parsed is None:
         return packet["id"], None, "no JSON extracted from judge output"
@@ -458,7 +462,7 @@ def judge_one(packet, model, effort, timeout, reviewer_id):
     return packet["id"], review, None
 
 
-def judge(blinded: Path, output: Path, model="gpt-6-astra", effort="medium",
+def judge(blinded: Path, output: Path, model, effort="medium",
           workers=2, timeout=300, retries=1):
     if output.exists():
         raise ValueError("Refusing to overwrite existing reviews")
@@ -575,7 +579,9 @@ def main():
     p = sub.add_parser("judge")
     p.add_argument("blinded", type=Path, help="Blinded packets file from the blind command")
     p.add_argument("output", type=Path, help="Output reviews JSON path")
-    p.add_argument("--model", default="gpt-6-astra", help="Judge model (should differ from generator)")
+    p.add_argument("--model", required=True,
+                   help="Exact judge model ID verified available in the local CLI; "
+                        "use a different model from the generator where possible")
     p.add_argument("--effort", default="medium")
     p.add_argument("--workers", type=int, choices=range(1, 5), default=2)
     p.add_argument("--timeout", type=int, default=300)
