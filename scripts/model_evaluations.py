@@ -423,9 +423,28 @@ def validate_judge_output(parsed, rubric, response):
     return None
 
 
-def judge_one(packet, model, effort, timeout, reviewer_id):
+def build_review(parsed, packet, reviewer_id, reviewed_at):
+    """Assemble the summarize-compatible review from the parsed judge output."""
+    review = {"id": packet["id"], "reviewer": reviewer_id, "reviewed_at": reviewed_at,
+              "response_sha256": packet["response_sha256"],
+              "criteria": [{"id": m["id"], "passed": m["passed"],
+                            "evidence_quote": m.get("evidence_quote", ""),
+                            "rationale": m["rationale"]} for m in parsed["criteria"]]}
+    if parsed.get("notes"):
+        review["notes"] = parsed["notes"]
+    return review
+
+
+def judge_one(packet, model, effort, timeout, attempt_number):
+    """Run one judge attempt. Returns (parsed_or_None, attempt_record) with full raw evidence.
+
+    failure_kind classifies the record: 'invocation' (CLI/model failure, e.g. an
+    unavailable model) is deterministic and must not be retried; 'parse'/'validation'
+    are recoverable and may be retried.
+    """
     prompt = JUDGE_SYSTEM + "\n\n" + build_judge_prompt(packet)
-    started = utc()
+    started, tick = utc(), time.monotonic()
+    stdout, stderr, code = "", "", None
     with tempfile.TemporaryDirectory(prefix="shopify-judge-") as temporary:
         command = ["codex", "exec", "--ignore-user-config", "--ignore-rules", "--ephemeral",
                    "--skip-git-repo-check", "-s", "read-only", "-C", temporary,
@@ -436,67 +455,157 @@ def judge_one(packet, model, effort, timeout, reviewer_id):
         try:
             result = subprocess.run(command, input=prompt, text=True, capture_output=True,
                                     timeout=timeout, env={**os.environ, "RUST_LOG": "error"})
-            response_text, _, problems = parse_codex(result.stdout, result.returncode)
-            stderr = result.stderr
-        except subprocess.TimeoutExpired:
-            return packet["id"], None, "timeout"
+            stdout, stderr, code = result.stdout, result.stderr, result.returncode
+            response_text, _, problems = parse_codex(stdout, code)
+        except subprocess.TimeoutExpired as error:
+            stdout = error.stdout or ""
+            stdout = stdout.decode() if isinstance(stdout, bytes) else stdout
+            stderr = error.stderr or ""
+            stderr = stderr.decode() if isinstance(stderr, bytes) else stderr
+            response_text, problems, code = "", ["timeout"], None
         except (OSError, ValueError) as error:
-            return packet["id"], None, str(error)
+            response_text, problems = "", [type(error).__name__]
+            stderr += str(error)
+    # Diagnostics retain failure evidence without publishing a user's filesystem identity.
+    stderr = stderr.replace(str(Path.home()), "<user-home>")
+    record = {"attempt": attempt_number, "started_at": started, "finished_at": utc(),
+              "duration_seconds": round(time.monotonic() - tick, 3), "exit_code": code,
+              "problems": problems, "failure_kind": None, "validation_error": None,
+              "status": "invalid", "events": stdout, "events_sha256": digest(stdout),
+              "diagnostics": stderr, "diagnostics_sha256": digest(stderr)}
     if problems:
-        # Surface the CLI's own diagnostic (e.g. an unavailable model) instead of substituting.
-        detail = stderr.replace(str(Path.home()), "<user-home>").strip().replace("\n", " ")
-        detail = f"; {detail[:300]}" if detail else ""
-        return packet["id"], None, f"invocation: {', '.join(problems)}{detail}"
+        record["failure_kind"] = "invocation"
+        return None, record
     parsed = extract_json(response_text)
     if parsed is None:
-        return packet["id"], None, "no JSON extracted from judge output"
+        record["failure_kind"] = "parse"
+        record["validation_error"] = "no JSON extracted from judge output"
+        return None, record
     error = validate_judge_output(parsed, packet["rubric"], packet["response"])
     if error:
-        return packet["id"], None, error
-    review = {"id": packet["id"], "reviewer": reviewer_id, "reviewed_at": started,
-              "response_sha256": packet["response_sha256"],
-              "criteria": [{"id": m["id"], "passed": m["passed"],
-                            "evidence_quote": m.get("evidence_quote", ""),
-                            "rationale": m["rationale"]} for m in parsed["criteria"]]}
-    if parsed.get("notes"):
-        review["notes"] = parsed["notes"]
-    return packet["id"], review, None
+        record["failure_kind"] = "validation"
+        record["validation_error"] = error
+        return None, record
+    record["status"] = "completed"
+    return parsed, record
 
 
 def judge(blinded: Path, output: Path, model, effort="medium",
           workers=2, timeout=300, retries=1):
-    if output.exists():
-        raise ValueError("Refusing to overwrite existing reviews")
+    provenance_path = output.with_name(output.stem + ".provenance.json")
+    if output.exists() or provenance_path.exists():
+        raise ValueError("Refusing to overwrite existing reviews or provenance")
     packets = read_json(blinded)
     if "packets" not in packets or not packets["packets"]:
         raise ValueError("Blinded file must contain non-empty packets")
     reviewer_id = f"{model} / automated judge; blinded model reviewer"
 
     def process(packet):
-        for attempt in range(1 + retries):
-            pid, review, error = judge_one(packet, model, effort, timeout, reviewer_id)
-            if review is not None:
-                return pid, review, None
-            if attempt < retries:
-                time.sleep(2 ** attempt)
-        return pid, None, error
+        attempts, review = [], None
+        for attempt in range(1, 2 + retries):
+            parsed, record = judge_one(packet, model, effort, timeout, attempt)
+            attempts.append(record)
+            if parsed is not None:
+                review = build_review(parsed, packet, reviewer_id, record["started_at"])
+                break
+            # Deterministic invocation failures (e.g. an unavailable model) never recover on retry.
+            if record["failure_kind"] == "invocation":
+                break
+            if attempt < 1 + retries:
+                time.sleep(2 ** (attempt - 1))
+        accepted = next((a["attempt"] for a in attempts if a["status"] == "completed"), None)
+        packet_record = {"id": packet["id"], "case_id": packet["case"]["id"],
+                         "rubric_id": packet["rubric"]["id"], "response_sha256": packet["response_sha256"],
+                         "packet_sha256": digest(json.dumps(packet, sort_keys=True, ensure_ascii=False)),
+                         "judge_prompt_sha256": digest(JUDGE_SYSTEM + "\n\n" + build_judge_prompt(packet)),
+                         "status": "completed" if review else "failed", "accepted_attempt": accepted,
+                         "attempts": attempts, "review": review}
+        return packet_record, review
 
-    reviews, failures = [], []
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        for pid, review, error in pool.map(process, packets["packets"]):
-            if review:
-                reviews.append(review)
-                print(f"{pid}: scored", flush=True)
-            else:
-                failures.append((pid, error))
-                print(f"{pid}: FAILED - {error}", flush=True)
+        results = list(pool.map(process, packets["packets"]))
+    packet_records = [record for record, _ in results]
+    reviews = [review for _, review in results if review]
+    failures = [record["id"] for record in packet_records if record["status"] == "failed"]
+
+    # Provenance is always written first so failed attempts stay auditable, never silently discarded.
+    provenance = {"schema_version": 1, "kind": "judge_provenance", "created_at": utc(),
+                  "blinded_sha256": digest(blinded.read_bytes()), "requested_model": model,
+                  "model_identity_evidence": "Exact model requested in CLI; response JSONL does not expose a server model identifier",
+                  "reasoning_effort": effort, "reviewer": reviewer_id,
+                  "judge_system_sha256": digest(JUDGE_SYSTEM),
+                  "judge_runner_sha256": digest(Path(__file__).read_bytes()),
+                  "isolation_config": JUDGE_ISOLATION, "retries_allowed": retries,
+                  "packets": packet_records}
+    write_json(provenance_path, provenance)
+    for record in packet_records:
+        if record["status"] == "completed":
+            print(f"{record['id']}: scored (attempt {record['accepted_attempt']})", flush=True)
+        else:
+            last = record["attempts"][-1]
+            reason = last["validation_error"] or "; ".join(last["problems"])
+            detail = last["diagnostics"].strip().replace("\n", " ")
+            reason += f" :: {detail[:300]}" if detail else ""
+            print(f"{record['id']}: FAILED after {len(record['attempts'])} attempt(s) - {reason}", flush=True)
+    print(f"\nProvenance for {len(packet_records)} packets written to {provenance_path}", flush=True)
     if failures:
-        print(f"\n{len(failures)} of {len(packets['packets'])} reviews failed:", flush=True)
-        for pid, error in failures:
-            print(f"  {pid}: {error}", flush=True)
-        raise ValueError(f"{len(failures)} reviews could not be completed")
+        raise ValueError(f"{len(failures)} of {len(packet_records)} reviews could not be completed; "
+                         f"see {provenance_path}")
     write_json(output, {"reviews": reviews})
-    print(f"\n{len(reviews)} reviews written to {output}", flush=True)
+    print(f"{len(reviews)} reviews written to {output}", flush=True)
+
+
+def verify_judge_provenance(provenance, reviews_by_id):
+    """Offline audit of a judge provenance record against reviews.json. Never invokes a model.
+
+    Confirms per-attempt raw-evidence hashes, that each accepted review is replayable from
+    its captured events, and that accepted reviews exactly match reviews.json.
+    """
+    if provenance.get("kind") != "judge_provenance":
+        raise ValueError("Not a judge provenance record")
+    seen = set()
+    for record in provenance["packets"]:
+        pid = record["id"]
+        if pid in seen:
+            raise ValueError(f"Duplicate provenance packet: {pid}")
+        seen.add(pid)
+        attempts = record["attempts"]
+        if not attempts:
+            raise ValueError(f"{pid}: provenance packet has no attempts")
+        for index, attempt in enumerate(attempts):
+            if attempt["status"] not in ("completed", "invalid"):
+                raise ValueError(f"{pid}: unknown attempt status {attempt['status']}")
+            if digest(attempt["events"]) != attempt["events_sha256"] or \
+                    digest(attempt["diagnostics"]) != attempt["diagnostics_sha256"]:
+                raise ValueError(f"{pid}: attempt {attempt['attempt']} evidence hash mismatch")
+            # Only the final attempt may succeed; every earlier attempt is a retained failure.
+            if attempt["status"] == "completed" and index != len(attempts) - 1:
+                raise ValueError(f"{pid}: a completed attempt is not the last recorded attempt")
+        completed = [a for a in attempts if a["status"] == "completed"]
+        if record["status"] == "completed":
+            if len(completed) != 1 or record["accepted_attempt"] != completed[0]["attempt"]:
+                raise ValueError(f"{pid}: accepted attempt does not match a single completed attempt")
+            response_text, _, problems = parse_codex(completed[0]["events"], completed[0]["exit_code"])
+            if problems:
+                raise ValueError(f"{pid}: accepted attempt replays with invocation problems")
+            parsed = extract_json(response_text)
+            if parsed is None:
+                raise ValueError(f"{pid}: accepted events contain no parseable judge output")
+            rebuilt = build_review(parsed, {"id": pid, "response_sha256": record["response_sha256"]},
+                                   record["review"]["reviewer"], record["review"]["reviewed_at"])
+            if rebuilt != record["review"]:
+                raise ValueError(f"{pid}: stored review is not reproducible from its captured events")
+            if reviews_by_id.get(pid) != record["review"]:
+                raise ValueError(f"{pid}: provenance review does not match reviews.json")
+        else:
+            if completed or record["review"] is not None or record["accepted_attempt"] is not None:
+                raise ValueError(f"{pid}: failed packet must not carry an accepted review")
+            if pid in reviews_by_id:
+                raise ValueError(f"{pid}: failed packet must not appear in reviews.json")
+    provenance_completed = {r["id"] for r in provenance["packets"] if r["status"] == "completed"}
+    if set(reviews_by_id) - provenance_completed:
+        raise ValueError("reviews.json contains ids without completed judge provenance")
+    return len(provenance["packets"])
 
 
 def summarize(directory: Path, reviews: Path):

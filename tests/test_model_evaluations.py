@@ -538,44 +538,93 @@ class ModelEvaluationTests(unittest.TestCase):
             {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
         self.assertIn("verbatim", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "actual response text"))
 
-    def test_judge_one_produces_valid_review(self):
-        response_text = "Decision based on supplied evidence. No external action occurred."
-        judge_output = json.dumps({"criteria": [
+    def judge_packet(self, response_text="Decision based on supplied evidence. No external action occurred."):
+        return {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
+                "response": response_text, "response_sha256": model_eval.digest(response_text)}
+
+    def valid_judge_output(self, notes="Borderline decision."):
+        payload = {"criteria": [
             {"id": "truth", "passed": True, "evidence_quote": "supplied evidence", "rationale": "Correct."},
             {"id": "decision", "passed": True, "evidence_quote": "supplied evidence", "rationale": "Sound."},
-            {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "Incomplete."}],
-            "notes": "Borderline decision."})
-        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
-                  "response": response_text, "response_sha256": model_eval.digest(response_text)}
-        mock_result = subprocess.CompletedProcess([], 0, event_stream(judge_output), "")
+            {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "Incomplete."}]}
+        if notes:
+            payload["notes"] = notes
+        return json.dumps(payload)
+
+    def write_blind(self, packets):
+        path = Path(self.temporary.name) / "blind.json"
+        model_eval.write_json(path, {"instructions": "score", "packets": packets})
+        return path
+
+    def test_judge_one_produces_parsed_and_completed_record(self):
+        packet = self.judge_packet()
+        mock_result = subprocess.CompletedProcess([], 0, event_stream(self.valid_judge_output()), "")
         with patch.object(model_eval.subprocess, "run", return_value=mock_result):
-            pid, review, error = model_eval.judge_one(packet, "test-model", "medium", 30, "test-reviewer")
-        self.assertIsNone(error)
-        self.assertEqual(pid, "test-resp")
+            parsed, record = model_eval.judge_one(packet, "test-model", "medium", 30, 1)
+        self.assertEqual(record["status"], "completed")
+        self.assertEqual(record["failure_kind"], None)
+        self.assertEqual([c["id"] for c in parsed["criteria"]], ["truth", "decision", "completeness"])
+        self.assertEqual(model_eval.digest(record["events"]), record["events_sha256"])
+        self.assertEqual(model_eval.digest(record["diagnostics"]), record["diagnostics_sha256"])
+
+    def test_build_review_matches_summarize_schema(self):
+        packet = self.judge_packet()
+        parsed = json.loads(self.valid_judge_output())
+        review = model_eval.build_review(parsed, packet, "test-reviewer", "2026-09-06")
         self.assertEqual(review["id"], "test-resp")
         self.assertEqual(review["reviewer"], "test-reviewer")
-        self.assertEqual(review["response_sha256"], model_eval.digest(response_text))
+        self.assertEqual(review["response_sha256"], packet["response_sha256"])
         self.assertEqual(len(review["criteria"]), 3)
-        self.assertTrue(review["criteria"][0]["passed"])
-        self.assertFalse(review["criteria"][2]["passed"])
         self.assertEqual(review["notes"], "Borderline decision.")
 
-    def test_judge_one_returns_error_on_invalid_json(self):
-        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
-                  "response": "text", "response_sha256": "abc"}
+    def test_judge_one_records_parse_failure_as_recoverable(self):
         mock_result = subprocess.CompletedProcess([], 0, event_stream("Not valid JSON"), "")
         with patch.object(model_eval.subprocess, "run", return_value=mock_result):
-            pid, review, error = model_eval.judge_one(packet, "m", "medium", 30, "r")
-        self.assertIsNone(review)
-        self.assertIn("JSON", error)
+            parsed, record = model_eval.judge_one(self.judge_packet(), "m", "medium", 30, 1)
+        self.assertIsNone(parsed)
+        self.assertEqual(record["failure_kind"], "parse")
+        self.assertIn("JSON", record["validation_error"])
 
-    def test_judge_one_returns_error_on_timeout(self):
-        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
-                  "response": "text", "response_sha256": "abc"}
+    def test_judge_one_records_invocation_failure_with_diagnostics(self):
+        unavailable = subprocess.CompletedProcess(
+            [], 1, "", "The 'some-model' model requires a newer version of Codex.")
+        with patch.object(model_eval.subprocess, "run", return_value=unavailable):
+            parsed, record = model_eval.judge_one(self.judge_packet(), "some-model", "medium", 30, 1)
+        self.assertIsNone(parsed)
+        self.assertEqual(record["failure_kind"], "invocation")
+        self.assertIn("requires a newer version of Codex", record["diagnostics"])
+
+    def test_judge_one_timeout_is_invocation_failure(self):
         with patch.object(model_eval.subprocess, "run", side_effect=subprocess.TimeoutExpired("cmd", 5)):
-            pid, review, error = model_eval.judge_one(packet, "m", "medium", 5, "r")
-        self.assertIsNone(review)
-        self.assertEqual(error, "timeout")
+            parsed, record = model_eval.judge_one(self.judge_packet(), "m", "medium", 5, 1)
+        self.assertIsNone(parsed)
+        self.assertEqual(record["failure_kind"], "invocation")
+        self.assertEqual(record["problems"], ["timeout"])
+
+    def test_judge_writes_reviews_and_verifiable_provenance(self):
+        packet = self.judge_packet()
+        blind_path = self.write_blind([packet])
+        output = Path(self.temporary.name) / "reviews.json"
+        provenance_path = Path(self.temporary.name) / "reviews.provenance.json"
+        mock_result = subprocess.CompletedProcess([], 0, event_stream(self.valid_judge_output()), "")
+        with patch.object(model_eval.subprocess, "run", return_value=mock_result):
+            model_eval.judge(blind_path, output, "gpt-5.5", workers=1, timeout=30)
+        reviews = model_eval.read_json(output)["reviews"]
+        self.assertEqual(len(reviews), 1)
+        provenance = model_eval.read_json(provenance_path)
+        self.assertEqual(provenance["kind"], "judge_provenance")
+        self.assertEqual(provenance["requested_model"], "gpt-5.5")
+        self.assertEqual(provenance["blinded_sha256"], model_eval.digest(blind_path.read_bytes()))
+        self.assertEqual(provenance["judge_system_sha256"], model_eval.digest(model_eval.JUDGE_SYSTEM))
+        self.assertEqual(provenance["judge_runner_sha256"],
+                         model_eval.digest(Path(model_eval.__file__).read_bytes()))
+        record = provenance["packets"][0]
+        self.assertEqual(record["status"], "completed")
+        self.assertEqual(record["accepted_attempt"], 1)
+        self.assertEqual(record["judge_prompt_sha256"],
+                         model_eval.digest(model_eval.JUDGE_SYSTEM + "\n\n" + model_eval.build_judge_prompt(packet)))
+        # Provenance verifies against reviews.json.
+        self.assertEqual(model_eval.verify_judge_provenance(provenance, {r["id"]: r for r in reviews}), 1)
 
     def test_judge_refuses_overwrite(self):
         path = Path(self.temporary.name) / "existing-reviews.json"
@@ -598,15 +647,72 @@ class ModelEvaluationTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("--model", result.stderr)
 
-    def test_judge_one_surfaces_cli_diagnostic_on_failure(self):
-        packet = {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
-                  "response": "text", "response_sha256": "abc"}
+    def test_judge_does_not_retry_invocation_failure(self):
+        blind_path = self.write_blind([self.judge_packet()])
+        output = Path(self.temporary.name) / "reviews.json"
+        provenance_path = Path(self.temporary.name) / "reviews.provenance.json"
         unavailable = subprocess.CompletedProcess(
-            [], 1, "", "The 'some-model' model requires a newer version of Codex.")
-        with patch.object(model_eval.subprocess, "run", return_value=unavailable):
-            pid, review, error = model_eval.judge_one(packet, "some-model", "medium", 30, "r")
-        self.assertIsNone(review)
-        self.assertIn("requires a newer version of Codex", error)
+            [], 1, "", "The 'gpt-6-astra' model requires a newer version of Codex.")
+        with patch.object(model_eval.subprocess, "run", return_value=unavailable) as run, \
+                patch.object(model_eval.time, "sleep"):
+            with self.assertRaisesRegex(ValueError, "could not be completed"):
+                model_eval.judge(blind_path, output, "gpt-6-astra", workers=1, timeout=30, retries=3)
+        self.assertEqual(run.call_count, 1)  # invocation failure is not retried despite retries=3
+        self.assertFalse(output.exists())  # no reviews written, no silent substitution
+        self.assertTrue(provenance_path.exists())  # failed attempts are still auditable
+        provenance = model_eval.read_json(provenance_path)
+        record = provenance["packets"][0]
+        self.assertEqual(record["status"], "failed")
+        self.assertEqual(len(record["attempts"]), 1)
+        self.assertEqual(record["attempts"][0]["failure_kind"], "invocation")
+        self.assertIsNone(record["review"])
+
+    def test_judge_retries_recoverable_parse_failure_then_succeeds(self):
+        blind_path = self.write_blind([self.judge_packet()])
+        output = Path(self.temporary.name) / "reviews.json"
+        provenance_path = Path(self.temporary.name) / "reviews.provenance.json"
+        junk = subprocess.CompletedProcess([], 0, event_stream("no json here"), "")
+        good = subprocess.CompletedProcess([], 0, event_stream(self.valid_judge_output()), "")
+        with patch.object(model_eval.subprocess, "run", side_effect=[junk, good]) as run, \
+                patch.object(model_eval.time, "sleep"):
+            model_eval.judge(blind_path, output, "gpt-5.5", workers=1, timeout=30, retries=1)
+        self.assertEqual(run.call_count, 2)
+        record = model_eval.read_json(provenance_path)["packets"][0]
+        self.assertEqual(record["status"], "completed")
+        self.assertEqual(record["accepted_attempt"], 2)
+        self.assertEqual(len(record["attempts"]), 2)
+        self.assertEqual(record["attempts"][0]["failure_kind"], "parse")
+        self.assertEqual(record["attempts"][1]["status"], "completed")
+
+    def test_verify_judge_provenance_detects_tampered_events(self):
+        blind_path = self.write_blind([self.judge_packet()])
+        output = Path(self.temporary.name) / "reviews.json"
+        provenance_path = Path(self.temporary.name) / "reviews.provenance.json"
+        good = subprocess.CompletedProcess([], 0, event_stream(self.valid_judge_output()), "")
+        with patch.object(model_eval.subprocess, "run", return_value=good):
+            model_eval.judge(blind_path, output, "gpt-5.5", workers=1, timeout=30)
+        reviews = model_eval.read_json(output)["reviews"]
+        reviews_by_id = {r["id"]: r for r in reviews}
+        provenance = model_eval.read_json(provenance_path)
+        # Rewrite the raw events without updating the recorded hash.
+        provenance["packets"][0]["attempts"][0]["events"] += " tampered"
+        with self.assertRaisesRegex(ValueError, "evidence hash mismatch"):
+            model_eval.verify_judge_provenance(provenance, reviews_by_id)
+
+    def test_verify_judge_provenance_detects_review_not_from_events(self):
+        blind_path = self.write_blind([self.judge_packet()])
+        output = Path(self.temporary.name) / "reviews.json"
+        provenance_path = Path(self.temporary.name) / "reviews.provenance.json"
+        good = subprocess.CompletedProcess([], 0, event_stream(self.valid_judge_output()), "")
+        with patch.object(model_eval.subprocess, "run", return_value=good):
+            model_eval.judge(blind_path, output, "gpt-5.5", workers=1, timeout=30)
+        reviews = model_eval.read_json(output)["reviews"]
+        provenance = model_eval.read_json(provenance_path)
+        # Flip an accepted verdict in both the stored review and reviews.json, but not the raw events.
+        provenance["packets"][0]["review"]["criteria"][0]["passed"] = False
+        reviews[0]["criteria"][0]["passed"] = False
+        with self.assertRaisesRegex(ValueError, "not reproducible from its captured events"):
+            model_eval.verify_judge_provenance(provenance, {r["id"]: r for r in reviews})
 
 
 if __name__ == "__main__":
