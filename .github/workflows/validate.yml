@@ -48,11 +48,7 @@ jobs:
       - name: Verify recorded model evidence without model calls
         run: python scripts/check_evaluation_evidence.py
       - name: Package every skill
-        shell: bash
-        run: |
-          for skill in skills/*; do
-            bash scripts/package-skill.sh "$(basename "$skill")"
-          done
+        run: python scripts/package_skill.py --all
       - name: Validate every extracted standalone archive
         shell: bash
         run: |

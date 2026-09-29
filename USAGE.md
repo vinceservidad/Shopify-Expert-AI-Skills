@@ -1,6 +1,6 @@
 # How to Use Shopify Expert AI Skills
 
-This guide shows how merchants, freelancers, agencies, Shopify VAs, developers, marketers, and store operators can use the skills in Claude and ChatGPT. No Shopify connection is required for read-only analysis. You provide the store evidence you want the assistant to examine.
+This guide shows how merchants, freelancers, agencies, Shopify VAs, developers, marketers, and store operators can use the skills in Claude, ChatGPT, and Codex. No Shopify connection is required for read-only analysis. You provide the store evidence you want the assistant to examine.
 
 ## Start with the Shopify Store Operating Lifecycle
 
@@ -104,11 +104,19 @@ If Claude does not show Skills, enable **Code execution and file creation** in t
 
 ### Installation using the packaging script
 
-If you downloaded or cloned the repository and can use a terminal:
+If you downloaded or cloned the repository and can use a terminal, set up the
+tooling with Python 3.11 or newer first:
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements-dev.txt
 ./scripts/package-skill.sh shopify-store-audit
 ```
+
+Use `./scripts/package-skill.sh --all` to build all 19 individual ZIPs. The
+packager checks the catalog once before writing. On Windows, use
+`python scripts/package_skill.py --all` after activating the virtual environment.
 
 Upload the generated file from:
 
@@ -234,6 +242,34 @@ Start read-only and use only the supplied evidence for product claims.
 ```
 
 This is guided use, not automatic skill installation. Restate the selected skill when starting a new conversation.
+
+## Option 3: Install a skill in Codex
+
+In Codex, ask the built-in installer to install one selected skill:
+
+```text
+Use $skill-installer to install shopify-cro from
+https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/skills/shopify-cro.
+Keep existing installed skills unchanged.
+```
+
+For project-scoped use, copy the complete `skills/shopify-cro` folder into
+`<your-project>/.agents/skills/shopify-cro`. Include its references and any assets;
+copying only `SKILL.md` leaves the package incomplete. Check for an existing folder
+before copying and review differences instead of overwriting it. Do not install
+another copy with the same skill name in an overlapping discovery location.
+
+Then request the workflow explicitly:
+
+```text
+Use $shopify-cro to review the attached mobile product page and funnel report.
+Give me a prioritized experiment backlog. Keep this read-only.
+```
+
+Codex detects installed skills automatically; restart it if the skill does not
+appear. Installing a skill does not configure Shopify access or grant permission
+to change a store. Source reviewed September 30, 2026:
+[OpenAI's skill documentation](https://developers.openai.com/codex/skills/).
 
 ## What evidence should you provide?
 

@@ -36,6 +36,9 @@ PLACEHOLDER = re.compile(r"(?<![A-Za-z])(?:TODO|TBD)(?![A-Za-z])|PLACEHOLDER[_:-
 MARKDOWN_LINK = re.compile(r"\[[^\]\n]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+[^)]*)?\)")
 REFERENCE_DEFINITION = re.compile(r"^\s{0,3}\[[^\]\n]+\]:\s*(?:<([^>]+)>|(\S+))", re.M)
 RESOURCE_PATH = re.compile(r"(?<![\w/])(?:references|scripts|assets)/[A-Za-z0-9_./-]+\.[A-Za-z0-9]+")
+PRIVATE_NAMES = {"id_rsa", "id_ed25519", "credentials.json", ".netrc", ".pypirc"}
+PRIVATE_SUFFIXES = {".pem", ".key", ".p12", ".pfx"}
+ENV_TEMPLATES = {".env.example", ".env.sample", ".env.template"}
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -58,7 +61,15 @@ UniqueKeyLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, 
 
 
 def excluded(path: Path) -> bool:
-    return ".DS_Store" in path.parts or "__pycache__" in path.parts or path.suffix == ".pyc"
+    return any(part in {".DS_Store", "__pycache__", ".git", ".venv", "node_modules"}
+               for part in path.parts) or path.suffix == ".pyc"
+
+
+def private_file(path: Path) -> bool:
+    """Conservative filename checks; these do not detect secrets in arbitrary content."""
+    name = path.name.lower()
+    return (name in PRIVATE_NAMES or path.suffix.lower() in PRIVATE_SUFFIXES
+            or ((name == ".env" or name.startswith(".env.")) and name not in ENV_TEMPLATES))
 
 
 def local_targets(text: str) -> set[str]:
@@ -94,6 +105,8 @@ def validate_skill(skill_dir: Path) -> list[str]:
     for path in files:
         if path.is_symlink():
             errors.append(f"{label}: symlinks are not allowed ({path.relative_to(skill_dir)})")
+        elif path.is_file() and not excluded(path.relative_to(skill_dir)) and private_file(path):
+            errors.append(f"{label}: private credential filename is not allowed ({path.relative_to(skill_dir)})")
     if errors:
         return errors  # Never read through an untrusted symlink.
     entry = skill_dir / "SKILL.md"
@@ -167,7 +180,9 @@ def validate_skill(skill_dir: Path) -> list[str]:
                 linked_from_entry.add(candidate)
     # Check references even when references/ is absent; link validation above is unconditional.
     for path in files:
-        if path.is_file() and path.suffix.lower() == ".md" and "references" == path.relative_to(skill_dir).parts[0]:
+        if (path.is_file() and path.suffix.lower() == ".md"
+                and not excluded(path.relative_to(skill_dir))
+                and "references" == path.relative_to(skill_dir).parts[0]):
             if path.resolve() not in linked_from_entry:
                 errors.append(f"{label}: SKILL.md does not link {path.relative_to(skill_dir)}")
     return errors

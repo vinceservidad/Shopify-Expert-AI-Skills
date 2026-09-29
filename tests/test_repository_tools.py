@@ -13,7 +13,7 @@ from zipfile import ZipFile
 SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 from validate_repository import EXPECTED_SKILLS, REQUIRED_ROOT_FILES, validate_repository, validate_skill
-from package_skill import package_skill
+from package_skill import package_skill, package_skills
 
 
 class RepositoryToolsTests(unittest.TestCase):
@@ -245,6 +245,102 @@ class RepositoryToolsTests(unittest.TestCase):
     def test_package_deterministic(self):
         first = package_skill(self.root, self.skill.name).read_bytes()
         self.assertEqual(first, package_skill(self.root, self.skill.name).read_bytes())
+
+    def test_private_filenames_block_packaging_without_reading_contents(self):
+        for filename in ('.env', '.env.production', 'credentials.json', 'id_rsa',
+                         'id_ed25519', '.netrc', '.pypirc', 'private.pem', 'private.KEY',
+                         'private.p12', 'private.pfx'):
+            with self.subTest(filename=filename):
+                private = self.skill / 'assets' / filename
+                private.parent.mkdir(exist_ok=True)
+                private.write_bytes(b'\xff\x00synthetic credential fixture')
+                try:
+                    self.assertInvalid('private credential filename is not allowed')
+                    with self.assertRaisesRegex(ValueError, 'Packaging blocked'):
+                        package_skill(self.root, self.skill.name)
+                finally:
+                    private.unlink()
+        self.assertFalse((self.root / 'dist').exists())
+
+    def test_environment_templates_are_kept(self):
+        filenames = ('.env.example', '.env.sample', '.env.template')
+        for filename in filenames:
+            (self.skill / filename).write_text('EXAMPLE_TOKEN=replace-me\n')
+        with ZipFile(package_skill(self.root, self.skill.name)) as zipped:
+            for filename in filenames:
+                self.assertIn(f'{self.skill.name}/{filename}', zipped.namelist())
+
+    def test_development_directories_are_not_packaged(self):
+        for directory in ('.git', '.venv', 'node_modules'):
+            nested = self.skill / 'references' / directory
+            nested.mkdir(parents=True)
+            (nested / 'private.key').write_bytes(b'synthetic fixture')
+            (nested / 'README.md').write_text('Unlinked development file.\n')
+        with ZipFile(package_skill(self.root, self.skill.name)) as zipped:
+            self.assertFalse(any(part in name.split('/') for name in zipped.namelist()
+                                 for part in ('.git', '.venv', 'node_modules')))
+
+    def test_links_to_development_files_block_packaging(self):
+        nested = self.skill / '.git'
+        nested.mkdir()
+        (nested / 'config').write_text('synthetic fixture')
+        self.entry.write_text(self.entry.read_text() + '\n[Config](.git/config)\n')
+        self.assertInvalid('link targets a file excluded from packaging')
+
+    def test_batch_packages_all_with_one_validation_and_standalone_contents(self):
+        with patch('package_skill.validate_repository', wraps=validate_repository) as validate:
+            archives = package_skills(self.root, EXPECTED_SKILLS)
+        validate.assert_called_once_with(self.root)
+        self.assertEqual({archive.stem for archive in archives}, set(EXPECTED_SKILLS))
+        for archive in archives:
+            with ZipFile(archive) as zipped, tempfile.TemporaryDirectory() as extracted:
+                self.assertIsNone(zipped.testzip())
+                zipped.extractall(extracted)
+                self.assertEqual(validate_skill(Path(extracted) / archive.stem), [])
+
+    def test_batch_validation_failure_preserves_all_archives(self):
+        archives = package_skills(self.root, EXPECTED_SKILLS)
+        before = {archive.name: archive.read_bytes() for archive in archives}
+        (self.root / 'skills' / EXPECTED_SKILLS[-1] / 'SKILL.md').unlink()
+        with self.assertRaisesRegex(ValueError, 'Packaging blocked'):
+            package_skills(self.root, EXPECTED_SKILLS)
+        self.assertEqual(before, {archive.name: archive.read_bytes() for archive in archives})
+
+    def test_batch_selection_rejected_before_writes(self):
+        for selection in ((), (self.skill.name, '../outside')):
+            with self.subTest(selection=selection), self.assertRaises(ValueError):
+                package_skills(self.root, selection)
+        self.assertFalse((self.root / 'dist').exists())
+
+    def test_batch_write_failure_preserves_failed_and_remaining_archives(self):
+        archives = package_skills(self.root, EXPECTED_SKILLS)
+        before = [archive.read_bytes() for archive in archives]
+        for name in EXPECTED_SKILLS[:2]:
+            entry = self.root / 'skills' / name / 'SKILL.md'
+            entry.write_text(entry.read_text() + '\nAdditional valid instructions.\n')
+        original = ZipFile.writestr
+
+        def fail_second(output, member, data, *args, **kwargs):
+            if member.filename.startswith(EXPECTED_SKILLS[1] + '/'):
+                raise OSError('simulated second archive write failure')
+            return original(output, member, data, *args, **kwargs)
+
+        with patch('package_skill.ZipFile.writestr', new=fail_second):
+            with self.assertRaisesRegex(OSError, 'second archive write failure'):
+                package_skills(self.root, EXPECTED_SKILLS)
+        self.assertNotEqual(archives[0].read_bytes(), before[0])
+        self.assertEqual([archive.read_bytes() for archive in archives[1:]], before[1:])
+        self.assertEqual(len(list((self.root / 'dist').iterdir())), len(EXPECTED_SKILLS))
+
+    def test_batch_cli_and_ambiguous_selection(self):
+        command = [sys.executable, str(SCRIPTS / 'package_skill.py'), '--root', str(self.root)]
+        success = subprocess.run(command + ['--all'], capture_output=True, text=True)
+        self.assertEqual(success.returncode, 0, success.stderr)
+        self.assertEqual(len(list((self.root / 'dist').glob('*.zip'))), len(EXPECTED_SKILLS))
+        for selection in ([], ['--all', self.skill.name], ['unknown']):
+            with self.subTest(selection=selection):
+                failure = subprocess.run(command + selection, capture_output=True, text=True)
+                self.assertEqual(failure.returncode, 2)
 
     def test_validation_failure_preserves_existing_archive(self):
         archive = package_skill(self.root, self.skill.name)

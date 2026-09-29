@@ -11,16 +11,28 @@ from validate_repository import EXPECTED_SKILLS, excluded, validate_repository
 
 
 def package_skill(repo_root: Path, skill_name: str) -> Path:
-    if skill_name not in EXPECTED_SKILLS:
-        raise ValueError(f"Unknown skill: {skill_name}")
+    return package_skills(repo_root, (skill_name,))[0]
+
+
+def package_skills(repo_root: Path, skill_names: tuple[str, ...]) -> list[Path]:
+    """Validate the catalog once before writing any selected archive."""
+    if not skill_names:
+        raise ValueError("Select at least one skill")
+    for skill_name in skill_names:
+        if skill_name not in EXPECTED_SKILLS:
+            raise ValueError(f"Unknown skill: {skill_name}")
     errors = validate_repository(repo_root)
     if errors:
         raise ValueError("Packaging blocked by repository validation:\n" + "\n".join(errors))
-    skill = repo_root / "skills" / skill_name
     destination = repo_root / "dist"
     if destination.is_symlink():
         raise ValueError("dist must not be a symlink")
     destination.mkdir(exist_ok=True)
+    return [_write_archive(repo_root, skill_name, destination) for skill_name in skill_names]
+
+
+def _write_archive(repo_root: Path, skill_name: str, destination: Path) -> Path:
+    skill = repo_root / "skills" / skill_name
     archive = destination / f"{skill_name}.zip"
     # Build alongside the final file and replace only after a complete, checked write.
     with tempfile.NamedTemporaryFile(dir=destination, suffix=".zip", delete=False) as handle:
@@ -51,14 +63,17 @@ def package_skill(repo_root: Path, skill_name: str) -> Path:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("skill", choices=EXPECTED_SKILLS)
+    selection = parser.add_mutually_exclusive_group(required=True)
+    selection.add_argument("skill", nargs="?", choices=EXPECTED_SKILLS)
+    selection.add_argument("--all", action="store_true", help="Package all skills after one catalog validation")
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     try:
-        archive = package_skill(args.root, args.skill)
+        archives = package_skills(args.root, EXPECTED_SKILLS if args.all else (args.skill,))
     except (OSError, ValueError) as exc:
         parser.exit(1, f"ERROR: {exc}\n")
-    print(f"Created {archive}")
+    for archive in archives:
+        print(f"Created {archive}")
     return 0
 
 
