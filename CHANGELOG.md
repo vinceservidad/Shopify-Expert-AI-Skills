@@ -4,6 +4,24 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin and read-only MCP connector
+
+- Introduce Shopify VA Toolkit as the display name while retaining the source
+  repository URL and all nineteen canonical skills.
+- Add portable Agent Plugins and Claude-compatible manifests, reproducible
+  plugin packaging, bundled local MCP runtime, and setup documentation.
+- Add fixed read-only Shopify GraphQL tools for store identity, products,
+  variants, location inventory and order summaries, plus skill discovery,
+  reading, a resource and a task prompt. Store results retain provenance and
+  pagination; no arbitrary GraphQL or write tool is exposed.
+- Add Streamable HTTP OAuth with Shopify merchant authorization, MCP discovery,
+  public-client registration, S256 PKCE, resource-bound tokens, refresh rotation,
+  revocation and encrypted persistent records. Keep credentials out of outputs.
+- Add protocol/authentication/packaging checks and a Node 24 CI workflow.
+  Engineering verification remains separate from model grades and live-store
+  evidence. Public hosting, directory submission and production use are not
+  implied by this implementation.
+
 ### Skill safety and packaging upgrade
 
 - Add the evidence-versus-instructions boundary to sixteen standalone skills

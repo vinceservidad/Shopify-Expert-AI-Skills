@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "shopify-va-toolkit": {
+      "command": "node",
+      "args": ["${CLAUDE_PLUGIN_ROOT}/server/connector.cjs"],
+      "env": { "SHOPIFY_SKILLS_ROOT": "${CLAUDE_PLUGIN_ROOT}/skills" }
+    }
+  }
+}

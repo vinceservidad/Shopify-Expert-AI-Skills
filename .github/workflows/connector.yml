@@ -1,0 +1,36 @@
+name: Plugin and MCP connector
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  connector:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: connector/package-lock.json
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.11'
+      - run: python -m pip install -r requirements-dev.txt
+      - run: npm ci
+        working-directory: connector
+      - run: npm run typecheck
+        working-directory: connector
+      - run: npm test
+        working-directory: connector
+      - run: npm run build
+        working-directory: connector
+      - run: python scripts/package_plugin.py
+      - run: npm run test:package
+        working-directory: connector
