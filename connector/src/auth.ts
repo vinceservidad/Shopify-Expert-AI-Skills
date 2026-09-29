@@ -101,6 +101,10 @@ export class ShopifyOAuth {
       store.put(`pending:${id}`, { clientId: q.client_id, redirectUri: q.redirect_uri, state: q.state,
         challenge: q.code_challenge, resource: q.resource, browserHash: hash(browser) } satisfies Pending, 600);
       response.cookie('toolkit_oauth', browser, { httpOnly: true, secure: base.startsWith('https:'), sameSite: 'lax', maxAge: 600000, path: '/oauth' });
+      // Chrome applies form-action to redirect chains, including already-approved installs.
+      const callbackOrigin = new URL(q.redirect_uri).origin;
+      response.set('Content-Security-Policy', "default-src 'none'; form-action 'self' https://*.myshopify.com https://admin.shopify.com https://accounts.shopify.com "
+        + callbackOrigin + "; base-uri 'none'; frame-ancestors 'none'");
       response.type('html').send(`<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Connect Shopify VA Toolkit</title>
         <main><h1>Connect Shopify VA Toolkit</h1><p>Independent toolkit by Vince Servidad.</p>
         <p><strong>${escape(client.client_name)}</strong> requests read-only Shopify access. Return destination: ${escape(new URL(q.redirect_uri).origin)}.</p>
