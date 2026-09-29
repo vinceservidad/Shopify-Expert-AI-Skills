@@ -1,4 +1,4 @@
-# Shopify Expert AI Skills for ChatGPT & Claude
+# Shopify Expert AI Skills for ChatGPT, Claude & Codex
 
 19 focused skills plus one shared operating lifecycle for Shopify merchants, freelancers, virtual assistants, agencies, developers, marketers, specialists, and store operators.
 
@@ -110,6 +110,16 @@ python -m pip install -r requirements-dev.txt
 ```
 
 The archive is created in `dist/`. Upload that individual skill ZIP, not the entire repository. Packaging runs validation first and includes the skill's references, assets and license. The five worked-example skills carry their teaching evidence inside their own packages. Packaging `shopify-va` also includes the store operating lifecycle and initiative-record references.
+
+To build all 19 individual archives with one validation pass:
+
+```bash
+./scripts/package-skill.sh --all
+```
+
+### Codex
+
+Use the [Codex installation guide](USAGE.md#option-3-install-a-skill-in-codex) to install one complete skill folder with `$skill-installer` or copy it into a project's `.agents/skills/` directory. Invoke it by name, for example `$shopify-cro`. Installation does not connect Shopify or authorize store changes.
 
 ### ChatGPT
 

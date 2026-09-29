@@ -4,7 +4,7 @@ description: Diagnoses and implements scoped Shopify theme work in Liquid, JSON 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Theme Development
@@ -35,6 +35,8 @@ Collect the exact problem, affected templates and markets, reproduction steps, e
 7. Publish only when explicitly approved. Verify the canonical live storefront after platform processing.
 
 Read [references/liquid-patterns.md](references/liquid-patterns.md) for architecture and implementation rules. Read [references/debugging.md](references/debugging.md) for diagnosis and verification.
+
+For variant-picker work, read the high-variant guidance in `references/liquid-patterns.md` before assuming a Liquid variant array contains every variant.
 
 ## Worked example
 

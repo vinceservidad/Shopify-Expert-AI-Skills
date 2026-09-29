@@ -4,6 +4,24 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Skill safety and packaging upgrade
+
+- Add the evidence-versus-instructions boundary to sixteen standalone skills
+  that lacked it; preserve the existing rule in research, store audit, and theme
+  development. Embedded requests cannot grant authorization or redirect work.
+- Upgrade theme guidance for Shopify's documented high-variant Liquid limit,
+  deferred option rendering, null selections, and the limits of the small fixture.
+- Add Codex installation and invocation instructions from current first-party
+  documentation, plus the missing tooling setup in the usage guide.
+- Block common environment and private-key filenames before packaging, exclude
+  development directories, and reject links to excluded resources. Filename
+  checks do not replace a review for sensitive content.
+- Add `--all` packaging with one catalog validation pass and preserve individual
+  ZIP failure handling; use it in CI. Add nine tooling regressions covering
+  credentials, exclusions, batch selection, standalone contents, and failures.
+- Add two `needs-review` behavioral scenarios. Existing model-evaluation records
+  are unchanged; this revision has no newly measured model-performance claim.
+
 ### Shopify Store Operating Lifecycle
 
 - Add the shared `CONTEXT → GOAL → DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE ↺` operating lifecycle for merchants, freelancers, agencies, Shopify VAs, developers, marketers, specialists, and store operators.

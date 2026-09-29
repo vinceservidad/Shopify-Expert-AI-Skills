@@ -48,6 +48,16 @@ Reviewed 2026-08-25:
 
 Google Ads, Meta Ads, GA4, email-provider, app, or policy claims must add their own dated first-party source before being treated as current.
 
+### Targeted review on 2026-09-30
+
+These reviews refresh only the named claims; the older registry rows retain their
+original review dates.
+
+| Surface | First-party source | What it supports |
+| --- | --- | --- |
+| Shopify high-variant themes | <https://shopify.dev/docs/storefronts/themes/product-merchandising/variants/support-high-variant-products> | Liquid variant cap, option-value selection, deferred rendering and null-selection handling |
+| Codex skills | <https://developers.openai.com/codex/skills/> | Repository discovery under `.agents/skills`, explicit skill invocation and installing from another repository |
+
 ## Claim record
 
 Use this shape in a decision log or pull request:

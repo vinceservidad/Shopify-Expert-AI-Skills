@@ -47,6 +47,8 @@ The repository retains 12 checks using the real JavaScript with a synthetic HTML
 
 This deliberately small example excludes variant-specific media, selling plans, bundles, app blocks, multi-option pickers and high-variant products. Do not transplant it into those cases. The minimal theme is not a replacement for Dawn or an existing merchant theme.
 
+For larger catalogs, use the high-variant guidance in [Liquid patterns](liquid-patterns.md). The local fixture does not model Shopify's variant-array limit or deferred option rendering.
+
 Before production use, integrate the smallest compatible change into an unpublished development theme. Run Theme Check, inspect actual rendered variants and media, test apps, markets, editor re-rendering, keyboard and screen-reader behavior, and confirm the cart receives the intended variant. Publish only with explicit approval and verify the canonical storefront afterward. Keep the prior theme/version for rollback.
 
 ## Official sources
