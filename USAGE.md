@@ -89,6 +89,25 @@ For another task, attach that guide's `SKILL.md` and the reference files it asks
 
 There is a [copy-and-paste prompt for every guide](docs/prompt-library.md).
 
+## Choose an everyday VA job
+
+The toolkit also has eight repeatable workflows using the existing guides. A workflow tells the AI which information to check and what result to prepare.
+
+| Say... | Have ready |
+| --- | --- |
+| “Set up my client's work guide.” | Brand voice, policies, assigned tasks and who approves or handles exceptions. |
+| “Plan today's work.” | Client brief, dated task list, deadlines and available working time. |
+| “Check this product listing.” | Target product, current listing and approved product facts. |
+| “Review my product catalog.” | Products or export to check, approved identifiers and naming rules. |
+| “Review stock.” | Target items, stock by location and the owner's stock thresholds. |
+| “Help me answer this customer.” | Customer question, approved policy and verified order facts when relevant. |
+| “Prepare my handover.” | Work log, drafts, verification evidence, blocked tasks and next owners. |
+| “Train a new VA.” | Assigned task, current instructions, sanitized examples and reviewer criteria. |
+
+Open [Practical VA jobs](docs/va-workflows.md), attach the job's owner guide and linked reference, then use its [sample request](docs/prompt-library.md#practical-va-jobs). Missing policies, facts or thresholds remain gaps for the owner to resolve. A checklist alone does not prove that a task or store change is complete.
+
+Keep the client brief and evidence in your chat or ChatGPT/Claude project files. The task-preparation tool receives only the names of available inputs; it does not upload or store those documents. These workflows run on request and do not schedule future work.
+
 ## Connect your store (optional)
 
 Connecting a store lets the AI use current store information instead of relying only on files you upload. Check which connection you are using and what it is allowed to do.
@@ -100,6 +119,8 @@ Connecting a store lets the AI use current store information instead of relying 
 | A separate approved Shopify editing connection | Supported changes allowed by that connection, your account permissions, and your approval. |
 
 Our hosted connector is **read-only**. It was verified on **VA Toolkit Connector Test**, a development store with sample data, on September 30, 2026. It has not been verified for every merchant store. The order test returned no orders, so populated order summaries are still unverified.
+
+The released hosted Worker is **0.1.0 with eight tools**. The local **0.2.0** plugin/connector source adds workflow discovery, task preparation, product details and order details for a total of **12 tools**. Using the hosted URL does not enable these four new tools before a separate release. The upgrade keeps the existing read permissions (`read_products`, `read_inventory`, `read_orders`) and cannot edit the store. The new order-details read excludes customer identities, addresses and payment details.
 
 Supported editing depends on the separate integration. See Shopify's instructions for [ChatGPT](https://help.shopify.com/en/manual/ai-powered-tools/connecting-ai-tools/shopify-plugin-for-chatgpt) or [Claude](https://help.shopify.com/en/manual/ai-powered-tools/connecting-ai-tools/shopify-connector-for-claude). Installing the guides alone does not give either app access to your store.
 
@@ -191,6 +212,8 @@ Use [OpenAI's Codex skill instructions](https://developers.openai.com/codex/skil
 | Claude rejects a skill ZIP | Compress one complete skill folder with `SKILL.md` and `references` inside it. Check that its name matches the guide. |
 | Claude does not use the installed skill | Enable it and start with “Use the shopify-product-listing skill.” |
 | The AI cannot read the store | Use uploaded evidence, or check your approved connection and permissions. |
+| The hosted connection does not list VA workflows or detailed reads | The released Worker still has eight tools. Use the workflow files in chat, or ask your setup helper to use the local upgraded connector. |
+| A stock review asks for thresholds or shows partial coverage | Supply the owner's thresholds and remaining pages/locations. Unknown or untracked stock is not zero. |
 | The AI cannot make a change | Check whether the connection supports edits, then name the exact approved change. Our connector is read-only. |
 
 ## Start with the Shopify Store Operating Lifecycle

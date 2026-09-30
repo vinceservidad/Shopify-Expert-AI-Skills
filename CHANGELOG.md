@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Practical VA workflows (source/plugin 0.2.0)
+
+- Add eight original workflow guides and templates within the existing VA,
+  product-listing, catalog, support and training skills. Preserve all 19 names.
+- Add workflow discovery and deterministic task preparation without reading
+  client files, storing context, scheduling work or granting editing permission.
+- Add fixed product-description/media/SEO and privacy-limited order-detail reads
+  using existing permissions and API 2026-07. Preserve existing tools and prompts.
+- Add package, protocol and Workers regression coverage and ungraded behavioral
+  scenarios. Keep client facts in chat/project files and use separate approved
+  editing connections only when supported and authorized.
+- The hosted Worker remains release 0.1.0 with eight tools; this source upgrade
+  does not merge or deploy it.
+
 ### Plugin and read-only MCP connector
 
 - Deploy an HTTPS Cloudflare Workers connector with encrypted SQLite-backed

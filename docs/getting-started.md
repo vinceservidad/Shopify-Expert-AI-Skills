@@ -63,3 +63,7 @@ A **skill** is an instruction guide. ChatGPT or Claude does the work using that 
 Our hosted connector only reads data and was verified on a development store with sample data. A separate authorized Shopify integration may allow supported edits. The combined editing workflow in ChatGPT or Claude is still unverified here. Always approve the exact change and check the saved result in Shopify.
 
 Use [Choose a task](../USAGE.md#choose-a-task) to find all 19 guides, or [Connect your store](../USAGE.md#connect-your-store-optional) when you need current store data. The [full usage guide](../USAGE.md) covers reusable setup, permissions, and troubleshooting.
+
+For an everyday VA job, use [Practical VA jobs](va-workflows.md). Attach the matching guide and its workflow reference, then try “Plan today's work” with your client brief and task list, or “Prepare my handover” with your work log and verification evidence. The page also covers client setup, listing checks, catalog and stock reviews, customer replies and training.
+
+Keep client documents in your chat or project files. The upgraded local plugin/connector source has 12 tools; the released hosted Worker still has eight. The workflows can also guide a chat using uploaded files, and run only when requested.

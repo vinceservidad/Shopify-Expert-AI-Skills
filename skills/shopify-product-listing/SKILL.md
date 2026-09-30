@@ -4,7 +4,7 @@ description: Creates, updates, and quality-checks Shopify product listings from 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.2"
+  version: "0.2.3"
 ---
 
 # Shopify Product Listing
@@ -35,6 +35,8 @@ Collect target store, create or update mode, product source, title, description,
 7. After approved publication, verify the correct channels, markets, product page, variants, price, availability, structured output, and feed state where in scope.
 
 Read [references/listing-fields.md](references/listing-fields.md) for the field contract. Use [references/qa-checklist.md](references/qa-checklist.md) before save, activation, publication, and handoff.
+
+For “Check this product listing,” use [references/product-listing-check.md](references/product-listing-check.md) to compare approved facts with the inspected record, draft corrections, and report evidence gaps. This review makes no store changes.
 
 ## Worked example
 

@@ -19,6 +19,27 @@ This toolkit gives the AI guides for writing product listings, checking store in
 
 There are **19 guides**, called *skills*. You only need the guide for the task you are doing. [See all tasks and guides](USAGE.md#choose-a-task).
 
+## Eight practical VA jobs
+
+Use these repeatable jobs with your client's approved files and store evidence:
+
+| Ask the AI... | What you receive |
+| --- | --- |
+| “Set up my client's work guide.” | Brand voice, policies, assigned tasks, approvals and escalation roles in one brief. |
+| “Plan today's work.” | Prioritized tasks, missing information and decisions needed from the owner. |
+| “Check this product listing.” | A comparison against approved facts, content gaps and a review checklist. |
+| “Review my product catalog.” | SKU conflicts, inconsistent information and proposed corrections within the checked records. |
+| “Review stock.” | Exceptions against the owner's thresholds, with locations and incomplete coverage shown. |
+| “Help me answer this customer.” | A policy-based reply draft, verified facts and any escalation needed. |
+| “Prepare my handover.” | Drafts ready, verified changes, blocked tasks and next actions. |
+| “Train a new VA.” | Task instructions, sample work, exception cases and a reviewer checklist. |
+
+[Choose a VA job](docs/va-workflows.md) for the files to provide, or [copy a request](docs/prompt-library.md#practical-va-jobs). Keep client briefs in your ChatGPT or Claude chat/project files. These jobs run when you request them; they do not create schedules or background monitoring.
+
+The local **0.2.0** plugin/connector source adds these eight workflows and brings the tool total to **12**. The currently released hosted Worker remains **0.1.0 with eight tools** until a separate release. The new tools are not yet available at its hosted URL.
+
+The eight job workflows are in the upgrade source on [PR #8](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/pull/8). The [job guide](docs/va-workflows.md) links that source download; the main ZIP below still supports the original first-task example.
+
 ## How does it work?
 
 Three parts work together:
@@ -89,6 +110,7 @@ After an approved edit, open the correct store and check the saved result. A dra
 - [How to use the toolkit](USAGE.md): choose a task, prepare your information and troubleshoot.
 - [Your first task](docs/getting-started.md): a product-description walkthrough.
 - [More sample requests](docs/prompt-library.md): prompts for all 19 guides.
+- [Practical VA jobs](docs/va-workflows.md): eight everyday workflows and the information they need.
 - [Worked examples](docs/worked-examples.md): practice tasks using made-up sample data.
 
 For developers and readers who want the details:

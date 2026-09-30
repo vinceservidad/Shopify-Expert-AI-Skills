@@ -3,11 +3,28 @@ import { randomBytes, createHash, createHmac } from 'node:crypto';
 import { mkdtemp, rm, readdir, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
+// Read the shared source contracts independently of the Worker bundle. worker:test also runs without a Node build.
+const source = JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', '--input-type=module', '-e', `
+  import { Client, InMemoryTransport } from '@modelcontextprotocol/client';
+  import { createServer } from './src/mcp.ts';
+  import { WORKFLOWS, listWorkflows, prepareWorkflow } from './src/workflows.ts';
+  import { listSkills, readSkill } from './src/catalog.ts';
+  import { QUERIES } from './src/shopify.ts';
+  const server = createServer({skillsRoot:'../skills'}), client = new Client({name:'worker-source-comparison',version:'1.0.0'});
+  const [ct, st] = InMemoryTransport.createLinkedPair(); await server.connect(st); await client.connect(ct);
+  const tools = (await client.listTools()).tools; await client.close(); await server.close();
+  const prepared = await Promise.all(WORKFLOWS.map(workflow => prepareWorkflow(workflow.id, [], (name,resource) => readSkill('../skills',name,resource))));
+  console.log(JSON.stringify({tools, workflows:listWorkflows(), prepared, skills:await listSkills('../skills'), queries:QUERIES}));
+`], { encoding: 'utf8' }));
+const legacyNames = ['list_shopify_skills', 'read_shopify_skill', 'shopify_connection_status', 'shopify_get_shop',
+  'shopify_search_products', 'shopify_get_product_variants', 'shopify_get_inventory_levels', 'shopify_list_order_summaries'];
 const origin = 'https://shopify-va-toolkit.vinceluxxe.workers.dev';
 const persist = await mkdtemp(join(tmpdir(), 'toolkit-workers-'));
 const key = randomBytes(32).toString('base64');
 let upstreamRedirect = false;
+const upstreamCalls = [];
 const options = {
   upstream: origin, modules: true, scriptPath: 'build/worker/index.js', compatibilityDate: '2026-09-30', compatibilityFlags: ['nodejs_compat'],
   bindings: { PUBLIC_URL: origin, SHOPIFY_CLIENT_ID: 'synthetic-app', SHOPIFY_CLIENT_SECRET: 'synthetic-app-secret', CONNECTOR_STORAGE_KEY: key },
@@ -19,6 +36,18 @@ const options = {
     if (url.pathname === '/admin/oauth/access_token') return Response.json({ access_token: `upstream-${url.hostname}`, scope: 'read_products,read_inventory,read_orders' });
     if (upstreamRedirect) return new Response(null, { status: 302, headers: { Location: 'https://foreign.invalid/credentials' } });
     assert.equal(request.headers.get('x-shopify-access-token'), `upstream-${url.hostname}`);
+    assert.equal(url.pathname, '/admin/api/2026-07/graphql.json'); assert.equal(request.method, 'POST');
+    const body = await request.json();
+    upstreamCalls.push({ shop: url.hostname, ...body });
+    if (body.query === source.queries.productDetails) return Response.json({ data: { product: { id: body.variables.id,
+      descriptionHtml: `<p>Product from ${url.hostname}</p>`, seo: { title: `Product from ${url.hostname}`, description: null },
+      media: { nodes: [{ id: 'gid://shopify/MediaImage/1', alt: url.hostname, mediaContentType: 'IMAGE', status: 'READY' }], pageInfo: { hasNextPage: true, endCursor: 'media-next' } },
+    } } }, { headers: { 'x-shopify-api-version': '2026-07' } });
+    if (body.query === source.queries.orderDetails) return Response.json({ data: { order: { id: body.variables.id,
+      displayFinancialStatus: 'PAID', displayFulfillmentStatus: 'UNFULFILLED', cancelledAt: null,
+      lineItems: { nodes: [{ id: 'gid://shopify/LineItem/1', name: `Product from ${url.hostname}`, quantity: 2, sku: 'TEST-1' }], pageInfo: { hasNextPage: true, endCursor: 'line-next' } },
+    } } }, { headers: { 'x-shopify-api-version': '2026-07' } });
+    assert.equal(body.query, source.queries.shop);
     return Response.json({ data: { shop: { id: 'gid://shopify/Shop/1', name: url.hostname } } }, { headers: { 'x-shopify-api-version': '2026-07' } });
   },
 };
@@ -65,10 +94,42 @@ try {
   assert.equal((await send('/.well-known/oauth-protected-resource/mcp')).status, 200);
   const first = await authorize('synthetic-a.myshopify.com'), second = await authorize('synthetic-b.myshopify.com');
   for (const [grant, shop] of [[first, 'synthetic-a.myshopify.com'], [second, 'synthetic-b.myshopify.com']]) {
-    assert.equal((await rpc(grant.tokens.access_token, 'tools/list')).result.tools.length, 8);
-    assert.equal((await rpc(grant.tokens.access_token, 'tools/call', { name: 'list_shopify_skills', arguments: {} })).result.structuredContent.skills.length, 19);
+    const tools = (await rpc(grant.tokens.access_token, 'tools/list')).result.tools;
+    assert.equal(tools.length, 12); assert.deepEqual(tools, source.tools, 'Worker tools retain Node input contracts');
+    for (const name of legacyNames) assert.ok(tools.some(tool => tool.name === name));
+    assert.ok(tools.every(tool => tool.annotations?.readOnlyHint === true && tool.annotations?.destructiveHint === false));
+    const skills = (await rpc(grant.tokens.access_token, 'tools/call', { name: 'list_shopify_skills', arguments: {} })).result.structuredContent.skills;
+    assert.equal(skills.length, 19); assert.deepEqual(skills, source.skills);
     assert.equal((await rpc(grant.tokens.access_token, 'tools/call', { name: 'shopify_get_shop', arguments: {} })).result.structuredContent.shop, shop);
+    for (const [name,id,field,page,query] of [
+      ['shopify_get_product_details','gid://shopify/Product/1','product','media',source.queries.productDetails],
+      ['shopify_get_order_details','gid://shopify/Order/1','order','lineItems',source.queries.orderDetails],
+    ]) {
+      const arguments_ = {id,first:1,after:'synthetic-cursor'};
+      const details = (await rpc(grant.tokens.access_token,'tools/call',{name,arguments:arguments_})).result;
+      assert.equal(details.isError,undefined); assert.equal(details.structuredContent.shop,shop);
+      assert.equal(details.structuredContent.apiVersion,'2026-07'); assert.equal(details.structuredContent.data[field].id,id);
+      assert.equal(details.structuredContent.data[field][page].pageInfo.hasNextPage,true);
+      assert.ok(JSON.stringify(details).includes(`Product from ${shop}`)); assert.ok(!JSON.stringify(details).includes(`upstream-${shop}`));
+      assert.deepEqual(upstreamCalls.at(-1),{shop,query,variables:arguments_});
+    }
   }
+  const beforePreparation = upstreamCalls.length;
+  const workflows = (await rpc(first.tokens.access_token,'tools/call',{name:'list_shopify_va_workflows',arguments:{}})).result.structuredContent.workflows;
+  assert.deepEqual(workflows,source.workflows);
+  for (const expected of source.prepared) {
+    const prepared = (await rpc(first.tokens.access_token,'tools/call',{name:'prepare_shopify_va_task',arguments:{workflow_id:expected.workflow_id}})).result;
+    assert.equal(prepared.isError,undefined); assert.deepEqual(prepared.structuredContent,expected,'Every Worker workflow has complete source guidance');
+    const guide = (await rpc(first.tokens.access_token,'tools/call',{name:'read_shopify_skill',arguments:{name:expected.owner_skill,resource:expected.reference}})).result;
+    assert.equal(guide.isError,undefined); assert.ok(expected.guidance.includes(guide.structuredContent.text));
+  }
+  const policy = (await rpc(first.tokens.access_token,'tools/call',{name:'prepare_shopify_va_task',arguments:{workflow_id:'customer_reply',provided_input_keys:['customer_message']}})).result;
+  assert.deepEqual(policy.structuredContent.missing_inputs,['approved_policies']); assert.equal(policy.structuredContent.inputs_verified,false);
+  for (const arguments_ of [{workflow_id:'unknown'},{workflow_id:'customer_reply',provided_input_keys:['invented_policy']},
+    {workflow_id:'customer_reply',client_brief:'Private client content'},{workflow_id:'daily_work_plan',provided_input_keys:Array(31).fill('task_queue')}]) {
+    assert.equal((await rpc(first.tokens.access_token,'tools/call',{name:'prepare_shopify_va_task',arguments:arguments_})).result.isError,true);
+  }
+  assert.equal(upstreamCalls.length,beforePreparation,'Workflow discovery and preparation make no Shopify reads');
   const guide = await rpc(first.tokens.access_token, 'tools/call', { name: 'read_shopify_skill', arguments: { name: 'shopify-va', resource: 'references/connected-store-work.md' } });
   assert.ok(guide.result.structuredContent.text.length > 100);
   assert.equal((await rpc(first.tokens.access_token, 'tools/call', { name: 'read_shopify_skill', arguments: { name: 'shopify-va', resource: '../.env' } })).result.isError, true);
@@ -76,15 +137,23 @@ try {
   assert.equal((await rpc(first.tokens.access_token, 'tools/call', { name: 'shopify_get_shop', arguments: {} })).result.isError, true);
   upstreamRedirect = false;
   await mf.dispose(); mf = new Miniflare(convertV4MiniflareOptions(options));
-  assert.equal((await rpc(first.tokens.access_token, 'tools/list')).result.tools.length, 8, 'OAuth grant survives runtime restart');
+  assert.equal((await rpc(first.tokens.access_token, 'tools/list')).result.tools.length, 12, 'OAuth grant survives runtime restart');
+  const restartedOrder = (await rpc(first.tokens.access_token,'tools/call',{name:'shopify_get_order_details',arguments:{id:'gid://shopify/Order/1'}})).result;
+  assert.equal(restartedOrder.structuredContent.shop,'synthetic-a.myshopify.com');
+  assert.deepEqual(upstreamCalls.at(-1).variables,{id:'gid://shopify/Order/1',first:20});
   const refresh = { client_id: first.client_id, grant_type: 'refresh_token', refresh_token: first.tokens.refresh_token, resource: origin + '/mcp' };
   const rotated = await post('/token', refresh);
   assert.equal(rotated.status, 200);
   assert.equal((await post('/token', refresh)).status, 400);
   const tokens = await rotated.json();
+  const refreshedProduct = (await rpc(tokens.access_token,'tools/call',{name:'shopify_get_product_details',arguments:{id:'gid://shopify/Product/1'}})).result;
+  assert.equal(refreshedProduct.structuredContent.shop,'synthetic-a.myshopify.com');
   await post('/revoke', { client_id: first.client_id, token: tokens.access_token });
   assert.equal((await post('/mcp', {}, { Authorization: 'Bearer ' + first.tokens.access_token })).status, 401);
-  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 8);
+  assert.equal((await post('/mcp', {}, { Authorization: 'Bearer ' + tokens.access_token })).status, 401);
+  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 12);
+  const unaffectedOrder = (await rpc(second.tokens.access_token,'tools/call',{name:'shopify_get_order_details',arguments:{id:'gid://shopify/Order/1'}})).result;
+  assert.equal(unaffectedOrder.structuredContent.shop,'synthetic-b.myshopify.com','Revocation cannot change another store grant');
   async function checkFiles(directory) {
     for (const entry of await readdir(directory, { withFileTypes: true })) {
       const path = join(directory, entry.name);
@@ -94,5 +163,5 @@ try {
   }
   await mf.dispose(); mf = undefined;
   await checkFiles(persist);
-  console.log('Workers runtime passed: browser origin protection, real OAuth/PKCE/HMAC flow, 19 skills, 8 tools, store isolation, durable restart, encrypted persistence, single-use codes, refresh rotation and revocation.');
+  console.log('Workers runtime passed: browser origin protection, real OAuth/PKCE/HMAC flow, 19 skills, 8 complete VA workflows, 12 tools, Node contract parity, detail-read store isolation, durable restart, encrypted persistence, single-use codes, refresh rotation and revocation.');
 } finally { if (mf) await mf.dispose(); await rm(persist, { recursive: true, force: true }); }

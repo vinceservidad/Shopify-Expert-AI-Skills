@@ -70,6 +70,20 @@ original review dates.
 | Inventory location scope | <https://shopify.dev/docs/api/admin-graphql/2026-07/objects/Location> and the actual development-store response | The location object supports `read_inventory`, but its `name` field was denied without an additional scope; fixed queries return IDs only |
 | Same-organization app auth | <https://shopify.dev/docs/apps/build/authentication-authorization/client-credentials-grant> | Installed apps can obtain short-lived tokens for stores in their own organization; this does not authorize unrelated merchant access |
 
+### Practical-workflow schema review on 2026-09-30
+
+The added `ToolkitProductDetails` and `ToolkitOrderDetails` reads validate against
+the bundled official `2026-07` schema. Product description, SEO and media metadata
+are requested through `read_products`; financial/fulfillment/cancellation state
+and line items through `read_orders`. Schema validation reports alternative
+object scopes together; this does not request all of them. Live access must be
+checked separately. The connector's approved scope list is unchanged. A populated
+development-store order exposed `ACCESS_DENIED` for the Order object despite
+`read_orders`; [protected-data approval](https://shopify.dev/docs/apps/launch/protected-customer-data)
+and a permanent [distribution choice](https://shopify.dev/docs/apps/launch/distribution)
+are separate requirements. No approval/configuration change is implied by schema
+validation.
+
 ## Claim record
 
 Use this shape in a decision log or pull request:

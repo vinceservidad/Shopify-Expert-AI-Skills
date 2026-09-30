@@ -4,7 +4,7 @@ description: Drafts policy-grounded Shopify support responses, macros, escalatio
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Support
@@ -36,6 +36,8 @@ When required evidence is unavailable, write a safe holding response and the exa
 6. Require approval or authorized system access before any operational action or send.
 
 Read [references/response-guidelines.md](references/response-guidelines.md) for drafting and risk handling. Read [references/faq-framework.md](references/faq-framework.md) for macros and knowledge-base design.
+
+For “Help me answer this customer,” use [references/customer-reply.md](references/customer-reply.md) to produce a policy-grounded reply draft, verification gaps, and an escalation note. The read-only connector cannot send a reply or perform a remedy.
 
 ## Output contract
 

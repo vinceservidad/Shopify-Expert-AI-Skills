@@ -9,6 +9,22 @@ The plugin bundles the existing 19 skills. The MCP connector supplies read-only
 store evidence; the skills guide task reasoning and QA. No refund, publish,
 inventory-change, product-write or campaign tool is exposed.
 
+## Practical VA workflows in source version 0.2.0
+
+The local source and rebuilt package expose twelve tools and eight practical
+workflows. [The workflow guide](va-workflows.md) covers client setup, daily work,
+listing checks, catalog review, stock review, reply drafts, handovers and training.
+`list_shopify_va_workflows` lists jobs and input names. `prepare_shopify_va_task`
+returns the owner instructions, workflow guide, missing input names and review
+steps. Input names report availability in the host chat/project, not verified
+facts. This preparer makes no Shopify calls, saves no documents and authorizes no
+external change. New product/order detail tools supply bounded read evidence.
+
+The live Cloudflare endpoint remains the released **0.1.0, eight-tool service**.
+Building or downloading the **0.2.0, twelve-tool package** does not replace it.
+There is no public one-click plugin release or directory listing. A separate
+release instruction is required before the hosted service gains these tools.
+
 ## Build the plugin
 
 Requirements: Node.js 24+, Python 3.11+ and the repository's Python dependencies.
@@ -169,20 +185,42 @@ runs the deployed bundle in Miniflare with synthetic upstream responses and
 checks browser OAuth, two-store isolation, restart persistence, encrypted storage,
 code replay rejection, refresh rotation, revocation and redirect rejection.
 
+## Order-object access approval
+
+`read_orders` alone may not enable populated order reads. Shopify treats the
+Order object as protected customer data even when the query omits names,
+addresses, email, phone and payment details. In the live development-store test,
+the app's three read scopes were present, but Shopify returned `ACCESS_DENIED`
+for the Order object after an unpaid two-item test order was created. The new
+order read is schema-validated and covered by synthetic protocol tests; its
+populated live read is pending the app's distribution/data-access approval.
+
+Select app distribution only with the owner's approval: Shopify makes that
+choice permanent. Custom apps have protected-data access automatically; public
+apps need their data use configured and any required approval. Do not request
+identity fields or new write scopes merely to resolve an Order-object denial.
+See [Shopify's protected-data rules](https://shopify.dev/docs/apps/launch/protected-customer-data)
+and [distribution rules](https://shopify.dev/docs/apps/launch/distribution).
+
 ## Tool surface
 
 | Tool | Evidence supplied |
 | --- | --- |
 | `list_shopify_skills` | Workflow names and purposes |
 | `read_shopify_skill` | One skill or its named Markdown reference |
+| `list_shopify_va_workflows` | Eight jobs, owners, required and optional input names |
+| `prepare_shopify_va_task` | Instructions, missing-input checks and QA; no store calls or context storage |
 | `shopify_connection_status` | Configured store/scopes; not a reachability test |
 | `shopify_get_shop` | Store identity, currency, timezone and primary domain |
 | `shopify_search_products` | One product page with identity, status and total stock |
+| `shopify_get_product_details` | Description, SEO and one media-metadata page |
 | `shopify_get_product_variants` | One variant page with SKU, price and inventory-item IDs |
 | `shopify_get_inventory_levels` | Location quantities for an inventory-item ID |
 | `shopify_list_order_summaries` | One page of totals/status without customer details |
+| `shopify_get_order_details` | Financial/fulfillment/cancellation state and one line-item page; no customer or carrier data |
 
-Store reads use fixed GraphQL operations on API version `2026-07`; user search
+Source 0.2.0 uses seven fixed reads. The deployed 0.1.0 service retains its five
+previous reads. Store reads use fixed GraphQL operations on API version `2026-07`; user search
 text is passed as variables. No arbitrary GraphQL tool is exposed. Each page is
 capped at 50; continue with `endCursor` when `pageInfo.hasNextPage` is true.
 A page is not a complete catalog or reconciled report. Orders follow Shopify's
