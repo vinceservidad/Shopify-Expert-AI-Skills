@@ -11,3 +11,7 @@ connector/data/
 .env
 .env.*
 !.env.example
+
+connector/.wrangler/
+connector/.dev.vars*
+connector/worker/generated/

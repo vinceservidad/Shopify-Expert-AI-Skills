@@ -3,10 +3,10 @@ import { shopifyApi, ApiVersion, LogSeverity } from '@shopify/shopify-api';
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import express, { type Express, type Request, type Response } from 'express';
 import { z } from 'zod';
-import { SecretStore } from './store.js';
+import type { RecordStore } from './record-store.js';
 import { Connection, Fetch, SHOPIFY_SCOPES, shopDomain } from './shopify.js';
 
-const token = () => randomBytes(32).toString('base64url');
+const token = () => Buffer.from(randomBytes(32)).toString('base64url');
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
 const equal = (a: string, b: string) => a.length === b.length && timingSafeEqual(Buffer.from(a), Buffer.from(b));
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
@@ -17,7 +17,7 @@ type Pending = { clientId: string; redirectUri: string; state?: string; challeng
 type Grant = Connection & { refreshToken?: string; expiresAt?: number; authorizationExpiresAt?: number };
 type AuthorizationCode = { clientId: string; redirectUri: string; challenge: string; grantId: string; resource: string };
 type Credential = { clientId: string; grantId: string; resource: string; kind: 'access' | 'refresh' };
-export type AuthOptions = { publicUrl: string; clientId: string; clientSecret: string; store: SecretStore; fetcher?: Fetch };
+export type AuthOptions = { publicUrl: string; clientId: string; clientSecret: string; store: RecordStore; fetcher?: Fetch; rateLimitKey?: (request: Request) => string };
 
 function redirectUri(value: string): boolean {
   try {
@@ -47,7 +47,7 @@ export class ShopifyOAuth {
     }
     options.publicUrl = base.origin;
     this.resource = `${base.origin}/mcp`;
-    this.fetcher = options.fetcher ?? fetch;
+    this.fetcher = options.fetcher ?? ((input, init) => fetch(input, init));
     this.shopify = shopifyApi({ apiKey: options.clientId, apiSecretKey: options.clientSecret,
       hostName: base.host, hostScheme: base.protocol === 'https:' ? 'https' : 'http',
       scopes: SHOPIFY_SCOPES, apiVersion: ApiVersion.July26, isEmbeddedApp: false,
@@ -62,7 +62,7 @@ export class ShopifyOAuth {
     const limit = (request: Request, response: Response, next: () => void) => {
       const now = Date.now();
       for (const [key, value] of rates) if (value.until < now) rates.delete(key);
-      const key = request.ip ?? 'unknown';
+      const key = this.options.rateLimitKey?.(request) ?? request.ip ?? 'unknown';
       const entry = rates.get(key) ?? { until: now + 60000, count: 0 };
       if (rates.size >= 10000 || ++entry.count > 30) { failures(response, 'rate_limit_exceeded', 429); return; }
       rates.set(key, entry); next();

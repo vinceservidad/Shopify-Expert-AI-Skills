@@ -126,6 +126,49 @@ Building this source does not publish a hostname, register a public directory
 entry, create billing, or roll out a production service. Verify the actual HTTPS
 endpoint and client sign-in separately on every host you claim to support.
 
+## Cloudflare Workers deployment
+
+The current development-store connector is hosted at
+`https://shopify-va-toolkit.vinceluxxe.workers.dev/mcp`.
+Paste that URL into an MCP client's connector setup. Opening `/mcp` directly
+without an access token returns HTTP 401; the public homepage and `/health`
+are available without sign-in. This deployment verifies the designated test
+store. Access for unrelated merchants still requires Shopify app distribution
+and the merchant's installation approval.
+
+The Workers entrypoint is `connector/worker/index.ts`. The Worker handles MCP
+requests using the shared read-only tool definitions and a build-time snapshot
+of the canonical skills. One Durable Object per configured authorization issuer
+coordinates OAuth records with SQLite-backed storage; Shopify queries run
+outside that object. Encrypted grants survive Worker restarts. The local stdio
+and standalone Node server remain available.
+
+From `connector/`, run:
+
+```bash
+npm ci
+npm run worker:typecheck
+npm run worker:test
+```
+
+For your own deployment, set the Cloudflare `account_id`, `PUBLIC_URL`, Worker name and rate-limit namespace
+IDs in `wrangler.jsonc`. Authenticate Wrangler to the intended Cloudflare account.
+Set `SHOPIFY_CLIENT_ID`, `SHOPIFY_CLIENT_SECRET` and a new base64-encoded 32-byte
+`CONNECTOR_STORAGE_KEY` with `wrangler secret put`. Then run
+`npm run worker:deploy`. Never upload the local `.env` or database. Register the
+exact HTTPS `/oauth/shopify/callback` URL in the Shopify app and release that
+configuration before testing browser sign-in.
+
+The binding types are generated from `wrangler.jsonc` plus placeholder secret
+names in `worker/.env.example`. The deployment uses platform rate limits, hourly
+expired-record cleanup, strict public Host/Origin checks, bounded request bodies,
+and query-string redaction with invocation logs disabled. Cloudflare's fetch
+runtime lacks `redirect: error`; the adapter uses `manual` and explicitly rejects
+redirect responses before credentials could be forwarded. The integration test
+runs the deployed bundle in Miniflare with synthetic upstream responses and
+checks browser OAuth, two-store isolation, restart persistence, encrypted storage,
+code replay rejection, refresh rotation, revocation and redirect rejection.
+
 ## Tool surface
 
 | Tool | Evidence supplied |
@@ -175,8 +218,13 @@ inventory location, empty order response, and product pagination. An initial
 page. That page now uses `same-origin`; the origin guard still rejects null and
 foreign origins, and cross-origin referrers remain omitted.
 
-Public HTTPS hosting and native hosted-client installation/sign-in remain
-unverified. The mock protocol tests and these local live-store checks do not
+Cloudflare deployment was verified at 100% traffic on September 30, 2026.
+Chrome completed HTTPS OAuth and the hosted MCP passed all five fixed Shopify
+reads: identity, products, variants, location inventory and an empty order
+response, plus product pagination. The observed counts were 19 skills, eight
+tools, two product/variant records and one inventory location. The deployed
+version was `188b1418-cb0c-42ef-aa7c-3b9e2dfbd96e`. Orders with populated records
+and native ChatGPT/Claude hosted-client sign-in remain unverified. The mock protocol tests and these local live-store checks do not
 establish full workflow coverage, populated order handling, or model expertise.
 
 ## Sources

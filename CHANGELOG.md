@@ -6,6 +6,14 @@ All notable changes to this project are documented here.
 
 ### Plugin and read-only MCP connector
 
+- Deploy an HTTPS Cloudflare Workers connector with encrypted SQLite-backed
+  Durable Object OAuth storage, platform rate limits and shared read-only tools.
+- Bundle canonical skill documents for Workers and add runtime integration checks
+  for store isolation, restart persistence, code replay, refresh, revocation and
+  rejected upstream redirects. Keep local Node and stdio modes available.
+- Verify hosted Chrome OAuth and real development-store MCP reads. Record empty
+  order and native hosted-client limitations without expanding merchant scopes.
+
 - Fix the consent page's referrer policy so browser form POSTs preserve their
   same-origin header. Keep null/foreign-origin rejection and CSRF protections.
 - Complete local Chrome OAuth followed by actual authenticated Streamable HTTP

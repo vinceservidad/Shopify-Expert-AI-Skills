@@ -10,6 +10,12 @@ The plugin bundles all 19 skills, and the read-only MCP connector supplies
 products, variants, inventory and order summaries through an approved connection.
 See [plugin and connector setup](docs/plugin-and-connector.md). The source
 repository keeps its existing URL; a hosted MCP endpoint is a separate deployment.
+Hosted development-store MCP endpoint:
+`https://shopify-va-toolkit.vinceluxxe.workers.dev/mcp`.
+Use it in connector setup; direct unauthenticated visits return 401. See the
+[Cloudflare deployment guide](docs/plugin-and-connector.md#cloudflare-workers-deployment)
+for hosting and the verified test-store limits.
+
 This is an independent project, not an official Shopify product.
 
 ## One operating lifecycle for every Shopify role
