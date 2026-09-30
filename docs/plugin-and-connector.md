@@ -1,6 +1,7 @@
-# Shopify VA Toolkit: plugin and MCP connector
+# MKT Skills VA Toolkit: plugin and MCP connector
 
-The display name is **Shopify VA Toolkit**. The existing
+The public display name is **MKT Skills VA Toolkit**. Existing plugin and server
+identifiers remain **shopify-va-toolkit**. The existing
 `vinceservidad/Shopify-Expert-AI-Skills` repository URL remains the source of truth
 and preserves existing links. It is not a hosted connector URL. This independent
 project is not affiliated with Shopify.
@@ -24,6 +25,33 @@ The live Cloudflare endpoint remains the released **0.1.0, eight-tool service**.
 Building or downloading the **0.2.0, twelve-tool package** does not replace it.
 There is no public one-click plugin release or directory listing. A separate
 release instruction is required before the hosted service gains these tools.
+
+## Public app and domain candidate
+
+The public candidate adds a free embedded Shopify app and a separate Worker for
+unrelated merchants. It uses Shopify-managed installation, verified App Bridge
+ID tokens, owner-reviewed connection request codes and signed compliance and
+uninstall webhooks. App Home includes the eight guides, bounded store evidence
+views, connection status and owner disconnect controls. Store writes, scheduled
+runs, app charges and client-document storage are not added.
+
+The proposed guide is `mktskills.com/shopify-va`; the proposed permanent MCP URL
+is `https://shopify-mcp.mktskills.com/mcp`. Domain purchase/connection, the new
+public app and Shopify approval, incoming support forwarding and native
+ChatGPT/Claude tests remain public release gates. A candidate build must not
+change the original development Worker or claim those addresses are live.
+
+Use [Public release setup and verification](public-release.md) for the separate
+`wrangler.public.jsonc` and `wrangler.guide.jsonc` configurations, public
+authentication flow, deployment boundaries and current approval requirements.
+The standalone setup below remains available for the dedicated Custom app and
+local development. Asking for a manual shop domain in that private flow does
+not make it compliant with public App Store installation requirements.
+
+The public website uses an existing checked versioned GitHub release URL only
+when `PLUGIN_DOWNLOAD_URL` is explicitly configured. Until then, it offers
+source documents and labels the plugin release as unavailable. Never point a
+download button at a guessed asset, the template folder or an unverified release.
 
 ## Build the plugin
 
@@ -103,6 +131,10 @@ terminal variables; use the host's credential configuration or launch it from
 the configured environment. Never paste credentials into the public example.
 
 ## Hosted OAuth connector
+
+This section describes the existing standalone/Custom mode. It does not enable
+unrelated merchant distribution. For the embedded public candidate, use the
+[public release guide](public-release.md).
 
 This portable Node server uses a single instance with persistent SQLite storage
 behind HTTPS. It implements MCP discovery, public-client dynamic registration,

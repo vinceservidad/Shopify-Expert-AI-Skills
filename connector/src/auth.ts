@@ -5,6 +5,7 @@ import express, { type Express, type Request, type Response } from 'express';
 import { z } from 'zod';
 import type { RecordStore } from './record-store.js';
 import { Connection, Fetch, SHOPIFY_SCOPES, shopDomain } from './shopify.js';
+import { PublicShopifyAuth, type PublicGrant, type AppAuthorization, type AppHomeConfig } from './public-auth.js';
 
 const token = () => Buffer.from(randomBytes(32)).toString('base64url');
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
@@ -17,7 +18,8 @@ type Pending = { clientId: string; redirectUri: string; state?: string; challeng
 type Grant = Connection & { refreshToken?: string; expiresAt?: number; authorizationExpiresAt?: number };
 type AuthorizationCode = { clientId: string; redirectUri: string; challenge: string; grantId: string; resource: string };
 type Credential = { clientId: string; grantId: string; resource: string; kind: 'access' | 'refresh' };
-export type AuthOptions = { publicUrl: string; clientId: string; clientSecret: string; store: RecordStore; fetcher?: Fetch; rateLimitKey?: (request: Request) => string };
+export type AuthOptions = { publicUrl: string; clientId: string; clientSecret: string; store: RecordStore; fetcher?: Fetch; rateLimitKey?: (request: Request) => string;
+  mode?: 'custom' | 'public'; publicAppHandle?: string; publicInstallUrl?: string; renderAppHome?: (config: AppHomeConfig) => string };
 
 function redirectUri(value: string): boolean {
   try {
@@ -38,6 +40,7 @@ export class ShopifyOAuth {
   readonly resource: string;
   private fetcher: Fetch;
   private shopify;
+  private publicAuth?: PublicShopifyAuth;
   private refreshing = new Map<string, Promise<Grant | undefined>>();
   constructor(private options: AuthOptions) {
     const base = new URL(options.publicUrl);
@@ -50,8 +53,15 @@ export class ShopifyOAuth {
     this.fetcher = options.fetcher ?? ((input, init) => fetch(input, init));
     this.shopify = shopifyApi({ apiKey: options.clientId, apiSecretKey: options.clientSecret,
       hostName: base.host, hostScheme: base.protocol === 'https:' ? 'https' : 'http',
-      scopes: SHOPIFY_SCOPES, apiVersion: ApiVersion.July26, isEmbeddedApp: false,
+      scopes: SHOPIFY_SCOPES, apiVersion: ApiVersion.July26, isEmbeddedApp: options.mode === 'public',
       logger: { level: LogSeverity.Error, log: () => {} } });
+    if (options.mode === 'public') this.publicAuth = new PublicShopifyAuth({ ...options, fetcher: this.fetcher },
+      value => this.shopify.session.decodeSessionToken(value), (pending, grantId, response) => this.finishAuthorization(pending, grantId, response));
+  }
+  installWebhooks(app: Express): void { this.publicAuth?.installWebhooks(app); }
+  async appConnection(request: Request): Promise<AppAuthorization> {
+    if (!this.publicAuth) throw new Error('Public app authentication is not enabled.');
+    return this.publicAuth.appConnection(request);
   }
   install(app: Express): void {
     const base = this.options.publicUrl;
@@ -67,7 +77,8 @@ export class ShopifyOAuth {
       if (rates.size >= 10000 || ++entry.count > 30) { failures(response, 'rate_limit_exceeded', 429); return; }
       rates.set(key, entry); next();
     };
-    app.use(['/oauth', '/authorize', '/register', '/token', '/revoke'], limit);
+    app.use(['/oauth', '/authorize', '/register', '/token', '/revoke', '/app/session', '/app/pairing', '/app/connections', '/app/disconnect'], limit);
+    this.publicAuth?.install(app);
     app.get('/.well-known/oauth-protected-resource/mcp', (_request, response) => response.json({
       resource: this.resource, authorization_servers: [base], scopes_supported: [MCP_SCOPE],
       bearer_methods_supported: ['header'], resource_name: 'Shopify VA Toolkit',
@@ -101,6 +112,7 @@ export class ShopifyOAuth {
       store.put(`pending:${id}`, { clientId: q.client_id, redirectUri: q.redirect_uri, state: q.state,
         challenge: q.code_challenge, resource: q.resource, browserHash: hash(browser) } satisfies Pending, 600);
       response.cookie('toolkit_oauth', browser, { httpOnly: true, secure: base.startsWith('https:'), sameSite: 'lax', maxAge: 600000, path: '/oauth' });
+      if (this.publicAuth) { this.publicAuth.begin(id, store.get<Pending>(`pending:${id}`)!, client.client_name, response); return; }
       // no-referrer makes navigate-mode form POSTs send Origin: null.
       // Preserve the same-origin POST without leaking the authorization URL across origins.
       response.set('Referrer-Policy', 'same-origin');
@@ -117,6 +129,7 @@ export class ShopifyOAuth {
         <button type="submit">Continue to Shopify approval</button></form><p>Close this page to cancel.</p></main></html>`);
     });
     app.post('/oauth/shopify', (request, response) => {
+      if (this.publicAuth) { failures(response, 'unsupported_authorization_flow'); return; }
       const parsed = z.object({ request: z.string(), shop: shopDomain }).safeParse(request.body);
       if (!parsed.success) { failures(response, 'invalid_request'); return; }
       const pending = store.get<Pending>(`pending:${parsed.data.request}`);
@@ -130,6 +143,7 @@ export class ShopifyOAuth {
       response.redirect(url.href);
     });
     app.get('/oauth/shopify/callback', async (request, response) => {
+      if (this.publicAuth) { failures(response, 'unsupported_authorization_flow'); return; }
       const query = z.object({ state: z.string(), shop: shopDomain, code: z.string(), hmac: z.string(), timestamp: z.string() }).safeParse(request.query);
       if (!query.success) { failures(response, 'invalid_request'); return; }
       const q = query.data;
@@ -142,15 +156,8 @@ export class ShopifyOAuth {
         store.remove(`shopify-state:${q.state}`);
         const grant = await this.exchangeShopify(q.shop, { code: q.code });
         const grantId = token();
-        store.put(`grant:${grantId}`, { ...grant, authorizationExpiresAt: Date.now() + TTL * 1000 }, TTL);
-        const code = token();
-        store.put(`code:${hash(code)}`, { clientId: pending.clientId, redirectUri: pending.redirectUri,
-          challenge: pending.challenge, grantId, resource: pending.resource } satisfies AuthorizationCode, 120);
-        response.clearCookie('toolkit_oauth', { path: '/oauth' });
-        const destination = new URL(pending.redirectUri);
-        destination.searchParams.set('code', code);
-        if (pending.state) destination.searchParams.set('state', pending.state);
-        response.redirect(destination.href);
+        store.put(`grant:${grantId}`, { ...grant, authorizationExpiresAt: Date.now() + TTL * 1000 }, TTL, grant.shop);
+        this.finishAuthorization(pending, grantId, response);
       } catch { failures(response, 'shopify_authorization_failed'); }
     });
     app.post('/token', (request, response) => {
@@ -195,14 +202,19 @@ export class ShopifyOAuth {
   }
   private issue(record: { clientId: string; grantId: string; resource: string }) {
     const access = token(), refresh = token();
-    this.options.store.put(`access:${hash(access)}`, { ...record, kind: 'access' } satisfies Credential, 3600);
-    this.options.store.put(`refresh:${hash(refresh)}`, { ...record, kind: 'refresh' } satisfies Credential, TTL);
+    const shop = this.options.store.get<{ shop: string }>(`grant:${record.grantId}`)?.shop;
+    this.options.store.put(`access:${hash(access)}`, { ...record, kind: 'access' } satisfies Credential, 3600, shop);
+    this.options.store.put(`refresh:${hash(refresh)}`, { ...record, kind: 'refresh' } satisfies Credential, TTL, shop);
     return { access_token: access, refresh_token: refresh, token_type: 'Bearer', expires_in: 3600, scope: MCP_SCOPE };
   }
   async connection(bearer: string): Promise<Connection | undefined> {
     const credential = this.options.store.get<Credential>(`access:${hash(bearer)}`);
     if (!credential || credential.resource !== this.resource || credential.kind !== 'access') return undefined;
-    let grant = this.options.store.get<Grant>(`grant:${credential.grantId}`);
+    const stored = this.options.store.get<Grant | PublicGrant>(`grant:${credential.grantId}`);
+    if (stored && 'installationId' in stored) {
+      try { return await this.publicAuth?.connection(credential.grantId, stored); } catch { return undefined; }
+    }
+    let grant = stored;
     if (!grant) return undefined;
     if (grant.expiresAt && grant.expiresAt < Date.now() + 30000) {
       if (!grant.refreshToken) return undefined;
@@ -215,7 +227,7 @@ export class ShopifyOAuth {
             if (!current) return undefined;
             const authorizationExpiresAt = current.authorizationExpiresAt ?? Date.now() + TTL * 1000;
             const updated = { ...refreshed, authorizationExpiresAt };
-            this.options.store.put(`grant:${credential.grantId}`, updated, Math.max(0, (authorizationExpiresAt - Date.now()) / 1000));
+            this.options.store.put(`grant:${credential.grantId}`, updated, Math.max(0, (authorizationExpiresAt - Date.now()) / 1000), updated.shop);
             return updated;
           }).catch(() => undefined).finally(() => this.refreshing.delete(credential.grantId));
         this.refreshing.set(credential.grantId, pending);
@@ -223,6 +235,17 @@ export class ShopifyOAuth {
       return pending;
     }
     return grant;
+  }
+  private finishAuthorization(pending: Pending, grantId: string, response: Response): void {
+    const code = token();
+    const shop = this.options.store.get<{ shop: string }>(`grant:${grantId}`)?.shop;
+    this.options.store.put(`code:${hash(code)}`, { clientId: pending.clientId, redirectUri: pending.redirectUri,
+      challenge: pending.challenge, grantId, resource: pending.resource } satisfies AuthorizationCode, 120, shop);
+    response.clearCookie('toolkit_oauth', { path: '/oauth' });
+    const destination = new URL(pending.redirectUri);
+    destination.searchParams.set('code', code);
+    if (pending.state) destination.searchParams.set('state', pending.state);
+    response.redirect(destination.href);
   }
   private async exchangeShopify(shop: string, values: Record<string, string>): Promise<Grant> {
     const response = await this.fetcher(`https://${shopDomain.parse(shop)}/admin/oauth/access_token`, {

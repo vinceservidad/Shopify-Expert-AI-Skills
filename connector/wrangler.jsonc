@@ -9,7 +9,12 @@
   "workers_dev": true,
   "preview_urls": false,
   "vars": {
-    "PUBLIC_URL": "https://shopify-va-toolkit.vinceluxxe.workers.dev"
+    "PUBLIC_URL": "https://shopify-va-toolkit.vinceluxxe.workers.dev",
+    "SHOPIFY_AUTH_MODE": "custom",
+    "SHOPIFY_PUBLIC_APP_HANDLE": "",
+    "SHOPIFY_PUBLIC_INSTALL_URL": "",
+    "PUBLIC_LAUNCH_STAGE": "candidate",
+    "PLUGIN_DOWNLOAD_URL": ""
   },
   "durable_objects": {
     "bindings": [

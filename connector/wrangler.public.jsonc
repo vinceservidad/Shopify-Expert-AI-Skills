@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mkt-skills-shopify-preview",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-30",
+  "compatibility_flags": ["nodejs_compat"],
+  "account_id": "622e7a897cbb7babda383df6c1474e02",
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "PUBLIC_URL": "https://mkt-skills-shopify-preview.vinceluxxe.workers.dev",
+    "SHOPIFY_AUTH_MODE": "public",
+    "SHOPIFY_PUBLIC_APP_HANDLE": "",
+    "SHOPIFY_PUBLIC_INSTALL_URL": "https://admin.shopify.com/?organization_id=128968056&no_redirect=true&redirect=/oauth/redirect_from_developer_dashboard?client_id%3D7e38c21aa48c6eaccafb98e4f90f2f43",
+    "PUBLIC_LAUNCH_STAGE": "candidate",
+    "PLUGIN_DOWNLOAD_URL": ""
+  },
+  "durable_objects": {"bindings": [{"name": "OAUTH_ISSUER", "class_name": "OAuthIssuer"}]},
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["OAuthIssuer"]}],
+  "ratelimits": [
+    {"name": "AUTH_RATE_LIMITER", "namespace_id": "7142011", "simple": {"limit": 30, "period": 60}},
+    {"name": "MCP_RATE_LIMITER", "namespace_id": "7142012", "simple": {"limit": 120, "period": 60}}
+  ],
+  "observability": {"enabled": true, "redact_query_string": true, "logs": {"enabled": true, "invocation_logs": false}},
+  "minify": true
+}

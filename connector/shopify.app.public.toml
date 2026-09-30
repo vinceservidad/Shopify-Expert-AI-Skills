@@ -1,0 +1,26 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "7e38c21aa48c6eaccafb98e4f90f2f43"
+name = "MKT Skills VA Toolkit"
+application_url = "https://mkt-skills-shopify-preview.vinceluxxe.workers.dev/app"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "read_products,read_inventory,read_orders"
+optional_scopes = [ ]
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = [ ]
+
+[webhooks]
+api_version = "2026-07"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
+uri = "https://mkt-skills-shopify-preview.vinceluxxe.workers.dev/webhooks/shopify"
+
+[build]
+automatically_update_urls_on_dev = false

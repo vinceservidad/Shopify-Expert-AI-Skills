@@ -1,6 +1,8 @@
-# Getting Started: Your First Product Draft
+# MKT Skills VA Toolkit: Your First Product Draft
 
 Use ChatGPT or Claude to draft a product listing from facts you already have. You need an account in either app and approved facts for one product. No code or Shopify connection is needed.
+
+The toolkit is free. Your ChatGPT or Claude account may have its own costs and upload limits. The files below are instruction guides, not a one-click plugin installation.
 
 ## 1. Download and unzip the guides
 
@@ -67,3 +69,11 @@ Use [Choose a task](../USAGE.md#choose-a-task) to find all 19 guides, or [Connec
 For an everyday VA job, use [Practical VA jobs](va-workflows.md). Attach the matching guide and its workflow reference, then try “Plan today's work” with your client brief and task list, or “Prepare my handover” with your work log and verification evidence. The page also covers client setup, listing checks, catalog and stock reviews, customer replies and training.
 
 Keep client documents in your chat or project files. The upgraded local plugin/connector source has 12 tools; the released hosted Worker still has eight. The workflows can also guide a chat using uploaded files, and run only when requested.
+
+## Optional public connection
+
+The public MKT Skills connection is being prepared for `shopify-mcp.mktskills.com/mcp`. The domain, Shopify app approval and live ChatGPT/Claude sign-in still need verification. Do not treat that planned address as live. [Check release status](public-release.md).
+
+After release, install through the app's verified Shopify page. Add the connection in ChatGPT or Claude, then have the owner review its request code inside the Shopify app. That approval enables supported reads, not store editing. The app also shows connection status and lets the owner disconnect a client.
+
+Drafting from the three uploaded guide files works without that connection. Review the product facts and the AI's answer before using it.

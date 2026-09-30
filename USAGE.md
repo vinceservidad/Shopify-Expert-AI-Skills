@@ -1,10 +1,12 @@
-# How to Use Shopify VA Toolkit
+# How to Use MKT Skills VA Toolkit
 
 Use ChatGPT or Claude to help with everyday Shopify work. Start with one small task, then check the result before using it.
 
 A **skill** is an instruction guide for a task. A **connector** is a connection to Shopify. ChatGPT or Claude does the work, the skill guides it, and an approved Shopify connection can allow supported store changes.
 
 You can draft from the facts you provide without connecting a store.
+
+The toolkit is free and open source. Your ChatGPT or Claude account has its own features, connection eligibility and costs. The source candidate is not a public plugin download.
 
 ## Start with one product-listing draft
 
@@ -118,7 +120,7 @@ Connecting a store lets the AI use current store information instead of relying 
 | This toolkit's hosted connector | Reading store details, products, variants, stock, and order summaries. It cannot edit the store. |
 | A separate approved Shopify editing connection | Supported changes allowed by that connection, your account permissions, and your approval. |
 
-Our hosted connector is **read-only**. It was verified on **VA Toolkit Connector Test**, a development store with sample data, on September 30, 2026. It has not been verified for every merchant store. The order test returned no orders, so populated order summaries are still unverified.
+Our hosted connector is **read-only**. It was verified on **VA Toolkit Connector Test**, a development store with sample data, on September 30, 2026. It has not been verified for every merchant store. The original hosted order test returned no orders. Later local 0.2.0 testing read an unpaid sample order and both item pages; that did not replace the hosted service or verify a public app.
 
 The released hosted Worker is **0.1.0 with eight tools**. The local **0.2.0** plugin/connector source adds workflow discovery, task preparation, product details and order details for a total of **12 tools**. Using the hosted URL does not enable these four new tools before a separate release. The upgrade keeps the existing read permissions (`read_products`, `read_inventory`, `read_orders`) and cannot edit the store. The new order-details read excludes customer identities, addresses and payment details.
 
@@ -127,6 +129,22 @@ Supported editing depends on the separate integration. See Shopify's instruction
 The read-only connector and a separate editing connection can serve different parts of a task. The combined workflow in native ChatGPT or Claude has not been tested end to end here.
 
 For technical setup, the connection method is called **MCP**. The hosted URL is `https://shopify-va-toolkit.vinceluxxe.workers.dev/mcp`. Give the [connector setup guide](docs/plugin-and-connector.md) to the person helping with your setup. Other merchants still need an approved Shopify app installation and suitable app distribution. Opening that URL in a browser without signing in returns an authorization error; it is not an installation button.
+
+### Public store connection being prepared
+
+The planned public guide is `mktskills.com/shopify-va`. The planned connection address is `https://shopify-mcp.mktskills.com/mcp`. Do not use it until the [public release record](docs/public-release.md) confirms the domain, app approval and client tests.
+
+After release, the steps will be:
+
+1. The owner opens the app's verified Shopify App Store page and installs it on the intended store. Shopify handles store selection.
+2. In **ChatGPT or Claude**, add a custom connection using the verified address. Your account must support that option.
+3. Follow sign-in and copy its connection request code into **MKT Skills VA Toolkit** inside Shopify.
+4. The owner checks the store, requesting app, return destination and read permissions, then approves the request.
+5. Return to the original sign-in tab to finish. Ask the AI to confirm which store is connected before reading it.
+
+Staff can inspect information allowed by their Shopify permissions inside the app. The owner approves offline AI connections and can disconnect them in the app. An expired or used request code requires a new sign-in request. No password, API key or manual store address is needed in this public flow.
+
+Custom connection availability changes by account and organization. Check the official [ChatGPT setup guide](https://help.openai.com/en/articles/11487775-connectors-in-chatgpt) or [Claude setup guide](https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp). Installing this toolkit is separate from installing Shopify's own editing integrations.
 
 ## Tell the AI what it may do
 

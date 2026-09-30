@@ -20,7 +20,11 @@
     "worker:build": "npm run worker:catalog && wrangler deploy --dry-run --outdir build/worker",
     "worker:dev": "npm run worker:catalog && wrangler dev",
     "worker:deploy": "npm run worker:catalog && wrangler deploy",
-    "worker:test": "npm run worker:build && node tests/worker-runtime.mjs"
+    "worker:test": "npm run worker:build && node tests/worker-runtime.mjs && node tests/public-worker-runtime.mjs",
+    "worker:public:build": "npm run worker:catalog && wrangler deploy --dry-run --config wrangler.public.jsonc --env-file worker/.env.example --outdir build/public-worker",
+    "worker:public:deploy": "npm run worker:catalog && wrangler deploy --config wrangler.public.jsonc --env-file worker/.env.example",
+    "guide:build": "wrangler deploy --dry-run --config wrangler.guide.jsonc --env-file worker/.env.example --outdir build/guide-worker",
+    "guide:deploy": "wrangler deploy --config wrangler.guide.jsonc --env-file worker/.env.example"
   },
   "license": "MIT",
   "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
