@@ -82,8 +82,9 @@ export const WORKFLOWS: readonly Workflow[] = [
 ];
 
 export function listWorkflows() {
-  return WORKFLOWS.map(({ id, title, purpose, owner_skill, reference, required_inputs, optional_inputs, evidence_tools }) => ({
-    id, title, purpose, owner_skill, reference, required_inputs: [...required_inputs], optional_inputs: [...optional_inputs], evidence_tools: [...evidence_tools],
+  return WORKFLOWS.map(({ id, title, purpose, owner_skill, reference, required_inputs, optional_inputs, output_sections, evidence_tools }) => ({
+    id, title, purpose, owner_skill, reference, required_inputs: [...required_inputs], optional_inputs: [...optional_inputs],
+    output_sections: [...output_sections], evidence_tools: [...evidence_tools],
   }));
 }
 

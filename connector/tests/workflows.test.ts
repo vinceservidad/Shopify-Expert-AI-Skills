@@ -33,6 +33,8 @@ test('all eight registry workflows resolve owner guidance and preserve explicit 
     const listed = await client.callTool({ name: 'list_shopify_va_workflows', arguments: {} });
     assert.equal(listed.isError, undefined);
     assert.deepEqual(listed.structuredContent?.workflows, listWorkflows());
+    assert.deepEqual((listed.structuredContent?.workflows as { output_sections: string[] }[]).map(item => item.output_sections),
+      WORKFLOWS.map(workflow => [...workflow.output_sections]));
     const tools = (await client.listTools()).tools;
     assert.ok(tools.every(tool => tool.annotations?.readOnlyHint === true && tool.annotations?.destructiveHint === false));
     for (const workflow of WORKFLOWS) {
