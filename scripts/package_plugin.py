@@ -32,6 +32,7 @@ def package_plugin(root: Path) -> Path:
         stage.mkdir()
         sources = [(Path(name), root / "plugin" / name) for name in TEMPLATES]
         sources += [(Path("LICENSE"), root / "LICENSE"), (Path("server/connector.cjs"), bundle),
+                    (Path("server/THIRD-PARTY-NOTICES.txt"), bundle.parent / "THIRD-PARTY-NOTICES.txt"),
                     (Path("docs/plugin-and-connector.md"), root / "docs" / "plugin-and-connector.md")]
         notices = bundle.with_suffix(".cjs.LEGAL.txt")
         if notices.exists():

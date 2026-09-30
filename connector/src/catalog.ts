@@ -1,5 +1,6 @@
 import { readdir, readFile, realpath } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
+import { parseDocument } from 'yaml';
 import { ConnectorError } from './shopify.js';
 
 export type Skill = { name: string; description: string };
@@ -18,7 +19,17 @@ export async function listSkills(root: string): Promise<Skill[]> {
   return Promise.all(entries.filter(entry => entry.isDirectory() && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(entry.name))
     .sort((a, b) => a.name.localeCompare(b.name)).map(async entry => {
       const text = await readSkill(root, entry.name);
-      return { name: entry.name, description: /^description:\s*(.+)$/m.exec(text)?.[1]?.replace(/^['"]|['"]$/g, '') ?? entry.name };
+      try {
+        const lines = text.split(/\r?\n/), closing = lines.indexOf('---', 1);
+        if (lines[0] !== '---' || closing < 1) throw new Error('Missing frontmatter');
+        const document = parseDocument(lines.slice(1, closing).join('\n'), { prettyErrors: false });
+        if (document.errors.length || document.warnings.length) throw new Error('Invalid YAML');
+        const metadata = document.toJS({ maxAliasCount: 50 }) as { name?: unknown; description?: unknown };
+        if (metadata?.name !== entry.name || typeof metadata.description !== 'string' || !metadata.description.trim()) {
+          throw new Error('Invalid skill identity');
+        }
+        return { name: entry.name, description: metadata.description };
+      } catch { throw new ConnectorError('INVALID_SKILL_METADATA', 'Skill discovery found invalid frontmatter. Validate the installed skill package.'); }
     }));
 }
 

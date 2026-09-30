@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomBytes, createHash, createHmac } from 'node:crypto';
 import { createServer as createHttpServer, request as httpRequest } from 'node:http';
-import { mkdtemp, readFile, rm, symlink } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, symlink, mkdir, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { Client, StreamableHTTPClientTransport, InMemoryTransport } from '@modelcontextprotocol/client';
@@ -51,6 +51,24 @@ test('Shopify requests use fixed queries, variables, validated hosts, and proven
   assert.ok(!JSON.stringify(result).includes(connection.accessToken));
   await assert.rejects(queryShopify({ ...connection, shop: 'localhost/anything' }, 'shop'), /Invalid/);
   assert.ok(Object.values(QUERIES).every(query => query.trim().startsWith('query ')));
+});
+
+test('discovery preserves folded/quoted YAML descriptions and rejects malformed identity', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'toolkit-frontmatter-'));
+  const skill = join(directory,'shopify-example');
+  try {
+    await mkdir(skill);
+    const file = join(skill,'SKILL.md');
+    await writeFile(file,'---\nname: shopify-example\ndescription: >-\n  Review Shopify records.\n  Use for audits.\n---\nInstructions.');
+    assert.equal((await listSkills(directory))[0]?.description,'Review Shopify records. Use for audits.');
+    await writeFile(file,'---\nname: shopify-example\ndescription: "Review: \\"approved\\" records."\n---\nInstructions.');
+    assert.equal((await listSkills(directory))[0]?.description,'Review: "approved" records.');
+    for (const metadata of ['name: wrong\ndescription: Valid text','name: shopify-example\ndescription: true',
+      'name: shopify-example\ndescription: first\ndescription: second']) {
+      await writeFile(file,`---\n${metadata}\n---\nInstructions.`);
+      await assert.rejects(listSkills(directory),ConnectorError);
+    }
+  } finally { await rm(directory,{recursive:true}); }
 });
 
 test('upstream failures reject partial data and do not disclose server messages or tokens', async () => {

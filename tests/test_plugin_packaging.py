@@ -25,6 +25,7 @@ class PluginPackagingTests(unittest.TestCase):
         self.bundle = self.root / "connector" / "build" / "plugin" / "connector.cjs"
         self.bundle.parent.mkdir(parents=True)
         self.bundle.write_text("// Synthetic build fixture. Not an MCP runtime.\n")
+        (self.bundle.parent / "THIRD-PARTY-NOTICES.txt").write_text("Synthetic dependency license fixture.\n")
         (self.root / "docs").mkdir()
         shutil.copyfile(ROOT / "docs" / "plugin-and-connector.md", self.root / "docs" / "plugin-and-connector.md")
 
@@ -36,6 +37,7 @@ class PluginPackagingTests(unittest.TestCase):
             self.assertIn("plugin.json", zipped.namelist())
             self.assertIn("LICENSE", zipped.namelist())
             self.assertIn("docs/plugin-and-connector.md", zipped.namelist())
+            self.assertIn("server/THIRD-PARTY-NOTICES.txt", zipped.namelist())
             zipped.extractall(directory)
             for name in EXPECTED_SKILLS:
                 self.assertEqual(validate_skill(Path(directory) / "skills" / name), [])
