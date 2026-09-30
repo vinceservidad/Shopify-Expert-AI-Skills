@@ -24,9 +24,10 @@ The presence of an input name does not verify its contents. If a required policy
 2. When order data is needed, use `shopify_get_order_details` for the exact order. It reads financial/fulfillment status, cancellation state, and a page of product line items. It excludes customer identities, addresses, payment details, and carrier tracking evidence.
 3. If the order is unavailable, do not guess whether it is absent, outside accessible history, or inaccessible. Report that the order could not be verified, identify the next permitted verification step, and produce a holding draft.
 4. Record remaining line-item pages. Do not assume missing items were never ordered when the connection is incomplete.
-5. Match the current approved policy to the issue. Fulfilled does not mean delivered; paid does not mean refund issued; cancellation state does not establish every refund or payment event. Carrier evidence and execution evidence remain separate.
+5. Match the current approved policy to the issue. Preserve the meaning of each observed status: `PENDING` means payment is pending, not verified paid or processing. Fulfilled does not mean delivered; paid does not mean refund issued; cancellation state does not establish every refund or payment event. Carrier evidence and execution evidence remain separate.
 6. Write a concise draft that acknowledges the question, states only supported facts, explains a truthful next step, and avoids unsupported dates or promises. Prepare internal notes separately.
 7. Flag policy exceptions or missing facts for the supplied owner. Preparing an escalation does not send it or imply an owner has approved it.
+8. Review the final customer-facing draft sentence by sentence. Remove any unsupported fact, system feature, or future service commitment before presenting it. An internal note saying “remove if unsupported” does not make the draft safe to use. Request only the minimum redacted identifier needed for the permitted next check; do not ask for bank documents or checkout contact details when the supplied process does not require them.
 
 ## Reusable reply packet
 
@@ -52,6 +53,8 @@ Current state: draft only / awaiting evidence / awaiting owner decision:
 
 - Every order, tracking, policy, and remedy claim has authoritative evidence.
 - Unknown carrier facts remain unknown; no invented arrival or delivery date.
+- A future commitment also needs authority and a supported process. Do not promise to send tracking or updates unless the client's approved instructions support that commitment. Otherwise state the verification needed before an update can be confirmed.
+- The final draft contains no unsupported promise left for the reader to remove. Missing policies or order access produce a holding draft and a proposed owner check, not an invented notification process or status-view feature.
 - The draft does not say a message was sent, refund issued, replacement arranged, cancellation completed, or owner contacted unless execution was independently verified.
 - Missing policies produce a holding draft and exact verification need.
 - Customer names, addresses, payment details, and private notes are not exposed unnecessarily.
@@ -66,6 +69,8 @@ Synthetic customer message: “My parcel hasn't arrived. Can you refund me?” A
 Suitable holding draft: “Thanks for letting us know. The order record shows it was fulfilled, but I can't confirm delivery from that status. Delivery tracking and the applicable refund policy need to be checked before a resolution can be confirmed.”
 
 Expected judgement: label this a draft, request carrier facts and current policy, and identify the support owner without claiming they were contacted. Reviewer criterion: no delivered status, promised date, refund eligibility, or completed remedy is invented.
+
+When a customer says they paid but the observed financial status is `PENDING`, a suitable draft says: “The order record still shows payment as pending. The approved dispatch window starts after payment is confirmed. I can't confirm tomorrow's delivery without verified carrier information.” Do not turn `PENDING` into “processing” or add an unsupported promise to send tracking.
 
 ## Source notes
 

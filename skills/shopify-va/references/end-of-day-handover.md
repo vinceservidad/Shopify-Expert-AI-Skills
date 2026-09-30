@@ -23,7 +23,7 @@ Client logs and documents stay in the user's chat/project files. If logs or evid
 1. Reconcile each task with its requested target and terminal state. Evidence for a similar product, another store, or a preview cannot prove the requested result.
 2. Label outcomes precisely: verified requested state, draft ready for review, attempted but unverified, failed, blocked, or not started.
 3. Put only tasks whose requested terminal state has been verified in “Completed.” A draft-only assignment may be complete when its artifact and review criteria are verified, but it belongs under “Drafts ready” and must remain labelled draft-only.
-4. Record the latest observation after a failed external edit. Distinguish captured before state, current observed state, intended target, and proposed recovery; never claim rollback succeeded without evidence.
+4. Record the latest observation after a failed external edit. Distinguish captured before state, current observed state, intended target, and proposed recovery. An error, including `PERMISSION_DENIED`, does not verify that a record stayed unchanged. Without a later authoritative read of the exact target, label its current state and any partial effects unverified; never claim rollback succeeded without evidence.
 5. Give each unresolved item one concrete next action and accountable owner. Include missing inputs and incomplete pagination or location coverage when relevant.
 6. Produce the handover in the user's supplied format if one exists. Otherwise use the compact template below, omitting empty sections rather than inventing work.
 
@@ -60,6 +60,7 @@ If the owner requested figures, count verified tasks separately from drafts and 
 - Drafts do not imply a reply was sent, refund issued, product published, or stock changed.
 - Partial checks do not become store-wide assurance.
 - An external connection's failed or ambiguous action stays unresolved.
+- “Unchanged” is a result claim too. Report it only when a later authoritative read supports it, not because an attempt failed or no later success was reported.
 - A handoff to a separate approved editing connection includes exact target/action, existing authority, and the verification needed after the edit; it does not grant approval.
 - Sensitive customer details and credentials are excluded from the handover.
 
@@ -70,6 +71,8 @@ Escalate conflicting state evidence, possible partial changes, unavailable verif
 Synthetic log: one customer reply draft exists; a product edit request returned an error; a product re-read still shows the old title; stock review fetched 20 variants with another page remaining.
 
 Expected judgement: list the reply under drafts ready, the edit under failed with its latest observed title and recovery owner, and stock review with incomplete coverage. Do not write “reply sent,” “listing updated,” or “all inventory checked.” Reviewer criterion: all reported states match the supplied evidence.
+
+If an inventory edit returned `PERMISSION_DENIED` and no later read is available, write: “Edit attempt failed with a permission error. Current stock and any partial effects remain unverified. The owner must resolve access and verify the exact inventory record before a retry.” Do not write “stock unchanged.”
 
 ## Source notes
 

@@ -61,7 +61,7 @@ export const WORKFLOWS: readonly Workflow[] = [
     required_inputs: ['customer_message', 'approved_policies'], optional_inputs: ['verified_order_facts', 'verified_tracking_facts', 'brand_voice', 'escalation_roles'], evidence_tools: orderReads,
     steps: ['Use a redacted message and the applicable approved policy.', 'Verify order facts only when the question needs them.', 'Use a holding draft when policy or shipping evidence is missing.', 'Separate the customer-facing draft from internal escalation and actions needing approval.'],
     output_sections: ['Reply draft', 'Verified facts', 'Unknowns and policy basis', 'Internal escalation'],
-    qa: ['Fulfilled does not prove shipped or delivered.', 'Do not invent a delivery date or policy exception.', 'Never claim a message was sent, an order changed or a refund issued without evidence.'],
+    qa: ['Fulfilled does not prove shipped or delivered; PENDING does not verify payment processing or receipt.', 'Do not invent a delivery date, policy exception or unsupported future service commitment.', 'Never claim a message was sent, an order changed or a refund issued without evidence.'],
   },
   {
     id: 'end_of_day_handover', title: 'Prepare my end-of-day handover', purpose: 'Summarize actual task states and evidence without inventing completion.',
@@ -69,7 +69,7 @@ export const WORKFLOWS: readonly Workflow[] = [
     required_inputs: ['task_log'], optional_inputs: ['verification_evidence', 'blocked_tasks', 'priorities'], evidence_tools: [...stockReads, 'shopify_list_order_summaries', 'shopify_get_order_details'],
     steps: ['Compare each task with its requested finished state.', 'Separate drafts, verified changes and unverified claims.', 'Record blockers, failed external edits and approval needs.', 'List the next owner and action using the client\'s preferred report format when provided.'],
     output_sections: ['Drafts ready', 'Verified changes', 'Blocked or unverified work', 'Next actions'],
-    qa: ['A save claim or plan is not verification.', 'A failed external edit remains failed or blocked.', 'A completed draft task is not a published store change.'],
+    qa: ['A save claim or plan is not verification.', 'A failed external edit remains failed or blocked; unchanged current state requires an authoritative later read.', 'A completed draft task is not a published store change.'],
   },
   {
     id: 'va_training', title: 'Train a new VA', purpose: 'Prepare supervised practice tasks, exception cases and reviewer criteria.',
