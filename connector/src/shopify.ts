@@ -28,7 +28,7 @@ export const QUERIES = {
     inventoryItem(id: $id) {
       id sku tracked
       inventoryLevels(first: $first, after: $after) {
-        nodes { location { id name } quantities(names: ["available", "on_hand", "committed"]) { name quantity } }
+        nodes { location { id } quantities(names: ["available", "on_hand", "committed"]) { name quantity } }
         pageInfo { hasNextPage endCursor }
       }
     }

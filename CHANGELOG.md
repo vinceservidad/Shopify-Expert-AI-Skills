@@ -6,6 +6,13 @@ All notable changes to this project are documented here.
 
 ### Plugin and read-only MCP connector
 
+- Add installed same-organization app authentication for local stdio, with token
+  caching, renewal and failure handling. Add three authentication regressions.
+- Verify the bundled MCP runtime against the authorized development store after
+  app installation. Narrow inventory reads to location IDs after an actual
+  field-permission error. Preserve the approved scopes and record empty-order
+  and blocked-browser-OAuth limitations separately.
+
 - Introduce Shopify VA Toolkit as the display name while retaining the source
   repository URL and all nineteen canonical skills.
 - Add portable Agent Plugins and Claude-compatible manifests, reproducible

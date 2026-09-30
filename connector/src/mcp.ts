@@ -2,8 +2,9 @@ import { McpServer } from '@modelcontextprotocol/server';
 import { z } from 'zod';
 import { listSkills, readSkill } from './catalog.js';
 import { Connection, ConnectorError, Fetch, queryShopify } from './shopify.js';
+import type { ConnectionProvider } from './client-credentials.js';
 
-type Options = { skillsRoot: string; connection?: Connection; fetcher?: Fetch };
+type Options = { skillsRoot: string; connection?: Connection | ConnectionProvider; fetcher?: Fetch };
 const annotations = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true };
 const page = { first: z.number().int().min(1).max(50).default(20), after: z.string().max(512).optional() };
 const filter = z.string().max(500).optional().describe('Shopify search syntax; use pageInfo to continue results.');
@@ -24,7 +25,8 @@ export function createServer(options: Options): McpServer {
   }
   const read = (operation: Parameters<typeof queryShopify>[1], variables: Record<string, unknown>) => safe(async () => {
     if (!options.connection) throw new ConnectorError('NOT_CONNECTED', 'Connect a Shopify store before using store-data tools. Skill tools remain available locally.');
-    return queryShopify(options.connection, operation, variables, options.fetcher);
+    const connection = 'resolve' in options.connection ? await options.connection.resolve() : options.connection;
+    return queryShopify(connection, operation, variables, options.fetcher);
   });
   server.registerTool('list_shopify_skills', {
     description: 'List available Shopify workflow skills and their purposes. Does not read a store.', inputSchema: z.object({}), annotations,

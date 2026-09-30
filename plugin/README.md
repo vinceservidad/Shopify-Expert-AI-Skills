@@ -16,6 +16,12 @@ needed (`read_products`, `read_inventory`, `read_orders`). Do not put tokens in
 prompts, plugin files, URLs, source control or screenshots. `SHOPIFY_SCOPES`
 describes the configured token's scopes; Shopify still enforces actual access.
 
+For an installed app and store in the same Shopify organization, set
+`SHOPIFY_SHOP`, `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET` instead of an
+access token. The runtime obtains and renews the app token. This mode cannot
+authenticate apps against unrelated merchants' stores. Review all categories on
+Shopify's actual app consent screen before installation.
+
 For a hosted connection, deploy the separate OAuth server from the source
 repository and connect its real HTTPS `/mcp` URL. The repository URL is a source
 link, not an MCP endpoint. The supplied local plugin does not silently choose a

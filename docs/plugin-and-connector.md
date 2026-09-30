@@ -57,6 +57,18 @@ the actual `SHOPIFY_SCOPES` through a private runtime environment. Shopify
 enforces actual app access even if the configured scope list is incorrect.
 Do not put credentials in prompts, URLs, source control or plugin files.
 
+For an app and store in the same Shopify organization, you can instead supply
+`SHOPIFY_SHOP`, `SHOPIFY_CLIENT_ID` and `SHOPIFY_CLIENT_SECRET`. Install and approve
+the app on that store first. The local runtime uses Shopify's client-credentials
+grant, caches its short-lived token, and renews it before expiry. This grant is
+not the authentication path for unrelated merchants. The scopes come from the
+actual Shopify token response rather than a guessed configuration.
+
+Review Shopify's actual consent screen. The three requested read scopes can be
+presented alongside customer device/activity and store-owner contact categories.
+The connector's fixed queries omit geolocation, IP, browser/OS, and owner contact
+fields; omitted query fields do not reduce the app's granted authorization.
+
 Example MCP configuration, after building the source:
 
 ```json
@@ -134,6 +146,10 @@ A page is not a complete catalog or reconciled report. Orders follow Shopify's
 permissions/window; the app does not request `read_all_orders` or customer
 fields. Analytics, ads, support policies and theme files require separate inputs.
 
+Inventory responses identify locations by ID. The live development-store check
+found that `Location.name` requires an additional scope; the connector omits that
+field so it does not expand the approved access just to label locations.
+
 ## Verification boundaries
 
 Automated checks cover the real MCP protocol, OAuth with a mocked Shopify
@@ -141,6 +157,21 @@ exchange, store isolation, state/HMAC/PKCE/resource validation, refresh/revocati
 input validation, errors and package contents. These engineering tests do not
 grade model behavior or prove merchant outcomes. Record live development-store
 and host installation checks separately with actual scope/date/limitations.
+
+### Live development-store evidence, September 30, 2026
+
+The bundled stdio runtime was connected to an installed app in the same Shopify
+organization. It successfully listed 19 skills and eight tools, read store
+identity, fetched two products and two variants, read one inventory location,
+and continued product pagination with a different next-page product. The order
+query succeeded with zero records. This verifies an empty order response, not
+populated order summaries. The store uses synthetic development data; no
+production writes, model task grades, or time-saving measurements are claimed.
+
+The browser OAuth form was blocked by Chrome with `ERR_BLOCKED_BY_CLIENT` before
+its POST reached the local server. Public HTTPS hosting and native hosted-client
+sign-in remain unverified. The mock HTTP/OAuth protocol tests remain distinct
+from these actual Shopify stdio reads.
 
 ## Sources
 
@@ -151,3 +182,4 @@ Reviewed September 30, 2026:
 - [Claude connector authentication](https://claude.com/docs/connectors/building/authentication)
 - [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
 - [Shopify standalone app authentication](https://shopify.dev/docs/apps/build/authentication-authorization/authenticate-standalone-apps)
+- [Shopify same-organization authentication](https://shopify.dev/docs/apps/build/authentication-authorization/client-credentials-grant)
