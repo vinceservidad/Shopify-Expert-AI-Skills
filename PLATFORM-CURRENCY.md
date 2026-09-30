@@ -58,6 +58,18 @@ original review dates.
 | Shopify high-variant themes | <https://shopify.dev/docs/storefronts/themes/product-merchandising/variants/support-high-variant-products> | Liquid variant cap, option-value selection, deferred rendering and null-selection handling |
 | Codex skills | <https://developers.openai.com/codex/skills/> | Repository discovery under `.agents/skills`, explicit skill invocation and installing from another repository |
 
+### Plugin and connector review on 2026-09-30
+
+| Surface | First-party source | What it supports |
+| --- | --- | --- |
+| Agent Plugins | <https://agent-plugins.org/schemas/1.0.0/plugin.schema.json> and <https://agent-plugins.org/schemas/1.0.0/mcp.schema.json> | Portable manifest and transport shapes |
+| OpenAI plugins | <https://developers.openai.com/plugins/build/plugins> | Packaging, local development and public submission boundaries |
+| Claude connectors | <https://claude.com/docs/connectors/building/authentication> | MCP OAuth discovery, DCR, PKCE and separate client authorization |
+| Shopify app auth | <https://shopify.dev/docs/apps/build/authentication-authorization/authenticate-standalone-apps> | Merchant approval and authorization-code exchange |
+| Shopify query schema | Bundled official Shopify AI Toolkit Admin schema for `2026-07` | All five fixed connector queries validated locally; alternative scopes are not additional requested permissions |
+| Inventory location scope | <https://shopify.dev/docs/api/admin-graphql/2026-07/objects/Location> and the actual development-store response | The location object supports `read_inventory`, but its `name` field was denied without an additional scope; fixed queries return IDs only |
+| Same-organization app auth | <https://shopify.dev/docs/apps/build/authentication-authorization/client-credentials-grant> | Installed apps can obtain short-lived tokens for stores in their own organization; this does not authorize unrelated merchant access |
+
 ## Claim record
 
 Use this shape in a decision log or pull request:

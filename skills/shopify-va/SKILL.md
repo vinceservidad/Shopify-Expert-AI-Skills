@@ -4,7 +4,7 @@ description: Plans, routes, tracks, executes, and verifies mixed Shopify tasks t
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.3.1"
+  version: "0.3.2"
 ---
 
 # Shopify VA
@@ -77,6 +77,8 @@ Examples:
 For one clear bounded task, use the specialist directly and apply only the lifecycle stages needed.
 
 ## Output contract
+
+When Shopify VA Toolkit tools are available, read [references/connected-store-work.md](references/connected-store-work.md) for target verification, pagination, and connector limitations.
 
 Provide the normalized task or initiative, current lifecycle stage when useful, owner skill, target, sources, permission and authorization state, decision-relevant gaps, plan/checklist, implementation state, verification evidence, measurement state when required, optimization decision when mature, exceptions, rollback, next lifecycle stage when useful, and next accountable owner.
 

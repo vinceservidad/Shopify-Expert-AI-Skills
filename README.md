@@ -1,10 +1,16 @@
-# Shopify Expert AI Skills for ChatGPT, Claude & Codex
+# Shopify VA Toolkit: Skills, Plugins & MCP
 
 19 focused skills plus one shared operating lifecycle for Shopify merchants, freelancers, virtual assistants, agencies, developers, marketers, specialists, and store operators.
 
 Audit stores, prepare product listings, review bulk changes, reconcile performance, debug themes, and coordinate multi-skill work with clear evidence and approval boundaries. Each skill defines when to use it, what evidence it needs, how to approach the task, and what a useful result must include.
 
 **This is a toolkit for supervised work, not an autonomous store operator.** Installing a skill does not connect Shopify, grant permissions, or guarantee a correct answer.
+
+The plugin bundles all 19 skills, and the read-only MCP connector supplies
+products, variants, inventory and order summaries through an approved connection.
+See [plugin and connector setup](docs/plugin-and-connector.md). The source
+repository keeps its existing URL; a hosted MCP endpoint is a separate deployment.
+This is an independent project, not an official Shopify product.
 
 ## One operating lifecycle for every Shopify role
 
@@ -97,6 +103,13 @@ For a mixed routine task list or a multi-stage initiative, start with `shopify-v
 | [shopify-analytics](skills/shopify-analytics/) | Store analysis, top-selling products, profit changes and reconciliation | Reconciled performance diagnosis |
 
 ## Installation
+
+### Plugin and connected Shopify evidence
+
+Build `dist/shopify-va-toolkit.plugin` using the
+[plugin guide](docs/plugin-and-connector.md#build-the-plugin). It includes all
+skills and a bundled local MCP server. The guide covers the separately hosted
+OAuth connector, read-only tools, credential handling and test limits.
 
 ### Claude Skills
 

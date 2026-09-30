@@ -5,3 +5,9 @@ __pycache__/
 .venv/
 .venv312/
 .bundle/
+node_modules/
+connector/build/
+connector/data/
+.env
+.env.*
+!.env.example
