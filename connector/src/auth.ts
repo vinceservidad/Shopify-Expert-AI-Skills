@@ -101,6 +101,9 @@ export class ShopifyOAuth {
       store.put(`pending:${id}`, { clientId: q.client_id, redirectUri: q.redirect_uri, state: q.state,
         challenge: q.code_challenge, resource: q.resource, browserHash: hash(browser) } satisfies Pending, 600);
       response.cookie('toolkit_oauth', browser, { httpOnly: true, secure: base.startsWith('https:'), sameSite: 'lax', maxAge: 600000, path: '/oauth' });
+      // no-referrer makes navigate-mode form POSTs send Origin: null.
+      // Preserve the same-origin POST without leaking the authorization URL across origins.
+      response.set('Referrer-Policy', 'same-origin');
       // Chrome applies form-action to redirect chains, including already-approved installs.
       const callbackOrigin = new URL(q.redirect_uri).origin;
       response.set('Content-Security-Policy', "default-src 'none'; form-action 'self' https://*.myshopify.com https://admin.shopify.com https://accounts.shopify.com "

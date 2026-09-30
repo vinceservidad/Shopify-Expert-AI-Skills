@@ -167,7 +167,7 @@ async function authorize(base: string, shop = 'synthetic-a.myshopify.com') {
   const cookie = consent.headers.get('set-cookie')!.split(';')[0]!;
   const html = await consent.text();
   const id = /name="request" value="([^"]+)"/.exec(html)![1]!;
-  const upstream = await fetch(`${base}/oauth/shopify`, { method:'POST', headers: {'Content-Type':'application/x-www-form-urlencoded', Cookie:cookie}, body:new URLSearchParams({request:id,shop}), redirect:'manual' });
+  const upstream = await fetch(`${base}/oauth/shopify`, { method:'POST', headers: {'Content-Type':'application/x-www-form-urlencoded', Cookie:cookie, Origin:base}, body:new URLSearchParams({request:id,shop}), redirect:'manual' });
   assert.equal(upstream.status, 302);
   const state = new URL(upstream.headers.get('location')!).searchParams.get('state')!;
   const query = new URLSearchParams({shop,state,code:'shopify-code',timestamp:String(Math.floor(Date.now()/1000))});
@@ -241,6 +241,7 @@ test('OAuth rejects hostile redirects, absent PKCE, wrong resource, mismatched b
     assert.equal((await fetch(`${fixture.base}/oauth/shopify/callback?${badQuery}`,{headers:{Cookie:cookie}})).status, 400);
     assert.equal(fixture.tokenCalls.length, 0);
     assert.equal((await post('/mcp',{}, {Origin:'https://evil.example'})).status, 403);
+    assert.equal((await post('/mcp',{}, {Origin:'null'})).status, 403);
     const hostileHostStatus = await new Promise<number | undefined>((resolve, reject) => {
       const request = httpRequest(`${fixture.base}/health`, {headers:{Host:'evil.example'}}, response => {
         response.resume(); resolve(response.statusCode);

@@ -6,6 +6,11 @@ All notable changes to this project are documented here.
 
 ### Plugin and read-only MCP connector
 
+- Fix the consent page's referrer policy so browser form POSTs preserve their
+  same-origin header. Keep null/foreign-origin rejection and CSRF protections.
+- Complete local Chrome OAuth followed by actual authenticated Streamable HTTP
+  MCP reads on the development store, separately from the verified stdio path.
+
 - Add installed same-organization app authentication for local stdio, with token
   caching, renewal and failure handling. Add three authentication regressions.
 - Verify the bundled MCP runtime against the authorized development store after

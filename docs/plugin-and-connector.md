@@ -168,10 +168,16 @@ query succeeded with zero records. This verifies an empty order response, not
 populated order summaries. The store uses synthetic development data; no
 production writes, model task grades, or time-saving measurements are claimed.
 
-The browser OAuth form was blocked by Chrome with `ERR_BLOCKED_BY_CLIENT` before
-its POST reached the local server. Public HTTPS hosting and native hosted-client
-sign-in remain unverified. The mock HTTP/OAuth protocol tests remain distinct
-from these actual Shopify stdio reads.
+The browser OAuth flow was also completed in Chrome, followed by actual
+Streamable HTTP MCP reads of the same store identity, product/variant pages,
+inventory location, empty order response, and product pagination. An initial
+`Origin: null` failure was traced to `Referrer-Policy: no-referrer` on the consent
+page. That page now uses `same-origin`; the origin guard still rejects null and
+foreign origins, and cross-origin referrers remain omitted.
+
+Public HTTPS hosting and native hosted-client installation/sign-in remain
+unverified. The mock protocol tests and these local live-store checks do not
+establish full workflow coverage, populated order handling, or model expertise.
 
 ## Sources
 
