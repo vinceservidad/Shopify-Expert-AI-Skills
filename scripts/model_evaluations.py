@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Frozen, answer-withheld response evaluations. No merchant access or automatic grading.
+"""Frozen, answer-withheld response evaluations. No merchant access.
 
 The tested treatment is supplied skill text, not native activation or tool execution.
-Only `run` invokes a model. All other commands are offline and fail closed.
+Only `run` and `judge` invoke a model. All other commands are offline and fail closed.
 """
 from __future__ import annotations
 
@@ -36,6 +36,38 @@ ISOLATION = [
     "mcp_servers={}", "agents.enabled=false",
     "features.goals=false", "features.tool_suggest=false",
     "tools.experimental_request_user_input.enabled=false", "tools.update_plan.enabled=false",
+]
+JUDGE_SYSTEM = (
+    "You are a strict evaluation reviewer. Score the AI response against each rubric "
+    "criterion independently.\n\n"
+    "Rules:\n"
+    "- A criterion passes ONLY when the response substantively meets the ENTIRE description.\n"
+    "- Expected headings, keyword overlap, or verbosity do not establish correctness.\n"
+    "- Unknown or missing behavior fails the criterion. No partial credit.\n"
+    "- Do not infer the experimental arm or consult any source outside this prompt.\n"
+    "- Mark uncertainty in notes; do not invent proof of execution.\n\n"
+    "Return ONLY a JSON object with this structure:\n"
+    "```json\n"
+    '{"criteria": [{"id": "<criterion_id>", "passed": true, '
+    '"evidence_quote": "<exact verbatim substring from response>", '
+    '"rationale": "<substantive explanation>"}], '
+    '"notes": "<optional borderline notes>"}\n'
+    "```\n\n"
+    "evidence_quote rules:\n"
+    "- Must be an EXACT verbatim substring copied from the response (character-perfect).\n"
+    "- Required (non-empty) when passed is true.\n"
+    "- May be empty string when the failure is an omission.\n"
+    "- When a fail has partial evidence, include the verbatim quote that falls short.\n\n"
+    "Evaluate EVERY criterion listed. Return nothing outside the JSON object."
+)
+JUDGE_ISOLATION = [
+    "features.shell_tool=false", "features.apps=false", "features.plugins=false",
+    "features.memories=false", "features.skill_search=false", "features.multi_agent=false",
+    "features.multi_agent_v2=false", "features.hooks=false", "features.browser_use=false",
+    "features.computer_use=false", "features.image_generation=false", "features.view_image=false",
+    "features.workspace_dependencies=false", "skills.include_instructions=false",
+    "skills.bundled.enabled=false", "project_doc_max_bytes=0", 'web_search="disabled"',
+    "mcp_servers={}", "agents.enabled=false",
 ]
 
 
@@ -330,6 +362,252 @@ def blind(directory: Path, output: Path):
     write_json(output, {"instructions": "Score each criterion substantively as true/false; include a verbatim evidence quote and rationale. Unknown/missing behavior fails the criterion. Do not infer arm or read source manifests. Mark uncertainty in notes; do not invent proof of execution.", "packets": packets})
 
 
+def build_judge_prompt(packet):
+    case, rubric = packet["case"], packet["rubric"]
+    lines = ["## Task given to the model\n", case["request"],
+             "\n\n## Evidence supplied to the model\n",
+             json.dumps(case["evidence"], indent=2, ensure_ascii=False),
+             "\n\n## Model response to evaluate\n", packet["response"],
+             "\n\n## Rubric criteria\n"]
+    for c in rubric["criteria"]:
+        lines.append(f"- **{c['id']}** (weight: {c['weight']}, critical: {c['critical']}): {c['description']}")
+    if rubric.get("reference_notes"):
+        lines.append(f"\n## Reviewer reference notes\n\n{rubric['reference_notes']}")
+    lines.append("\nScore every criterion above. Return only the JSON object.")
+    return "\n".join(lines)
+
+
+def extract_json(text):
+    text = text.strip()
+    if text.startswith("{"):
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            pass
+    match = re.search(r"```(?:json)?\s*\n?(\{.*?\})\s*\n?```", text, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(1))
+        except json.JSONDecodeError:
+            pass
+    match = re.search(r"\{.*\}", text, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            pass
+    return None
+
+
+def validate_judge_output(parsed, rubric, response):
+    if not isinstance(parsed, dict) or "criteria" not in parsed:
+        return "missing criteria key"
+    marks = parsed["criteria"]
+    if not isinstance(marks, list):
+        return "criteria must be a list"
+    expected_ids = {c["id"] for c in rubric["criteria"]}
+    actual_ids = {m.get("id") for m in marks}
+    # Length guard also rejects duplicates whose id set still matches, which summarize forbids.
+    if len(marks) != len(rubric["criteria"]) or actual_ids != expected_ids:
+        return f"criterion ID mismatch: expected {sorted(expected_ids)}, got {sorted(actual_ids)}"
+    for mark in marks:
+        if type(mark.get("passed")) is not bool:
+            return f"{mark.get('id')}: passed must be boolean"
+        if not mark.get("rationale"):
+            return f"{mark.get('id')}: rationale is required"
+        quote = mark.get("evidence_quote", "")
+        if mark["passed"] and not quote:
+            return f"{mark.get('id')}: passed criterion requires non-empty evidence_quote"
+        if quote and quote not in response:
+            return f"{mark.get('id')}: evidence_quote not found verbatim in response"
+    return None
+
+
+def build_review(parsed, packet, reviewer_id, reviewed_at):
+    """Assemble the summarize-compatible review from the parsed judge output."""
+    review = {"id": packet["id"], "reviewer": reviewer_id, "reviewed_at": reviewed_at,
+              "response_sha256": packet["response_sha256"],
+              "criteria": [{"id": m["id"], "passed": m["passed"],
+                            "evidence_quote": m.get("evidence_quote", ""),
+                            "rationale": m["rationale"]} for m in parsed["criteria"]]}
+    if parsed.get("notes"):
+        review["notes"] = parsed["notes"]
+    return review
+
+
+def judge_one(packet, model, effort, timeout, attempt_number):
+    """Run one judge attempt. Returns (parsed_or_None, attempt_record) with full raw evidence.
+
+    failure_kind classifies the record: 'invocation' (CLI/model failure, e.g. an
+    unavailable model) is deterministic and must not be retried; 'parse'/'validation'
+    are recoverable and may be retried.
+    """
+    prompt = JUDGE_SYSTEM + "\n\n" + build_judge_prompt(packet)
+    started, tick = utc(), time.monotonic()
+    stdout, stderr, code = "", "", None
+    with tempfile.TemporaryDirectory(prefix="shopify-judge-") as temporary:
+        command = ["codex", "exec", "--ignore-user-config", "--ignore-rules", "--ephemeral",
+                   "--skip-git-repo-check", "-s", "read-only", "-C", temporary,
+                   "-m", model, "-c", "model_reasoning_effort=" + json.dumps(effort), "--json"]
+        for setting in JUDGE_ISOLATION:
+            command += ["-c", setting]
+        command += ["-"]
+        try:
+            result = subprocess.run(command, input=prompt, text=True, capture_output=True,
+                                    timeout=timeout, env={**os.environ, "RUST_LOG": "error"})
+            stdout, stderr, code = result.stdout, result.stderr, result.returncode
+            response_text, _, problems = parse_codex(stdout, code)
+        except subprocess.TimeoutExpired as error:
+            stdout = error.stdout or ""
+            stdout = stdout.decode() if isinstance(stdout, bytes) else stdout
+            stderr = error.stderr or ""
+            stderr = stderr.decode() if isinstance(stderr, bytes) else stderr
+            response_text, problems, code = "", ["timeout"], None
+        except (OSError, ValueError) as error:
+            response_text, problems = "", [type(error).__name__]
+            stderr += str(error)
+    # Diagnostics retain failure evidence without publishing a user's filesystem identity.
+    stderr = stderr.replace(str(Path.home()), "<user-home>")
+    record = {"attempt": attempt_number, "started_at": started, "finished_at": utc(),
+              "duration_seconds": round(time.monotonic() - tick, 3), "exit_code": code,
+              "problems": problems, "failure_kind": None, "validation_error": None,
+              "status": "invalid", "events": stdout, "events_sha256": digest(stdout),
+              "diagnostics": stderr, "diagnostics_sha256": digest(stderr)}
+    if problems:
+        record["failure_kind"] = "invocation"
+        return None, record
+    parsed = extract_json(response_text)
+    if parsed is None:
+        record["failure_kind"] = "parse"
+        record["validation_error"] = "no JSON extracted from judge output"
+        return None, record
+    error = validate_judge_output(parsed, packet["rubric"], packet["response"])
+    if error:
+        record["failure_kind"] = "validation"
+        record["validation_error"] = error
+        return None, record
+    record["status"] = "completed"
+    return parsed, record
+
+
+def judge(blinded: Path, output: Path, model, effort="medium",
+          workers=2, timeout=300, retries=1):
+    provenance_path = output.with_name(output.stem + ".provenance.json")
+    if output.exists() or provenance_path.exists():
+        raise ValueError("Refusing to overwrite existing reviews or provenance")
+    packets = read_json(blinded)
+    if "packets" not in packets or not packets["packets"]:
+        raise ValueError("Blinded file must contain non-empty packets")
+    reviewer_id = f"{model} / automated judge; blinded model reviewer"
+
+    def process(packet):
+        attempts, review = [], None
+        for attempt in range(1, 2 + retries):
+            parsed, record = judge_one(packet, model, effort, timeout, attempt)
+            attempts.append(record)
+            if parsed is not None:
+                review = build_review(parsed, packet, reviewer_id, record["started_at"])
+                break
+            # Deterministic invocation failures (e.g. an unavailable model) never recover on retry.
+            if record["failure_kind"] == "invocation":
+                break
+            if attempt < 1 + retries:
+                time.sleep(2 ** (attempt - 1))
+        accepted = next((a["attempt"] for a in attempts if a["status"] == "completed"), None)
+        packet_record = {"id": packet["id"], "case_id": packet["case"]["id"],
+                         "rubric_id": packet["rubric"]["id"], "response_sha256": packet["response_sha256"],
+                         "packet_sha256": digest(json.dumps(packet, sort_keys=True, ensure_ascii=False)),
+                         "judge_prompt_sha256": digest(JUDGE_SYSTEM + "\n\n" + build_judge_prompt(packet)),
+                         "status": "completed" if review else "failed", "accepted_attempt": accepted,
+                         "attempts": attempts, "review": review}
+        return packet_record, review
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        results = list(pool.map(process, packets["packets"]))
+    packet_records = [record for record, _ in results]
+    reviews = [review for _, review in results if review]
+    failures = [record["id"] for record in packet_records if record["status"] == "failed"]
+
+    # Provenance is always written first so failed attempts stay auditable, never silently discarded.
+    provenance = {"schema_version": 1, "kind": "judge_provenance", "created_at": utc(),
+                  "blinded_sha256": digest(blinded.read_bytes()), "requested_model": model,
+                  "model_identity_evidence": "Exact model requested in CLI; response JSONL does not expose a server model identifier",
+                  "reasoning_effort": effort, "reviewer": reviewer_id,
+                  "judge_system_sha256": digest(JUDGE_SYSTEM),
+                  "judge_runner_sha256": digest(Path(__file__).read_bytes()),
+                  "isolation_config": JUDGE_ISOLATION, "retries_allowed": retries,
+                  "packets": packet_records}
+    write_json(provenance_path, provenance)
+    for record in packet_records:
+        if record["status"] == "completed":
+            print(f"{record['id']}: scored (attempt {record['accepted_attempt']})", flush=True)
+        else:
+            last = record["attempts"][-1]
+            reason = last["validation_error"] or "; ".join(last["problems"])
+            detail = last["diagnostics"].strip().replace("\n", " ")
+            reason += f" :: {detail[:300]}" if detail else ""
+            print(f"{record['id']}: FAILED after {len(record['attempts'])} attempt(s) - {reason}", flush=True)
+    print(f"\nProvenance for {len(packet_records)} packets written to {provenance_path}", flush=True)
+    if failures:
+        raise ValueError(f"{len(failures)} of {len(packet_records)} reviews could not be completed; "
+                         f"see {provenance_path}")
+    write_json(output, {"reviews": reviews})
+    print(f"{len(reviews)} reviews written to {output}", flush=True)
+
+
+def verify_judge_provenance(provenance, reviews_by_id):
+    """Offline audit of a judge provenance record against reviews.json. Never invokes a model.
+
+    Confirms per-attempt raw-evidence hashes, that each accepted review is replayable from
+    its captured events, and that accepted reviews exactly match reviews.json.
+    """
+    if provenance.get("kind") != "judge_provenance":
+        raise ValueError("Not a judge provenance record")
+    seen = set()
+    for record in provenance["packets"]:
+        pid = record["id"]
+        if pid in seen:
+            raise ValueError(f"Duplicate provenance packet: {pid}")
+        seen.add(pid)
+        attempts = record["attempts"]
+        if not attempts:
+            raise ValueError(f"{pid}: provenance packet has no attempts")
+        for index, attempt in enumerate(attempts):
+            if attempt["status"] not in ("completed", "invalid"):
+                raise ValueError(f"{pid}: unknown attempt status {attempt['status']}")
+            if digest(attempt["events"]) != attempt["events_sha256"] or \
+                    digest(attempt["diagnostics"]) != attempt["diagnostics_sha256"]:
+                raise ValueError(f"{pid}: attempt {attempt['attempt']} evidence hash mismatch")
+            # Only the final attempt may succeed; every earlier attempt is a retained failure.
+            if attempt["status"] == "completed" and index != len(attempts) - 1:
+                raise ValueError(f"{pid}: a completed attempt is not the last recorded attempt")
+        completed = [a for a in attempts if a["status"] == "completed"]
+        if record["status"] == "completed":
+            if len(completed) != 1 or record["accepted_attempt"] != completed[0]["attempt"]:
+                raise ValueError(f"{pid}: accepted attempt does not match a single completed attempt")
+            response_text, _, problems = parse_codex(completed[0]["events"], completed[0]["exit_code"])
+            if problems:
+                raise ValueError(f"{pid}: accepted attempt replays with invocation problems")
+            parsed = extract_json(response_text)
+            if parsed is None:
+                raise ValueError(f"{pid}: accepted events contain no parseable judge output")
+            rebuilt = build_review(parsed, {"id": pid, "response_sha256": record["response_sha256"]},
+                                   record["review"]["reviewer"], record["review"]["reviewed_at"])
+            if rebuilt != record["review"]:
+                raise ValueError(f"{pid}: stored review is not reproducible from its captured events")
+            if reviews_by_id.get(pid) != record["review"]:
+                raise ValueError(f"{pid}: provenance review does not match reviews.json")
+        else:
+            if completed or record["review"] is not None or record["accepted_attempt"] is not None:
+                raise ValueError(f"{pid}: failed packet must not carry an accepted review")
+            if pid in reviews_by_id:
+                raise ValueError(f"{pid}: failed packet must not appear in reviews.json")
+    provenance_completed = {r["id"] for r in provenance["packets"] if r["status"] == "completed"}
+    if set(reviews_by_id) - provenance_completed:
+        raise ValueError("reviews.json contains ids without completed judge provenance")
+    return len(provenance["packets"])
+
+
 def summarize(directory: Path, reviews: Path):
     manifest, _ = verify_frozen(directory)
     response_records = records(directory, manifest)
@@ -408,6 +686,16 @@ def main():
     p = sub.add_parser("blind")
     p.add_argument("directory", type=Path)
     p.add_argument("output", type=Path)
+    p = sub.add_parser("judge")
+    p.add_argument("blinded", type=Path, help="Blinded packets file from the blind command")
+    p.add_argument("output", type=Path, help="Output reviews JSON path")
+    p.add_argument("--model", required=True,
+                   help="Exact judge model ID verified available in the local CLI; "
+                        "use a different model from the generator where possible")
+    p.add_argument("--effort", default="medium")
+    p.add_argument("--workers", type=int, choices=range(1, 5), default=2)
+    p.add_argument("--timeout", type=int, default=300)
+    p.add_argument("--retries", type=int, default=1, help="Retries per packet on validation failure")
     p = sub.add_parser("summarize")
     p.add_argument("directory", type=Path)
     p.add_argument("reviews", type=Path)
@@ -420,6 +708,9 @@ def main():
         run(args.directory, args.workers, args.timeout)
     elif args.action == "blind":
         blind(args.directory, args.output)
+    elif args.action == "judge":
+        judge(args.blinded, args.output, model=args.model, effort=args.effort,
+              workers=args.workers, timeout=args.timeout, retries=args.retries)
     else:
         write_json(args.output, summarize(args.directory, args.reviews))
 

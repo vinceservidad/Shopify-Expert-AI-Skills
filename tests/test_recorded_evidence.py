@@ -1,6 +1,7 @@
 """Synthetic evidence-integrity regressions; no model calls or actual run reads."""
 from copy import deepcopy
 from pathlib import Path
+import json
 import subprocess
 import sys
 import tempfile
@@ -145,6 +146,48 @@ class RecordedEvidenceTests(unittest.TestCase):
         (self.output / "responses").mkdir()
         (self.output / "responses/hidden-attempt.txt").write_text("Not an auditable response record")
         with self.assertRaisesRegex(ValueError, "Unexpected response artifact"):
+            checker.check(self.output)
+
+    def provenance_from_reviews(self):
+        """Build a provenance record whose captured events replay to reviews.json exactly."""
+        reviews = runner.read_json(self.output / "reviews.json")["reviews"]
+        packets = []
+        for review in reviews:
+            payload = {"criteria": review["criteria"]}
+            if "notes" in review:
+                payload["notes"] = review["notes"]
+            events = ('{"type":"item.completed","item":{"type":"agent_message","text":'
+                      + json.dumps(json.dumps(payload)) + '}}\n'
+                      '{"type":"turn.completed","usage":{"input_tokens":5,"output_tokens":4}}')
+            packets.append({
+                "id": review["id"], "case_id": "fixture", "rubric_id": "fixture",
+                "response_sha256": review["response_sha256"], "packet_sha256": runner.digest("packet"),
+                "judge_prompt_sha256": runner.digest("prompt"), "status": "completed",
+                "accepted_attempt": 1, "review": review,
+                "attempts": [{"attempt": 1, "started_at": review["reviewed_at"], "finished_at": review["reviewed_at"],
+                              "duration_seconds": 0.0, "exit_code": 0, "problems": [], "failure_kind": None,
+                              "validation_error": None, "status": "completed",
+                              "events": events, "events_sha256": runner.digest(events),
+                              "diagnostics": "", "diagnostics_sha256": runner.digest("")}]})
+        return {"schema_version": 1, "kind": "judge_provenance", "created_at": "2026-09-06",
+                "blinded_sha256": runner.digest("blind"), "requested_model": "gpt-5.5",
+                "model_identity_evidence": "requested only", "reasoning_effort": "medium",
+                "reviewer": "gpt-5.5 / automated judge; blinded model reviewer",
+                "judge_system_sha256": runner.digest(runner.JUDGE_SYSTEM),
+                "judge_runner_sha256": runner.digest("runner"), "isolation_config": runner.JUDGE_ISOLATION,
+                "retries_allowed": 1, "packets": packets}
+
+    def test_judge_provenance_is_validated_when_present(self):
+        for job in self.manifest["jobs"]:
+            self.attempt(job)
+        self.report()
+        runner.write_json(self.output / "reviews.provenance.json", self.provenance_from_reviews())
+        self.assertEqual(checker.check(self.output)["generation_complete"], True)
+        # Tampered raw events (hash not updated) are rejected.
+        provenance = runner.read_json(self.output / "reviews.provenance.json")
+        provenance["packets"][0]["attempts"][0]["events"] += " tampered"
+        runner.write_json(self.output / "reviews.provenance.json", provenance)
+        with self.assertRaisesRegex(ValueError, "evidence hash mismatch"):
             checker.check(self.output)
 
     def test_symlinked_and_orphan_response_evidence_is_rejected(self):
