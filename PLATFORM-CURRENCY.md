@@ -81,8 +81,11 @@ checked separately. The connector's approved scope list is unchanged. A populate
 development-store order exposed `ACCESS_DENIED` for the Order object despite
 `read_orders`; [protected-data approval](https://shopify.dev/docs/apps/launch/protected-customer-data)
 and a permanent [distribution choice](https://shopify.dev/docs/apps/launch/distribution)
-are separate requirements. No approval/configuration change is implied by schema
-validation.
+are separate requirements. With the owner's explicit approval, Custom distribution
+was saved for the dedicated test app; the unchanged order read then returned the
+unpaid/unfulfilled test order and both line-item pages. No additional scopes or
+identity fields were requested. Schema validation alone does not provide that
+approval or prove live access.
 
 ## Claim record
 

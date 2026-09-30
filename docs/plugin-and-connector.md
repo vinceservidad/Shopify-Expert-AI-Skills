@@ -191,9 +191,17 @@ code replay rejection, refresh rotation, revocation and redirect rejection.
 Order object as protected customer data even when the query omits names,
 addresses, email, phone and payment details. In the live development-store test,
 the app's three read scopes were present, but Shopify returned `ACCESS_DENIED`
-for the Order object after an unpaid two-item test order was created. The new
-order read is schema-validated and covered by synthetic protocol tests; its
-populated live read is pending the app's distribution/data-access approval.
+for the Order object after an unpaid two-item test order was created. The owner
+then explicitly approved Custom distribution for the dedicated test app. After
+that setting was saved, the same order query succeeded with the unchanged three
+read scopes. Local bundled stdio verified `PENDING`, `UNFULFILLED`, and both
+line-item pages. No payment was collected and no customer was assigned.
+
+Source 0.2.0 local verification also confirmed all eight workflow preparations,
+nineteen skills, twelve tools and product description/SEO/media reads. The store
+had one media record for the checked product, so multi-page media behavior is
+covered by synthetic tests rather than claimed as a live observation. These
+checks do not grade model behavior or update the hosted Worker.
 
 Select app distribution only with the owner's approval: Shopify makes that
 choice permanent. Custom apps have protected-data access automatically; public

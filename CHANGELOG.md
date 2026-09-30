@@ -15,6 +15,10 @@ All notable changes to this project are documented here.
 - Add package, protocol and Workers regression coverage and ungraded behavioral
   scenarios. Keep client facts in chat/project files and use separate approved
   editing connections only when supported and authorized.
+- Verify local product-detail reads and a populated unpaid development-store
+  order with line-item pagination. Resolve an actual Order-object denial through
+  the owner's explicitly approved Custom distribution setting for the test app.
+  Preserve the three read scopes and exclude identifying/payment fields.
 - The hosted Worker remains release 0.1.0 with eight tools; this source upgrade
   does not merge or deploy it.
 
