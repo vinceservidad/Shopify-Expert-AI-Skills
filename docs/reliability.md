@@ -26,6 +26,30 @@ activate the virtual environment with the appropriate shell command and call
 `python scripts/package_skill.py shopify-analytics` directly. The automated
 workflow currently tests Linux and macOS, not Windows.
 
+## Repository structure
+
+```text
+skills/<skill-name>/
+  SKILL.md                 # task instructions
+  references/              # detailed procedures and checklists
+  assets/worked-example/   # included in five teaching examples
+skills/shopify-va/references/
+  store-operating-lifecycle.md
+  initiative-record.md
+connector/                 # local and hosted read-only MCP server
+  src/                     # shared tools and OAuth implementation
+  worker/                  # Cloudflare Workers adapter
+scripts/                   # validation, packaging and example checks
+tests/                     # tooling and sample-data checks
+evals/                     # model responses, rubrics and recorded results
+docs/                      # usage, setup and technical guides
+.github/workflows/         # automated repository checks
+```
+
+For the first task, use [the beginner walkthrough](getting-started.md).
+For server setup and hosted verification limits, use
+[the plugin and connector guide](plugin-and-connector.md).
+
 ## What validation checks
 
 - Required repository files and the expected nineteen skill directories.

@@ -1,97 +1,65 @@
-# Getting Started
+# Getting Started: Your First Product Draft
 
-## 1. Choose one owner skill
+Use ChatGPT or Claude to draft a product listing from facts you already have. You need an account in either app and approved facts for one product. No code or Shopify connection is needed.
 
-Pick the skill that owns the final decision or deliverable. Add a second skill only when it contributes a distinct specialty.
+## 1. Download and unzip the guides
 
-Examples:
+[Download the source ZIP](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/archive/refs/heads/main.zip). On a Mac, double-click it. On Windows, right-click it and choose **Extract All**.
 
-- Use `shopify-store-audit` for a broad store review.
-- Use `shopify-cro` for a funnel diagnosis and experiment backlog.
-- Use `shopify-product-page` for a product-page rewrite.
-- Use `shopify-analytics` as the owner when the main question is why performance changed.
-- Pair `shopify-analytics` with an ads skill when reconciliation changes the media decision.
+Open the extracted folder, then **skills**, then **shopify-product-listing**.
 
-Avoid invoking every skill for one request. That creates duplicated analysis and unclear ownership.
+## 2. Attach three documents
 
-## 2. Supply business context
+Open a new ChatGPT or Claude chat. Use the file-upload button to attach:
 
-Complete the relevant parts of [`business-context-template.md`](business-context-template.md). At minimum, include:
+| File | Where to find it |
+| --- | --- |
+| [SKILL.md](../skills/shopify-product-listing/SKILL.md) | Inside `shopify-product-listing`. |
+| [listing-fields.md](../skills/shopify-product-listing/references/listing-fields.md) | Inside `shopify-product-listing/references`. |
+| [qa-checklist.md](../skills/shopify-product-listing/references/qa-checklist.md) | Inside `shopify-product-listing/references`. |
 
-- store URL or supplied artifacts
-- market and currency
-- primary business outcome
-- date range and comparison
-- product, price, offer, and availability context
-- commercial guardrail or named unknown
-- approved and prohibited actions
+These `.md` files are text documents with instructions and checklists. You do not need to edit them or upload the whole ZIP.
 
-Do not paste passwords, API keys, private customer data, payment data, or other secrets into the context.
+If the app rejects them, make copies ending in `.txt`: **SKILL.txt**, **listing-fields.txt**, and **qa-checklist.txt**. Attach those copies, leaving the originals unchanged. You can also paste their contents from a text editor. Your account may have upload limits.
 
-## 3. State the authorization boundary
+## 3. Copy this request
 
-Use one of these scopes:
-
-- **Read-only:** inspect and recommend only.
-- **Draft-only:** create copy, code, workflow, or configuration drafts without saving them in a target platform.
-- **Save as inactive:** persist a draft that cannot affect customers, spend, tracking, or operations.
-- **Approved implementation:** execute only the named changes in the named environment.
-
-Approval for one action does not authorize adjacent actions. A request to draft an email does not authorize sending it. A request to fix a theme file does not authorize publishing it.
-
-## 4. Attach source-of-truth evidence
-
-Useful evidence can include:
-
-- Shopify analytics exports
-- order, product, inventory, or customer-segment exports with unnecessary personal data removed
-- GA4 explorations or exports
-- Google Ads and Meta Ads reports with date range, attribution settings, and columns visible
-- Merchant Center diagnostics and product data
-- heatmaps, recordings, surveys, and support themes with provenance
-- theme files, app configuration, and workflow screenshots
-- email-flow configuration and event definitions
-
-A screenshot can establish what was visible, but it may not contain enough scope, date, filter, or definition information for a commercial decision.
-
-## 5. Ask for an evidence-led output
+Fill in the brackets with approved facts. Write **unknown** where you are unsure.
 
 ```text
-Use shopify-cro as the owner skill.
+Follow the Shopify product-listing guide and checklists provided in this chat.
 
-Objective: diagnose the product-to-checkout drop and propose a controlled test.
-Scope: mobile sessions in the UK, 1-24 August 2026 versus 8-31 July 2026.
-Primary business outcome: first-order contribution profit.
-Evidence: attached Shopify funnel export, GA4 landing-page report, heatmap summary,
-and current product-page screenshots.
-Authorization: read-only. Do not edit the store or launch a test.
+Draft one product title, a short description and three bullet points.
+For this copy draft, check only the facts needed for those three items.
+Use only the approved facts below. Ask for any missing facts you need.
+Do not save or publish anything, or change prices in Shopify.
 
-Separate observed facts, calculations, inferences, assumptions, and unknowns.
-Give me the decision, evidence, guardrails, stopping rules, and missing inputs.
+Product name: [name]
+Approved facts: [materials, size, features and other confirmed details]
+Who it is for: [customer, if known]
+Brand tone: [for example, simple and friendly]
+
+Give me the draft, any missing information and a short review checklist.
 ```
 
-## 6. Review before implementation
+Product facts can come from the store owner's approved sheet, supplier specifications, or an approved existing listing. Use sources the owner allows you to share. Remove passwords and unnecessary customer information.
 
-Check that the response:
+## 4. Review the draft
 
-- uses the requested scope and period
-- names the source for each key observation
-- shows formulas for calculations
-- distinguishes correlation from causality
-- names missing inputs that could change the decision
-- avoids unsupported lift estimates and benchmarks
-- includes a reversible implementation path
-- requests approval before a live change
+The answer should include:
 
-## 7. Verify the terminal state
+- A suggested title, short description, and three bullet points.
+- Missing details or questions. Unknown facts should remain unknown.
+- A short checking list before the copy is used.
 
-After approved implementation, re-open the authoritative target and confirm the intended state. A successful command, save message, build, or platform acceptance is not enough by itself.
+Compare all facts and claims with your approved source. Check that sizes, materials, options, and included items are correct. Get the store owner's approval when required.
 
-Record:
+The result is a **draft in chat**. Nothing has been saved or published in Shopify.
 
-- what changed
-- where it changed
-- previous state or rollback reference
-- saved, published, live, or processing state
-- verification evidence
-- monitoring owner, date, and stopping rule
+## 5. Choose your next task
+
+A **skill** is an instruction guide. ChatGPT or Claude does the work using that guide and your facts. A **connector** is a connection to Shopify; it is optional for drafting.
+
+Our hosted connector only reads data and was verified on a development store with sample data. A separate authorized Shopify integration may allow supported edits. The combined editing workflow in ChatGPT or Claude is still unverified here. Always approve the exact change and check the saved result in Shopify.
+
+Use [Choose a task](../USAGE.md#choose-a-task) to find all 19 guides, or [Connect your store](../USAGE.md#connect-your-store-optional) when you need current store data. The [full usage guide](../USAGE.md) covers reusable setup, permissions, and troubleshooting.

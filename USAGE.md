@@ -1,454 +1,202 @@
-# How to Use Shopify Expert AI Skills
+# How to Use Shopify VA Toolkit
 
-This guide shows how merchants, freelancers, agencies, Shopify VAs, developers, marketers, and store operators can use the skills in Claude, ChatGPT, and Codex. No Shopify connection is required for read-only analysis. You provide the store evidence you want the assistant to examine.
+Use ChatGPT or Claude to help with everyday Shopify work. Start with one small task, then check the result before using it.
 
-## Start with the Shopify Store Operating Lifecycle
+A **skill** is an instruction guide for a task. A **connector** is a connection to Shopify. ChatGPT or Claude does the work, the skill guides it, and an approved Shopify connection can allow supported store changes.
 
-Use this lifecycle to decide **where the work is now** before choosing what happens next:
+You can draft from the facts you provide without connecting a store.
 
-```text
-CONTEXT → GOAL → DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE ↺
-```
+## Start with one product-listing draft
 
-It is a state model, not a checklist. Start at the earliest unresolved stage that can materially change the decision.
+You need a ChatGPT or Claude account and approved facts for one product. No code or terminal is needed for this first task.
 
-Examples:
+### 1. Download the guides
 
-- **Theme bug:** `DIAGNOSE → PLAN → IMPLEMENT → VERIFY`
-- **Approved listing:** `CONTEXT → PLAN → IMPLEMENT → VERIFY`
-- **Store performance decline:** `DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE`
-- **Simple draft reply:** `IMPLEMENT`
+1. [Download the source ZIP](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/archive/refs/heads/main.zip).
+2. Unzip it. On a Mac, double-click the ZIP. On Windows, right-click it and choose **Extract All**.
+3. Open the extracted folder, then **skills**, then **shopify-product-listing**.
+4. Find the three files below. The last two are inside its **references** folder.
 
-Use [`skills/shopify-va/references/store-operating-lifecycle.md`](skills/shopify-va/references/store-operating-lifecycle.md) for the full stage contracts, role boundaries, and examples. Use the [`Shopify Initiative Record`](skills/shopify-va/references/initiative-record.md) when the work spans several stages, skills, sessions, or handoffs.
-
-### Role boundaries still matter
-
-The same lifecycle works for different people, but authority does not automatically transfer:
-
-- **Merchant / client / accountable owner:** approves material business tradeoffs and live scope.
-- **Freelancer / agency / specialist:** works within the engagement, evidence, access, and approval actually granted.
-- **Shopify VA:** executes defined procedures, routes specialist decisions, verifies terminal states, and escalates exceptions.
-- **Developer:** owns technical diagnosis and implementation within approved technical scope, not commercial or publishing authority by default.
-- **Marketer / operator:** connects storefront, merchandising, lifecycle, acquisition, and analytics without treating attributed platform metrics as additive business truth.
-
-A lifecycle stage never authorizes a live change by itself.
-
-## Choose one skill
-
-Start with the skill that owns the result you need.
-
-| Your task | Choose this skill |
+| File to attach | What it does |
 | --- | --- |
-| Manage or route a mixed Shopify VA task list or multi-stage routine initiative | `shopify-va` |
-| Research and validate a product opportunity | `shopify-product-research` |
-| Create or update product listings | `shopify-product-listing` |
-| Clean, import, or update a product catalog in bulk | `shopify-catalog-operations` |
-| Plan collections, sorting, bundles, and recommendations | `shopify-merchandising` |
-| Review orders, fulfillment, returns, refunds, or cancellations | `shopify-order-operations` |
-| Train, onboard, and assess Shopify VAs | `shopify-va-training` |
-| Audit the entire store | `shopify-store-audit` |
-| Diagnose a funnel or plan an experiment | `shopify-cro` |
-| Audit or rewrite a product page | `shopify-product-page` |
-| Create ad concepts, hooks, or creative tests | `shopify-creative-strategy` |
-| Audit or diagnose Meta Ads | `shopify-meta-ads` |
-| Audit Google Ads, Shopping, or Merchant Center | `shopify-google-ads` |
-| Plan technical, collection, product, or content SEO | `shopify-seo` |
-| Plan email, SMS, campaigns, or lifecycle flows | `shopify-email-marketing` |
-| Design or audit Shopify Flow automation | `shopify-flow-automation` |
-| Draft support replies, macros, or FAQs | `shopify-support` |
-| Build or debug Liquid and Shopify theme code | `shopify-theme-development` |
-| Reconcile Shopify, GA4, ads, email, and business data | `shopify-analytics` |
+| [SKILL.md](skills/shopify-product-listing/SKILL.md) | Gives the AI the product-listing instructions. |
+| [listing-fields.md](skills/shopify-product-listing/references/listing-fields.md) | Explains what belongs in a Shopify product listing. |
+| [qa-checklist.md](skills/shopify-product-listing/references/qa-checklist.md) | Helps check the draft and any later store update. |
 
-Use one owner skill first. Add a second specialist only when it contributes a distinct part of the decision.
+Files ending in `.md` are text documents with headings and lists. You do not need to edit them. This ZIP contains the source files, not an installed plugin. Do not upload the whole repository ZIP as one skill.
 
-Use `shopify-va` when the request contains several routine admin tasks, spans several lifecycle stages, or the correct specialist is unclear. It will normalize the work, identify the current lifecycle stage, and route each task without expanding permissions.
+### 2. Open ChatGPT or Claude
 
-Example:
+Start a new chat and attach those three files with the app's file-upload button.
 
-- `shopify-analytics` owns the answer to “Why did profit fall?”
-- `shopify-google-ads` contributes query, product, campaign, and measurement evidence.
-- `shopify-va` may coordinate the handoff if the work also includes an approved catalog or theme action.
+If the app rejects `.md` files, make copies named **SKILL.txt**, **listing-fields.txt**, and **qa-checklist.txt**, then attach the copies. Leave the original files unchanged. You can also open the files in a text editor and paste their contents into the chat. Upload limits depend on your account.
 
-## Option 1: Install a skill in Claude
+### 3. Paste your request and product facts
 
-Claude can import these folders as custom skills.
-
-### No-code installation
-
-1. Open the [GitHub repository](https://github.com/vinceservidad/Shopify-Expert-AI-Skills).
-2. Select **Code**, then **Download ZIP**.
-3. Extract the downloaded repository.
-4. Open the `skills` folder.
-5. Choose one skill folder, such as `shopify-store-audit`.
-6. Compress that individual folder as a ZIP.
-
-The ZIP must contain the skill folder at its root:
+Replace the brackets with facts approved by the store owner. Write **unknown** where you are unsure.
 
 ```text
-shopify-store-audit.zip
-└── shopify-store-audit/
-    ├── SKILL.md
-    └── references/
-        ├── checklist.md
-        └── frameworks.md
+Follow the Shopify product-listing guide and checklists provided in this chat.
+
+Draft one product title, a short description and three bullet points.
+For this copy draft, check only the facts needed for those three items.
+Use only the approved facts below. Ask for any missing facts you need.
+Do not save or publish anything, or change prices in Shopify.
+
+Product name: [name]
+Approved facts: [materials, size, features and other confirmed details]
+Who it is for: [customer, if known]
+Brand tone: [for example, simple and friendly]
+
+Give me the draft, any missing information and a short review checklist.
 ```
 
-Do not upload the whole repository ZIP as one skill.
+### 4. Check the answer
 
-7. In Claude, open **Customize > Skills**.
-8. Select **Add** or **Create skill**, then **Upload a skill**.
-9. Upload the individual skill ZIP.
-10. Enable the skill.
+Expect a **draft**, a list of **missing facts**, and a **checking list**. Unknown facts should stay unknown. A draft in chat has not been saved in Shopify.
 
-If Claude does not show Skills, enable **Code execution and file creation** in the available account or organization settings. Availability and labels can vary by account.
+Before using the copy, check every specification and claim against your approved source. Make sure the options match the real product. Ask the store owner to approve the final wording when required.
 
-### Installation using the packaging script
+For a shorter walkthrough, use [Getting started](docs/getting-started.md). A [worked example](skills/shopify-product-listing/references/worked-example.md) shows how missing product details should be handled.
 
-If you downloaded or cloned the repository and can use a terminal, set up the
-tooling with Python 3.11 or newer first:
+## Choose a task
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-dev.txt
-./scripts/package-skill.sh shopify-store-audit
-```
+There are 19 instruction guides. Choose the row closest to your task. Open the linked guide to see its full instructions and reference files.
 
-Use `./scripts/package-skill.sh --all` to build all 19 individual ZIPs. The
-packager checks the catalog once before writing. On Windows, use
-`python scripts/package_skill.py --all` after activating the virtual environment.
+| I want help to... | Guide |
+| --- | --- |
+| Organize a mixed task list, check stock, or choose the right guide | [shopify-va](skills/shopify-va/SKILL.md) |
+| Research a product before sourcing or selling it | [shopify-product-research](skills/shopify-product-research/SKILL.md) |
+| Write product descriptions or prepare product listings | [shopify-product-listing](skills/shopify-product-listing/SKILL.md) |
+| Clean a product list, prepare a bulk import, or check stock records | [shopify-catalog-operations](skills/shopify-catalog-operations/SKILL.md) |
+| Plan collections, product order, bundles, and related products | [shopify-merchandising](skills/shopify-merchandising/SKILL.md) |
+| Review orders, shipping, returns, refunds, or cancellations | [shopify-order-operations](skills/shopify-order-operations/SKILL.md) |
+| Train a VA, write task instructions, or check practice work | [shopify-va-training](skills/shopify-va-training/SKILL.md) |
+| Check the whole store and prioritize problems | [shopify-store-audit](skills/shopify-store-audit/SKILL.md) |
+| Find buying problems and plan a test to improve them | [shopify-cro](skills/shopify-cro/SKILL.md) |
+| Improve one product page | [shopify-product-page](skills/shopify-product-page/SKILL.md) |
+| Plan ad ideas, messages, and creative tests | [shopify-creative-strategy](skills/shopify-creative-strategy/SKILL.md) |
+| Review Facebook or Instagram ads | [shopify-meta-ads](skills/shopify-meta-ads/SKILL.md) |
+| Review Google Ads, Shopping ads, or Merchant Center issues | [shopify-google-ads](skills/shopify-google-ads/SKILL.md) |
+| Help products and pages appear in search results | [shopify-seo](skills/shopify-seo/SKILL.md) |
+| Plan email or SMS messages and campaigns | [shopify-email-marketing](skills/shopify-email-marketing/SKILL.md) |
+| Plan or check automatic tasks in Shopify Flow | [shopify-flow-automation](skills/shopify-flow-automation/SKILL.md) |
+| Draft customer replies, reusable responses, or FAQs | [shopify-support](skills/shopify-support/SKILL.md) |
+| Build or fix Shopify theme code | [shopify-theme-development](skills/shopify-theme-development/SKILL.md) |
+| Prepare a sales report or understand changes in sales and profit | [shopify-analytics](skills/shopify-analytics/SKILL.md) |
 
-Upload the generated file from:
+For another task, attach that guide's `SKILL.md` and the reference files it asks you to use. Tell the AI what you need and provide the matching facts, screenshots, or reports. Start with one guide. Use `shopify-va` if the work includes several tasks and you need help organizing them.
 
-```text
-dist/shopify-store-audit.zip
-```
+There is a [copy-and-paste prompt for every guide](docs/prompt-library.md).
 
-Package `shopify-va` when you want the lifecycle, mixed-task routing, initiative record, and VA operating checklists together.
+## Connect your store (optional)
 
-### Your first Claude request
+Connecting a store lets the AI use current store information instead of relying only on files you upload. Check which connection you are using and what it is allowed to do.
 
-After enabling the skill, send:
+| Connection | What it allows |
+| --- | --- |
+| No connection | Drafting and review using the facts and files you provide. |
+| This toolkit's hosted connector | Reading store details, products, variants, stock, and order summaries. It cannot edit the store. |
+| A separate approved Shopify editing connection | Supported changes allowed by that connection, your account permissions, and your approval. |
 
-```text
-Use the shopify-store-audit skill.
+Our hosted connector is **read-only**. It was verified on **VA Toolkit Connector Test**, a development store with sample data, on September 30, 2026. It has not been verified for every merchant store. The order test returned no orders, so populated order summaries are still unverified.
 
-Audit the supplied Shopify store screenshots and analytics exports.
-Start read-only. Separate observed facts, calculations, inferences,
-assumptions, and unknowns. Do not change the store.
+Supported editing depends on the separate integration. See Shopify's instructions for [ChatGPT](https://help.shopify.com/en/manual/ai-powered-tools/connecting-ai-tools/shopify-plugin-for-chatgpt) or [Claude](https://help.shopify.com/en/manual/ai-powered-tools/connecting-ai-tools/shopify-connector-for-claude). Installing the guides alone does not give either app access to your store.
 
-Business objective: improve first-order contribution profit.
-Market: [market]
-Period: [date range] versus [comparison range]
-Evidence: [list attached files, URLs, or screenshots]
+The read-only connector and a separate editing connection can serve different parts of a task. The combined workflow in native ChatGPT or Claude has not been tested end to end here.
 
-Give me the five highest-priority issues, the evidence for each,
-missing evidence, recommended next steps, guardrails, and the approval
-needed before implementation.
-```
+For technical setup, the connection method is called **MCP**. The hosted URL is `https://shopify-va-toolkit.vinceluxxe.workers.dev/mcp`. Give the [connector setup guide](docs/plugin-and-connector.md) to the person helping with your setup. Other merchants still need an approved Shopify app installation and suitable app distribution. Opening that URL in a browser without signing in returns an authorization error; it is not an installation button.
 
-If the skill does not activate automatically, name it explicitly as shown above.
+## Tell the AI what it may do
 
-### Lifecycle coordination request
+Choose the wording that matches your task:
 
-For mixed or ongoing Shopify work:
+| What you want | What to say |
+| --- | --- |
+| Review only | “Inspect and recommend. Do not change anything.” |
+| A draft in chat | “Draft it here. Do not save, publish, or send it.” |
+| Save an inactive draft | “Save this approved draft in [exact target]. Keep it inactive and unpublished.” |
+| An approved store change | “Make only [exact change] in [store and product/page]. Check the saved result. Preserve unrelated work.” |
 
-```text
-Use the shopify-va skill and its Shopify Store Operating Lifecycle.
+Approval to draft a reply does not approve sending it. Approval to save a product does not approve publishing it. A connection with edit access still needs a clear task and approval.
 
-Continue this initiative from the current verified state.
-Do not restart stages that are already satisfied.
-
-Current work: [describe initiative]
-Store / market: [scope]
-Current lifecycle stage, if known: [stage]
-Evidence / source of truth: [sources]
-Authorization: [read-only, draft-only, or exact approved action]
-
-Identify the earliest unresolved stage that can change the next decision,
-route each substantive decision to the correct specialist, and keep
-implementation, verification, measurement, and optimization separate.
-```
-
-## Option 2: Use a skill in ChatGPT
-
-ChatGPT does not currently import an Agent Skills ZIP in the same way as Claude. Use one of the following setups.
-
-### Custom GPT setup
-
-Use this option if your ChatGPT workspace can create or edit a custom GPT.
-
-1. Choose one skill folder.
-2. Open its `SKILL.md` file on GitHub.
-3. Copy the Markdown below the YAML metadata into the GPT's **Instructions** field. You can also keep the entire file when the editor accepts it.
-4. Upload every file inside that skill's `references` folder as **Knowledge**.
-5. Upload a completed [`business-context-template.md`](docs/business-context-template.md) with sensitive data removed.
-6. Add any current brand, product, policy, measurement, or operating documents the task genuinely needs.
-7. Enable only the capabilities required for the work.
-8. Add two or three realistic conversation starters from the [`Prompt library`](docs/prompt-library.md).
-9. Test the GPT in Preview.
-10. Save or update it only after the test response follows the evidence and authorization rules.
-
-Suggested GPT name:
-
-```text
-Shopify Store Audit Copilot
-```
-
-Suggested description:
-
-```text
-Audits Shopify stores using customer-journey, merchandising, trust,
-performance, measurement, and operational evidence. Starts read-only
-and separates facts from assumptions.
-```
-
-If you want one GPT for mixed routine Shopify work, use `shopify-va` plus all of its references so the lifecycle and routing rules stay together.
-
-### ChatGPT Project setup
-
-Use this when you want one workspace for a specific Shopify store.
-
-1. Create a Project for the store.
-2. Upload the chosen skill's `SKILL.md`.
-3. Upload that skill's `references` files.
-4. Upload a sanitized business-context file and current source documents.
-5. Add this to the Project instructions:
-
-```text
-Use the uploaded SKILL.md as the operating procedure for relevant tasks.
-Read only the reference files required by the current request.
-Start read-only unless I explicitly approve a named external change.
-Separate observed facts, calculations, inferences, assumptions, and unknowns.
-Never invent store data, customer language, performance, claims, margins,
-benchmarks, credentials, causality, implementation state, or verification.
-If the Shopify Store Operating Lifecycle is supplied, start at the earliest
-unresolved stage rather than forcing every request through all stages.
-```
-
-6. Start with one of the prompts in [`docs/prompt-library.md`](docs/prompt-library.md).
-
-### Ordinary ChatGPT conversation
-
-For one-off work:
-
-1. Upload one `SKILL.md` and its reference files.
-2. Upload the evidence for the task.
-3. Begin the request with:
-
-```text
-Follow the uploaded shopify-product-page SKILL.md for this request.
-Start read-only and use only the supplied evidence for product claims.
-```
-
-This is guided use, not automatic skill installation. Restate the selected skill when starting a new conversation.
-
-## Option 3: Install a skill in Codex
-
-In Codex, ask the built-in installer to install one selected skill:
-
-```text
-Use $skill-installer to install shopify-cro from
-https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/skills/shopify-cro.
-Keep existing installed skills unchanged.
-```
-
-For project-scoped use, copy the complete `skills/shopify-cro` folder into
-`<your-project>/.agents/skills/shopify-cro`. Include its references and any assets;
-copying only `SKILL.md` leaves the package incomplete. Check for an existing folder
-before copying and review differences instead of overwriting it. Do not install
-another copy with the same skill name in an overlapping discovery location.
-
-Then request the workflow explicitly:
-
-```text
-Use $shopify-cro to review the attached mobile product page and funnel report.
-Give me a prioritized experiment backlog. Keep this read-only.
-```
-
-Codex detects installed skills automatically; restart it if the skill does not
-appear. Installing a skill does not configure Shopify access or grant permission
-to change a store. Source reviewed September 30, 2026:
-[OpenAI's skill documentation](https://developers.openai.com/codex/skills/).
+After an approved change, reopen the record in Shopify and compare it with the approved result. If it was published, check the actual store page too. Ask the AI to state whether the result is drafted, saved, published, or still unverified.
 
 ## What evidence should you provide?
 
-Use only what the task requires.
+**Evidence** means the information the AI uses to support its answer. Provide only what the task needs:
 
-### Shopify VA, products, catalogs, merchandising, or orders
+| Task | Useful information |
+| --- | --- |
+| Listings, stock, or collections | Approved product facts, current product/stock exports, target products, prices, options, and owner instructions. |
+| Orders or support | Order status, the question, and store policies. Remove customer details the task does not need. |
+| Reports or store reviews | Dated Shopify reports, screenshots, comparison dates, and the question you need answered. |
+| Ads, email, or search | Reports with dates and filters, current messages/pages, product facts, and your goal. |
+| Theme fixes or automatic tasks | The problem, expected behavior, screenshots/files, and the exact store or test environment. |
+| Training | Current task instructions, practice examples, and the rules for checking the work. |
 
-- task list, target store, role, permissions, approver, acceptance criteria, and current lifecycle stage when continuing prior work
-- approved product source sheet, specifications, claims, media, price, inventory, and channel plan
-- current product or catalog export before a bulk update
-- customer, demand, competitor, supplier, and economics evidence for product research
-- assortment, collection, sales, margin, inventory, and seasonality evidence for merchandising
-- exact order state, policy, payment, fulfillment, return, refund, inventory, and third-party evidence for order work
-- current SOPs, training environment, task risks, and QA criteria for VA training
+For larger tasks, use the [store context template](docs/business-context-template.md). Remove passwords, API keys, payment details, and unnecessary personal customer information before uploading files.
 
-### Store audit or CRO
+## Check the AI's work
 
-- store URL and screenshots
-- mobile and desktop pages
-- Shopify funnel or analytics exports
-- GA4 landing-page or funnel reports
-- heatmaps, recordings, surveys, or support themes with sources
-- product availability, price, offer, shipping, and returns information
+Before accepting the result, ask:
 
-### Meta Ads or Google Ads
+- Does it answer my task for the right products, store, and dates?
+- Can I trace every important claim or number to my source?
+- Did it mark missing information instead of guessing?
+- Are any calculations explained?
+- Did it stay within my approved task?
+- Can I confirm any claimed save or publication in Shopify?
 
-- exported reports with dates, filters, and columns visible
-- campaign, ad set, ad, keyword, query, product, or asset data
-- conversion definitions and attribution settings
-- Shopify orders or realized revenue for reconciliation
-- named margin or contribution-profit definition
-- inventory and fulfillment constraints
+The toolkit helps organize work. It does not guarantee correct answers, measured time savings, or “100% expert” performance.
 
-### Product pages, creative, email, or support
+## Optional ways to reuse the guides
 
-- approved product facts and claims
-- source-backed customer research
-- brand voice
-- current offer and availability
-- shipping, returns, warranty, or support policies
-- existing copy, creative, messages, or tickets
+The ordinary chat above is the simplest first test. These options can help with repeated work.
 
-### Flow or theme development
+### Option 1: Install a skill in Claude
 
-- target store and environment
-- screenshots of current account-visible controls
-- workflow, theme, Liquid, JSON, CSS, or JavaScript files
-- expected and actual behavior
-- reproduction steps
-- app and data dependencies
-- acceptance criteria and rollback method
+You can upload one complete guide folder as a custom Claude skill:
 
-Remove passwords, API keys, payment data, and unnecessary personal customer information before uploading anything.
+1. In the extracted source files, open **skills**.
+2. Right-click **shopify-product-listing** and compress that whole folder. On a Mac, choose **Compress**. On Windows, choose **Compress to ZIP file** or **Send to > Compressed (zipped) folder**.
+3. Keep `SKILL.md` and the `references` folder inside `shopify-product-listing`. The ZIP should contain that named folder, not loose files or the whole repository.
+4. In Claude, open **Customize > Skills**, choose **+ / Create skill**, then **Upload a skill**.
+5. Upload the ZIP and enable the skill.
+6. Request: “Use the shopify-product-listing skill to draft from these approved facts. Do not save or publish.”
 
-## Tell the skill what it is allowed to do
+If the controls are missing, check the current [Claude skill instructions](https://support.claude.com/en/articles/12512180-use-skills-in-claude). Skills require Code execution and file creation to be enabled; an organization may restrict custom uploads. Packaging and upload instructions were checked against [Claude's custom skill guide](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills) on September 30, 2026. This is a manual custom skill upload, not a public one-click plugin installation.
 
-Choose one authorization level for the request.
+### Option 2: Use a skill in ChatGPT
 
-### Read-only
+Keep using ordinary chats, or save repeated store work in a **Project**. A Project keeps related chats, files, and instructions together. See [OpenAI's Project guide](https://help.openai.com/en/articles/10169521-projects-in-chatgpt).
 
-```text
-Inspect and recommend only. Do not change any store, theme, workflow,
-campaign, tracking setup, product, offer, customer record, or public page.
-```
+For a custom GPT, put the guide's behavior in **Instructions** and its reference files in **Knowledge**. Test it in Preview before sharing it. See [OpenAI's custom GPT guide](https://help.openai.com/en/articles/8554397-creating-and-editing-gpts). Account and workspace settings control availability. These official guides were checked on September 30, 2026.
 
-### Draft-only
+The repository also has an [advanced ChatGPT and Claude setup guide](docs/ai-agent-setup.md), reviewed August 25, 2026. Its interface and account details may change; use the current official instructions if they differ.
 
-```text
-You may draft copy, code, a workflow, or a configuration. Do not save,
-publish, enable, send, or apply it in an external system.
-```
+### Option 3: Install a skill in Codex
 
-### Approved implementation
+For coding work, install one complete skill using Codex's `$skill-installer`, or copy the complete skill folder into your project's `.agents/skills/` folder. Include its references and assets. Check for an existing copy before adding one.
 
-```text
-Implement only the following approved change in the named target:
-[exact change and target]. Preserve unrelated work. Validate it, record
-rollback, and verify the authoritative saved or live state afterward.
-```
-
-Approval for one change does not authorize nearby changes. Reaching `IMPLEMENT` in the lifecycle does not replace explicit approval.
-
-## Recommended request structure
-
-Use this template for stronger results:
-
-```text
-Use: [skill name]
-
-Current lifecycle stage, if known:
-[context, goal, diagnose, strategy, plan, implement, verify, measure, optimize]
-
-Decision or deliverable:
-[what you need]
-
-Business objective or exact finished state:
-[primary business outcome or technical/operational result]
-
-Scope:
-[store, market, environment, device, products, channels, and customer type]
-
-Period and comparison:
-[dates]
-
-Evidence:
-[attached files, URLs, screenshots, exports, or reports]
-
-Commercial definition:
-[revenue, gross profit, or contribution profit and included costs]
-
-Authorization:
-[read-only, draft-only, or exact approved implementation]
-
-Acceptance / verification:
-[what must be true and how the authoritative state will be checked]
-
-Output:
-Separate observed facts, calculations, inferences, assumptions, and unknowns.
-Start at the earliest unresolved lifecycle stage. Give me the decision, evidence,
-recommended action, guardrails, stopping rule, authorization required,
-implementation state, verification method, measurement requirement, and next
-stage only when useful.
-```
-
-## What the skills do not do automatically
-
-Installing a skill does not automatically:
-
-- connect to Shopify Admin
-- connect to Google Ads, Meta Ads, GA4, Merchant Center, or an email platform
-- read data that you have not supplied or connected through an approved tool
-- change a live store or advertising account
-- send customer messages
-- publish a theme or workflow
-- verify a live state that was not actually inspected
-- measure a business outcome before data is available and mature
-- guarantee correct recommendations or commercial results
-
-The skill supplies the procedure and decision rules. Data access and external actions depend on the tools, account permissions, and authorization available in the AI product you are using.
+Use [OpenAI's Codex skill instructions](https://developers.openai.com/codex/skills/) and the repository's [technical setup guide](docs/ai-agent-setup.md). Installing a guide does not configure Shopify access.
 
 ## Troubleshooting
 
-### Claude rejects the ZIP
+| Problem | What to try |
+| --- | --- |
+| The chat rejects an instruction file | Attach a `.txt` copy, or paste the file contents. Keep the originals unchanged. |
+| The answer is too general | Name the uploaded guide, add approved facts, and ask for a specific result. |
+| The AI asks for missing facts | Provide them, or keep the result as an incomplete draft. Do not ask it to invent them. |
+| Claude rejects a skill ZIP | Compress one complete skill folder with `SKILL.md` and `references` inside it. Check that its name matches the guide. |
+| Claude does not use the installed skill | Enable it and start with “Use the shopify-product-listing skill.” |
+| The AI cannot read the store | Use uploaded evidence, or check your approved connection and permissions. |
+| The AI cannot make a change | Check whether the connection supports edits, then name the exact approved change. Our connector is read-only. |
 
-Check that:
+## Start with the Shopify Store Operating Lifecycle
 
-- you compressed one skill folder, not the entire repository
-- the ZIP contains the named folder at its root
-- the folder contains `SKILL.md`
-- the folder name matches the `name` inside `SKILL.md`
-- Code execution and Skills are enabled where required
-
-### Claude does not use the skill
-
-- confirm the skill is enabled
-- explicitly say `Use the shopify-cro skill`
-- make the request match the skill's description
-- avoid enabling several overlapping skills for the first test
-
-### ChatGPT gives a generic answer
-
-- confirm the full `SKILL.md` is in Instructions or uploaded to the Project
-- upload the reference files for the chosen skill
-- start the prompt by naming the uploaded skill
-- provide business context and evidence
-- specify the required output and authorization boundary
-
-### The assistant asks for missing data
-
-That is expected when a missing input could change the decision. You can provide the data, accept a lower-confidence answer, or ask for a collection plan.
-
-### The assistant will not make a live change
-
-The skills start read-only. Give explicit approval that names the target and exact change only when you want an external action and the AI product has an authorized connection to perform it.
-
-### The assistant restarts the whole lifecycle every time
-
-Tell it to continue from the current verified state. The lifecycle is not a checklist; stages already satisfied should not be repeated unless new evidence invalidates them.
+For longer projects, the [store operating lifecycle](skills/shopify-va/references/store-operating-lifecycle.md) helps track what needs to happen next. The [initiative record](skills/shopify-va/references/initiative-record.md) keeps context across sessions and handoffs. These specialist details are optional for your first draft.
 
 ## Ready-to-use prompts
 
-Open [`docs/prompt-library.md`](docs/prompt-library.md) for one copy-and-paste prompt for every skill.
+Use the [prompt library](docs/prompt-library.md) for all 19 guides. Developers and setup helpers can use [plugin and connector setup](docs/plugin-and-connector.md), [repository reliability](docs/reliability.md), and [contribution instructions](CONTRIBUTING.md).
