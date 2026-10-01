@@ -4,6 +4,9 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Colour in the public guide
+- The public pages match the colour pass on mktskills.com: green headline accent, eyebrows and primary action; the first-task file tree is a dark terminal with coloured folders and files; job frontmatter is syntax-coloured; the skill tree shows coloured folders with counts and branch lines. Shared `--syn-*` and `--term-*` tokens mirror marketing-skills `/brand/family.css`; reduced motion turns the entrances off.
+
 ### Guide deploys through Cloudflare Artifacts
 
 - Read the issued token from Wrangler's `plaintext` field (the first run created the repository but could not read the token), and discard the `repos create` output, which contains a live token, so it never reaches the public Actions log.
