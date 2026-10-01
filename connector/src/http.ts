@@ -31,7 +31,7 @@ export function createApp(options: AuthOptions & PublicPageConfig & { skillsRoot
   auth.install(app);
   app.get('/health', (_request, response) => response.json({ status: 'ok', name: 'shopify-va-toolkit', mode: 'read-only', version: '0.2.0', authMode: options.mode ?? 'custom', tools: 12, skills: 19 }));
   if (options.mode === 'public') installAppChecks(app, auth, options.upstreamFetcher);
-  app.get(['/', '/shopify-va', '/shopify-va/', '/help', '/privacy', '/shopify-va/help', '/shopify-va/privacy', '/assets/public.css', '/shopify-va/assets/public.css', '/assets/theme.js', '/shopify-va/assets/theme.js', '/assets/app-home.js'], (request, response) => {
+  app.get(['/', '/shopify-va', '/shopify-va/', '/help', '/privacy', '/shopify-va/help', '/shopify-va/privacy', '/assets/public.css', '/shopify-va/assets/public.css', '/assets/theme.js', '/shopify-va/assets/theme.js', '/assets/favicon.svg', '/shopify-va/assets/favicon.svg', '/assets/app-home.js'], (request, response) => {
     const content = publicContent(request.path, options);
     if (!content) { response.status(404).end(); return; }
     response.type(content.contentType).send(content.body);

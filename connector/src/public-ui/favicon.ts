@@ -1,0 +1,2 @@
+/** VA Toolkit favicon: the MKT Skills mark with the green VA cursor. Served from the page origin (CSP img-src self). */
+export const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#111114"/><path d="M7 23V9h3.2l4.3 6.6L18.8 9H22v14h-3.1v-8.9l-4.4 6.6-4.4-6.6V23z" fill="#fff"/><rect x="23.5" y="20" width="4.5" height="3" rx=".5" fill="#3fbf7f"/></svg>`;
