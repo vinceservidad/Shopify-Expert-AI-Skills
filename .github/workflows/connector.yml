@@ -31,6 +31,10 @@ jobs:
         working-directory: connector
       - run: npm run build
         working-directory: connector
+      - run: npm run worker:typecheck
+        working-directory: connector
+      - run: npm run worker:test
+        working-directory: connector
       - run: python scripts/package_plugin.py
       - run: npm run test:package
         working-directory: connector

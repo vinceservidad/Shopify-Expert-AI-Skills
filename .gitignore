@@ -11,3 +11,8 @@ connector/data/
 .env
 .env.*
 !.env.example
+
+connector/.wrangler/
+connector/.dev.vars*
+connector/.shopify/
+connector/worker/generated/

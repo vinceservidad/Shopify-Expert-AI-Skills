@@ -4,7 +4,59 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Web Analytics and author link on the public guide
+- Allow Cloudflare Web Analytics on the public pages (owner-approved): `script-src` adds only the zone-injected beacon path `https://static.cloudflareinsights.com/beacon.min.js` (and its versioned sub-path), and `connect-src 'self'` lets it report to `/cdn-cgi/rum` on the same origin. Before this the beacon was blocked and the pages logged a CSP error. Sign-in and admin pages keep their own stricter policies. A test pins the directive set.
+- The footer credit links Vince Servidad to https://www.vinceservidad.com/, matching mktskills.com.
+
+### Colour in the public guide
+- The public pages match the colour pass on mktskills.com: green headline accent, eyebrows and primary action; the first-task file tree is a dark terminal with coloured folders and files; job frontmatter is syntax-coloured; the skill tree shows coloured folders with counts and branch lines. Shared `--syn-*` and `--term-*` tokens mirror marketing-skills `/brand/family.css`; reduced motion turns the entrances off.
+
+### Guide deploys through Cloudflare Artifacts
+
+- Read the issued token from Wrangler's `plaintext` field (the first run created the repository but could not read the token), and discard the `repos create` output, which contains a live token, so it never reaches the public Actions log.
+- The workflow now creates the Artifacts repository on its first run and seeds it with the first push, so no local `wrangler` setup is needed. If the namespace differs, the run fails and lists the account's namespaces.
+- After a push to `feat/cloudflare-hosted-mcp`, `.github/workflows/artifacts-deploy.yml` runs typecheck, tests and the guide dry run, then pushes the verified commit to a Cloudflare Artifacts repository using a 10-minute, repo-scoped write token. Workers Builds deploys `mkt-skills-shopify-guide` from that repository, so releases no longer require a manual `npm run guide:deploy`.
+- GitHub remains the source of truth. A failing commit is never mirrored. Until `CLOUDFLARE_ARTIFACTS_TOKEN` is set, the workflow only runs the checks. One-time setup, cost and rollback: [docs/artifacts-deploy.md](docs/artifacts-deploy.md). Artifacts is in open beta, requires Workers Paid and begins billing on October 14, 2026.
+
+### Agent-skills public pages
+
+- Present the toolkit as Shopify skills for AI agents: the first-task file tree in the hero, a `skills/` section listing all 19 skills by area (checked against the repository by `tests/skill-groups.test.ts`), and VA jobs shown as the guide files they come from.
+- Share the MKT Skills header shell with mktskills.com: `marketing/` and `shopify-va/` file tabs with the same container, header height, line height and breakpoints, so switching products no longer shifts the header.
+- Use the MKT app icon as the favicon, inlined at 32 pixels (the public page CSP already allows `img-src data:`).
+
+### MKT Skills family design
+
+- Public pages use the MKT Skills family palette, type scale and layout, with green kept as the VA Toolkit accent. Light and dark themes follow the device and share the saved `mkt-theme` choice with mktskills.com (`/shopify-va/assets/theme.js`, served from the page origin to satisfy the CSP). The embedded Shopify admin page keeps its existing light styling.
+- The header carries the MKT Skills wordmark and a Marketing / Shopify VA switch linking back to the parent site; the footer adds an MKT Skills home link and the theme switch (hidden without JavaScript).
+- The hero now sits beside a "See a VA job" panel built from the workflow catalog: what each of four everyday jobs does, what to have ready and what it returns. No new claims or sample outputs were added.
+
+### Practical VA workflows (source/plugin 0.2.0)
+
+- Add eight original workflow guides and templates within the existing VA,
+  product-listing, catalog, support and training skills. Preserve all 19 names.
+- Add workflow discovery and deterministic task preparation without reading
+  client files, storing context, scheduling work or granting editing permission.
+- Add fixed product-description/media/SEO and privacy-limited order-detail reads
+  using existing permissions and API 2026-07. Preserve existing tools and prompts.
+- Add package, protocol and Workers regression coverage and ungraded behavioral
+  scenarios. Keep client facts in chat/project files and use separate approved
+  editing connections only when supported and authorized.
+- Verify local product-detail reads and a populated unpaid development-store
+  order with line-item pagination. Resolve an actual Order-object denial through
+  the owner's explicitly approved Custom distribution setting for the test app.
+  Preserve the three read scopes and exclude identifying/payment fields.
+- The hosted Worker remains release 0.1.0 with eight tools; this source upgrade
+  does not merge or deploy it.
+
 ### Plugin and read-only MCP connector
+
+- Deploy an HTTPS Cloudflare Workers connector with encrypted SQLite-backed
+  Durable Object OAuth storage, platform rate limits and shared read-only tools.
+- Bundle canonical skill documents for Workers and add runtime integration checks
+  for store isolation, restart persistence, code replay, refresh, revocation and
+  rejected upstream redirects. Keep local Node and stdio modes available.
+- Verify hosted Chrome OAuth and real development-store MCP reads. Record empty
+  order and native hosted-client limitations without expanding merchant scopes.
 
 - Fix the consent page's referrer policy so browser form POSTs preserve their
   same-origin header. Keep null/foreign-origin rejection and CSRF protections.

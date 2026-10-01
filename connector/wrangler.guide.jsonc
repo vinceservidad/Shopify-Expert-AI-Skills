@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mkt-skills-shopify-guide",
+  "main": "worker/site.ts",
+  "compatibility_date": "2026-09-30",
+  "account_id": "622e7a897cbb7babda383df6c1474e02",
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "PUBLIC_SITE_URL": "https://mktskills.com",
+    "CONNECTOR_PUBLIC_URL": "https://shopify-mcp.mktskills.com",
+    "PUBLIC_LAUNCH_STAGE": "candidate",
+    "SHOPIFY_PUBLIC_APP_HANDLE": "",
+    "PLUGIN_DOWNLOAD_URL": ""
+  },
+  "observability": {"enabled": true, "redact_query_string": true, "logs": {"enabled": true, "invocation_logs": false}},
+  "minify": true
+}
