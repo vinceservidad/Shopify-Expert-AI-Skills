@@ -1,0 +1,95 @@
+name: Deploy guide through Cloudflare Artifacts
+
+# GitHub stays the source of truth (pull requests, reviews, CI). After the release branch passes
+# its checks, this workflow mirrors that commit to the Cloudflare Artifacts repository. Workers
+# Builds is connected to that Artifacts repository and deploys the mkt-skills-shopify-guide Worker
+# (mktskills.com/shopify-va*) from its production branch. Setup: docs/artifacts-deploy.md.
+on:
+  push:
+    branches: [feat/cloudflare-hosted-mcp]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: artifacts-deploy
+  cancel-in-progress: false
+
+env:
+  ARTIFACTS_NAMESPACE: ${{ vars.ARTIFACTS_NAMESPACE || 'mkt-skills' }}
+  ARTIFACTS_REPO: ${{ vars.ARTIFACTS_REPO || 'shopify-va-guide' }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID || '622e7a897cbb7babda383df6c1474e02' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: connector
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: connector/package-lock.json
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+      - name: Guide Worker dry run (no upload)
+        run: npm run guide:build
+
+  mirror:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require the Artifacts token
+        id: gate
+        env:
+          HAS_TOKEN: ${{ secrets.CLOUDFLARE_ARTIFACTS_TOKEN != '' }}
+        run: |
+          if [ "$HAS_TOKEN" != "true" ]; then
+            echo "::notice::CLOUDFLARE_ARTIFACTS_TOKEN is not set, so nothing was mirrored or deployed. See docs/artifacts-deploy.md."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      # Full history: Artifacts receives an ordinary push, which a shallow clone cannot satisfy.
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        if: steps.gate.outputs.ready == 'true'
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: connector/package-lock.json
+      - name: Install the pinned Wrangler
+        if: steps.gate.outputs.ready == 'true'
+        working-directory: connector
+        run: npm ci
+      # The Cloudflare API token (Artifacts Edit only) issues a write token for this one repo that
+      # expires in ten minutes, so no long-lived Git credential is stored anywhere.
+      - name: Push the verified commit to Artifacts
+        if: steps.gate.outputs.ready == 'true'
+        working-directory: connector
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_ARTIFACTS_TOKEN }}
+        run: |
+          set -euo pipefail
+          issued=$(npx wrangler artifacts repos issue-token "$ARTIFACTS_REPO" --namespace "$ARTIFACTS_NAMESPACE" --scope write --ttl 600 --json)
+          token=$(printf '%s' "$issued" | jq -r '.token // .result.token // empty')
+          if [ -z "$token" ]; then echo "::error::Wrangler did not return an Artifacts token."; exit 1; fi
+          echo "::add-mask::$token"
+          remote="https://${CLOUDFLARE_ACCOUNT_ID}.artifacts.cloudflare.net/git/${ARTIFACTS_NAMESPACE}/${ARTIFACTS_REPO}.git"
+          # The Artifacts repo is a deploy mirror written only by this workflow, so it always
+          # takes the verified GitHub commit.
+          git -c http.extraHeader="Authorization: Bearer ${token}" push --force "$remote" "${GITHUB_SHA}:refs/heads/main"
+          echo "Mirrored ${GITHUB_SHA} to ${ARTIFACTS_NAMESPACE}/${ARTIFACTS_REPO} main. Workers Builds deploys it from there." >> "$GITHUB_STEP_SUMMARY"
