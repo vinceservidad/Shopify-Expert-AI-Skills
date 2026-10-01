@@ -3,9 +3,9 @@ import { APP_HOME_SCRIPT } from './public-ui/app-home.js';
 import { PUBLIC_STYLES } from './public-ui/styles.js';
 import { THEME_SCRIPT } from './public-ui/theme.js';
 import { SKILL_COUNT, SKILL_GROUPS } from './public-ui/skill-groups.js';
-import { FAVICON_SVG } from './public-ui/favicon.js';
+import { FAVICON_DATA_URI } from './public-ui/favicon.js';
 
-export { APP_HOME_SCRIPT, PUBLIC_STYLES, THEME_SCRIPT, FAVICON_SVG };
+export { APP_HOME_SCRIPT, PUBLIC_STYLES, THEME_SCRIPT };
 
 export type PublicPageConfig = {
   publicUrl?: string;
@@ -65,7 +65,7 @@ const THEME_TOGGLE = '<button type="button" class="theme-toggle" data-mkt-theme-
 /** The family shell: identical dimensions and breakpoints to mktskills.com
  *  (marketing-skills apps/web/app/connect/setup.css), so switching products never moves the header. */
 function layout(title: string, description: string, content: string, config: PublicPageConfig): string {
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${escape(description)}"><title>${escape(title)} | MKT Skills</title><link rel="icon" href="${pagePath(config, '/assets/favicon.svg')}" type="image/svg+xml"><script src="${pagePath(config, '/assets/theme.js')}"></script><link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body><a class="skip-link" href="#main">Skip to content</a><div class="shell"><header class="family-header"><a class="brand" href="${FAMILY_HOME}">MKT Skills</a><nav class="family-tabs" aria-label="MKT Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/help')}">Help</a><a href="${REPOSITORY}">GitHub</a></nav></header><main id="main" class="site-main">${content}</main><footer class="site-footer"><p>Independent toolkit by Vince Servidad. Not affiliated with Shopify.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">MKT Skills home</a><a href="${pagePath(config, '/help')}">Help and contact</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT license</a>${THEME_TOGGLE}</nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="${escape(description)}"><title>${escape(title)} | MKT Skills</title><link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32"><script src="${pagePath(config, '/assets/theme.js')}"></script><link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body><a class="skip-link" href="#main">Skip to content</a><div class="shell"><header class="family-header"><a class="brand" href="${FAMILY_HOME}">MKT Skills</a><nav class="family-tabs" aria-label="MKT Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/help')}">Help</a><a href="${REPOSITORY}">GitHub</a></nav></header><main id="main" class="site-main">${content}</main><footer class="site-footer"><p>Independent toolkit by Vince Servidad. Not affiliated with Shopify.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">MKT Skills home</a><a href="${pagePath(config, '/help')}">Help and contact</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT license</a>${THEME_TOGGLE}</nav></footer></div></body></html>`;
 }
 
 /** Hero panel: four everyday jobs from the workflow catalog, shown as the guide files they come from. */

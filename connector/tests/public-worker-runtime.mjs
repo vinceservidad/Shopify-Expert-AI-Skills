@@ -188,7 +188,7 @@ try {
   assert.ok(appHtml.includes('shopify-api-key')); assert.ok(appHtml.includes('app-bridge.js')); assert.ok(appHtml.includes('polaris-'));
   assert.match(appPage.headers.get('content-security-policy'), new RegExp(`frame-ancestors https://admin\\.shopify\\.com https://${shopA.replaceAll('.', '\\.')}($|;)`));
   assert.ok(!appHtml.includes('synthetic-offline') && !appHtml.includes('synthetic-refresh'), 'Public app shell contains no credentials');
-  for (const path of ['/assets/public.css', '/assets/theme.js', '/assets/favicon.svg', '/assets/app-home.js']) assert.equal((await send(path)).status, 200, `${path} is reachable`);
+  for (const path of ['/assets/public.css', '/assets/theme.js', '/assets/app-home.js']) assert.equal((await send(path)).status, 200, `${path} is reachable`);
   const foreignPage = await send('/app?shop=foreign.invalid');
   assert.ok(!foreignPage.headers.get('content-security-policy').includes('foreign.invalid'));
 

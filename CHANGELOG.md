@@ -8,7 +8,7 @@ All notable changes to this project are documented here.
 
 - Present the toolkit as Shopify skills for AI agents: the first-task file tree in the hero, a `skills/` section listing all 19 skills by area (checked against the repository by `tests/skill-groups.test.ts`), and VA jobs shown as the guide files they come from.
 - Share the MKT Skills header shell with mktskills.com: `marketing/` and `shopify-va/` file tabs with the same container, header height, line height and breakpoints, so switching products no longer shifts the header.
-- Serve an SVG favicon at `/shopify-va/assets/favicon.svg` (the MKT Skills mark with a green VA cursor).
+- Use the MKT app icon as the favicon, inlined at 32 pixels (the public page CSP already allows `img-src data:`).
 
 ### MKT Skills family design
 
