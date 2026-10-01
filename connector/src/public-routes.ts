@@ -1,6 +1,9 @@
 import { APP_HOME_SCRIPT, PUBLIC_STYLES, THEME_SCRIPT, renderHelpPage, renderPrivacyPage, renderProductPage, type PublicPageConfig } from './public-pages.js';
 
-export const PUBLIC_PAGE_CSP = "default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'";
+// Cloudflare Web Analytics (owner-approved 2026-10-01): the zone injects its beacon into these pages, served
+// from a versioned path under beacon.min.js/, and it reports to /cdn-cgi/rum on this origin. Nothing else is added.
+export const WEB_ANALYTICS_BEACON = 'https://static.cloudflareinsights.com/beacon.min.js';
+export const PUBLIC_PAGE_CSP = `default-src 'none'; style-src 'self'; script-src 'self' ${WEB_ANALYTICS_BEACON} ${WEB_ANALYTICS_BEACON}/; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`;
 export const SECURITY_HEADERS = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'Content-Security-Policy': PUBLIC_PAGE_CSP };
 
 /** These public pages contain guides and release state, never merchant credentials or store results. */
