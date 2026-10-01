@@ -2,7 +2,7 @@
 
 client_id = "7e38c21aa48c6eaccafb98e4f90f2f43"
 name = "MKT Skills VA Toolkit"
-application_url = "https://mkt-skills-shopify-preview.vinceluxxe.workers.dev/app"
+application_url = "https://shopify-mcp.mktskills.com/app"
 embedded = true
 
 [access_scopes]
@@ -20,7 +20,7 @@ api_version = "2026-07"
 [[webhooks.subscriptions]]
 topics = ["app/uninstalled"]
 compliance_topics = ["customers/data_request", "customers/redact", "shop/redact"]
-uri = "https://mkt-skills-shopify-preview.vinceluxxe.workers.dev/webhooks/shopify"
+uri = "https://shopify-mcp.mktskills.com/webhooks/shopify"
 
 [build]
 automatically_update_urls_on_dev = false

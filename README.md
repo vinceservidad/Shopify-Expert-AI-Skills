@@ -99,7 +99,7 @@ Our guides help the AI plan and check that work. **Our own hosted connector is r
 
 The public release candidate adds a simple app inside Shopify. It shows the checked store, supports store reads, and lets the owner review or disconnect an AI connection. Public setup will start from Shopify; you will not type your store address into our website. The owner must approve each connection request.
 
-**Public connection is still being prepared.** The planned guide is `mktskills.com/shopify-va`, and the planned connection is `shopify-mcp.mktskills.com/mcp`. Domain purchase/connection, Shopify approval and live ChatGPT/Claude sign-in checks are release requirements. These addresses are not a claim of a live service. [See public release status and checks](docs/public-release.md).
+**Public store authorization is still being prepared.** The guide is hosted at [mktskills.com/shopify-va](https://mktskills.com/shopify-va), and the permanent candidate endpoint is [shopify-mcp.mktskills.com/mcp](https://shopify-mcp.mktskills.com/mcp). The purchased domain and HTTPS routing are configured. Shopify approval, app-version URL release and live ChatGPT/Claude store authorization are separate requirements; a reachable endpoint is not a verified store connection. [See public release status and checks](docs/public-release.md).
 
 After an approved edit, open the correct store and check the saved result. A draft in a chat is not a saved product, and a saved product is not proof that it is visible to shoppers.
 
