@@ -89,16 +89,17 @@ jobs:
           # First run: create the mirror repository, so no manual Artifacts setup is needed. The push
           # below seeds it.
           if ! npx wrangler artifacts repos get "$ARTIFACTS_REPO" --namespace "$ARTIFACTS_NAMESPACE" --json >/dev/null 2>&1; then
+            # The create response includes a live token, so its output is discarded.
             echo "Creating Artifacts repository ${ARTIFACTS_NAMESPACE}/${ARTIFACTS_REPO}."
-            if ! npx wrangler artifacts repos create "$ARTIFACTS_REPO" --namespace "$ARTIFACTS_NAMESPACE" --default-branch main \
-                --description "Deploy mirror of Shopify-Expert-AI-Skills; written only by GitHub Actions"; then
+            if ! npx wrangler artifacts repos create "$ARTIFACTS_REPO" --namespace "$ARTIFACTS_NAMESPACE" --default-branch main --json \
+                --description "Deploy mirror of Shopify-Expert-AI-Skills; written only by GitHub Actions" >/dev/null; then
               echo "::error::Could not create ${ARTIFACTS_NAMESPACE}/${ARTIFACTS_REPO}. Namespaces on this account are listed below; set the ARTIFACTS_NAMESPACE repository variable to one of them."
               npx wrangler artifacts namespaces list || true
               exit 1
             fi
           fi
           issued=$(npx wrangler artifacts repos issue-token "$ARTIFACTS_REPO" --namespace "$ARTIFACTS_NAMESPACE" --scope write --ttl 600 --json)
-          token=$(printf '%s' "$issued" | jq -r '.token // .result.token // empty')
+          token=$(printf '%s' "$issued" | jq -r '.plaintext // .result.plaintext // empty')
           if [ -z "$token" ]; then echo "::error::Wrangler did not return an Artifacts token."; exit 1; fi
           echo "::add-mask::$token"
           remote="https://${CLOUDFLARE_ACCOUNT_ID}.artifacts.cloudflare.net/git/${ARTIFACTS_NAMESPACE}/${ARTIFACTS_REPO}.git"
