@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Web Analytics and author link on the public guide
+- Allow Cloudflare Web Analytics on the public pages (owner-approved): `script-src` adds only the zone-injected beacon path `https://static.cloudflareinsights.com/beacon.min.js` (and its versioned sub-path), and `connect-src 'self'` lets it report to `/cdn-cgi/rum` on the same origin. Before this the beacon was blocked and the pages logged a CSP error. Sign-in and admin pages keep their own stricter policies. A test pins the directive set.
+- The footer credit links Vince Servidad to https://www.vinceservidad.com/, matching mktskills.com.
+
 ### Colour in the public guide
 - The public pages match the colour pass on mktskills.com: green headline accent, eyebrows and primary action; the first-task file tree is a dark terminal with coloured folders and files; job frontmatter is syntax-coloured; the skill tree shows coloured folders with counts and branch lines. Shared `--syn-*` and `--term-*` tokens mirror marketing-skills `/brand/family.css`; reduced motion turns the entrances off.
 
