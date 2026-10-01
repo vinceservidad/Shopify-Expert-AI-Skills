@@ -45,6 +45,8 @@ jobs:
 
   mirror:
     needs: verify
+    # A manual run may target any branch; only the release branch is ever mirrored and deployed.
+    if: github.ref == 'refs/heads/feat/cloudflare-hosted-mcp'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
