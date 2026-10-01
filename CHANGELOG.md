@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### MKT Skills family design
+
+- Public pages use the MKT Skills family palette, type scale and layout, with green kept as the VA Toolkit accent. Light and dark themes follow the device and share the saved `mkt-theme` choice with mktskills.com (`/shopify-va/assets/theme.js`, served from the page origin to satisfy the CSP). The embedded Shopify admin page keeps its existing light styling.
+- The header carries the MKT Skills wordmark and a Marketing / Shopify VA switch linking back to the parent site; the footer adds an MKT Skills home link and the theme switch (hidden without JavaScript).
+- The hero now sits beside a "See a VA job" panel built from the workflow catalog: what each of four everyday jobs does, what to have ready and what it returns. No new claims or sample outputs were added.
+
 ### Practical VA workflows (source/plugin 0.2.0)
 
 - Add eight original workflow guides and templates within the existing VA,
