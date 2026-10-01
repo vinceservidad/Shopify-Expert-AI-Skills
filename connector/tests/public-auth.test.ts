@@ -134,10 +134,12 @@ test('public pairing verifies owner, browser, client, PKCE, one-use code and one
 test('public session validates exact Shopify identity and time before exchanging; staff reads keep their scopes', async () => {
   const f = await setup();
   try {
+    // Future claims sit 30 s ahead (still inside the default 60 s token life), so they cannot
+    // become valid while the loop runs; one second was enough to flake across a second boundary.
     const now = Math.floor(Date.now() / 1000);
     const badClaims = [{ aud: 'wrong-app' }, { dest: 'https://evil.example' }, { dest: `http://${shopA}` }, { iss: `https://${shopB}/admin` },
       { iss: `https://${shopA}/admin?x=1` }, { dest: `https://${shopA}/` }, { dest: `https://${shopA}:444`, iss: `https://${shopA}:444/admin` },
-      { exp: now - 1 }, { nbf: now + 1 }, { iat: now + 1 }, { exp: now + 1000 }];
+      { exp: now - 1 }, { nbf: now + 30 }, { iat: now + 30 }, { exp: now + 1000 }];
     for (const claims of badClaims) {
       const response = await f.post('/app/session', {}, jwt(shopA, claims));
       assert.equal(response.status, 401); assert.equal(response.headers.get('X-Shopify-Retry-Invalid-Session-Request'), '1');
