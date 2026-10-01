@@ -22,26 +22,15 @@ is expected to stay within the included amounts; check the Artifacts metrics aft
 
 ## One-time setup
 
-Run these from `connector/` on a machine where `npx wrangler login` has access to account
-`622e7a897cbb7babda383df6c1474e02`.
+No local commands are needed. You do two things in dashboards (steps 3 and 4); the workflow does the rest.
 
-1. **Create the repository.** Use the namespace shown by `npx wrangler artifacts namespaces list`. The
-   workflow defaults to namespace `mkt-skills` and repo `shopify-va-guide`; set the GitHub repository variables
-   `ARTIFACTS_NAMESPACE` and `ARTIFACTS_REPO` if yours differ.
+1. **The repository is created for you.** On its first run the workflow creates the Artifacts repository
+   (namespace `mkt-skills`, repo `shopify-va-guide` by default) and seeds it with the first push. If your
+   namespace has another name, the run fails and lists your namespaces; set the GitHub repository variable
+   `ARTIFACTS_NAMESPACE` (and optionally `ARTIFACTS_REPO`) and re-run it.
 
-   ```sh
-   npx wrangler artifacts repos create shopify-va-guide --namespace mkt-skills --default-branch main \
-     --description "Deploy mirror of Shopify-Expert-AI-Skills; written only by GitHub Actions"
-   ```
-
-2. **Seed it once**, so Workers Builds has a commit to connect to:
-
-   ```sh
-   TOKEN=$(npx wrangler artifacts repos issue-token shopify-va-guide --namespace mkt-skills --scope write --ttl 600 --json | jq -r '.token // .result.token')
-   git -c http.extraHeader="Authorization: Bearer $TOKEN" push --force \
-     https://622e7a897cbb7babda383df6c1474e02.artifacts.cloudflare.net/git/mkt-skills/shopify-va-guide.git \
-     origin/feat/cloudflare-hosted-mcp:refs/heads/main
-   ```
+2. **Run the workflow once** (Actions → Deploy guide through Cloudflare Artifacts → Run workflow on
+   `feat/cloudflare-hosted-mcp`) after step 4 below, so Workers Builds has a commit to connect to.
 
 3. **Connect Workers Builds** in the Cloudflare dashboard: Workers & Pages → `mkt-skills-shopify-guide` →
    Settings → Build → connect the Artifacts repository `shopify-va-guide`, with:
