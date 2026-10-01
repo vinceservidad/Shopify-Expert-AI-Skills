@@ -6,6 +6,7 @@ All notable changes to this project are documented here.
 
 ### Guide deploys through Cloudflare Artifacts
 
+- The workflow now creates the Artifacts repository on its first run and seeds it with the first push, so no local `wrangler` setup is needed. If the namespace differs, the run fails and lists the account's namespaces.
 - After a push to `feat/cloudflare-hosted-mcp`, `.github/workflows/artifacts-deploy.yml` runs typecheck, tests and the guide dry run, then pushes the verified commit to a Cloudflare Artifacts repository using a 10-minute, repo-scoped write token. Workers Builds deploys `mkt-skills-shopify-guide` from that repository, so releases no longer require a manual `npm run guide:deploy`.
 - GitHub remains the source of truth. A failing commit is never mirrored. Until `CLOUDFLARE_ARTIFACTS_TOKEN` is set, the workflow only runs the checks. One-time setup, cost and rollback: [docs/artifacts-deploy.md](docs/artifacts-deploy.md). Artifacts is in open beta, requires Workers Paid and begins billing on October 14, 2026.
 
