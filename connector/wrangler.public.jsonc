@@ -5,10 +5,10 @@
   "compatibility_date": "2026-09-30",
   "compatibility_flags": ["nodejs_compat"],
   "account_id": "622e7a897cbb7babda383df6c1474e02",
-  "workers_dev": true,
+  "workers_dev": false,
   "preview_urls": false,
   "vars": {
-    "PUBLIC_URL": "https://mkt-skills-shopify-preview.vinceluxxe.workers.dev",
+    "PUBLIC_URL": "https://shopify-mcp.mktskills.com",
     "SHOPIFY_AUTH_MODE": "public",
     "SHOPIFY_PUBLIC_APP_HANDLE": "",
     "SHOPIFY_PUBLIC_INSTALL_URL": "https://admin.shopify.com/?organization_id=128968056&no_redirect=true&redirect=/oauth/redirect_from_developer_dashboard?client_id%3D7e38c21aa48c6eaccafb98e4f90f2f43",

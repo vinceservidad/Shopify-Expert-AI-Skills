@@ -14,8 +14,8 @@ The toolkit is free and open source. ChatGPT and Claude have their own account c
 | Public Shopify app | Separate app `429932052481` has Public distribution and an active candidate configuration. It is not installed on the development store, protected Order-data settings are not saved, and Shopify review is not approved. |
 | Public-mode preview Worker | Live at `https://mkt-skills-shopify-preview.vinceluxxe.workers.dev`, final-reference version `f04418a7-9910-438c-8cc5-0e6ce1705e25` at 100% traffic, deployed `2026-09-30T14:15:27.561618Z`. A live embedded store grant and store reads remain unverified. |
 | Preview guide | Live at [the preview guide](https://mkt-skills-shopify-guide.vinceluxxe.workers.dev/shopify-va), version `d927bd38-2cbe-4701-869c-d3272802271b` at 100% traffic. Desktop, 390-pixel mobile, keyboard access and overflow were checked. |
-| `mktskills.com/shopify-va` | Planned guide route. Domain purchase, Cloudflare setup and live route checks remain required. This route must not replace the MKT Skills homepage. |
-| `https://shopify-mcp.mktskills.com/mcp` | Planned permanent connector address. It must be verified after the domain is owned and the public app configuration is released. |
+| `mktskills.com/shopify-va` | Configured guide route on the purchased domain. HTTPS GET returned 200; the path-prefix route does not replace the MKT Skills homepage. |
+| `https://shopify-mcp.mktskills.com/mcp` | Configured permanent candidate endpoint. Health and OAuth metadata returned 200 with the new issuer/resource, and anonymous MCP returned 401. App-version URL release and store/client authorization remain separate. |
 | `support@mktskills.com` | Planned incoming forwarding address. Verify forwarding to the owner's existing Gmail before publishing it as working support. No reply-time promise is made. |
 | Public plugin download | A private `v0.2.0` GitHub release draft contains the tested plugin asset; its uploaded SHA-256 matches the local package. Public downloads remain unavailable. Show a download button only after the release gates pass and the versioned asset is publicly reachable. |
 | Native ChatGPT and Claude first task | Both produced a product-listing draft from the exact three beginner files. Review confirmed the supplied facts and missing information. This was file-based drafting without a Shopify connection. |
@@ -44,7 +44,7 @@ Fresh HTTP checks of that final candidate at `2026-09-30T14:22:49.169Z` returned
 
 A fresh HTTPS check of the unchanged original Worker at `2026-09-30T11:21:18Z` refreshed its existing approved grant, read all five existing queries, returned a populated order summary and continued product pagination. It still exposed eight tools and nineteen skills. This verifies that existing service with sample development data; it does not verify the new public Worker or its new detail tools.
 
-The user has not purchased `mktskills.com`, so permanent domain setup and support forwarding are unavailable. ChatGPT's native custom-app discovery reached the hosted owner-code page. Claude's actual custom-connector discovery reached Step 2 with the correct sign-in option; Add was not clicked because Team-account setup and the store-owner grant are not complete. Neither observation establishes a finished hosted connection. The new app has not been installed, protected Order-data settings have not been saved, and live embedded grants, real Shopify webhook delivery and native hosted store reads remain unverified. PR #8 is unmerged; no public plugin release or public installation has been enabled. Keep the launch stage at `candidate`.
+On October 1, 2026, the owner confirmed the domain purchase and authorized setup. The active Cloudflare zone, permanent guide and connector routing are configured; app-version URL release and support forwarding still require independent verification. ChatGPT's native custom-app discovery reached the hosted owner-code page. Claude's actual custom-connector discovery reached Step 2 with the correct sign-in option; Add was not clicked because Team-account setup and the store-owner grant are not complete. Neither observation establishes a finished hosted connection. The new app has not been installed, protected Order-data settings have not been saved, and live embedded grants, real Shopify webhook delivery and native hosted store reads remain unverified. PR #8 is unmerged; no public plugin release or public installation has been enabled. Keep the launch stage at `candidate`.
 
 ## The public connection flow
 
@@ -63,7 +63,7 @@ The app provides the eight workflow guides and bounded product, variant, stock a
 
 Keep the existing development Worker, its credentials and its authorization records separate. Its dedicated test app selected **Custom distribution permanently**; do not attempt to convert it into the public app.
 
-The candidate uses `connector/wrangler.public.jsonc` with a separate Worker and storage bindings. The default preview origin is `https://mkt-skills-shopify-preview.vinceluxxe.workers.dev`. Public configuration uses:
+The candidate uses `connector/wrangler.public.jsonc` with a separate Worker and storage bindings. The permanent origin is `https://shopify-mcp.mktskills.com`. Preview issuer/storage grants are not transferred. Public configuration uses:
 
 | Setting | Meaning |
 | --- | --- |
