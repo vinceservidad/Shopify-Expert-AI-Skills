@@ -22,15 +22,19 @@ is expected to stay within the included amounts; check the Artifacts metrics aft
 
 ## One-time setup
 
-No local commands are needed. You do two things in dashboards (steps 3 and 4); the workflow does the rest.
+No local commands are needed. Do these in order; Workers Builds can only connect to the repository after
+the workflow has created it.
 
-1. **The repository is created for you.** On its first run the workflow creates the Artifacts repository
-   (namespace `mkt-skills`, repo `shopify-va-guide` by default) and seeds it with the first push. If your
-   namespace has another name, the run fails and lists your namespaces; set the GitHub repository variable
-   `ARTIFACTS_NAMESPACE` (and optionally `ARTIFACTS_REPO`) and re-run it.
+1. **Give GitHub a narrow token.** Create a Cloudflare API token with only **Artifacts: Edit** (and Read) on
+   this account, and save it as the repository secret `CLOUDFLARE_ARTIFACTS_TOKEN` (Settings → Secrets and
+   variables → Actions). It cannot deploy Workers itself; it only lets the workflow create the repository and
+   issue the short-lived write token. Never paste it into an issue, chat or commit.
 
 2. **Run the workflow once** (Actions → Deploy guide through Cloudflare Artifacts → Run workflow on
-   `feat/cloudflare-hosted-mcp`) after step 4 below, so Workers Builds has a commit to connect to.
+   `feat/cloudflare-hosted-mcp`). It creates the Artifacts repository (namespace `mkt-skills`, repo
+   `shopify-va-guide` by default) and seeds it with the verified commit. If your namespace has another name,
+   the run fails and lists your namespaces; set the GitHub repository variable `ARTIFACTS_NAMESPACE` (and
+   optionally `ARTIFACTS_REPO`) and run it again.
 
 3. **Connect Workers Builds** in the Cloudflare dashboard: Workers & Pages → `mkt-skills-shopify-guide` →
    Settings → Build → connect the Artifacts repository `shopify-va-guide`, with:
@@ -44,12 +48,8 @@ No local commands are needed. You do two things in dashboards (steps 3 and 4); t
    | Non-production branch builds | Off (the mirror only writes `main`) |
 
    `npm run guide:deploy` is the same `wrangler deploy --config wrangler.guide.jsonc` used for manual
-   releases, so the Worker name, route and variables are unchanged.
-
-4. **Give GitHub a narrow token.** Create a Cloudflare API token with only **Artifacts: Edit** (and Read) on
-   this account, and save it as the repository secret `CLOUDFLARE_ARTIFACTS_TOKEN` (Settings → Secrets and
-   variables → Actions). It cannot deploy Workers itself; it only lets the workflow issue the short-lived
-   write token. Never paste it into an issue, chat or commit.
+   releases, so the Worker name, route and variables are unchanged. From then on, every verified push to
+   `feat/cloudflare-hosted-mcp` deploys automatically; run the workflow once more to deploy the seeded commit.
 
 Until the secret exists, the workflow still runs the checks and reports that nothing was mirrored.
 
