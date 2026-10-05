@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Ecommerce growth audit mode
+
+- Add growth audit mode to `shopify-store-audit` (0.2.0): an outside-in snapshot
+  for public evidence only and a full growth audit for supplied data, a stated
+  growth model, a lens-to-owner orchestration map across the Shopify skills with
+  optional Marketing Skills depth, a measurement-first workflow, a
+  Now/Next/Later/Not now roadmap, and an engagement scope outline with no
+  generated prices or promised outcomes. Keep the catalog at nineteen skills.
+- Add behavioral scenarios 31 and 32 as `needs-review`.
+
 ### Plugin and read-only MCP connector
 
 - Fix the consent page's referrer policy so browser form POSTs preserve their
