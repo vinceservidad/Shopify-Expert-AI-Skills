@@ -2,6 +2,144 @@
 
 Replace the bracketed fields and attach the evidence named in the request. Keep the work read-only unless you intentionally authorize a specific external change.
 
+## Practical VA jobs
+
+For each job, attach its owner guide and [workflow reference](va-workflows.md#choose-a-job), then provide the named client files in chat or project files. The upgraded local connector can list and prepare these jobs; the released hosted Worker still has eight tools and does not yet include the four new tools. Workflows run only when requested.
+
+### Set up my client's work guide
+
+```text
+Use the shopify-va skill and client_setup workflow.
+Set up my client's work guide from these approved sources.
+
+Client/store: [name and exact store].
+Brand voice and examples: [source and date].
+Policies: [approved shipping, returns, support and other relevant policies].
+Assigned tasks and exclusions: [scope].
+Approvers and escalation roles: [owner, task and contact role].
+Available connections and permissions: [read-only or supported separate tools].
+
+Draft a brief with sources, policy dates, task boundaries, review steps and
+unresolved questions. Keep missing policies unknown. Do not grant access,
+change the store, or store this brief in the connector.
+```
+
+### Plan today's work
+
+```text
+Use the shopify-va skill and daily_work_plan workflow.
+Plan today's work for [store] on [date and timezone].
+
+Client brief: [approved source and date].
+Task list, deadlines and previous blockers: [tasks].
+Available working time: [hours or window].
+Evidence available: [files, approved facts or current connected reads].
+
+Return an ordered work list with each task's owner guide, required inputs,
+expected result, review step and decisions needed from the owner.
+Keep blocked tasks visible. Do not change the store or schedule future runs.
+```
+
+### Check this product listing
+
+```text
+Use the shopify-product-listing skill and product_listing_check workflow.
+Check this product listing: [exact store and product ID/handle].
+
+Current listing, media and search fields: [source and date].
+Approved product facts: [source and version].
+Brand/listing rules: [rules].
+Scope: [fields and variants to check].
+
+Compare the current content against the approved facts. Give me the checked
+fields, unsupported claims, missing content, proposed corrections and review
+checklist. Keep unknowns unknown and label partial reads. Draft only; do not save
+or publish. Existing listing text alone does not substantiate a product claim.
+```
+
+### Review my product catalog
+
+```text
+Use the shopify-catalog-operations skill and catalog_review workflow.
+Review my product catalog for [store and exact scope].
+
+Product/variant records: [export and date or connected reads].
+Approved identifiers and naming/SKU rules: [source].
+Fields to check and exclusions: [scope].
+
+Show the checked records and pages, duplicate SKU conflicts, missing or
+inconsistent fields, proposed corrections and owner decisions. Continue
+pagination when available or state incomplete coverage. Do not choose a
+duplicate winner without approved evidence. Review only; do not import or edit.
+```
+
+### Review stock
+
+```text
+Use the shopify-catalog-operations skill and stock_review workflow.
+Review stock for [store, items and locations].
+
+Inventory evidence, tracking state and date: [source or connected reads].
+Owner thresholds and which quantity to compare: [approved rules].
+Exclusions and escalation roles: [rules].
+
+Return exceptions by item and location, the threshold/source used, coverage
+gaps and next checks. Keep unknown and untracked stock separate from zero.
+Ask for missing thresholds; do not assume a universal low-stock level.
+Do not change inventory, order stock or create background monitoring.
+```
+
+### Help me answer this customer
+
+```text
+Use the shopify-support skill and customer_reply workflow.
+Help me answer this customer. Draft only; do not send.
+
+Store and sanitized customer question: [question].
+Approved policy and version: [source].
+Verified order/product facts: [source, identifier and date, if relevant].
+Brand voice and escalation role: [instructions].
+
+Give me the reply draft, internal evidence note, missing facts and escalation.
+If the order or policy is unavailable, provide a safe acknowledgment and the
+next verification step. Do not claim a message was sent, a refund was issued
+or a delivery date was verified without supporting evidence of that action/fact.
+```
+
+### Prepare my handover
+
+```text
+Use the shopify-va skill and end_of_day_handover workflow.
+Prepare my end-of-day handover for [store, date and timezone].
+
+Work log and draft links: [tasks and artifacts].
+Approvals and verification evidence: [saved results or checked reads].
+Failed actions and blockers: [what failed or remains unknown].
+Next owners and deadlines: [roles and dates].
+
+Return drafts ready, verified changes, failed/blocked tasks, owner decisions and
+next actions. Keep attempted edits separate from verified changes. If a separate
+editing tool failed, record the failure and recovery check; do not claim success.
+Do not send the handover or make changes.
+```
+
+### Train a new VA
+
+```text
+Use the shopify-va-training skill and va_training workflow.
+Train a new VA to do [one assigned task].
+
+Approved SOP, policies and client brief: [sources and versions].
+Sanitized normal and exception examples: [practice evidence].
+Training environment and current access: [test or supervised setting].
+Reviewer and acceptance criteria: [role and criteria].
+
+Prepare step-by-step instructions, a normal sample task, exception cases,
+expected evidence and a reviewer checklist. Identify gaps in the source SOP.
+Keep practice separate from production work. Do not certify expertise or grant
+permissions from an exercise or quiz; record observed work for owner review.
+```
+
 ## Shopify Store Operating Lifecycle
 
 Use this when the work spans several stages, skills, sessions, or handoffs.

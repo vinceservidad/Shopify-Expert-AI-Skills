@@ -1,6 +1,7 @@
-# Shopify VA Toolkit: plugin and MCP connector
+# MKT Skills VA Toolkit: plugin and MCP connector
 
-The display name is **Shopify VA Toolkit**. The existing
+The public display name is **MKT Skills VA Toolkit**. Existing plugin and server
+identifiers remain **shopify-va-toolkit**. The existing
 `vinceservidad/Shopify-Expert-AI-Skills` repository URL remains the source of truth
 and preserves existing links. It is not a hosted connector URL. This independent
 project is not affiliated with Shopify.
@@ -8,6 +9,49 @@ project is not affiliated with Shopify.
 The plugin bundles the existing 19 skills. The MCP connector supplies read-only
 store evidence; the skills guide task reasoning and QA. No refund, publish,
 inventory-change, product-write or campaign tool is exposed.
+
+## Practical VA workflows in source version 0.2.0
+
+The local source and rebuilt package expose twelve tools and eight practical
+workflows. [The workflow guide](va-workflows.md) covers client setup, daily work,
+listing checks, catalog review, stock review, reply drafts, handovers and training.
+`list_shopify_va_workflows` lists jobs and input names. `prepare_shopify_va_task`
+returns the owner instructions, workflow guide, missing input names and review
+steps. Input names report availability in the host chat/project, not verified
+facts. This preparer makes no Shopify calls, saves no documents and authorizes no
+external change. New product/order detail tools supply bounded read evidence.
+
+The live Cloudflare endpoint remains the released **0.1.0, eight-tool service**.
+Building or downloading the **0.2.0, twelve-tool package** does not replace it.
+There is no public one-click plugin release or directory listing. A separate
+release instruction is required before the hosted service gains these tools.
+
+## Public app and domain candidate
+
+The public candidate adds a free embedded Shopify app and a separate Worker for
+unrelated merchants. It uses Shopify-managed installation, verified App Bridge
+ID tokens, owner-reviewed connection request codes and signed compliance and
+uninstall webhooks. App Home includes the eight guides, bounded store evidence
+views, connection status and owner disconnect controls. Store writes, scheduled
+runs, app charges and client-document storage are not added.
+
+The proposed guide is `mktskills.com/shopify-va`; the proposed permanent MCP URL
+is `https://shopify-mcp.mktskills.com/mcp`. Domain purchase/connection, the new
+public app and Shopify approval, incoming support forwarding and native
+ChatGPT/Claude tests remain public release gates. A candidate build must not
+change the original development Worker or claim those addresses are live.
+
+Use [Public release setup and verification](public-release.md) for the separate
+`wrangler.public.jsonc` and `wrangler.guide.jsonc` configurations, public
+authentication flow, deployment boundaries and current approval requirements.
+The standalone setup below remains available for the dedicated Custom app and
+local development. Asking for a manual shop domain in that private flow does
+not make it compliant with public App Store installation requirements.
+
+The public website uses an existing checked versioned GitHub release URL only
+when `PLUGIN_DOWNLOAD_URL` is explicitly configured. Until then, it offers
+source documents and labels the plugin release as unavailable. Never point a
+download button at a guessed asset, the template folder or an unverified release.
 
 ## Build the plugin
 
@@ -103,6 +147,10 @@ the configured environment. Never paste credentials into the public example.
 
 ## Hosted OAuth connector
 
+This section describes the existing standalone/Custom mode. It does not enable
+unrelated merchant distribution. For the embedded public candidate, use the
+[public release guide](public-release.md).
+
 This portable Node server uses a single instance with persistent SQLite storage
 behind HTTPS. It implements MCP discovery, public-client dynamic registration,
 S256 PKCE, merchant consent, Shopify authorization-code exchange, separate MCP
@@ -141,20 +189,93 @@ Building this source does not publish a hostname, register a public directory
 entry, create billing, or roll out a production service. Verify the actual HTTPS
 endpoint and client sign-in separately on every host you claim to support.
 
+## Cloudflare Workers deployment
+
+The current development-store connector is hosted at
+`https://shopify-va-toolkit.vinceluxxe.workers.dev/mcp`.
+Paste that URL into an MCP client's connector setup. Opening `/mcp` directly
+without an access token returns HTTP 401; the public homepage and `/health`
+are available without sign-in. This deployment verifies the designated test
+store. Access for unrelated merchants still requires Shopify app distribution
+and the merchant's installation approval.
+
+The Workers entrypoint is `connector/worker/index.ts`. The Worker handles MCP
+requests using the shared read-only tool definitions and a build-time snapshot
+of the canonical skills. One Durable Object per configured authorization issuer
+coordinates OAuth records with SQLite-backed storage; Shopify queries run
+outside that object. Encrypted grants survive Worker restarts. The local stdio
+and standalone Node server remain available.
+
+From `connector/`, run:
+
+```bash
+npm ci
+npm run worker:typecheck
+npm run worker:test
+```
+
+For your own deployment, set the Cloudflare `account_id`, `PUBLIC_URL`, Worker name and rate-limit namespace
+IDs in `wrangler.jsonc`. Authenticate Wrangler to the intended Cloudflare account.
+Set `SHOPIFY_CLIENT_ID`, `SHOPIFY_CLIENT_SECRET` and a new base64-encoded 32-byte
+`CONNECTOR_STORAGE_KEY` with `wrangler secret put`. Then run
+`npm run worker:deploy`. Never upload the local `.env` or database. Register the
+exact HTTPS `/oauth/shopify/callback` URL in the Shopify app and release that
+configuration before testing browser sign-in.
+
+The binding types are generated from `wrangler.jsonc` plus placeholder secret
+names in `worker/.env.example`. The deployment uses platform rate limits, hourly
+expired-record cleanup, strict public Host/Origin checks, bounded request bodies,
+and query-string redaction with invocation logs disabled. Cloudflare's fetch
+runtime lacks `redirect: error`; the adapter uses `manual` and explicitly rejects
+redirect responses before credentials could be forwarded. The integration test
+runs the deployed bundle in Miniflare with synthetic upstream responses and
+checks browser OAuth, two-store isolation, restart persistence, encrypted storage,
+code replay rejection, refresh rotation, revocation and redirect rejection.
+
+## Order-object access approval
+
+`read_orders` alone may not enable populated order reads. Shopify treats the
+Order object as protected customer data even when the query omits names,
+addresses, email, phone and payment details. In the live development-store test,
+the app's three read scopes were present, but Shopify returned `ACCESS_DENIED`
+for the Order object after an unpaid two-item test order was created. The owner
+then explicitly approved Custom distribution for the dedicated test app. After
+that setting was saved, the same order query succeeded with the unchanged three
+read scopes. Local bundled stdio verified `PENDING`, `UNFULFILLED`, and both
+line-item pages. No payment was collected and no customer was assigned.
+
+Source 0.2.0 local verification also confirmed all eight workflow preparations,
+nineteen skills, twelve tools and product description/SEO/media reads. The store
+had one media record for the checked product, so multi-page media behavior is
+covered by synthetic tests rather than claimed as a live observation. These
+checks do not grade model behavior or update the hosted Worker.
+
+Select app distribution only with the owner's approval: Shopify makes that
+choice permanent. Custom apps have protected-data access automatically; public
+apps need their data use configured and any required approval. Do not request
+identity fields or new write scopes merely to resolve an Order-object denial.
+See [Shopify's protected-data rules](https://shopify.dev/docs/apps/launch/protected-customer-data)
+and [distribution rules](https://shopify.dev/docs/apps/launch/distribution).
+
 ## Tool surface
 
 | Tool | Evidence supplied |
 | --- | --- |
 | `list_shopify_skills` | Workflow names and purposes |
 | `read_shopify_skill` | One skill or its named Markdown reference |
+| `list_shopify_va_workflows` | Eight jobs, owners, required and optional input names |
+| `prepare_shopify_va_task` | Instructions, missing-input checks and QA; no store calls or context storage |
 | `shopify_connection_status` | Configured store/scopes; not a reachability test |
 | `shopify_get_shop` | Store identity, currency, timezone and primary domain |
 | `shopify_search_products` | One product page with identity, status and total stock |
+| `shopify_get_product_details` | Description, SEO and one media-metadata page |
 | `shopify_get_product_variants` | One variant page with SKU, price and inventory-item IDs |
 | `shopify_get_inventory_levels` | Location quantities for an inventory-item ID |
 | `shopify_list_order_summaries` | One page of totals/status without customer details |
+| `shopify_get_order_details` | Financial/fulfillment/cancellation state and one line-item page; no customer or carrier data |
 
-Store reads use fixed GraphQL operations on API version `2026-07`; user search
+Source 0.2.0 uses seven fixed reads. The deployed 0.1.0 service retains its five
+previous reads. Store reads use fixed GraphQL operations on API version `2026-07`; user search
 text is passed as variables. No arbitrary GraphQL tool is exposed. Each page is
 capped at 50; continue with `endCursor` when `pageInfo.hasNextPage` is true.
 A page is not a complete catalog or reconciled report. Orders follow Shopify's
@@ -190,8 +311,13 @@ inventory location, empty order response, and product pagination. An initial
 page. That page now uses `same-origin`; the origin guard still rejects null and
 foreign origins, and cross-origin referrers remain omitted.
 
-Public HTTPS hosting and native hosted-client installation/sign-in remain
-unverified. The mock protocol tests and these local live-store checks do not
+Cloudflare deployment was verified at 100% traffic on September 30, 2026.
+Chrome completed HTTPS OAuth and the hosted MCP passed all five fixed Shopify
+reads: identity, products, variants, location inventory and an empty order
+response, plus product pagination. The observed counts were 19 skills, eight
+tools, two product/variant records and one inventory location. The deployed
+version was `188b1418-cb0c-42ef-aa7c-3b9e2dfbd96e`. Orders with populated records
+and native ChatGPT/Claude hosted-client sign-in remain unverified. The mock protocol tests and these local live-store checks do not
 establish full workflow coverage, populated order handling, or model expertise.
 
 ## Sources

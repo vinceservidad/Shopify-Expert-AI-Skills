@@ -4,7 +4,7 @@ description: Builds Shopify VA onboarding, SOPs, task simulations, quizzes, QA s
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # Shopify VA Training
@@ -36,6 +36,8 @@ Collect VA role, assigned tasks, current SOPs, store and app stack, role permiss
 7. Expand access only after the accountable owner reviews evidence and explicitly approves it.
 
 Read [references/sop-framework.md](references/sop-framework.md) for task documentation and QA. Use [references/training-plan.md](references/training-plan.md) for onboarding, simulations, assessment, and access progression.
+
+For “Train a new VA,” use [references/va-training.md](references/va-training.md) for practical SOPs, sanitized exercises, exception decisions, and a reviewer checklist. Practice completion does not certify expertise or authorize production access.
 
 ## Output contract
 
