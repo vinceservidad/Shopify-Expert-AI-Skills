@@ -66,7 +66,7 @@ Read [references/store-operating-lifecycle.md](references/store-operating-lifecy
 
 Examples:
 
-- whole-store diagnosis → `shopify-store-audit`
+- whole-store diagnosis or ecommerce growth audit → `shopify-store-audit`
 - funnel/CRO decision → `shopify-cro`
 - product-page structure/copy → `shopify-product-page`
 - Liquid/theme implementation → `shopify-theme-development`
