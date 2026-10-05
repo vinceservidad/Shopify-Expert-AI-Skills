@@ -90,6 +90,21 @@ Agent Plugins 1.0.0; Claude-compatible manifests are included separately.
 The package is not listed in either public directory. Hosted ChatGPT/Claude
 connections use a deployed HTTPS MCP URL, not the local stdio configuration.
 
+### Build a portable skills-only plugin
+
+For ChatGPT/Codex environments that cannot run a bundled local process, build a
+skills-only archive instead:
+
+```bash
+python scripts/package_plugin.py --target skills-only
+```
+
+`dist/shopify-va-toolkit-skills-only.plugin` contains the same 19 skills but no
+`mcp.json`, `.mcp.json`, server bundle, or connector documentation. It is safe to
+upload as a skills-only package and makes no connected-store claim. Adding live
+Shopify tools requires a separately deployed HTTPS MCP endpoint; do not replace
+the omitted configuration with a repository URL or an undeployed hostname.
+
 ## Local stdio connection
 
 Without Shopify credentials, the local server supports skill discovery, reading

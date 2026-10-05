@@ -71,6 +71,15 @@ If your app rejects a `.md` file, upload a copy ending in `.txt`, or paste its t
 
 Want more help with these steps? Follow the [first-task walkthrough](docs/getting-started.md). Use the [full usage guide](USAGE.md) when you are ready for another task or optional setup.
 
+## Plugin packages
+
+Build `dist/shopify-va-toolkit.plugin` using the
+[plugin guide](docs/plugin-and-connector.md#build-the-plugin) for local use with
+the bundled read-only connector. For a hosted environment that cannot execute a
+local process, build `dist/shopify-va-toolkit-skills-only.plugin` with
+`python scripts/package_plugin.py --target skills-only`. The skills-only archive
+contains all 19 skills and intentionally makes no connected-store claim.
+
 ## Copy this first request
 
 ```text

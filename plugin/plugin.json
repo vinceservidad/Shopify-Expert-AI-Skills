@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "shopify-va-toolkit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Independent expert workflows and read-only Shopify tools for VAs, freelancers and store specialists.",
   "author": {
     "name": "Vince Servidad"
@@ -19,12 +19,13 @@
     "com.openai": {
       "interface": {
         "displayName": "Shopify VA Toolkit",
-        "shortDescription": "Expert workflows and read-only Shopify tools",
+        "shortDescription": "Shopify expert workflows",
         "developerName": "Vince Servidad",
         "category": "Productivity",
         "capabilities": [
           "Read"
         ],
+        "defaultPrompt": "Help me choose and use the right Shopify workflow. Start read-only, separate evidence from assumptions, and ask before any live change.",
         "websiteURL": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills"
       }
     }

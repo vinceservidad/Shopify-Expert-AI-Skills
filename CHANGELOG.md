@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin packaging compatibility (0.2.1)
+
+- Add an explicit `skills-only` plugin target for hosted environments that
+  cannot execute the bundled local stdio connector. The archive omits MCP
+  configuration and runtime files instead of claiming an undeployed endpoint.
+- Shorten the OpenAI listing subtitle to the current 30-character limit, add a
+  read-only default prompt and advance the plugin manifests to `0.2.1`.
+
 ### Web Analytics and author link on the public guide
 - Allow Cloudflare Web Analytics on the public pages (owner-approved): `script-src` adds only the zone-injected beacon path `https://static.cloudflareinsights.com/beacon.min.js` (and its versioned sub-path), and `connect-src 'self'` lets it report to `/cdn-cgi/rum` on the same origin. Before this the beacon was blocked and the pages logged a CSP error. Sign-in and admin pages keep their own stricter policies. A test pins the directive set.
 - The footer credit links Vince Servidad to https://www.vinceservidad.com/, matching mktskills.com.
