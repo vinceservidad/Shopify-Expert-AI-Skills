@@ -10,10 +10,11 @@
   "keywords": ["shopify", "virtual-assistant", "ecommerce", "mcp"],
   "extensions": { "com.openai": { "interface": {
     "displayName": "Shopify VA Toolkit",
-    "shortDescription": "Expert workflows and read-only Shopify tools",
+    "shortDescription": "Shopify expert workflows",
     "developerName": "Vince Servidad",
     "category": "Productivity",
     "capabilities": ["Read"],
+    "defaultPrompt": "Help me choose and use the right Shopify workflow. Start read-only, separate evidence from assumptions, and ask before any live change.",
     "websiteURL": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills"
   } } }
 }

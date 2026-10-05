@@ -4,6 +4,14 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin packaging compatibility
+
+- Add an explicit `skills-only` plugin target for hosted environments that
+  cannot execute the bundled local stdio connector. The archive omits MCP
+  configuration and runtime files instead of claiming an undeployed endpoint.
+- Shorten the OpenAI listing subtitle to the current 30-character limit and add
+  a read-only default prompt.
+
 ### Plugin and read-only MCP connector
 
 - Fix the consent page's referrer policy so browser form POSTs preserve their
