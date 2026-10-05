@@ -111,6 +111,11 @@ Build `dist/shopify-va-toolkit.plugin` using the
 skills and a bundled local MCP server. The guide covers the separately hosted
 OAuth connector, read-only tools, credential handling and test limits.
 
+For a hosted environment that cannot execute the local server, build
+`dist/shopify-va-toolkit-skills-only.plugin` with
+`python scripts/package_plugin.py --target skills-only`. This portable archive
+contains all 19 skills but intentionally makes no connected-store claim.
+
 ### Claude Skills
 
 Use the no-code path in [USAGE.md](USAGE.md), or set up the repository tooling and package one skill:

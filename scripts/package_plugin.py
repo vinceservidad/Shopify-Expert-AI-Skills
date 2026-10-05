@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a self-contained plugin from canonical skills and the compiled MCP bundle."""
+"""Build local-connected or portable skills-only plugins from canonical skills."""
 from __future__ import annotations
 
 import argparse
@@ -12,31 +12,41 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 from validate_repository import EXPECTED_SKILLS, excluded, private_file, validate_repository, validate_skill
 
 PLUGIN_NAME = "shopify-va-toolkit"
-TEMPLATES = ("plugin.json", "mcp.json", ".mcp.json", ".claude-plugin/plugin.json", "README.md")
+TARGETS = ("local", "skills-only")
+COMMON_TEMPLATES = ("plugin.json", ".claude-plugin/plugin.json")
+LOCAL_TEMPLATES = ("mcp.json", ".mcp.json", "README.md")
 
 
-def package_plugin(root: Path) -> Path:
+def package_plugin(root: Path, target: str = "local") -> Path:
+    if target not in TARGETS:
+        raise ValueError(f"Unknown plugin target: {target}")
     errors = validate_repository(root)
     if errors:
         raise ValueError("Plugin packaging blocked:\n" + "\n".join(errors))
     bundle = root / "connector" / "build" / "plugin" / "connector.cjs"
-    if not bundle.is_file() or bundle.is_symlink():
+    if target == "local" and (not bundle.is_file() or bundle.is_symlink()):
         raise ValueError("Run npm ci and npm run build inside connector/ before packaging.")
     destination = root / "dist"
     if destination.is_symlink():
         raise ValueError("dist must not be a symlink")
     destination.mkdir(exist_ok=True)
-    archive = destination / f"{PLUGIN_NAME}.plugin"
+    suffix = "" if target == "local" else "-skills-only"
+    archive = destination / f"{PLUGIN_NAME}{suffix}.plugin"
     with tempfile.TemporaryDirectory(dir=destination) as temporary:
         stage = Path(temporary) / PLUGIN_NAME
         stage.mkdir()
-        sources = [(Path(name), root / "plugin" / name) for name in TEMPLATES]
-        sources += [(Path("LICENSE"), root / "LICENSE"), (Path("server/connector.cjs"), bundle),
-                    (Path("server/THIRD-PARTY-NOTICES.txt"), bundle.parent / "THIRD-PARTY-NOTICES.txt"),
-                    (Path("docs/plugin-and-connector.md"), root / "docs" / "plugin-and-connector.md")]
-        notices = bundle.with_suffix(".cjs.LEGAL.txt")
-        if notices.exists():
-            sources.append((Path("server/connector.cjs.LEGAL.txt"), notices))
+        sources = [(Path(name), root / "plugin" / name) for name in COMMON_TEMPLATES]
+        sources.append((Path("LICENSE"), root / "LICENSE"))
+        if target == "local":
+            sources += [(Path(name), root / "plugin" / name) for name in LOCAL_TEMPLATES]
+            sources += [(Path("server/connector.cjs"), bundle),
+                        (Path("server/THIRD-PARTY-NOTICES.txt"), bundle.parent / "THIRD-PARTY-NOTICES.txt"),
+                        (Path("docs/plugin-and-connector.md"), root / "docs" / "plugin-and-connector.md")]
+            notices = bundle.with_suffix(".cjs.LEGAL.txt")
+            if notices.exists():
+                sources.append((Path("server/connector.cjs.LEGAL.txt"), notices))
+        else:
+            sources.append((Path("README.md"), root / "plugin" / "README.skills-only.md"))
         for name in EXPECTED_SKILLS:
             skill = root / "skills" / name
             sources.extend((Path("skills") / name / path.relative_to(skill), path)
@@ -57,7 +67,10 @@ def package_plugin(root: Path) -> Path:
             failures = validate_skill(stage / "skills" / name)
             if failures:
                 raise ValueError("\n".join(failures))
-        for filename in ("mcp.json", ".mcp.json", ".claude-plugin/plugin.json"):
+        json_files = [".claude-plugin/plugin.json"]
+        if target == "local":
+            json_files += ["mcp.json", ".mcp.json"]
+        for filename in json_files:
             json.loads((stage / filename).read_text())
         zipped = Path(temporary) / archive.name
         with ZipFile(zipped, "w") as output:
@@ -79,9 +92,10 @@ def package_plugin(root: Path) -> Path:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--target", choices=TARGETS, default="local")
     args = parser.parse_args()
     try:
-        print(f"Created {package_plugin(args.root)}")
+        print(f"Created {package_plugin(args.root, args.target)}")
     except (OSError, ValueError) as error:
         parser.exit(1, f"ERROR: {error}\n")
     return 0

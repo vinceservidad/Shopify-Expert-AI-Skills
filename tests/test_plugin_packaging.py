@@ -11,14 +11,14 @@ import test_repository_tools as repository_tools
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from package_plugin import package_plugin, TEMPLATES
+from package_plugin import COMMON_TEMPLATES, LOCAL_TEMPLATES, package_plugin
 from validate_repository import EXPECTED_SKILLS, validate_skill
 
 
 class PluginPackagingTests(unittest.TestCase):
     def setUp(self):
         repository_tools.RepositoryToolsTests.setUp(self)
-        for name in TEMPLATES:
+        for name in COMMON_TEMPLATES + LOCAL_TEMPLATES + ("README.skills-only.md",):
             target = self.root / "plugin" / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / "plugin" / name, target)
@@ -47,6 +47,25 @@ class PluginPackagingTests(unittest.TestCase):
     def test_archive_is_reproducible(self):
         before = package_plugin(self.root).read_bytes()
         self.assertEqual(package_plugin(self.root).read_bytes(), before)
+
+    def test_skills_only_plugin_omits_local_runtime_and_mcp_config(self):
+        with ZipFile(package_plugin(self.root, "skills-only")) as zipped:
+            names = zipped.namelist()
+            self.assertIn("plugin.json", names)
+            self.assertIn("README.md", names)
+            self.assertFalse(any(name.startswith("server/") for name in names))
+            self.assertNotIn("mcp.json", names)
+            self.assertNotIn(".mcp.json", names)
+            self.assertNotIn("docs/plugin-and-connector.md", names)
+            self.assertEqual(
+                zipped.read("README.md"),
+                (self.root / "plugin" / "README.skills-only.md").read_bytes(),
+            )
+
+    def test_skills_only_plugin_does_not_require_connector_build(self):
+        self.bundle.unlink()
+        archive = package_plugin(self.root, "skills-only")
+        self.assertTrue(archive.is_file())
 
     def test_missing_build_blocks_packaging(self):
         self.bundle.unlink()
