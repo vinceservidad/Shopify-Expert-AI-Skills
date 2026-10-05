@@ -10,7 +10,7 @@ output into that record. `plugin-evals/results/` is ignored by git.
 
 ## Cases
 
-There is one case per skill (19) plus one negative case. Each skill case takes
+There is one case per skill (19), one for the store audit growth mode (`growth-prospect-snapshot`), and one negative case. Each skill case takes
 its request from a numbered scenario in
 [evals/core-scenarios.md](../evals/core-scenarios.md), noted as a
 `scenario-N` tag, and has two graders:
