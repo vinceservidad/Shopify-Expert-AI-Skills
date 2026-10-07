@@ -15,7 +15,7 @@ from pathlib import Path
 import json
 import sys
 
-from model_evaluations import parse_codex, records, summarize, verify_frozen
+from model_evaluations import parse_codex, records, summarize, verify_frozen, verify_judge_provenance
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = ("manifest.json", "manifest.sha256", "prompts.json", "reviews.json", "summary.json")
@@ -116,6 +116,10 @@ def check(directory: Path):
         recorded_sensitivity = read_strict(directory / "sensitivity.json")
         if json.dumps(recorded_sensitivity, sort_keys=True) != json.dumps(sensitivity(directory), sort_keys=True):
             raise ValueError("Sensitivity report does not match preserved primary and secondary evidence")
+    provenance_path = directory / "reviews.provenance.json"
+    if provenance_path.exists():
+        reviews = read_strict(directory / "reviews.json")["reviews"]
+        verify_judge_provenance(read_strict(provenance_path), {r["id"]: r for r in reviews})
     counts = Counter(record["status"] for record in response_records.values())
     counts["missing"] = len(manifest["jobs"]) - len(response_records)
     return {"run": directory.name, "distinct_cases": len(manifest["cases"]),
