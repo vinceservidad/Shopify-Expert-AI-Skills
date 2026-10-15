@@ -2,6 +2,10 @@
 
 This guide shows how merchants, freelancers, agencies, Shopify VAs, developers, marketers, and store operators can use the skills in Claude, ChatGPT, and Codex. No Shopify connection is required for read-only analysis. You provide the store evidence you want the assistant to examine.
 
+## For coding agents improving this toolkit
+
+This user guide explains how to **use** the skills. If you are extending the repository in Codex or Claude Code, start at [AGENTS.md](AGENTS.md) or [CLAUDE.md](CLAUDE.md), plus the [product brief](docs/product-brief.md) and [job workflow design guide](docs/job-workflow-design.md). Keep real Shopify VA jobs, ordered dependencies, verification, and expected deliverables central; preserve the existing 19-skill architecture.
+
 ## Start with the Shopify Store Operating Lifecycle
 
 Use this lifecycle to decide **where the work is now** before choosing what happens next:

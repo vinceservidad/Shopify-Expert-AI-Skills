@@ -12,6 +12,10 @@ See [plugin and connector setup](docs/plugin-and-connector.md). The source
 repository keeps its existing URL; a hosted MCP endpoint is a separate deployment.
 This is an independent project, not an official Shopify product.
 
+## For Codex, Claude Code, and contributors
+
+To develop this project in Codex or Claude Code, read [AGENTS.md](AGENTS.md) or [CLAUDE.md](CLAUDE.md), followed by the [product brief](docs/product-brief.md) and [job workflow design](docs/job-workflow-design.md). These explain the **job-first purpose**: guide real Shopify VA assignments through correct prerequisites, ordered steps, approval gates, QA, and client-ready deliverables, without competing with Shopify Sidekick or multiplying skills by default.
+
 ## One operating lifecycle for every Shopify role
 
 Use the shared **Shopify Store Operating Lifecycle** for work that spans decisions, implementation, verification, or learning:
