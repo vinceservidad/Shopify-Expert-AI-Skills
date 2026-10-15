@@ -13,8 +13,10 @@ inventory-change, product-write or campaign tool is exposed.
 
 ### Download a published package
 
-Use the repository's [GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases)
-to download either plugin variant or an individual skill ZIP. Import the chosen
+Download the tested [v0.1.1 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.1.1) directly from
+the repository. Versioned packages can also be published through
+[GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases)
+when the release workflow succeeds. Import the chosen
 package using the host's supported installation flow; update or reimport an
 existing installation to receive revised skills. A release publishes packages,
 not a hosted Shopify endpoint or an automatic update to installed copies.

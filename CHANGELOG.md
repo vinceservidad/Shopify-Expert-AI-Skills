@@ -8,6 +8,8 @@ All notable changes to this project are documented here.
 
 - Version the plugin manifests as 0.1.1 and publish both plugin variants and all
   nineteen skill ZIPs through a tested-build GitHub Actions release on version tags.
+- Provide tested v0.1.1 packages and SHA-256 checksums directly in the repository
+  so installation does not depend on GitHub Actions billing availability.
 - Tighten the ordered procedures in the existing nineteen skills: define the
   client deliverable, check prerequisites before dependent work, continue safe
   independent work, and hand off evidence, exceptions, actual state, and owners.

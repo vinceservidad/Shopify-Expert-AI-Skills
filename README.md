@@ -110,6 +110,9 @@ For a mixed routine task list or a multi-stage initiative, start with `shopify-v
 
 ### Plugin and connected Shopify evidence
 
+Download the tested [v0.1.1 plugin packages and individual skill ZIPs](releases/v0.1.1/README.md)
+and import the chosen archive through your host's supported installation flow.
+
 Build `dist/shopify-va-toolkit.plugin` using the
 [plugin guide](docs/plugin-and-connector.md#build-the-plugin). It includes all
 skills and a bundled local MCP server. The guide covers the separately hosted
