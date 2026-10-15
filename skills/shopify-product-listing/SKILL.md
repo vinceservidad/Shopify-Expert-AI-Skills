@@ -4,7 +4,7 @@ description: Creates, updates, and quality-checks Shopify product listings from 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.2"
+  version: "0.2.3"
 ---
 
 # Shopify Product Listing
@@ -26,13 +26,14 @@ Collect target store, create or update mode, product source, title, description,
 
 ## Workflow
 
-1. Build a source-to-field map and flag missing or conflicting inputs.
-2. Check for duplicate products, handles, SKUs, barcodes, media, and variants.
-3. Draft truthful customer-facing content without changing approved facts.
-4. Map taxonomy, attributes, organization, variants, pricing, inventory, shipping, SEO, template, and publication settings.
-5. Create or update only the authorized state, preferably draft before active publication.
-6. Reopen the saved record and compare each decision-critical field with the source.
-7. After approved publication, verify the correct channels, markets, product page, variants, price, availability, structured output, and feed state where in scope.
+1. Confirm create or update mode, exact products, requested terminal state, approver, and protected fields. Build a source-to-field map and flag missing or conflicting inputs.
+2. Check duplicate products, handles, SKUs, barcodes, media, and option combinations against the existing catalog before proposing new records.
+3. Draft truthful content and map taxonomy, variants, pricing, inventory locations, shipping, SEO, template, markets, and channels from approved sources.
+4. Run the before-save QA checklist against the proposed field map. Leave unsupported facts unresolved; block only dependent fields or state transitions and continue a safe draft. Resolve publication-critical gaps before activation or channel publication.
+5. Recheck current values against the captured source before an authorized write. If concurrent edits conflict with the approved change set, stop the affected update and reconcile; do not overwrite them from an old sheet.
+6. Create or update only the authorized state. Draft-only work ends with an unsaved deliverable; inactive-save approval does not authorize activation or publication.
+7. Reopen the saved record and compare decision-critical and protected fields with the approved map. Stop further writes on unexpected variant, inventory, price, or channel changes.
+8. After approved publication, verify scoped channels, markets, product page, variants, price, availability, purchase behavior, structured output, and feed state where in scope. Handoff product identifiers, QA evidence, processing states, exceptions, rollback, and next owner.
 
 Read [references/listing-fields.md](references/listing-fields.md) for the field contract. Use [references/qa-checklist.md](references/qa-checklist.md) before save, activation, publication, and handoff.
 

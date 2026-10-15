@@ -4,7 +4,7 @@ description: Audits Shopify Google Ads across queries, keywords, products, campa
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Google Ads
@@ -27,13 +27,14 @@ Collect account and Merchant Center scope, objective, dates, timezone, currency,
 
 ## Workflow
 
-1. Verify measurement definitions, Primary conversion actions, value, currency, counting, deduplication, attribution, and reconciliation.
-2. Segment Brand, non-brand Search, Shopping, Performance Max, remarketing, markets, products, and customer type when the data supports it.
-3. Audit queries, keywords, match types, negatives, landing pages, ads, assets, product data, product groups, feeds, diagnostics, settings, and history.
-4. Diagnose at the lowest useful level: query, keyword, product, asset group, campaign, market, or device.
-5. Use realized revenue or a named profit proxy with explicit included costs.
-6. Preserve valuable coverage and learning. Propose sequential, reversible changes with evidence, hypothesis, guardrail, review date, result, and decision.
-7. Apply scaling gates before any budget or target recommendation.
+1. Confirm account and Merchant Center identities, market, currency, period, requested decision, and approval boundary. Verify conversion definitions, Primary conversion actions, value, counting, deduplication, attribution, and reconciliation.
+2. Segment Brand, non-brand Search, Shopping, Performance Max, remarketing, markets, products, and customer type only as the evidence supports.
+3. Audit available queries, keywords, match types, negatives, landing pages, ads, assets, product data, product groups, feeds, diagnostics, settings, and history. Name missing evidence that could reverse the recommendation.
+4. Diagnose at the lowest useful level. For price or availability mismatches, reconcile the item and variant across authoritative product data, feed source, landing page, and affected destination before proposing a correction.
+5. Use realized revenue or a named profit proxy with included costs. Apply readiness, economics, constraint, marginal evidence, capacity, guardrail, and authorization gates before scaling.
+6. Draft sequential reversible changes with exact scope, evidence, protected brand/product coverage, review date, stop, and recovery. Identify the owning product, feed, or theme system; do not patch an unrelated layer to hide a source mismatch.
+7. Before an approved change, capture current settings and recheck conflicts. After execution, verify saved controls and relevant product diagnostics, publication, processing, landing, and delivery states; submission is not acceptance.
+8. Handoff the diagnosis or change log, unavailable evidence, pending feed or policy review, verification owner, and follow-up time. Judge the business result only after a suitable observation window.
 
 Read [references/campaign-structure.md](references/campaign-structure.md) for structural choices. Use [references/audit-checklist.md](references/audit-checklist.md) for exhaustive audit coverage.
 

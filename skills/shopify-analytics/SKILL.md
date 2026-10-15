@@ -4,7 +4,7 @@ description: Analyzes Shopify performance, top-selling products, and profit chan
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Analytics
@@ -27,13 +27,14 @@ Collect the decision, primary business outcome, source systems, schemas or expor
 
 ## Workflow
 
-1. Create a metric contract and source map.
-2. Validate completeness, types, duplicates, nulls, timestamps, currencies, identities, event quality, and status treatment.
-3. Reconcile Shopify or the selected ledger with GA4 and channel reports under their own definitions.
-4. Decompose the outcome across traffic, conversion, average value, product mix, customer mix, returns, and costs as data allows.
-5. Segment only where it can change the decision and the evidence is sufficient.
-6. Rank explanations by evidence, test alternatives, and identify decision-changing unknowns.
-7. Recommend a measurement repair, business action, or controlled test with owner, guardrails, and verification.
+1. Define the client decision, report cutoff, metric contract, source map, population, grain, compatible periods, timezone, currency, and comparison.
+2. Validate source completeness, freshness, duplicates, nulls, timestamps, identities, event quality, and status treatment before aggregating or joining. Paginate connected reads or label them partial; a sample cannot establish store totals.
+3. Reconcile the chosen ledger with GA4 and channel reports under their own definitions. Preserve unresolved differences rather than forcing totals to match or adding overlapping attribution.
+4. Decompose the outcome across compatible traffic, conversion, value, mix, returns, and costs. Block unsupported calculations only; continue bounded facts and rankings when their inputs remain trustworthy.
+5. Segment where it changes the decision and evidence is sufficient. Compare like populations; do not turn incomplete costs into zero or invent product-level media allocation.
+6. Rank explanations by evidence, test alternatives against change history, and identify unknowns capable of reversing the decision. Keep an arithmetic bridge distinct from causal attribution.
+7. QA totals, joins, formulas, denominators, deductions, and source-to-report traceability before delivery. Preserve the cutoff and mark late or pending records for a defined refresh.
+8. Handoff the reconciled report, data-quality limits, calculations, supported recommendation, guardrails, and next evidence/action owner with review time. A report is complete only for its declared evidence boundary; analysis does not execute account changes.
 
 Read [references/reporting-framework.md](references/reporting-framework.md) for metric and report design. Read [references/diagnosis-framework.md](references/diagnosis-framework.md) for root-cause analysis.
 

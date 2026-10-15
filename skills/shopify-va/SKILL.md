@@ -4,7 +4,7 @@ description: Plans, routes, tracks, executes, and verifies mixed Shopify tasks t
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.3.2"
+  version: "0.3.3"
 ---
 
 # Shopify VA
@@ -46,17 +46,15 @@ Collect only what can change the decision:
 
 ## Lifecycle and routing workflow
 
-1. Normalize the request into a task or initiative record.
-2. Identify the earliest unresolved lifecycle stage capable of changing the next decision.
-3. Route the substantive decision or procedure to the focused skill that owns it.
-4. Identify missing, conflicting, stale, unsafe, or unauthorized inputs before execution.
-5. Diagnose before broad changes when the cause is unresolved.
-6. Prepare a plan with pre-change evidence, exact target, owner, action, QA, rollback, terminal state, and measurement requirement when relevant.
-7. Execute only the authorized scope when tools and permissions exist.
-8. Reopen the authoritative saved or live state and verify the result across representative states.
-9. Measure the business or operational outcome only after a suitable observation window when measurement is part of the goal.
-10. Record the optimization decision: keep, iterate, fix, roll back, test, expand, stop, or return to an earlier lifecycle stage.
-11. Record what changed, what did not change, exceptions, evidence, authorization used, and the next accountable owner.
+1. Normalize each assigned job into the existing task or initiative record with target, deliverable, acceptance criteria, due date/timezone, owner, and requested terminal state.
+2. Identify the earliest materially unresolved lifecycle stage and route each substantive decision to one focused owner skill. Diagnose an unresolved cause before broad changes; do not force a bounded draft through every stage.
+3. Build dependencies from actual prerequisites. Product truth precedes listing, fulfillment/payment verification precedes a remedy, and valid measurement precedes performance judgment. Prioritize by deadline and risk without bypassing these gates.
+4. Check sources, freshness, conflicts, tools, permissions, and approval. Mark only dependent work blocked and continue independent safe tasks; record the missing decision, escalation owner, and follow-up time.
+5. Prepare each authorized action with current-state evidence, exact target, QA, recovery, and terminal state. Draft-only work remains unsaved; inactive-save work requires separate save authority and must not affect customers.
+6. Execute within granted scope when tools and permissions exist. Recheck mutable state before acting; reconcile uncertain or partial outcomes before retrying or passing them to another operator.
+7. Reopen authoritative saved or live state and verify representative conditions against acceptance criteria. Track verified done, draft/pending, processing, blocked, and failed separately; attach evidence rather than inferring completion from an attempted action.
+8. Measure only when the goal requires it and the observation window is adequate. Use the domain owner for the next keep, iterate, rollback, stop, or diagnostic decision.
+9. Handoff one task report with completed deliverables, dependencies, evidence, exceptions, actual state, and next accountable owners. For recurring work, check the last verified run and duplicate protection before catch-up execution.
 
 Read [references/store-operating-lifecycle.md](references/store-operating-lifecycle.md) for the full lifecycle, role boundaries, stage contracts, and examples. Use [references/initiative-record.md](references/initiative-record.md) when work spans several stages, specialists, sessions, or handoffs. Read [references/task-routing.md](references/task-routing.md) to choose the owner skill. Use [references/operating-checklists.md](references/operating-checklists.md) for task records, recurring work, QA, and handoff.
 

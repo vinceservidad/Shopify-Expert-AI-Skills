@@ -4,7 +4,7 @@ description: Audits and drafts Shopify product-page structure, copy, proof, offe
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Product Page
@@ -28,13 +28,14 @@ When source truth is incomplete, create a gap list or clearly marked placeholder
 
 ## Workflow
 
-1. Build a product truth table from authoritative inputs.
-2. Define the page's one central conversion job and traffic context.
-3. Map the questions a buyer must answer before commitment.
-4. Audit content order, media, variant and price clarity, purchase controls, proof, objections, policies, mobile behavior, accessibility, and measurement.
-5. Draft the smallest complete message system using approved facts.
-6. Separate content changes from theme or app implementation.
-7. Add QA for claim truth, variant logic, price, links, mobile rendering, accessibility, analytics, and live verification.
+1. Confirm the named product or template, draft versus implementation scope, traffic context, and client acceptance criteria. Build a product truth table from authoritative inputs.
+2. Identify claim, policy, price, variant, and proof gaps. Continue supported sections while holding dependent copy; exclude unresolved placeholders and unsupported claims from any publishable handoff.
+3. Define the central buyer decision and map the questions needed before commitment, keeping real quotations distinct from paraphrase.
+4. Audit content order, media, variant and price clarity, purchase controls, proof, policies, mobile behavior, accessibility, and measurement using actual evidence.
+5. Draft the smallest complete message system, placing proof and qualifications beside the claims they support. Preserve approved facts and useful existing content.
+6. Separate product-record copy from shared-template, app, and theme implementation. Handoff technical changes to the responsible specialist with exact scope and source mapping.
+7. QA the draft for truth, links, policy, and source coverage. After any approved implementation, separately inspect rendered variants, price, availability, mobile controls, accessibility, and tracking in the scoped target.
+8. Deliver final supported copy, unresolved decisions, implementation owner, acceptance checks, and actual state. A copy review cannot establish that the saved or live page works.
 
 For message and page design, read [references/copy-frameworks.md](references/copy-frameworks.md). For reusable briefs and drafts, read [references/templates.md](references/templates.md).
 

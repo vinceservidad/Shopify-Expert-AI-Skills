@@ -4,7 +4,7 @@ description: Drafts policy-grounded Shopify support responses, macros, escalatio
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Support
@@ -28,12 +28,14 @@ When required evidence is unavailable, write a safe holding response and the exa
 
 ## Workflow
 
-1. Identify the customer's main job, emotion, urgency, and requested resolution.
-2. Separate verified facts from customer statements, agent notes, assumptions, and unknowns.
-3. Apply the correct policy, market, product, order state, and authority.
-4. Choose the smallest complete response: acknowledge, state verified facts, explain the next action, set a truthful expectation, and offer the next contact path.
-5. Record internal actions and escalation separately from customer-facing copy.
-6. Require approval or authorized system access before any operational action or send.
+1. Identify the customer issue, urgency, channel, requested resolution, and draft or send scope. Apply the merchant identity-verification procedure before disclosing private order facts or changing a record.
+2. Separate verified facts from customer statements, agent notes, assumptions, and unknowns. Check authoritative order, carrier, prior contact, and previous-remedy evidence.
+3. Apply the policy version, market, product, order state, and allowed remedies. Missing evidence calls for a safe holding draft and an exact verification owner, not a guessed promise.
+4. Route money, cancellation, return, fulfillment, or inventory decisions to order operations when needed. Keep the customer response owned here and avoid duplicate remedies across the ticket and order systems.
+5. Draft the smallest complete response with acknowledgement, verified facts, supported expectations, next action, and contact path. Do not describe a proposed remedy as executed.
+6. QA recipient and channel, minimized personal data, facts, policy, prior actions, links, tone, and promises. Before any authorized send, recheck that the underlying order or remedy state has not changed.
+7. Execute an operational action or send only through an available tool within its specific approval. Verify the relevant sent record or remedy result; uncertain transport or processing requires follow-up rather than another blind send.
+8. Handoff the draft or verified communication, internal action log, unresolved questions, escalation owner, and supported follow-up time. Sending a reply alone does not resolve an unfinished refund or delivery investigation.
 
 Read [references/response-guidelines.md](references/response-guidelines.md) for drafting and risk handling. Read [references/faq-framework.md](references/faq-framework.md) for macros and knowledge-base design.
 

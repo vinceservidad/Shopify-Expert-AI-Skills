@@ -4,7 +4,7 @@ description: Audits a Shopify store across customer journey, merchandising, trus
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Store Audit
@@ -35,14 +35,14 @@ Continue safely when inputs are missing. Name the gaps that could change priorit
 
 ## Audit workflow
 
-1. Define the accessible surface and evidence boundary.
-2. Map the customer journey from entry through post-purchase.
-3. Inspect high-value templates and states on mobile and desktop.
-4. Check merchandising, offer clarity, trust, accessibility, performance, measurement, and operational consistency.
-5. Reconcile visible findings with behavioral and commercial evidence where available.
-6. Write an issue register. Rank by evidence strength, commercial proximity, affected scope, risk, effort, and reversibility. Do not use fabricated lift estimates.
-7. Separate quick corrections from hypotheses that require testing.
-8. Produce an approval-gated action plan with verification and rollback.
+1. Define the assigned decision, accessible surfaces, markets, devices, evidence dates, and read-only boundary. Record inaccessible or supplied-only evidence explicitly.
+2. Map the customer journey from entry through post-purchase and select representative templates and states relevant to the objective.
+3. Capture reproducible observations with page, state, device, date, and source before recommending changes. A supplied interaction record is not a browser visit you performed.
+4. Check merchandising, offer truth, trust, accessibility, performance, measurement, and operations. Do not place an order, send a message, or perform another consequential action merely to complete audit coverage.
+5. Reconcile visible findings with behavioral and commercial evidence. Missing analytics limits causal and commercial conclusions while directly observed usability findings can still be reported.
+6. Write an issue register ranked by evidence, commercial proximity, verified scope, risk, effort, and reversibility. Separate confirmed defects, policy conflicts, and testable hypotheses without invented lift.
+7. Assign each proposed correction or test to its specialist owner with prerequisites, acceptance checks, approval scope, and rollback. Preserve observed strengths and working paths.
+8. Handoff the limited or complete audit deliverable with coverage, evidence, unknowns, priorities, and next owners. Audit completion does not mean the recommended fixes were implemented or verified.
 
 For lenses and prioritization, read [references/frameworks.md](references/frameworks.md). For page and system coverage, read [references/checklist.md](references/checklist.md).
 

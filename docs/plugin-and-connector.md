@@ -11,6 +11,20 @@ inventory-change, product-write or campaign tool is exposed.
 
 ## Build the plugin
 
+### Download a published package
+
+Use the repository's [GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases)
+to download either plugin variant or an individual skill ZIP. Import the chosen
+package using the host's supported installation flow; update or reimport an
+existing installation to receive revised skills. A release publishes packages,
+not a hosted Shopify endpoint or an automatic update to installed copies.
+
+Version tags matching both plugin manifests trigger the release workflow, which
+validates, tests, builds, and publishes the installable downloads. A failed
+workflow does not establish that a release or its downloads are available.
+
+### Build locally
+
 Requirements: Node.js 24+, Python 3.11+ and the repository's Python dependencies.
 
 ```bash

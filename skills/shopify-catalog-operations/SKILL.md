@@ -4,7 +4,7 @@ description: Governs and executes bulk Shopify catalog work across products, tax
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.3"
+  version: "0.2.4"
 ---
 
 # Shopify Catalog Operations
@@ -27,13 +27,14 @@ Collect target store, business purpose, source and destination schema, authorita
 
 ## Workflow
 
-1. Profile the current catalog and source data for duplicates, missing values, invalid types, inconsistent vocabulary, and conflicts.
-2. Define catalog governance and field ownership.
-3. Map source to destination with transformations, null behavior, identifiers, and exception rules.
-4. Produce a dry-run change set and high-risk field report.
-5. Test a reversible representative subset and verify saved and downstream states.
-6. Execute the authorized scope in controlled batches with logs and stopping rules.
-7. Re-export or re-query the authoritative state. Count intended changes, actual field changes and fully conforming records separately; verify channels or feeds where required. For a failed pilot, distinguish the captured before value, latest observed value and proposed recovery target before requesting a corrective write.
+1. Confirm the exact batch, authoritative keys, permitted fields, acceptance criteria, source version, and recoverable current export. Profile duplicates, missing values, invalid types, vocabulary, and conflicts.
+2. Define field ownership and source-to-destination transformations, including blank, null, clear, retain, and exception behavior for the actual import mechanism.
+3. Produce a dry-run diff with added, changed, unchanged, skipped, and exception counts plus high-risk and protected-field reports. Resolve blockers before approving the pilot.
+4. Tie approval to the reviewed source and diff. Recheck source freshness and current target values before writing; reconcile later authorized edits rather than overwriting them from the backup.
+5. Run an authorized reversible representative pilot and verify saved and downstream states. Stop broad execution on any unexpected overwrite, deletion, duplication, publication, price, or inventory effect.
+6. Execute only the approved batches with logs and stopping rules. After a timeout or partial result, reconcile record-level outcomes before retrying; do not replay the whole batch blindly.
+7. Re-export or re-query the authoritative state. Count intended changes, actual field changes, already-correct no-ops, and fully conforming records separately; verify channels or feeds where required.
+8. For failed records, distinguish captured before values, latest observed values, and proposed recovery targets. Obtain corrective-write authority, preserve later legitimate edits, and repeat a bounded pilot before resuming. Handoff reconciliation, exceptions, evidence, and next owner.
 
 Read [references/catalog-governance.md](references/catalog-governance.md) for field and taxonomy rules. Use [references/bulk-operations.md](references/bulk-operations.md) for CSV, bulk-edit, pilot, rollback, and reconciliation.
 

@@ -29,7 +29,7 @@ exceptions:
 2. Capture the current state or export when rollback requires it.
 3. Check source freshness and conflicting edits.
 4. Perform only the approved action.
-5. Save without publishing when the authorization is draft-only or inactive.
+5. Keep draft-only deliverables unsaved in the target platform. Save an inactive record only when that save is authorized; do not activate, publish, or send it.
 6. Reopen the resource and compare it with the approved source.
 7. Verify the correct channel, market, customer, or live surface when publication was approved.
 8. Record exceptions and do not hide partial completion.

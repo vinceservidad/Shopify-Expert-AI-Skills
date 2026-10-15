@@ -4,6 +4,23 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Assigned-job workflow readiness
+
+- Version the plugin manifests as 0.1.1 and publish both plugin variants and all
+  nineteen skill ZIPs through a tested-build GitHub Actions release on version tags.
+- Tighten the ordered procedures in the existing nineteen skills: define the
+  client deliverable, check prerequisites before dependent work, continue safe
+  independent work, and hand off evidence, exceptions, actual state, and owners.
+- Move listing preflight QA before writes; reconcile concurrent catalog edits
+  and uncertain batch or order outcomes before retries; distinguish an unsaved
+  draft from an authorized inactive save in the coordinator checklist.
+- Add delayed-state checks to email and Flow, source/rights QA to creative,
+  controlled release verification to ads, SEO and theme work, and explicit
+  data-quality and competency gates to reporting and VA training.
+- Add nineteen synthetic assigned-job scenarios covering normal progress and
+  blocking exceptions. They remain `needs-review`; tooling and package checks
+  do not establish model task performance or live Shopify behavior.
+
 ### Plugin packaging compatibility
 
 - Add an explicit `skills-only` plugin target for hosted environments that
