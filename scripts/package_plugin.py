@@ -15,6 +15,7 @@ PLUGIN_NAME = "shopify-va-toolkit"
 TARGETS = ("local", "skills-only")
 COMMON_TEMPLATES = ("plugin.json", ".claude-plugin/plugin.json")
 LOCAL_TEMPLATES = ("mcp.json", ".mcp.json", "README.md")
+NATIVE_MANIFEST = Path(".codex-plugin/plugin.json")
 
 
 def package_plugin(root: Path, target: str = "local") -> Path:
@@ -46,6 +47,7 @@ def package_plugin(root: Path, target: str = "local") -> Path:
             if notices.exists():
                 sources.append((Path("server/connector.cjs.LEGAL.txt"), notices))
         else:
+            sources.append((NATIVE_MANIFEST, root / NATIVE_MANIFEST))
             sources.append((Path("README.md"), root / "plugin" / "README.skills-only.md"))
         for name in EXPECTED_SKILLS:
             skill = root / "skills" / name
@@ -60,7 +62,7 @@ def package_plugin(root: Path, target: str = "local") -> Path:
             output_file = stage / relative
             output_file.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, output_file)
-        json_files = COMMON_TEMPLATES + (("mcp.json", ".mcp.json") if target == "local" else ())
+        json_files = COMMON_TEMPLATES + (("mcp.json", ".mcp.json") if target == "local" else (str(NATIVE_MANIFEST),))
         for filename in json_files:
             manifest = json.loads((stage / filename).read_text())
             if filename == "plugin.json" and manifest.get("name") != PLUGIN_NAME:

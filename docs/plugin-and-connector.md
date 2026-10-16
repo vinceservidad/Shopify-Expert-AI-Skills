@@ -9,16 +9,22 @@ The plugin bundles the existing 19 skills. The MCP connector supplies read-only
 store evidence; the skills guide task reasoning and QA. No refund, publish,
 inventory-change, product-write or campaign tool is exposed.
 
-**Using ChatGPT or Claude chat?** Start with the [user setup guide](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/ai-agent-setup.md).
-This page covers developer builds, local extension hosts, and hosting. There is
-no published hosted connector URL, and a plugin archive is not a universal
-ChatGPT/Claude chat installation method.
+**Using ShopifySkills for research?** Install the native skills-only plugin
+using the [user setup guide](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/ai-agent-setup.md#install-shopifyskills-once).
+It contains all 19 workflows and has no Shopify sign-in or MCP requirement.
+This page covers the separate optional connected runtime and hosting. Native
+plugin registration in a host is required before it appears in that host's picker.
+
+The repository's `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json`
+provide the native Codex skills profile. The root `.claude-plugin/` provides
+Claude marketplace metadata for the same canonical skills. Neither root profile
+starts a server; `plugin/` retains the optional connected-package templates.
 
 ## Build the plugin
 
 ### Download a published package
 
-Download the tested [v0.1.1 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.1.1) directly from
+Download the native [v0.2.0 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.0) directly from
 the repository. Versioned packages can also be published through
 [GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases)
 when the release workflow succeeds. Import the chosen
@@ -77,7 +83,8 @@ process, build a skills-only archive instead:
 python scripts/package_plugin.py --target skills-only
 ```
 
-`dist/shopify-va-toolkit-skills-only.plugin` contains the same 19 skills but no
+`dist/shopify-va-toolkit-skills-only.plugin` contains the same 19 skills, a native
+Codex manifest, and Claude-compatible/portable manifests, but no
 `mcp.json`, `.mcp.json`, server bundle, or connector documentation. It is safe to
 upload as a skills-only package and makes no connected-store claim. Adding live
 Shopify tools requires a separately deployed HTTPS MCP endpoint; do not replace

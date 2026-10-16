@@ -4,7 +4,7 @@ description: Plans, routes, tracks, executes, and verifies mixed Shopify tasks t
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.3.3"
+  version: "0.3.4"
 ---
 
 # Shopify VA
@@ -31,6 +31,15 @@ It is a state model, not a mandatory checklist. Start at the earliest unresolved
 - A merchant, client, or accountable owner retains authority over material business tradeoffs. A VA, freelancer, developer, or agency may not expand approval beyond the granted scope.
 
 ## Task intake
+
+When invoked through **ShopifySkills** with a broad request such as “do research,”
+ask only for the product/category, market, or deliverable needed to route it.
+Public-source or supplied-file research does not require a Shopify connection,
+store credentials, or a store audit first. Route product-opportunity research to
+`shopify-product-research`; request private store access only if that assigned
+work actually depends on private store evidence. Use the host's available
+research tools or label missing evidence rather than implying the plugin adds
+web access or already completed research.
 
 Collect only what can change the decision:
 

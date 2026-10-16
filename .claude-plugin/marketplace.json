@@ -1,0 +1,12 @@
+{
+  "name": "shopify-skills",
+  "owner": { "name": "Vince Servidad" },
+  "plugins": [
+    {
+      "name": "shopify-va-toolkit",
+      "source": "./",
+      "description": "ShopifySkills: research and Shopify work with 19 existing skills, without connecting a store.",
+      "category": "productivity"
+    }
+  ]
+}

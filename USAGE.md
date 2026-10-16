@@ -10,19 +10,17 @@ Use the [19-skill catalog](README.md#skill-catalog) to choose the owner of your 
 
 ## Installation
 
-For **Claude**, use an individual skill ZIP. For **ChatGPT**, use a Project with
-the skill's instructions and references. Follow the short [app-specific setup](docs/ai-agent-setup.md).
-Both paths work with supplied evidence and need no server, terminal, or Shopify token.
+Install the **ShopifySkills** skills-only plugin once in a supported plugin host,
+then select it in the plugin picker and ask in plain language. It includes all
+19 workflows and needs no Shopify sign-in for public research or supplied files.
+Follow the [native plugin installation guide](docs/ai-agent-setup.md#install-shopifyskills-once).
+App-directory registration is separate; an `@` entry exists only after the host
+has installed or registered the plugin.
 
-The [v0.1.1 downloads](releases/v0.1.1/README.md) also include plugin archives for
-supported extension hosts. A `.plugin` file is not a universal ChatGPT/Claude
-chat upload or a hosted connector. Never upload the entire repository as one
-skill; update or reimport an installed skill when you need a new version.
-
-For connected use across both apps, the intended path is one hosted connector
-using MCP. It must be deployed and its sign-in verified first; no public service
-URL is available here yet. Local MCP, plugin builds, authentication, and hosting
-belong in the [developer setup guide](docs/plugin-and-connector.md).
+If your app cannot import custom plugins, use the Claude Skill or ChatGPT
+Project fallbacks below. Plugin format support and mention syntax are specific
+to the host. Connecting private Shopify data is optional and covered separately
+in the [developer MCP guide](docs/plugin-and-connector.md).
 
 ### Option 1: Install a skill in Claude
 

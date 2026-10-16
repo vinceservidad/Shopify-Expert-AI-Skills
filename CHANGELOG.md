@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Native ShopifySkills plugin
+
+- Add native Codex and Claude plugin manifests and repository marketplaces that
+  expose the existing 19 workflows as one credential-free skills plugin.
+- Add the native Codex manifest to skills-only archives, keeping optional
+  connected archives independent. Display the plugin as ShopifySkills and
+  version the manifests as 0.2.0.
+- Let the coordinator start public-source research without Shopify sign-in;
+  add a synthetic `needs-review` scenario for broad plugin research requests.
+- Test native marketplace resolution, all 19 packaged skills, no connection
+  requirements, and preservation of good archives on malformed native metadata.
+- Keep native discovery, installation, app-directory registration, and model
+  behavior as separate verification states; no curated-directory link is invented.
+
 ### App-first user setup
 
 - Lead with Claude Skill upload and ChatGPT Project setup instead of asking

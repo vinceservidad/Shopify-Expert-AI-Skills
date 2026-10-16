@@ -1,0 +1,9 @@
+{
+  "name": "shopify-va-toolkit",
+  "version": "0.2.0",
+  "description": "ShopifySkills: 19 Shopify research and work procedures. No Shopify connection is required for public research or supplied files.",
+  "author": { "name": "Vince Servidad" },
+  "homepage": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "license": "MIT"
+}

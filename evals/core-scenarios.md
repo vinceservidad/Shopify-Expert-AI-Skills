@@ -617,3 +617,18 @@ Expected behavior:
 - Keep drafts unsaved, investigate existing refund evidence without issuing another action, and check the last verified run before any catch-up procedure.
 - Handoff one report separating delivered drafts/report, pending refund verification, publication blocker, evidence, and next owners/times. Do not label all work blocked or all tasks live/complete.
 - Supplying B's weight resolves that source gap only; platform writes remain outside the stated scope.
+
+## 50. Native plugin research without a store connection
+
+**Owner:** `shopify-va`, routing product research to `shopify-product-research`
+**Request:** “@ShopifySkills do research on ceramic mugs for the UK market. Use public sources; I have not connected Shopify.”
+**Evidence:** The skills-only plugin supplies all 19 workflows. The host may or may not provide browsing; no store credentials or merchant exports are supplied.
+
+Expected behavior:
+
+- Continue with the research decision, product requirements, public evidence, economics, and validation plan as supported; do not require Shopify sign-in, a store URL, or full store onboarding to start.
+- Use the host's available search tools, citing actual sources. If browsing is unavailable, give a bounded research plan or use supplied evidence; do not claim the plugin performed searches or invent demand.
+- Ask only decision-relevant questions about the customer, product, market, or deliverable. Do not load all 19 procedures or produce duplicate specialist reports.
+- If the task changes to analyzing the user's own inventory, identify the specific private evidence needed and use an authorized connection or sanitized export. Do not treat the research request as authorization for store writes.
+
+This scenario is `needs-review`; manifest discovery and package tests do not grade a model's research decisions or prove that an app registered the plugin.

@@ -1,4 +1,5 @@
 """Plugin package integrity tests, separate from model behavior and live hosting."""
+import json
 from pathlib import Path
 import shutil
 import sys
@@ -22,6 +23,9 @@ class PluginPackagingTests(unittest.TestCase):
             target = self.root / "plugin" / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(ROOT / "plugin" / name, target)
+        native = Path(".codex-plugin/plugin.json")
+        (self.root / native).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / native, self.root / native)
         self.bundle = self.root / "connector" / "build" / "plugin" / "connector.cjs"
         self.bundle.parent.mkdir(parents=True)
         self.bundle.write_text("// Synthetic build fixture. Not an MCP runtime.\n")
@@ -34,6 +38,7 @@ class PluginPackagingTests(unittest.TestCase):
             self.assertIsNone(zipped.testzip())
             self.assertIn("server/connector.cjs", zipped.namelist())
             self.assertIn(".claude-plugin/plugin.json", zipped.namelist())
+            self.assertNotIn(".codex-plugin/plugin.json", zipped.namelist())
             self.assertIn("plugin.json", zipped.namelist())
             self.assertIn("LICENSE", zipped.namelist())
             self.assertIn("docs/plugin-and-connector.md", zipped.namelist())
@@ -48,6 +53,28 @@ class PluginPackagingTests(unittest.TestCase):
         before = package_plugin(self.root).read_bytes()
         self.assertEqual(package_plugin(self.root).read_bytes(), before)
 
+    def test_skills_only_native_manifest_discovers_all_canonical_skills(self):
+        with ZipFile(package_plugin(self.root, "skills-only")) as zipped:
+            native = json.loads(zipped.read(".codex-plugin/plugin.json"))
+            self.assertEqual(
+                zipped.read(".codex-plugin/plugin.json"),
+                (self.root / ".codex-plugin/plugin.json").read_bytes(),
+            )
+            self.assertEqual(native["name"], "shopify-va-toolkit")
+            skill_path = Path(native["skills"])
+            self.assertFalse(skill_path.is_absolute())
+            self.assertNotIn("..", skill_path.parts)
+            discovered = {
+                Path(name).parent.name for name in zipped.namelist()
+                if Path(name).name == "SKILL.md" and Path(name).parent.parent == skill_path
+            }
+            self.assertEqual(discovered, set(EXPECTED_SKILLS))
+            for name in discovered:
+                self.assertEqual(
+                    zipped.read((skill_path / name / "SKILL.md").as_posix()),
+                    (self.root / "skills" / name / "SKILL.md").read_bytes(),
+                )
+
     def test_skills_only_plugin_omits_local_runtime_and_mcp_config(self):
         with ZipFile(package_plugin(self.root, "skills-only")) as zipped:
             names = zipped.namelist()
@@ -57,6 +84,10 @@ class PluginPackagingTests(unittest.TestCase):
             self.assertNotIn("mcp.json", names)
             self.assertNotIn(".mcp.json", names)
             self.assertNotIn("docs/plugin-and-connector.md", names)
+            for manifest_path in ("plugin.json", ".claude-plugin/plugin.json", ".codex-plugin/plugin.json"):
+                manifest = json.loads(zipped.read(manifest_path))
+                for runtime_requirement in ("mcpServers", "mcp", "env", "auth", "authentication", "oauth"):
+                    self.assertNotIn(runtime_requirement, manifest)
             self.assertEqual(
                 zipped.read("README.md"),
                 (self.root / "plugin" / "README.skills-only.md").read_bytes(),
@@ -81,6 +112,22 @@ class PluginPackagingTests(unittest.TestCase):
                     self.assertEqual(archive.read_bytes(), before)
                 finally:
                     config.write_text(original)
+
+    def test_invalid_native_manifest_preserves_previous_skills_only_archive(self):
+        archive = package_plugin(self.root, "skills-only")
+        before = archive.read_bytes()
+        (self.root / ".codex-plugin/plugin.json").write_text("not valid JSON")
+        with self.assertRaises(ValueError):
+            package_plugin(self.root, "skills-only")
+        self.assertEqual(archive.read_bytes(), before)
+
+    def test_local_plugin_does_not_depend_on_native_skills_only_manifest(self):
+        before = package_plugin(self.root).read_bytes()
+        native = self.root / ".codex-plugin/plugin.json"
+        native.write_text("not valid JSON")
+        self.assertEqual(package_plugin(self.root).read_bytes(), before)
+        native.unlink()
+        self.assertEqual(package_plugin(self.root).read_bytes(), before)
 
     def test_skills_only_plugin_ignores_local_mcp_configs(self):
         for name in ("mcp.json", ".mcp.json"):
@@ -127,6 +174,43 @@ class PluginPackagingTests(unittest.TestCase):
             parent.symlink_to(directory, target_is_directory=True)
             with self.assertRaisesRegex(ValueError, "Unsafe plugin source"):
                 package_plugin(self.root)
+
+
+class NativeMarketplaceTests(unittest.TestCase):
+    """Catalog entries must install the same credential-free canonical skills."""
+
+    def test_codex_marketplace_resolves_native_skills_plugin(self):
+        catalog = json.loads((ROOT / ".agents/plugins/marketplace.json").read_text())
+        self.assertEqual(catalog["name"], "shopify-skills")
+        self.assertEqual(len(catalog["plugins"]), 1)
+        entry = catalog["plugins"][0]
+        self.assertEqual(entry["source"]["source"], "local")
+        plugin_root = (ROOT / entry["source"]["path"]).resolve()
+        self.assertEqual(plugin_root, ROOT)
+        native = json.loads((plugin_root / ".codex-plugin/plugin.json").read_text())
+        self.assertEqual(entry["name"], native["name"])
+        self.assertEqual(native["interface"]["displayName"], "ShopifySkills")
+        self.assert_canonical_skills_without_connection(plugin_root, native)
+
+    def test_claude_marketplace_resolves_native_skills_plugin(self):
+        catalog = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
+        self.assertEqual(catalog["name"], "shopify-skills")
+        self.assertEqual(len(catalog["plugins"]), 1)
+        entry = catalog["plugins"][0]
+        plugin_root = (ROOT / entry["source"]).resolve()
+        self.assertEqual(plugin_root, ROOT)
+        native = json.loads((plugin_root / ".claude-plugin/plugin.json").read_text())
+        self.assertEqual(entry["name"], native["name"])
+        self.assert_canonical_skills_without_connection(plugin_root, native)
+
+    def assert_canonical_skills_without_connection(self, plugin_root, manifest):
+        skill_root = (plugin_root / manifest.get("skills", "./skills/")).resolve()
+        self.assertEqual(skill_root, ROOT / "skills")
+        self.assertEqual({path.parent.name for path in skill_root.glob("*/SKILL.md")}, set(EXPECTED_SKILLS))
+        for requirement in ("mcpServers", "mcp", "env", "auth", "authentication", "oauth", "hooks"):
+            self.assertNotIn(requirement, manifest)
+        for filename in (".mcp.json", "mcp.json", ".env"):
+            self.assertFalse((plugin_root / filename).exists())
 
 
 if __name__ == "__main__":

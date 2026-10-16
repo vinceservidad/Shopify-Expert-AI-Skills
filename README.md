@@ -6,27 +6,34 @@ This independent project complements Shopify Sidekick and authorized integration
 
 ## Start here
 
-Choose your app. You do not need to build code or run a server for these paths.
+**ShopifySkills is one plugin containing all 19 workflows.** In a host that
+supports installing this plugin, install it once, select **ShopifySkills** in
+its plugin picker, and ask:
 
-| Your app | Easiest way to use it today |
-| --- | --- |
-| **Claude** | [Download one skill ZIP](releases/v0.1.1/README.md), upload it in Claude's Skills settings where available, enable it, and describe your task. [Steps](docs/ai-agent-setup.md#claude-skills). |
-| **ChatGPT** | Download and extract one skill ZIP. Put its instructions and references in a ChatGPT Project, then describe your task. [Steps](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats). |
+```text
+@ShopifySkills research ceramic mug opportunities for the UK market.
+Use public sources, show your evidence, and keep the work read-only.
+```
 
-Use a specialist from the catalog below, or `shopify-va` to route a mixed task.
-Supply your exports, screenshots, product facts, or policies. These paths use
-your supplied evidence and do not connect a Shopify account automatically.
+Research uses the host's available tools or your supplied files. **No Shopify
+sign-in, local server, or API key is required for the skills-only plugin.**
+Connecting private store data is an optional separate step.
 
-**Want one connection for both apps?** The recommended connected experience is
-a **hosted connector powered by MCP**: add the service URL, approve Shopify
-access, and ask for help. **That service is not deployed yet.** No public
-connector URL or shared custom GPT is published by this repository.
+Follow the [one-time plugin installation guide](docs/ai-agent-setup.md#install-shopifyskills-once).
+The repository supplies native Codex and Claude plugin marketplaces and the
+[installable v0.2.0 package](releases/v0.2.0/README.md). Existing v0.1.1
+downloads remain available; native plugin metadata starts with v0.2.0.
 
-Skills teach workflows; a connector supplies authorized data; MCP is the
-protocol behind the connection. Plugin archives are for hosts that explicitly
-support them, rather than the default setup for ordinary ChatGPT or Claude chats.
-See [user setup](docs/ai-agent-setup.md) or the separate
-[developer plugin/MCP guide](docs/plugin-and-connector.md).
+**Directory status:** ShopifySkills is not yet registered in this app's curated
+plugin directory. A repository or ZIP does not automatically create an `@`
+entry. The exact picker and mention behavior must be verified after installing
+or importing the plugin in the intended host; no curated `plugin://` link is
+claimed here.
+
+If your ChatGPT or Claude surface cannot import custom plugins, the guide also
+covers a [Claude Skill ZIP](docs/ai-agent-setup.md#claude-skills) and
+[ChatGPT Project](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats) fallback.
+For optional store access, see the [developer MCP guide](docs/plugin-and-connector.md).
 
 ## Skill catalog
 

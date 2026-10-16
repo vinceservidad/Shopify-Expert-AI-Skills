@@ -1,10 +1,78 @@
-# Use the toolkit in ChatGPT or Claude
+# Use ShopifySkills in chat
 
-Choose your app below. These are the no-code paths available with the published
-packages. You supply exports, screenshots, product facts, and policies; neither
-path connects Shopify automatically. Available controls depend on your account
-and workspace. See [platform currency](../PLATFORM-CURRENCY.md) for the dated
-source reviews; fixed plan restrictions and exact menu labels are not assumed.
+The intended experience is: install **ShopifySkills** once, select it in a
+supported plugin picker, and ask for a task. The [v0.2.0 skills-only archive](../releases/v0.2.0/README.md)
+contains the native plugin metadata. Research and work from supplied
+files do not need Shopify sign-in. The host supplies any web-search or other
+tools; a skills plugin supplies the procedures.
+
+## Install ShopifySkills once
+
+### Codex plugin marketplace
+
+The repository now exposes a native skills-only plugin through its marketplace:
+
+```sh
+codex plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills --ref main
+codex plugin add shopify-va-toolkit@shopify-skills
+```
+
+Its displayed name is **ShopifySkills**; `shopify-va-toolkit@shopify-skills` is
+its stable plugin/marketplace identifier. The installed Codex CLI recognizes the
+catalog and native manifest. Actual installation and mention behavior must be
+verified in the user's host; this session did not install into the user's app.
+
+### Claude plugin hosts
+
+For Claude Code or another Claude host with compatible plugin marketplace
+controls, add this repository as a marketplace and install its plugin. In
+Claude Code, the commands follow the marketplace's documented `/plugin` flow:
+
+```text
+/plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills
+/plugin install shopify-va-toolkit@shopify-skills
+```
+
+The root Claude manifest uses the same 19 canonical skills and has no MCP,
+process, or credential requirement. Native Claude host installation has not
+been run in this environment; plain Claude chat is a different surface from
+Claude Code.
+
+### This app's plugin picker
+
+To appear beside a curated plugin such as Plugin Creator, ShopifySkills must be
+installed/imported or registered through this app's supported plugin flow.
+The native manifest and skills-only archive are prepared, but no curated
+registration or working `plugin://` listing has been created. An arbitrary
+GitHub URL is not an installed `@` plugin. If the app only permits curated
+plugins, its directory owner must publish the entry first.
+
+Where a host supports importing a custom archive, use the **skills-only** plugin;
+the optional connected package is for a separate local MCP setup. Menu names,
+import availability, and sharing controls depend on the actual host and account.
+Do not assume a package accepted by one product is installed in another.
+
+## Ask in plain language
+
+After installation, select ShopifySkills in the host's plugin picker or use its
+supported skill invocation and ask:
+
+```text
+Research ceramic mug opportunities for the UK market using public sources.
+Show sourced facts, unknowns, economics assumptions, and a validation plan.
+Do not change a Shopify store.
+```
+
+An `@ShopifySkills` mention is appropriate only in a host exposing that installed
+plugin in its `@` picker. Claude plugin hosts may invoke the installed skills by
+name or their own command mechanism. The plugin does not invent one universal
+mention syntax across products.
+
+## Manual fallbacks
+
+Use these only if your app cannot install the native plugin. They need no
+terminal or Shopify account connection; available file and instruction controls
+depend on your account and workspace.
 
 ## Claude Skills
 
@@ -76,9 +144,9 @@ unnecessary personal data out of long-lived project context.
 
 ## Connect an actual Shopify store
 
-For a consistent connected experience across ChatGPT and Claude, the recommended
-product path is **one hosted connector powered by MCP**. Once the service is
-hosted and verified with each app, the user journey should be:
+If an assigned task needs private store evidence, an optional **hosted MCP
+connector** can provide it after hosting and client verification. This is
+separate from using the research plugin. The connected journey would be:
 
 1. Add the real service URL using the app's custom connector/app controls, where
    the account and workspace allow custom MCP connections.

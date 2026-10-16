@@ -1,0 +1,25 @@
+{
+  "name": "shopify-va-toolkit",
+  "version": "0.2.0",
+  "description": "ShopifySkills: 19 Shopify research and work procedures. Use public sources or supplied evidence without connecting a store.",
+  "author": { "name": "Vince Servidad" },
+  "homepage": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "license": "MIT",
+  "keywords": ["shopify", "research", "virtual-assistant", "ecommerce"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ShopifySkills",
+    "shortDescription": "Shopify research and workflows",
+    "longDescription": "Research product opportunities, prepare listings, review catalogs, draft support responses, and coordinate Shopify assignments using 19 existing specialist skills. Start with public sources or supplied files. Research does not require Shopify sign-in. Connecting private store data is optional and separate.",
+    "developerName": "Vince Servidad",
+    "category": "Productivity",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+    "defaultPrompt": [
+      "Research this product opportunity using public sources and the product-research workflow. Label missing evidence.",
+      "Use ShopifySkills to review this listing draft against the attached product facts.",
+      "Use shopify-va to route my Shopify task list. Keep the work read-only."
+    ]
+  }
+}

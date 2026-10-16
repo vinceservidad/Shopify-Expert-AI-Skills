@@ -26,6 +26,20 @@ For high-change claims, prefer a source reviewed within the last 30 days. Record
 
 ## Source registry
 
+### Native plugin format review on 2026-10-17
+
+| Surface | Source | What was verified |
+| --- | --- | --- |
+| Codex native plugin manifest | Installed OpenAI `template-creator/.codex-plugin/plugin.json` and native CLI 0.159.2 | Top-level `skills` and `interface` metadata, including the displayed plugin name |
+| Codex repository marketplace | Installed OpenAI `.agents/plugins/marketplace.json`, native CLI discovery, and [official config schema](https://github.com/openai/codex/blob/main/codex-rs/core/config.schema.json) | Local catalog source paths, repository marketplace configuration, and availability of the ShopifySkills 0.2.0 entry |
+| Claude plugin marketplace | [Anthropic marketplace](https://github.com/anthropics/claude-code/blob/main/.claude-plugin/marketplace.json) and [plugin guide](https://github.com/anthropics/claude-code/blob/main/plugins/README.md) | Root manifest, repository marketplace, canonical `skills/` layout, and optional MCP configuration |
+
+These checks establish format and discovery support. They do not establish
+installation in this chat app, public curated-directory publication, or native
+Claude host behavior. Plugin Creator and a directory-publishing API were not
+available to this session. The read-only Codex app-server probe stopped before
+initialization because its default installation state was on a read-only mount.
+
 Reviewed 2026-08-25:
 
 | Surface | First-party source | What it supports |
