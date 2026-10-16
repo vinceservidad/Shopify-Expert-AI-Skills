@@ -67,6 +67,28 @@ class PluginPackagingTests(unittest.TestCase):
         archive = package_plugin(self.root, "skills-only")
         self.assertTrue(archive.is_file())
 
+    def test_invalid_local_mcp_config_preserves_previous_archive(self):
+        archive = package_plugin(self.root)
+        before = archive.read_bytes()
+        for name in ("mcp.json", ".mcp.json"):
+            with self.subTest(config=name):
+                config = self.root / "plugin" / name
+                original = config.read_text()
+                config.write_text("not valid JSON")
+                try:
+                    with self.assertRaises(ValueError):
+                        package_plugin(self.root)
+                    self.assertEqual(archive.read_bytes(), before)
+                finally:
+                    config.write_text(original)
+
+    def test_skills_only_plugin_ignores_local_mcp_configs(self):
+        for name in ("mcp.json", ".mcp.json"):
+            (self.root / "plugin" / name).write_text("not valid JSON")
+        with ZipFile(package_plugin(self.root, "skills-only")) as zipped:
+            self.assertNotIn("mcp.json", zipped.namelist())
+            self.assertNotIn(".mcp.json", zipped.namelist())
+
     def test_missing_build_blocks_packaging(self):
         self.bundle.unlink()
         with self.assertRaisesRegex(ValueError, "npm run build"):

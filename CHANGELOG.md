@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Repository simplification
+
+- Shorten the README and usage guide, link detailed setup and evidence guidance
+  from their canonical pages, and keep the 19-skill catalog and existing install paths.
+- Point Claude Code and the getting-started page to shared instructions instead
+  of repeating full procedures. Preserve the published v0.1.1 package files.
+- Simplify plugin manifest validation and fix a reused variable that skipped
+  local MCP JSON checks. Add regressions for rejecting malformed local config
+  without replacing a good archive and excluding it from skills-only packages.
+
 ### Assigned-job workflow readiness
 
 - Version the plugin manifests as 0.1.1 and publish both plugin variants and all

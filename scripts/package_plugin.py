@@ -57,21 +57,18 @@ def package_plugin(root: Path, target: str = "local") -> Path:
                     or not source.resolve().is_relative_to(root.resolve())
                     or any(parent.is_symlink() for parent in source.parents if parent != root and parent.is_relative_to(root))):
                 raise ValueError(f"Unsafe plugin source: {relative}")
-            target = stage / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(source, target)
-        manifest = json.loads((stage / "plugin.json").read_text())
-        if manifest.get("name") != PLUGIN_NAME:
-            raise ValueError("Plugin name mismatch")
+            output_file = stage / relative
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, output_file)
+        json_files = COMMON_TEMPLATES + (("mcp.json", ".mcp.json") if target == "local" else ())
+        for filename in json_files:
+            manifest = json.loads((stage / filename).read_text())
+            if filename == "plugin.json" and manifest.get("name") != PLUGIN_NAME:
+                raise ValueError("Plugin name mismatch")
         for name in EXPECTED_SKILLS:
             failures = validate_skill(stage / "skills" / name)
             if failures:
                 raise ValueError("\n".join(failures))
-        json_files = [".claude-plugin/plugin.json"]
-        if target == "local":
-            json_files += ["mcp.json", ".mcp.json"]
-        for filename in json_files:
-            json.loads((stage / filename).read_text())
         zipped = Path(temporary) / archive.name
         with ZipFile(zipped, "w") as output:
             for source in sorted(stage.rglob("*")):

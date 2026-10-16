@@ -1,92 +1,30 @@
 # Shopify VA Toolkit: Skills, Plugins & MCP
 
-19 focused skills plus one shared operating lifecycle for Shopify merchants, freelancers, virtual assistants, agencies, developers, marketers, specialists, and store operators.
+19 focused skills for real Shopify work: research products, prepare listings, maintain catalogs, review orders, diagnose performance, improve storefronts, and coordinate client assignments. Each workflow covers prerequisites, ordered actions, decision gates, QA, and handoff.
 
-Audit stores, prepare product listings, review bulk changes, reconcile performance, debug themes, and coordinate multi-skill work with clear evidence and approval boundaries. Each skill defines when to use it, what evidence it needs, how to approach the task, and what a useful result must include.
-
-**This is a toolkit for supervised work, not an autonomous store operator.** Installing a skill does not connect Shopify, grant permissions, or guarantee a correct answer.
-
-The plugin bundles all 19 skills, and the read-only MCP connector supplies
-products, variants, inventory and order summaries through an approved connection.
-See [plugin and connector setup](docs/plugin-and-connector.md). The source
-repository keeps its existing URL; a hosted MCP endpoint is a separate deployment.
-This is an independent project, not an official Shopify product.
-
-## For Codex, Claude Code, and contributors
-
-To develop this project in Codex or Claude Code, read [AGENTS.md](AGENTS.md) or [CLAUDE.md](CLAUDE.md), followed by the [product brief](docs/product-brief.md) and [job workflow design](docs/job-workflow-design.md). These explain the **job-first purpose**: guide real Shopify VA assignments through correct prerequisites, ordered steps, approval gates, QA, and client-ready deliverables, without competing with Shopify Sidekick or multiplying skills by default.
-
-## One operating lifecycle for every Shopify role
-
-Use the shared **Shopify Store Operating Lifecycle** for work that spans decisions, implementation, verification, or learning:
-
-```text
-CONTEXT
-  ↓
-GOAL
-  ↓
-DIAGNOSE
-  ↓
-STRATEGY
-  ↓
-PLAN
-  ↓
-IMPLEMENT
-  ↓
-VERIFY
-  ↓
-MEASURE
-  ↓
-OPTIMIZE
-  ↺
-```
-
-This is a **state model, not a mandatory nine-step checklist**. Start at the earliest unresolved stage that can materially change the decision.
-
-Examples:
-
-- a Liquid bug may start at `DIAGNOSE → PLAN → IMPLEMENT → VERIFY`
-- an approved product listing may use `CONTEXT → PLAN → IMPLEMENT → VERIFY`
-- a store performance decline may use `DIAGNOSE → STRATEGY → PLAN → IMPLEMENT → VERIFY → MEASURE → OPTIMIZE`
-- a simple support draft may start and finish at `IMPLEMENT`
-
-The same framework works for different roles without flattening authority. Merchants and accountable owners approve material business tradeoffs; freelancers and agencies work within client scope; VAs execute defined procedures and escalate exceptions; developers own technical implementation within approved scope; specialists keep their domain decisions.
-
-The canonical lifecycle lives in [`shopify-va/references/store-operating-lifecycle.md`](skills/shopify-va/references/store-operating-lifecycle.md). Use the [`Shopify Initiative Record`](skills/shopify-va/references/initiative-record.md) when work spans several stages, skills, sessions, or handoffs.
-
-The lifecycle does **not** create nine new skills. `shopify-va` coordinates mixed routine work and lifecycle state; the 19 specialist skills still own their decisions.
-
-## See the work, not just the prompts
-
-Start with the [five worked examples](docs/worked-examples.md). Each includes synthetic input evidence, a complete walkthrough, expected results or behavior, and explicit test limits.
-
-| Example | What it demonstrates |
-| --- | --- |
-| [Analytics](skills/shopify-analytics/references/worked-example.md) | Sales rise 10%, but contribution after ads falls £568. Net-sales and unit rankings answer different questions. |
-| [Product listing](skills/shopify-product-listing/references/worked-example.md) | Build a truthful listing draft while leaving unknown weight, inventory, taxonomy and claims unresolved. |
-| [Catalog operations](skills/shopify-catalog-operations/references/worked-example.md) | Separate two candidate price changes from two blocking exceptions; preserve identifiers and prepare rollback. |
-| [Store audit](skills/shopify-store-audit/references/worked-example.md) | Prioritize an obstructed purchase control and conflicting delivery copy without inventing conversion impact. |
-| [Theme development](skills/shopify-theme-development/references/worked-example.md) | Keep variant price, form ID and availability aligned through selection, history changes and component re-insertion. |
-
-These are **authored teaching examples**, not merchant results or independent AI evaluations. Calculation checks, browser checks, Shopify static checks, and model evaluations are tracked separately. The [original example manifest](evals/worked-examples.json) retains the unrun behavioral replay status of those teaching cases. The [model evaluation protocol](docs/model-evaluations.md) tests fresh, answer-withheld cases with frozen prompts, repeated with/without-skill comparisons and blinded substantive review.
-
-## What the model evaluations found
-
-In the [recorded ten-case comparison](evals/RESULTS.md), GPT-5.5 responses scored **85.5/100 with skill text versus 78.7 without**, with **23/30 versus 17/30** passing the frozen weighted threshold and critical gates. Each of the five priority skills was tested on two fresh synthetic cases, repeated three times per condition. The rubrics and teaching answers were withheld during generation; model reviewers scored full answers with condition labels withheld.
-
-All 60 answers, failed criteria, prompts and grades are published. A separate 12-answer catalog follow-up compared the clarified and previous skill on two new cases: **90.8 clarified versus 89.2 previous**, with **6/6 versus 5/6** threshold passes and **3/6 all-criteria passes in both versions**. This is small, maintainer-directed, model-judged evidence. It does not establish production safety, merchant outcomes, effectiveness of the other fourteen skills, or elimination of the observed failures. See the [results, secondary judgment audit and limitations](evals/RESULTS.md) before treating a passing score as reliability.
+This independent project complements Shopify Sidekick and authorized integrations. Skills guide supervised work; installing them does not connect a store or authorize changes.
 
 ## Start here
 
-Read [How to use these skills](USAGE.md) for the operating lifecycle, no-code installation, choosing a skill, store context, authorization, and troubleshooting. The [prompt library](docs/prompt-library.md) contains copy-and-paste requests for all 19 skills.
+Download the tested [v0.1.1 packages](releases/v0.1.1/README.md), then follow [How to use the toolkit](USAGE.md).
 
-For a mixed routine task list or a multi-stage initiative, start with `shopify-va`. For a specific result, choose the specialist that owns it. For example, `shopify-analytics` owns a reconciled performance diagnosis; `shopify-google-ads` can contribute campaign evidence without producing a second conflicting report.
+| Format | Use it for | Requirements and status |
+| --- | --- | --- |
+| Individual skills | One specialist workflow | Install a `shopify-*.zip` or complete skill folder in a compatible host. No Shopify connection required for supplied evidence. |
+| Skills-only plugin | All 19 skills together | Import [the portable plugin](releases/v0.1.1/shopify-va-toolkit-skills-only.plugin) through the host's supported installation flow. No MCP runtime included. |
+| Plugin with local MCP | All skills plus read-only Shopify evidence | Import [the full plugin](releases/v0.1.1/shopify-va-toolkit.plugin). Requires Node.js 24+; store reads require configured authentication. |
+| Local MCP server | Register the connector separately | Build the source and configure your MCP host. Skill discovery works without Shopify credentials. |
+| Hosted connector | Connect through an HTTPS MCP endpoint | Server code is included; public HTTPS hosting and native hosted-client sign-in remain unverified. The repository URL is not a connector endpoint. |
+
+See [host installation](docs/ai-agent-setup.md) and [plugin/MCP setup](docs/plugin-and-connector.md) for supported paths, credentials, builds, and verification limits. Updating this repository does not update an already installed package; reimport the desired version.
 
 ## Skill catalog
 
+Choose the skill that owns the deliverable. Use `shopify-va` for mixed tasks and add specialists only for distinct decisions.
+
 | Skill | Use it for | Main output |
 | --- | --- | --- |
-| [shopify-va](skills/shopify-va/) | Mixed routine VA tasks, lifecycle coordination, routing, execution tracking, QA and handoff | Verified task/initiative record and escalation |
+| [shopify-va](skills/shopify-va/) | Mixed routine VA tasks, routing, tracking, QA and handoff | Verified task/initiative record and escalation |
 | [shopify-product-research](skills/shopify-product-research/) | Customer, demand, competitor, supplier, economics and risk research | Product validation brief |
 | [shopify-product-listing](skills/shopify-product-listing/) | Product content, taxonomy, variants, pricing, inventory, SEO and channels | Source-backed listing draft and QA |
 | [shopify-catalog-operations](skills/shopify-catalog-operations/) | Bulk products, taxonomy, tags, metafields, variants, imports and data quality | Governed change plan and reconciliation |
@@ -106,115 +44,27 @@ For a mixed routine task list or a multi-stage initiative, start with `shopify-v
 | [shopify-theme-development](skills/shopify-theme-development/) | Liquid, templates, sections, blocks, JavaScript and debugging | Scoped implementation or diagnosis |
 | [shopify-analytics](skills/shopify-analytics/) | Store analysis, top-selling products, profit changes and reconciliation | Reconciled performance diagnosis |
 
-## Installation
+## How work flows
 
-### Plugin and connected Shopify evidence
+Provide the task, target store, evidence, acceptance criteria, and exact authorization. Start read-only, resolve prerequisites, follow the owner skill, verify the resulting state, and hand back completed work, blockers, and the next owner.
 
-Download the tested [v0.1.1 plugin packages and individual skill ZIPs](releases/v0.1.1/README.md)
-and import the chosen archive through your host's supported installation flow.
+The shared [Store Operating Lifecycle](skills/shopify-va/references/store-operating-lifecycle.md) is a state model: begin at the earliest unresolved stage that can change the decision. Short jobs need only the relevant stages. Use the [Initiative Record](skills/shopify-va/references/initiative-record.md) for work spanning skills, sessions, or handoffs.
 
-Build `dist/shopify-va-toolkit.plugin` using the
-[plugin guide](docs/plugin-and-connector.md#build-the-plugin). It includes all
-skills and a bundled local MCP server. The guide covers the separately hosted
-OAuth connector, read-only tools, credential handling and test limits.
+Keep facts, calculations, inferences, assumptions, and unknowns separate. Live changes require explicit scope, permissions, and an available tool. The custom MCP exposes read-only store data; it cannot publish, refund, or change products, inventory, ads, or budgets. A save or successful build does not prove a verified live result or business impact. See [Evidence and authorization](docs/evidence-and-authorization.md).
 
-For a hosted environment that cannot execute the local server, build
-`dist/shopify-va-toolkit-skills-only.plugin` with
-`python scripts/package_plugin.py --target skills-only`. This portable archive
-contains all 19 skills but intentionally makes no connected-store claim.
+## Examples, testing, and evidence
 
-### Claude Skills
+- [Five worked examples](docs/worked-examples.md): synthetic teaching cases with inputs, walkthroughs, and explicit limits.
+- [Recorded model evaluations](evals/RESULTS.md): complete results, failures, and limitations for the tested cases; other skills do not inherit those results.
+- [Repository reliability](docs/reliability.md): tooling setup, validation, packaging guarantees, and remaining coverage.
+- [Theme verification](docs/theme-verification.md): Liquid rendering, browser checks, and Theme Check boundaries.
 
-Use the no-code path in [USAGE.md](USAGE.md), or set up the repository tooling and package one skill:
+Engineering checks establish package and implementation integrity. They do not prove merchant outcomes, model reliability across all 19 skills, or hosted connector availability. Behavioral scenarios require actual outputs and substantive review before being marked passed.
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements-dev.txt
-./scripts/package-skill.sh shopify-store-audit
-```
+## Develop and contribute
 
-The archive is created in `dist/`. Upload that individual skill ZIP, not the entire repository. Packaging runs validation first and includes the skill's references, assets and license. The five worked-example skills carry their teaching evidence inside their own packages. Packaging `shopify-va` also includes the store operating lifecycle and initiative-record references.
+Coding agents start with [AGENTS.md](AGENTS.md) or [CLAUDE.md](CLAUDE.md), then the [product brief](docs/product-brief.md) and [job workflow design guide](docs/job-workflow-design.md). Improve the existing skills and canonical shared references; avoid parallel SOPs or duplicate skills.
 
-To build all 19 individual archives with one validation pass:
-
-```bash
-./scripts/package-skill.sh --all
-```
-
-### Codex
-
-Use the [Codex installation guide](USAGE.md#option-3-install-a-skill-in-codex) to install one complete skill folder with `$skill-installer` or copy it into a project's `.agents/skills/` directory. Invoke it by name, for example `$shopify-cro`. Installation does not connect Shopify or authorize store changes.
-
-### ChatGPT
-
-Use the chosen skill's procedure as the behavioral source for Instructions and its supporting references as Knowledge or task evidence. Follow [the setup guide](docs/ai-agent-setup.md) for the product surface and account controls available to you. This guided setup is distinct from installing a native Agent Skills package.
-
-When reproducing a worked example, include its input assets as well as its reference. When independently evaluating a model, withhold the worked reference and expected output to prevent answer leakage; see [the evaluation procedure](docs/worked-examples.md#evaluate-an-ai-response-without-leaking-the-answer).
-
-### Agent-compatible coding tools
-
-Copy or link the selected skill folder into the tool's supported skills directory. Keep the folder name identical to the `name` in `SKILL.md`. The entrypoints use the [Agent Skills format](https://agentskills.io/specification); detailed procedures and teaching assets load only when relevant.
-
-## Give the skill useful evidence
-
-Provide the task, store and market, product facts, objective, date range and comparison, metric definitions, relevant exports or source files, and the exact authorization boundary. Include margin definitions, policy sources, change history and rollback constraints when they affect the decision.
-
-Missing information should reduce confidence or limit scope, not produce invented facts. Start with [the business context template](docs/business-context-template.md). Never upload passwords, API keys, payment data or unnecessary customer information.
-
-## Operating rules
-
-1. Start read-only and separate facts, calculations, inferences, assumptions and unknowns.
-2. Use the lifecycle statefully: start at the earliest unresolved stage, not automatically at context.
-3. Diagnose before broad changes when the cause is unresolved.
-4. Name the revenue or profit definition. Do not add overlapping attributed revenue across platforms.
-5. Treat tracking defects, attribution differences and real business changes as separate questions.
-6. Require explicit scope and approval before changing a live store, theme, campaign, budget, workflow, offer or customer record.
-7. Keep implementation, verification and measurement distinct. A successful save or publish does not prove the business outcome.
-8. Distinguish drafted, saved, configured, previewed, uploaded, published, enabled, sent, processing, live and verified states where relevant. Preserve unrelated work.
-9. Never invent customer language, results, benchmarks, claims, margins, credentials or causality.
-10. Preserve role boundaries: merchant/client approval is not implied by freelancer, VA, developer or agency access.
-
-See [Evidence and authorization](docs/evidence-and-authorization.md), [the glossary](GLOSSARY.md), [knowledge taxonomy](KNOWLEDGE-TAXONOMY.md), and [platform currency](PLATFORM-CURRENCY.md).
-
-## Validation and evidence
-
-```bash
-./scripts/validate-repository.sh
-python -m unittest discover -s tests -v
-python scripts/worked_examples.py
-python scripts/check_evaluation_evidence.py
-```
-
-Repository checks cover frontmatter, naming, references, package integrity and failure handling. Data-example tests verify authored calculations and mappings. [Theme verification](docs/theme-verification.md) now includes actual-source rendering through Shopify's official Liquid core, explicit local adapters, browser checks and separate Theme Check. GitHub workflows check all 19 packaged skills and recompute recorded evaluation summaries offline; CI does not make model calls or award substantive grades.
-
-A passing build does not establish that an AI can operate a real store reliably. The [behavioral scenarios](evals/core-scenarios.md) require actual model outputs and substantive review. Do not mark them passed because an answer uses expected headings or reproduces an available answer key.
-
-## Repository structure
-
-```text
-skills/<skill-name>/
-  SKILL.md
-  references/
-  assets/worked-example/   # present in the five example skills
-skills/shopify-va/references/
-  store-operating-lifecycle.md
-  initiative-record.md
-scripts/                  # validation, packaging and example checks
-tests/                    # tooling and synthetic-data regressions
-  browser/                # synthetic DOM and actual Liquid output
-  theme/                  # official Liquid core renderer regressions
-evals/                    # behavioral rubrics and evaluation status
-docs/                     # setup, context, usage and reliability
-.github/workflows/        # repository and worked-example checks
-```
-
-## Project status and contributing
-
-The catalog remains at 19 skills. The priority is depth, evidence, orchestration, and verification, not more skill names. See [CHANGELOG.md](CHANGELOG.md) for development changes and [Repository reliability](docs/reliability.md) for tooling setup and limitations.
-
-Contributions should improve correctness, evidence handling, usefulness, triggering, lifecycle coordination, or testability. Read [CONTRIBUTING.md](CONTRIBUTING.md) before changing procedures. Do not convert synthetic examples into claimed merchant results or fabricate completed evaluations.
-
-## License
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and required checks, [CHANGELOG.md](CHANGELOG.md) for changes, and the [prompt library](docs/prompt-library.md) for requests. Terminology and platform claims follow the [glossary](GLOSSARY.md), [knowledge taxonomy](KNOWLEDGE-TAXONOMY.md), and [platform currency registry](PLATFORM-CURRENCY.md).
 
 MIT. See [LICENSE](LICENSE).
