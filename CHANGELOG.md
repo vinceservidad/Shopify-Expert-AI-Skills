@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### App-first user setup
+
+- Lead with Claude Skill upload and ChatGPT Project setup instead of asking
+  nontechnical users to choose between plugin and MCP developer formats.
+- Explain the intended shared connected journey as a hosted connector powered
+  by MCP, while preserving the actual not-deployed status and read-only limits.
+- Remove unsupported universal plugin-import implications and fixed ChatGPT
+  plan restrictions; keep developer setup separate from everyday app usage.
+
 ### Repository simplification
 
 - Shorten the README and usage guide, link detailed setup and evidence guidance

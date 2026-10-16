@@ -6,17 +6,27 @@ This independent project complements Shopify Sidekick and authorized integration
 
 ## Start here
 
-Download the tested [v0.1.1 packages](releases/v0.1.1/README.md), then follow [How to use the toolkit](USAGE.md).
+Choose your app. You do not need to build code or run a server for these paths.
 
-| Format | Use it for | Requirements and status |
-| --- | --- | --- |
-| Individual skills | One specialist workflow | Install a `shopify-*.zip` or complete skill folder in a compatible host. No Shopify connection required for supplied evidence. |
-| Skills-only plugin | All 19 skills together | Import [the portable plugin](releases/v0.1.1/shopify-va-toolkit-skills-only.plugin) through the host's supported installation flow. No MCP runtime included. |
-| Plugin with local MCP | All skills plus read-only Shopify evidence | Import [the full plugin](releases/v0.1.1/shopify-va-toolkit.plugin). Requires Node.js 24+; store reads require configured authentication. |
-| Local MCP server | Register the connector separately | Build the source and configure your MCP host. Skill discovery works without Shopify credentials. |
-| Hosted connector | Connect through an HTTPS MCP endpoint | Server code is included; public HTTPS hosting and native hosted-client sign-in remain unverified. The repository URL is not a connector endpoint. |
+| Your app | Easiest way to use it today |
+| --- | --- |
+| **Claude** | [Download one skill ZIP](releases/v0.1.1/README.md), upload it in Claude's Skills settings where available, enable it, and describe your task. [Steps](docs/ai-agent-setup.md#claude-skills). |
+| **ChatGPT** | Download and extract one skill ZIP. Put its instructions and references in a ChatGPT Project, then describe your task. [Steps](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats). |
 
-See [host installation](docs/ai-agent-setup.md) and [plugin/MCP setup](docs/plugin-and-connector.md) for supported paths, credentials, builds, and verification limits. Updating this repository does not update an already installed package; reimport the desired version.
+Use a specialist from the catalog below, or `shopify-va` to route a mixed task.
+Supply your exports, screenshots, product facts, or policies. These paths use
+your supplied evidence and do not connect a Shopify account automatically.
+
+**Want one connection for both apps?** The recommended connected experience is
+a **hosted connector powered by MCP**: add the service URL, approve Shopify
+access, and ask for help. **That service is not deployed yet.** No public
+connector URL or shared custom GPT is published by this repository.
+
+Skills teach workflows; a connector supplies authorized data; MCP is the
+protocol behind the connection. Plugin archives are for hosts that explicitly
+support them, rather than the default setup for ordinary ChatGPT or Claude chats.
+See [user setup](docs/ai-agent-setup.md) or the separate
+[developer plugin/MCP guide](docs/plugin-and-connector.md).
 
 ## Skill catalog
 

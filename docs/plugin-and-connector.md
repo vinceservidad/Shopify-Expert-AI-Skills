@@ -9,6 +9,11 @@ The plugin bundles the existing 19 skills. The MCP connector supplies read-only
 store evidence; the skills guide task reasoning and QA. No refund, publish,
 inventory-change, product-write or campaign tool is exposed.
 
+**Using ChatGPT or Claude chat?** Start with the [user setup guide](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/ai-agent-setup.md).
+This page covers developer builds, local extension hosts, and hosting. There is
+no published hosted connector URL, and a plugin archive is not a universal
+ChatGPT/Claude chat installation method.
+
 ## Build the plugin
 
 ### Download a published package
@@ -56,16 +61,17 @@ claude plugin validate /path/to/extracted/shopify-va-toolkit
 claude --plugin-dir /path/to/extracted/shopify-va-toolkit
 ```
 
-For ChatGPT/Codex local development, register the extracted plugin through the
-host's supported local marketplace flow. Root `plugin.json` and `mcp.json` use
+For Codex or another local host that explicitly supports this plugin format,
+register the extracted plugin through that host's documented installation flow.
+Root `plugin.json` and `mcp.json` use
 Agent Plugins 1.0.0; Claude-compatible manifests are included separately.
 The package is not listed in either public directory. Hosted ChatGPT/Claude
 connections use a deployed HTTPS MCP URL, not the local stdio configuration.
 
 ### Build a portable skills-only plugin
 
-For ChatGPT/Codex environments that cannot run a bundled local process, build a
-skills-only archive instead:
+For a host that supports this plugin format but cannot run a bundled local
+process, build a skills-only archive instead:
 
 ```bash
 python scripts/package_plugin.py --target skills-only

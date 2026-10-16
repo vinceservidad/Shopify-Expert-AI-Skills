@@ -10,25 +10,34 @@ Use the [19-skill catalog](README.md#skill-catalog) to choose the owner of your 
 
 ## Installation
 
-The [v0.1.1 downloads](releases/v0.1.1/README.md) contain individual skill ZIPs, a skills-only plugin, and a plugin with the local MCP runtime. Import the selected archive using your host's supported flow. Review packages before installation; never upload the entire repository as one skill. Update or reimport an installed package to receive a new version.
+For **Claude**, use an individual skill ZIP. For **ChatGPT**, use a Project with
+the skill's instructions and references. Follow the short [app-specific setup](docs/ai-agent-setup.md).
+Both paths work with supplied evidence and need no server, terminal, or Shopify token.
 
-For plugin builds, local MCP registration, authentication, or hosted OAuth deployment, follow [plugin and connector setup](docs/plugin-and-connector.md). The full plugin requires Node.js 24+; the skills-only plugin has no MCP runtime. Store reads require an authorized connection. A hosted connector requires an actual deployed HTTPS endpoint.
+The [v0.1.1 downloads](releases/v0.1.1/README.md) also include plugin archives for
+supported extension hosts. A `.plugin` file is not a universal ChatGPT/Claude
+chat upload or a hosted connector. Never upload the entire repository as one
+skill; update or reimport an installed skill when you need a new version.
+
+For connected use across both apps, the intended path is one hosted connector
+using MCP. It must be deployed and its sign-in verified first; no public service
+URL is available here yet. Local MCP, plugin builds, authentication, and hosting
+belong in the [developer setup guide](docs/plugin-and-connector.md).
 
 ### Option 1: Install a skill in Claude
 
 Download the selected `shopify-*.zip` and follow [Claude Skills setup](docs/ai-agent-setup.md#claude-skills) to upload, enable, and test it. The guide also explains [Claude Projects](docs/ai-agent-setup.md#claude-projects) for stable store context.
 
-If building from source, use [repository tooling setup](docs/reliability.md#tooling-setup), then:
-
-```bash
-./scripts/package-skill.sh shopify-store-audit
-```
-
-Upload `dist/shopify-store-audit.zip`. Use `--all` to build all 19 skill archives. Without tooling, download the repository, extract it, and ZIP only the selected complete skill folder. The ZIP must contain that named folder at its root, including `SKILL.md`, references, and any assets.
+Use the published ZIP as-is. Building and packaging from source is covered in
+the [contributor tooling guide](docs/reliability.md#tooling-setup).
 
 ### Option 2: Use a skill in ChatGPT
 
-Follow [ChatGPT setup](docs/ai-agent-setup.md#chatgpt-custom-gpts) for Instructions and Knowledge, or the [Project/ordinary-chat path](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats). Keep behavioral rules in Instructions and supporting source material in Knowledge or task attachments. This guided use is distinct from installing a native Agent Skills package; account controls and available surfaces vary.
+Start with the [Project setup](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats).
+Use [custom GPT setup](docs/ai-agent-setup.md#chatgpt-custom-gpts) when you want a
+reusable assistant and your account supports creating one. Keep behavioral rules
+in instructions and source material in project files or Knowledge. This is
+guided use; it does not install native skills or connect Shopify.
 
 ### Option 3: Install a skill in Codex
 
