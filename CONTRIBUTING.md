@@ -54,7 +54,7 @@ Before contributing or packaging, run:
 python -m unittest discover -s tests -v
 ```
 
-Packaging runs repository validation automatically. Add a regression test when changing validation or packaging behavior. GitHub Actions runs the tests, validates all nineteen skills, and checks every generated archive in isolation on Linux and macOS.
+Packaging runs repository validation automatically. Add a regression test when changing validation or packaging behavior. CI runs on Cloudflare, not GitHub Actions: `bash scripts/ci.sh` runs every check locally, and `bash scripts/push-to-artifacts.sh` sends a commit to Workers Builds, which runs the same script. See [Cloudflare CI](docs/cloudflare-ci.md).
 
 The 200-character description ceiling is a repository policy, not the Agent Skills specification's 1,024-character maximum. When the `skills-ref` validator is available, also run it against every changed skill. Neither structural checker proves behavioral quality. See [Repository reliability](docs/reliability.md) for setup, guarantees, limitations, and the next depth milestone.
 

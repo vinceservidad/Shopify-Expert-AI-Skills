@@ -35,9 +35,12 @@ Never duplicate or replace the canonical lifecycle/routing map. Keep **19 skills
 ## Validation
 Run relevant checks from the repository root, and disclose results honestly:
 ```bash
+bash scripts/ci.sh                     # every stage; or CI_STAGES="core plugin"
 ./scripts/validate-repository.sh
 python -m unittest discover -s tests -v
 python scripts/worked_examples.py
 python scripts/check_evaluation_evidence.py
 ```
+CI runs on Cloudflare Workers Builds, not GitHub Actions. After pushing a branch to GitHub, run `bash scripts/push-to-artifacts.sh` and read the build result as described in [Cloudflare CI](docs/cloudflare-ci.md). Do not add GitHub Actions workflows.
+
 A workflow evaluation should cover correct skill routing, dependencies, blockers, missing evidence, approvals, QA and terminal state, not just keyword/heading presence.
