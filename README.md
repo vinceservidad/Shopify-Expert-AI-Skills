@@ -19,7 +19,24 @@ Research uses the host's available tools or your supplied files. **No Shopify
 sign-in, local server, or API key is required for the skills-only plugin.**
 Connecting private store data is an optional separate step.
 
-Follow the [one-time plugin installation guide](docs/ai-agent-setup.md#install-shopifyskills-once).
+**Claude Code (2.1.292 or later), in your terminal:**
+
+```bash
+claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills
+```
+
+**Inside a Claude Code session (2.1.275 or later):**
+
+```text
+/plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills
+```
+
+`/plugin` only works inside a session. Typed into a terminal, it fails with
+`no such file or directory`. Run `claude plugin details shopify-va-toolkit` to
+confirm that 19 skills loaded.
+
+For older versions and other hosts, follow the
+[one-time plugin installation guide](docs/ai-agent-setup.md#install-shopifyskills-once).
 The repository supplies native Codex and Claude plugin marketplaces and the
 [installable v0.2.0 package](releases/v0.2.0/README.md). Existing v0.1.1
 downloads remain available; native plugin metadata starts with v0.2.0.
@@ -80,7 +97,7 @@ Engineering checks establish package and implementation integrity. They do not p
 
 ## Develop and contribute
 
-Coding agents start with [AGENTS.md](AGENTS.md) or [CLAUDE.md](CLAUDE.md), then the [product brief](docs/product-brief.md) and [job workflow design guide](docs/job-workflow-design.md). Improve the existing skills and canonical shared references; avoid parallel SOPs or duplicate skills.
+Coding agents start with [AGENTS.md](AGENTS.md) or [.claude/CLAUDE.md](.claude/CLAUDE.md), then the [product brief](docs/product-brief.md) and [job workflow design guide](docs/job-workflow-design.md). Improve the existing skills and canonical shared references; avoid parallel SOPs or duplicate skills.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and required checks, [CHANGELOG.md](CHANGELOG.md) for changes, and the [prompt library](docs/prompt-library.md) for requests. Terminology and platform claims follow the [glossary](GLOSSARY.md), [knowledge taxonomy](KNOWLEDGE-TAXONOMY.md), and [platform currency registry](PLATFORM-CURRENCY.md).
 

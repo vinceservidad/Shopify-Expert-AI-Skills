@@ -32,6 +32,8 @@ ALLOWED_FIELDS = {"name", "description", "license", "compatibility", "metadata",
 NAME = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*\Z")
 # This is the repository's conservative policy, not the specification's 1024 limit.
 DESCRIPTION_LIMIT = 200
+# Agent Skills specification: keep the main SKILL.md under 500 lines.
+SKILL_LINE_LIMIT = 500
 PLACEHOLDER = re.compile(r"(?<![A-Za-z])(?:TODO|TBD)(?![A-Za-z])|PLACEHOLDER[_:-]|lorem ipsum", re.I)
 MARKDOWN_LINK = re.compile(r"\[[^\]\n]*\]\(\s*(?:<([^>]+)>|([^\s)]+))(?:\s+[^)]*)?\)")
 REFERENCE_DEFINITION = re.compile(r"^\s{0,3}\[[^\]\n]+\]:\s*(?:<([^>]+)>|(\S+))", re.M)
@@ -151,6 +153,9 @@ def validate_skill(skill_dir: Path) -> list[str]:
                                                 for k, v in metadata.items()):
             errors.append(f"{label}: metadata must map strings to strings")
     body = "\n".join(lines[closing + 1:])
+    if len(lines) >= SKILL_LINE_LIMIT:
+        errors.append(f"{label}: SKILL.md has {len(lines)} lines; keep it under {SKILL_LINE_LIMIT} "
+                      "and move detail into references/")
     if not body.strip():
         errors.append(f"{label}: skill instructions are empty")
     linked_from_entry: set[Path] = set()

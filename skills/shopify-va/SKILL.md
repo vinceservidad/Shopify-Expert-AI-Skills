@@ -4,7 +4,7 @@ description: Plans, routes, tracks, executes, and verifies mixed Shopify tasks t
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.3.4"
+  version: "0.3.5"
 ---
 
 # Shopify VA
@@ -63,9 +63,9 @@ Collect only what can change the decision:
 6. Execute within granted scope when tools and permissions exist. Recheck mutable state before acting; reconcile uncertain or partial outcomes before retrying or passing them to another operator.
 7. Reopen authoritative saved or live state and verify representative conditions against acceptance criteria. Track verified done, draft/pending, processing, blocked, and failed separately; attach evidence rather than inferring completion from an attempted action.
 8. Measure only when the goal requires it and the observation window is adequate. Use the domain owner for the next keep, iterate, rollback, stop, or diagnostic decision.
-9. Handoff one task report with completed deliverables, dependencies, evidence, exceptions, actual state, and next accountable owners. For recurring work, check the last verified run and duplicate protection before catch-up execution.
+9. Handoff one task report with completed deliverables, dependencies, evidence, exceptions, actual state, and next accountable owners. For recurring client updates, use exact figures with date ranges, write "cause not confirmed" when no evidence shows why a figure moved, and end with decisions the owner must make. For recurring work, check the last verified run and duplicate protection before catch-up execution.
 
-Read [references/store-operating-lifecycle.md](references/store-operating-lifecycle.md) for the full lifecycle, role boundaries, stage contracts, and examples. Use [references/initiative-record.md](references/initiative-record.md) when work spans several stages, specialists, sessions, or handoffs. Read [references/task-routing.md](references/task-routing.md) to choose the owner skill. Use [references/operating-checklists.md](references/operating-checklists.md) for task records, recurring work, QA, and handoff.
+Read [references/store-operating-lifecycle.md](references/store-operating-lifecycle.md) for the full lifecycle, role boundaries, stage contracts, and examples. Use [references/initiative-record.md](references/initiative-record.md) when work spans several stages, specialists, sessions, or handoffs. Read [references/task-routing.md](references/task-routing.md) to choose the owner skill. Use [references/operating-checklists.md](references/operating-checklists.md) for task records, recurring work, QA, handoff, the owner approval matrix, and end-of-day or weekly client updates.
 
 ## Ownership boundary
 

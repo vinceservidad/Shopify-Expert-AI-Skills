@@ -1,9 +1,15 @@
 {
   "name": "shopify-va-toolkit",
-  "version": "0.2.0",
-  "description": "ShopifySkills: 19 Shopify research and work procedures. No Shopify connection is required for public research or supplied files.",
+  "displayName": "ShopifySkills",
+  "version": "0.2.1",
+  "description": "19 Shopify research and VA job procedures. No Shopify connection is required for public research or supplied files.",
   "author": { "name": "Vince Servidad" },
   "homepage": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
   "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": ["shopify", "virtual-assistant", "ecommerce", "research"],
+  "icon": "./.claude-plugin/icon.png",
+  "documentationUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills#readme",
+  "supportUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/issues",
+  "experimental": { "evals": "plugin-evals" }
 }

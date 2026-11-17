@@ -4,6 +4,42 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Claude plugin 0.2.1 and Agent Skills compliance
+
+- Bump all plugin manifests to 0.2.1 so `claude plugin update` delivers the
+  changes below. Release archives in `releases/` were not rebuilt; the native
+  marketplace installs from the repository.
+- Add `displayName` (ShopifySkills), a placeholder checklist icon, and
+  documentation and support links to the Claude manifest, plus a marketplace
+  description. `claude plugin validate --strict .` now passes with no warnings.
+- Move contributor instructions to `.claude/CLAUDE.md`, which Claude Code still
+  loads, because a plugin-root `CLAUDE.md` is not loaded and fails strict
+  validation.
+- Point `experimental.evals` at `plugin-evals/` so `claude plugin eval` output
+  never mixes with recorded evidence in `evals/results/`.
+- Document one-step terminal and in-session installs, and that `/plugin`
+  commands only run inside a session.
+- Enforce the Agent Skills SKILL.md 500-line limit in repository validation,
+  with regressions for the limit and consecutive hyphens in names.
+
+### VA playbook workflow gaps
+
+- `shopify-va-training`: add store access setup (own staff or collaborator
+  account, never a shared login, least-privilege request by task, access
+  verification, and offboarding).
+- `shopify-merchandising` and task routing: own discount code and automatic
+  discount setup with written approval, combinations off by default, checkout
+  tests including non-qualifying carts, and separate activation approval.
+- `shopify-support`: add Shopify Inbox instant answers with policy-conflict
+  handling, owner approval, and storefront testing.
+- `shopify-va`: add a default owner approval matrix and a plain-text
+  end-of-day and weekly client update with exact figures and "cause not
+  confirmed".
+- Business context template: add a store operating profile (brand voice
+  examples, copied policies with date, naming rules, update times, approvals).
+- Add synthetic scenarios 51–55, all `needs-review`. Repository checks do not
+  establish model behavior.
+
 ### Native ShopifySkills plugin
 
 - Add native Codex and Claude plugin manifests and repository marketplaces that

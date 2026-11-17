@@ -2,7 +2,7 @@
 
 Install the workflow you need, provide evidence and permission boundaries, then review the result. No Shopify connection is required to analyze supplied files. A skill supplies procedures; connected tools and account permissions determine what the assistant can access or change.
 
-Coding agents improving the toolkit should start with [AGENTS.md](AGENTS.md) or [CLAUDE.md](CLAUDE.md).
+Coding agents improving the toolkit should start with [AGENTS.md](AGENTS.md) or [.claude/CLAUDE.md](.claude/CLAUDE.md).
 
 ## Choose one skill
 

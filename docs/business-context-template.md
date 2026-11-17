@@ -15,6 +15,65 @@ primary_business_outcome:
 decision_owner:
 ```
 
+## Store operating profile
+
+Fill this once per store for ongoing VA work and keep one profile per store.
+Never mix two stores in one profile or one AI workspace.
+
+```yaml
+shopify_plan:
+apps_in_use:
+best_sellers_and_source:
+busy_seasons_and_sale_dates:
+owner_name_and_timezone:
+questions_channel:
+approval_channel:
+backup_contact_when_owner_away:
+end_of_day_update_time:
+weekly_update_day_and_time:
+approval_matrix:            # agreed version of the shopify-va approval matrix
+self_approved_refund_limit: # amount, or "none"
+```
+
+### Brand voice evidence
+
+```yaml
+voice_in_three_words:
+words_used:
+words_never_used:
+emoji_allowed:
+reply_sign_off:
+approved_product_descriptions:  # 3 real examples the owner likes
+approved_customer_replies:      # 3 real examples the owner likes
+```
+
+### Policies (copied, not summarized from memory)
+
+```yaml
+policies_copied_on:
+shipping_handling_time:
+delivery_time_by_market:
+shipping_rates_and_carriers:
+return_window_and_conditions:
+return_shipping_payer:
+non_returnable_items:
+refund_rules_method_and_timing:
+warranty:
+lost_late_or_damaged_orders:
+```
+
+### Naming rules
+
+```yaml
+sku_format_and_example:
+approved_product_tags:      # letters, numbers, and hyphens
+collection_names:
+product_types_and_vendors:
+```
+
+Update the profile when a policy, product rule, or approval changes, and record
+the date. A profile older than the live policy page is not a policy source.
+
 ## Customer and positioning
 
 ```yaml
