@@ -106,4 +106,31 @@ dt{font-weight:650;margin-top:20px}dd{margin:6px 0 0;max-width:780px}
 @media(max-width:720px){.shell{width:calc(100% - 32px)}.family-header{flex-wrap:wrap;height:auto;gap:0 16px;padding-top:14px}.family-nav{gap:16px;font-size:13px}.family-tabs{order:3;width:100%;height:44px;margin-top:10px}.family-tabs a{padding:0 10px}.family-tabs a:first-child{padding-left:0}.skill-tree{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 16px}.lead{font-size:17px}.callout{padding:24px!important}.app-home input{width:100%}.connection-card dl,.app-home #pairing-facts{grid-template-columns:1fr;gap:4px}.connection-card dd{margin-bottom:8px}.job-title{text-align:left;margin-left:0}.job-option summary{flex-direction:column;align-items:flex-start;gap:2px}}
 @media(max-width:400px){.skill-tree{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.hero-copy,.hero-files .t-line{animation:none}.button svg,.skill-group a{transition:none}}
+
+/* ShopifySkills look (product layer, after the family shell): warm commerce palette, a dark green
+   hero stage with the animated canvas (assets/hero.js), and the price-tag mark from the plugin icon.
+   The family header keeps its exact dimensions; only colors come from these tokens. */
+:root{--ground:#f6f4ee;--paper:#fffefb;--border:#e3dfd3;--hair:#ebe8df;--hover:#eeebe1;--code:#eeebe3;--accent-va:#0a7a4f;--on-accent-va:#fff;--stage:#03261c;--stage-ink:#eaf6ef;--stage-muted:rgba(234,246,239,.74);--lime:#c6ee78;--on-lime:#062a1e;--mint:#9fe0bd;--card-shadow:0 1px 0 rgba(3,38,28,.04),0 18px 40px -26px rgba(3,38,28,.35)}
+:root.site.dark-mode{--ground:#0a0f0d;--paper:#111915;--border:#22302a;--hair:#1b2621;--hover:#17221d;--code:#16211c;--accent-va:#7cc9a0;--on-accent-va:#06140f;--stage:#04150f;--card-shadow:0 18px 40px -24px rgba(0,0,0,.7)}
+@media(prefers-color-scheme:dark){:root.site:not(.light-mode):not(.dark-mode){--ground:#0a0f0d;--paper:#111915;--border:#22302a;--hair:#1b2621;--hover:#17221d;--code:#16211c;--accent-va:#7cc9a0;--on-accent-va:#06140f;--stage:#04150f;--card-shadow:0 18px 40px -24px rgba(0,0,0,.7)}}
+.site-main .hero.stage{position:relative;isolation:isolate;overflow:hidden;margin-top:28px;padding:64px 56px 72px;border-radius:28px;color:var(--stage-ink);background:radial-gradient(120% 95% at 12% 8%,#0f5139 0%,var(--stage) 52%,#011510 100%);box-shadow:0 30px 70px -40px rgba(3,38,28,.75),inset 0 0 0 1px rgba(159,224,189,.12)}
+.hero-canvas{position:absolute;inset:0;z-index:-1;width:100%;height:100%;display:block;opacity:0;transition:opacity .9s ease}.hero-canvas.is-live{opacity:1}
+.stage h1{color:#f5fbf8}.stage .h1-accent{color:var(--lime)}.stage .lead{color:var(--stage-muted)}.stage .facts{color:rgba(234,246,239,.6)}
+.stage .eyebrow{color:var(--mint)}
+.stage-badge{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(159,224,189,.22);backdrop-filter:blur(6px)}
+.mark{width:22px;height:22px;flex-shrink:0;color:var(--lime)}.mark-hole{fill:var(--stage)}.mark-check{fill:none;stroke:var(--stage);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.stage .button.primary{background:var(--lime);color:var(--on-lime);border-radius:12px;box-shadow:0 10px 24px -12px rgba(198,238,120,.7)}.stage .button.primary:hover{filter:brightness(1.05)}
+.stage .button.text{color:var(--stage-ink)}
+.stage .hero-files{background:rgba(1,12,9,.82);border-color:rgba(159,224,189,.16);box-shadow:0 20px 50px -30px rgba(0,0,0,.8)}
+.stage .hero-files-label{background:rgba(255,255,255,.04);border-color:rgba(159,224,189,.14)}
+.stage .job-panel{border:0;border-radius:18px;background:var(--paper);color:var(--ink);box-shadow:0 30px 60px -30px rgba(0,0,0,.65),0 0 0 1px rgba(159,224,189,.18)}
+.stage .editor-bar{padding:14px 18px}.stage .job-option summary{padding-inline:18px}.stage .job-body{padding-inline:18px}
+.button{border-radius:10px}
+.job-card{border-radius:16px;box-shadow:var(--card-shadow);transition:transform .18s ease,box-shadow .18s ease}.job-card:hover{transform:translateY(-2px)}
+.job-grid{gap:16px}
+.callout{border-radius:22px!important;background:linear-gradient(135deg,color-mix(in srgb,var(--accent-va) 9%,var(--paper)),var(--paper) 60%)!important}
+.request{border-radius:12px}.job-meta{border-radius:0 8px 8px 0}
+@media(max-width:900px){.site-main .hero.stage{padding:44px 32px 52px;border-radius:24px}}
+@media(max-width:720px){.site-main .hero.stage{margin-top:16px;padding:36px 20px 40px;border-radius:20px}.stage-badge{border-radius:14px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.hero-canvas{transition:none}.job-card{transition:none}.job-card:hover{transform:none}}
 `;
