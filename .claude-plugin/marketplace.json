@@ -1,9 +1,13 @@
 {
   "name": "shopify-skills",
-  "owner": { "name": "Vince Servidad" },
+  "description": "Shopify VA job procedures for research, listings, catalogs, orders, support, marketing and reporting.",
+  "owner": {
+    "name": "Vince Servidad"
+  },
   "plugins": [
     {
       "name": "shopify-va-toolkit",
+      "displayName": "ShopifySkills",
       "source": "./",
       "description": "ShopifySkills: research and Shopify work with 19 existing skills, without connecting a store.",
       "category": "productivity"

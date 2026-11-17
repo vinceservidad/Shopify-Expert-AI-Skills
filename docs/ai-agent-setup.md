@@ -25,18 +25,41 @@ verified in the user's host; this session did not install into the user's app.
 ### Claude plugin hosts
 
 For Claude Code or another Claude host with compatible plugin marketplace
-controls, add this repository as a marketplace and install its plugin. In
-Claude Code, the commands follow the marketplace's documented `/plugin` flow:
+controls, add this repository as a marketplace and install its plugin.
 
-```text
-/plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills
-/plugin install shopify-va-toolkit@shopify-skills
+Claude Code 2.1.292 or later, in your terminal (one step):
+
+```bash
+claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills
 ```
 
+Claude Code 2.1.275 or later, inside a session (one step):
+
+```text
+/plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills
+```
+
+Older versions, in two steps from the terminal:
+
+```bash
+claude plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills
+```
+
+```bash
+claude plugin install shopify-va-toolkit@shopify-skills
+```
+
+Commands that start with `/plugin` run only inside a Claude Code session. In a
+terminal, use `claude plugin`. Check the result with
+`claude plugin details shopify-va-toolkit`; it should list 19 skills and no MCP
+servers. To get a newer release later, run
+`claude plugin update shopify-va-toolkit@shopify-skills`.
+
 The root Claude manifest uses the same 19 canonical skills and has no MCP,
-process, or credential requirement. Native Claude host installation has not
-been run in this environment; plain Claude chat is a different surface from
-Claude Code.
+process, or credential requirement. The one-step terminal install was observed
+on Claude Code 2.1.326 on Nov 17 2026 (0.2.0, 19 skills loaded). Model routing
+after install is a separate behavioral check. Plain Claude chat is a different
+surface from Claude Code.
 
 ### This app's plugin picker
 

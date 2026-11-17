@@ -33,6 +33,7 @@ Start at the earliest unresolved stage that can materially change the requested 
 | Create or update one product | `shopify-product-listing` | Product truth, price, tax, claims, or publishing approval is missing |
 | Bulk products, taxonomy, tags, metafields, imports | `shopify-catalog-operations` | Overwrite, deletion, inventory, handle, or channel risk exists |
 | Collections, sorting, assortment, bundles, cross-sells | `shopify-merchandising` | Commercial strategy or theme implementation is required |
+| Discount code or automatic discount setup | `shopify-merchandising` | Value, scope, eligibility, combinations, or dates lack written approval, or the promotion must be sent to customers |
 | Order, fulfillment, return, refund, or cancellation | `shopify-order-operations` | Money, customer harm, fraud, payment, or policy exception is involved |
 | SOP, onboarding, quiz, or QA program | `shopify-va-training` | Policy owner or system access is unavailable |
 | Whole-store diagnosis | `shopify-store-audit` | Technical, legal, or measurement work needs a specialist |
