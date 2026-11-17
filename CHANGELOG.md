@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin icon
+
+- Replace the placeholder checklist icon with the ShopifySkills logo: a metallic
+  price tag with a check on a dark tile with green glow waves, matching the MKT
+  Skills app icon style in the VA accent green. It is original artwork, not
+  Shopify's bag mark. `scripts/render_plugin_icon.py` regenerates it (Pillow).
+
 ### CI on Cloudflare instead of GitHub Actions
 
 - Remove the four GitHub Actions workflows. `scripts/ci.sh` runs every check
