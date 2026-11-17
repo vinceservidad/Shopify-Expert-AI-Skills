@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### CI on Cloudflare instead of GitHub Actions
+
+- Remove the four GitHub Actions workflows. `scripts/ci.sh` runs every check
+  they ran (core, plugin, connector, theme) and writes `dist/ci-report.json`.
+  Skipped or partial stages are named in the report, never counted as passed.
+- `scripts/push-to-artifacts.sh` uses the `cf` CLI to issue a 10-minute,
+  repo-scoped token and push the current commit to the Artifacts repository
+  `mkt-skills/shopify-expert-ai-skills`. Workers Builds on the
+  `shopify-skills-ci` Worker runs `scripts/ci.sh` on every push; `ci/` is a
+  `cf` project that deploys a status page only when all stages pass.
+- Browser checks run only where Chromium can launch; Cloudflare's build image
+  lacks Chromium's system libraries, so the report marks them not run there.
+  Setup, settings, and limits: [docs/cloudflare-ci.md](docs/cloudflare-ci.md).
+
 ### Claude plugin 0.2.1 and Agent Skills compliance
 
 - Bump all plugin manifests to 0.2.1 so `claude plugin update` delivers the
