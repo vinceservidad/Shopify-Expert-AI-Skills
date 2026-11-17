@@ -95,6 +95,22 @@ stage_connector() {
   (cd connector && run "package runtime" npm run test:package)
 }
 
+install_chromium() {
+  # System libraries need root; use passwordless sudo when the machine allows it.
+  if sudo -n true >/dev/null 2>&1; then
+    python -m playwright install --with-deps chromium >/dev/null 2>&1 && return 0
+  fi
+  python -m playwright install chromium >/dev/null 2>&1
+}
+
+chromium_launches() {
+  python - <<'PY' >/dev/null 2>&1
+from playwright.sync_api import sync_playwright
+with sync_playwright() as p:
+    p.chromium.launch().close()
+PY
+}
+
 stage_theme() {
   local status=0 skipped=()
   run "example JavaScript syntax" node --check \
@@ -112,27 +128,30 @@ stage_theme() {
   fi
   run "Shopify theme check" npx --yes @shopify/cli@4.1.0 theme check \
     --path skills/shopify-theme-development/assets/worked-example/theme --fail-level error --no-color || status=1
-  if [ "${CI_BROWSER:-auto}" != "off" ] && setup_python &&
-     python -m pip install --quiet --disable-pip-version-check -r requirements-browser.txt &&
-     python -m playwright install chromium >/dev/null 2>&1; then
+  if [ "${CI_BROWSER:-auto}" = "off" ]; then
+    skipped+=("browser checks: turned off with CI_BROWSER=off")
+  elif setup_python && python -m pip install --quiet --disable-pip-version-check -r requirements-browser.txt &&
+       install_chromium && chromium_launches; then
     run "browser checks" python -m unittest discover -s tests/browser -p 'check_*.py' || status=1
   else
-    skipped+=("browser checks: Chromium unavailable")
+    skipped+=("browser checks: Chromium cannot be installed or launched on this machine")
   fi
-  [ ${#skipped[@]} -gt 0 ] && printf 'Skipped: %s\n' "${skipped[@]}"
+  [ ${#skipped[@]} -gt 0 ] && printf 'Not run: %s\n' "${skipped[@]}"
   [ $status -ne 0 ] && return 1
-  [ ${#skipped[@]} -gt 0 ] && { SKIP_DETAIL="$(IFS='; '; echo "${skipped[*]}")"; return 3; }
+  [ ${#skipped[@]} -gt 0 ] && { (IFS='; '; printf '%s' "${skipped[*]}") > "$skip_file"; return 3; }
   return 0
 }
 
+skip_file="$(mktemp)"
+trap 'rm -f "$skip_file"' EXIT
 for stage in $stages; do
-  SKIP_DETAIL=""
+  : > "$skip_file"
   output="$("stage_$stage" 2>&1)"; code=$?
   printf '%s\n' "$output"
   case $code in
     0) record "$stage" passed ;;
     2) record "$stage" skipped "$(printf '%s' "$output" | tail -n 1)" ;;
-    3) record "$stage" partial "$SKIP_DETAIL" ;;
+    3) record "$stage" partial "$(cat "$skip_file")" ;;
     *) record "$stage" failed "exit $code" ;;
   esac
 done

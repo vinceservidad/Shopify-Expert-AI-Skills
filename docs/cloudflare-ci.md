@@ -70,6 +70,7 @@ non-zero, which fails the Cloudflare build.
 | Deploy command | `cd ci && npx cf deploy` |
 | Preview command | `cd ci && npx cf previews deploy` |
 | Builds for Preview branches | On |
+| Build variables | `NODE_VERSION=24`, `RUBY_VERSION=3.3.12` (Liquid 5.13 needs `base64`, which Ruby 3.4 no longer bundles), `CF_SEND_TELEMETRY=false` |
 
 The Worker project lives in `ci/` and uses `cloudflare.config.ts`, so it is
 deployed with `cf`, not Wrangler.
