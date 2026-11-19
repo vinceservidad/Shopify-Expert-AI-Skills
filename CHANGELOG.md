@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin 0.2.2 and release packages
+
+- Bump all plugin manifests to 0.2.2 so `claude plugin update` delivers the skill
+  changes below. Add `releases/v0.2.2` (both plugin targets, 19 skill ZIPs and
+  `SHA256SUMS`), and point the README and setup guides at it. No git tag is
+  created.
+
 ### Ecommerce growth audit mode
 
 - Revive the growth audit mode from the closed PR #18 in `shopify-store-audit`

@@ -38,7 +38,7 @@ confirm that 19 skills loaded.
 For older versions and other hosts, follow the
 [one-time plugin installation guide](docs/ai-agent-setup.md#install-shopifyskills-once).
 The repository supplies native Codex and Claude plugin marketplaces and the
-[installable v0.2.0 package](releases/v0.2.0/README.md). Existing v0.1.1
+[installable v0.2.2 package](releases/v0.2.2/README.md). Existing v0.1.1
 downloads remain available; native plugin metadata starts with v0.2.0.
 
 **Directory status:** ShopifySkills is not yet registered in this app's curated

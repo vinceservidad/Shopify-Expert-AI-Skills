@@ -1,7 +1,7 @@
 # Use ShopifySkills in chat
 
 The intended experience is: install **ShopifySkills** once, select it in a
-supported plugin picker, and ask for a task. The [v0.2.0 skills-only archive](../releases/v0.2.0/README.md)
+supported plugin picker, and ask for a task. The [v0.2.2 skills-only archive](../releases/v0.2.2/README.md)
 contains the native plugin metadata. Research and work from supplied
 files do not need Shopify sign-in. The host supplies any web-search or other
 tools; a skills plugin supplies the procedures.

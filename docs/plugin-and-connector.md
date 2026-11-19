@@ -24,7 +24,7 @@ starts a server; `plugin/` retains the optional connected-package templates.
 
 ### Download a published package
 
-Download the native [v0.2.0 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.0) directly from
+Download the native [v0.2.2 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.2) directly from
 the repository. Versioned packages can also be published through
 [GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases)
 when the release workflow succeeds. Import the chosen
