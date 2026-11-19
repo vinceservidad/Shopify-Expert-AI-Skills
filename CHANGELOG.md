@@ -4,6 +4,21 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Claude plugin docs alignment (checked November 19, 2026)
+
+- Add `PRIVACY.md` and `TERMS.md`, and set `privacyPolicyUrl` and
+  `termsOfServiceUrl` in both Claude manifests for Anthropic's directory listing.
+  The privacy page links the hosted connection's own notice.
+- Give the connected plugin manifest the same `icon`, `documentationUrl`,
+  `supportUrl` and keywords as the native plugin. Plugin packages now include
+  `.claude-plugin/icon.png`, with a regression test.
+- Add 20 `claude plugin eval` cases in `plugin-evals/`: one routing and safety
+  case per skill, drawn from `evals/core-scenarios.md`, plus one case that no
+  skill fires on an unrelated request. No run results are claimed.
+- Rewrite all 19 skill descriptions with the words VAs type (bulk price edits,
+  abandoned cart, Performance Max, chargebacks, PDP, A/B tests), still within
+  the 200-character repository limit. Each skill's patch version is bumped.
+
 ### Plugin icon
 
 - Replace the placeholder checklist icon with the ShopifySkills logo: a metallic

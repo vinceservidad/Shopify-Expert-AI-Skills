@@ -1,10 +1,10 @@
 ---
 name: shopify-google-ads
-description: Audits Shopify Google Ads across queries, keywords, products, campaigns, Merchant Center, measurement, settings, history, and economics. Use for paid-search decisions.
+description: Audits Google Ads for Shopify across search terms, keywords, Shopping, Performance Max, Merchant Center, conversion tracking, and economics. Use for paid-search decisions.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Google Ads

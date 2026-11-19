@@ -1,10 +1,10 @@
 ---
 name: shopify-order-operations
-description: Reviews and manages Shopify orders, payments, fulfillment, edits, returns, refunds, cancellations, fraud flags, and exceptions. Use for controlled order operations.
+description: Handles Shopify orders, payments, fulfillment, order edits, returns, refunds, cancellations, chargebacks, and fraud flags with approval checks. Use for controlled order work.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.2"
+  version: "0.2.3"
 ---
 
 # Shopify Order Operations

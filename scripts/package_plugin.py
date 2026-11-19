@@ -16,6 +16,7 @@ TARGETS = ("local", "skills-only")
 COMMON_TEMPLATES = ("plugin.json", ".claude-plugin/plugin.json")
 LOCAL_TEMPLATES = ("mcp.json", ".mcp.json", "README.md")
 NATIVE_MANIFEST = Path(".codex-plugin/plugin.json")
+ICON = Path(".claude-plugin/icon.png")  # shared with the native plugin at the repository root
 
 
 def package_plugin(root: Path, target: str = "local") -> Path:
@@ -38,6 +39,7 @@ def package_plugin(root: Path, target: str = "local") -> Path:
         stage.mkdir()
         sources = [(Path(name), root / "plugin" / name) for name in COMMON_TEMPLATES]
         sources.append((Path("LICENSE"), root / "LICENSE"))
+        sources.append((ICON, root / ICON))
         if target == "local":
             sources += [(Path(name), root / "plugin" / name) for name in LOCAL_TEMPLATES]
             sources += [(Path("server/connector.cjs"), bundle),

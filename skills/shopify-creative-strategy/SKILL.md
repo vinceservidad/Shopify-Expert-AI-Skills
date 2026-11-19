@@ -1,10 +1,10 @@
 ---
 name: shopify-creative-strategy
-description: Develops evidence-led ecommerce ad concepts, hooks, briefs, and creative tests. Use for message and asset strategy, not media-budget changes or fabricated UGC.
+description: Develops evidence-led ad concepts, hooks, scripts, briefs, and creative tests for Shopify brands. Use for ad angles and asset strategy, not budget changes or fabricated UGC.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Creative Strategy

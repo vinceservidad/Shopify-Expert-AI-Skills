@@ -1,10 +1,10 @@
 ---
 name: shopify-store-audit
-description: Audits a Shopify store across customer journey, merchandising, trust, performance, measurement, and operations. Use for whole-store reviews, not a single-page rewrite.
+description: Audits a whole Shopify store across customer journey, merchandising, trust, speed, tracking, and operations, then ranks fixes. Use for store reviews, not a single-page rewrite.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Store Audit

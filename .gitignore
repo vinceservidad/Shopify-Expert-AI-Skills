@@ -13,3 +13,6 @@ connector/data/
 !.env.example
 .ci-venv/
 .ci-bundle/
+
+# claude plugin eval run output
+plugin-evals/results/

@@ -1,10 +1,10 @@
 ---
 name: shopify-email-marketing
-description: Plans and audits Shopify lifecycle email and SMS flows, campaigns, segmentation, messaging, and measurement. Use for retention workflows, not unsupported revenue claims.
+description: Plans and audits Shopify email and SMS flows, abandoned cart, welcome and winback series, campaigns, segments, and measurement. Use for retention work, not unsupported revenue claims.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Email Marketing

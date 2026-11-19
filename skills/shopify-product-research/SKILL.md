@@ -1,10 +1,10 @@
 ---
 name: shopify-product-research
-description: Researches and validates Shopify product opportunities using customer, demand, competitor, supplier, economics, operations, and risk evidence. Use before listing or sourcing.
+description: Researches and validates Shopify product ideas and winning-product claims with demand, competitor, supplier, margin, operations, and risk evidence. Use before listing or sourcing.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # Shopify Product Research

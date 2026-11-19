@@ -12,7 +12,7 @@ import test_repository_tools as repository_tools
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from package_plugin import COMMON_TEMPLATES, LOCAL_TEMPLATES, package_plugin
+from package_plugin import COMMON_TEMPLATES, ICON, LOCAL_TEMPLATES, package_plugin
 from validate_repository import EXPECTED_SKILLS, validate_skill
 
 
@@ -26,6 +26,8 @@ class PluginPackagingTests(unittest.TestCase):
         native = Path(".codex-plugin/plugin.json")
         (self.root / native).parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / native, self.root / native)
+        (self.root / ICON).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(ROOT / ICON, self.root / ICON)
         self.bundle = self.root / "connector" / "build" / "plugin" / "connector.cjs"
         self.bundle.parent.mkdir(parents=True)
         self.bundle.write_text("// Synthetic build fixture. Not an MCP runtime.\n")
@@ -48,6 +50,13 @@ class PluginPackagingTests(unittest.TestCase):
                 self.assertEqual(validate_skill(Path(directory) / "skills" / name), [])
                 self.assertEqual((Path(directory) / "skills" / name / "SKILL.md").read_bytes(),
                                  (self.root / "skills" / name / "SKILL.md").read_bytes())
+
+    def test_manifest_icon_is_packaged_for_both_targets(self):
+        for target in ("local", "skills-only"):
+            with ZipFile(package_plugin(self.root, target)) as zipped:
+                manifest = json.loads(zipped.read(".claude-plugin/plugin.json"))
+                self.assertEqual(manifest["icon"], "./.claude-plugin/icon.png")
+                self.assertEqual(zipped.read(ICON.as_posix()), (ROOT / ICON).read_bytes())
 
     def test_archive_is_reproducible(self):
         before = package_plugin(self.root).read_bytes()

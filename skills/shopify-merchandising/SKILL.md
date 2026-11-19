@@ -1,10 +1,10 @@
 ---
 name: shopify-merchandising
-description: Plans Shopify assortment, collections, sorting, product cards, bundles, cross-sells, and discount setup with checkout tests. Use for discovery, offers, and promotions.
+description: Plans Shopify collections, sorting, product cards, bundles, upsells, cross-sells, and discount codes with checkout tests. Use for product discovery, offers, and promotions.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.3"
+  version: "0.2.4"
 ---
 
 # Shopify Merchandising

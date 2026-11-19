@@ -11,5 +11,7 @@
   "icon": "./.claude-plugin/icon.png",
   "documentationUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills#readme",
   "supportUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/issues",
+  "privacyPolicyUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/PRIVACY.md",
+  "termsOfServiceUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/TERMS.md",
   "experimental": { "evals": "plugin-evals" }
 }

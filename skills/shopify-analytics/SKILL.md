@@ -1,10 +1,10 @@
 ---
 name: shopify-analytics
-description: Analyzes Shopify performance, top-selling products, and profit changes. Reconciles store, GA4, ad, and email data for reporting and root-cause analysis.
+description: Analyzes Shopify sales, top sellers, AOV, and profit changes. Reconciles Shopify, GA4, ad, and email numbers. Use for reports, KPI questions, and why sales or tracking changed.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Analytics
