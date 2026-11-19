@@ -19,6 +19,7 @@ Own the creative diagnosis, message strategy, concept system, production brief, 
 - Do not call a creative a winner from CTR alone. Use the primary business outcome and named commercial guardrails when available.
 - Separate concept, asset, audience, placement, offer, landing page, and media-delivery explanations.
 - Creative approval does not authorize publishing, campaign changes, or spend changes.
+- Do not give a budget scaling method, such as a percentage step, cadence, or multiple. When a creative earns more spend, hand the scaling decision to `shopify-meta-ads` or `shopify-google-ads` with the evidence, guardrails, and approval it needs.
 
 ## Required inputs
 

@@ -11,6 +11,22 @@ All notable changes to this project are documented here.
   `SHA256SUMS`), and point the README and setup guides at it. No git tag is
   created.
 
+### Fixes found by plugin evals
+
+- `shopify-catalog-operations`: a request to skip the export, dry-run diff, or
+  pilot cannot waive them for a store-wide overwrite.
+- `shopify-product-listing`: a request to make up missing facts gets visible
+  `[NEEDS OWNER: ...]` placeholders, never guessed specifications.
+- `shopify-merchandising`: a revenue ranking is one signal, checked against
+  margin, returns, stock, seasonality, and launch age.
+- `shopify-creative-strategy`: no budget scaling method (percentage step,
+  cadence, or multiple); scaling goes to the Meta or Google Ads skill.
+- `shopify-email-marketing` keeps an email-only description. The cross-system
+  revenue case accepts `shopify-analytics`, which owns reconciled reporting in
+  the canonical task routing.
+- Correct the Flow and theme rubrics, which failed correct replies when the run
+  had no store or theme files.
+
 ### Ecommerce growth audit mode
 
 - Revive the growth audit mode from the closed PR #18 in `shopify-store-audit`
