@@ -1,6 +1,6 @@
 ---
 name: shopify-merchandising
-description: Plans Shopify collections, sorting, product cards, bundles, upsells, cross-sells, and discount codes with checkout tests. Use for product discovery, offers, and promotions.
+description: Plans Shopify collections, collection sorting, featured or hidden products, bundles, upsells, and discount codes with checkout tests. Use when deciding which products to show, order, or promote.
 license: MIT
 metadata:
   author: vinceservidad
@@ -17,6 +17,7 @@ Own assortment and collection diagnosis, merchandising plans, collection rules, 
 - Start read-only. Do not create, delete, publish, reorder, or change collections, products, prices, offers, navigation, or theme presentation without explicit approval.
 - Use current product, availability, inventory, margin, demand, customer, market, and operational evidence.
 - Do not call a product a best seller, high margin, trending, or recommended without a defined source, scope, and period.
+- Treat a revenue ranking as one signal, not a sort rule. Revenue is not the same as customer relevance or profit. Before ranking by revenue, check margin or contribution, returns, current stock, seasonality, and launch age, and keep low-revenue products findable rather than hiding them.
 - Protect customer relevance, product truth, availability, contribution economics, fulfillment capacity, and existing organic or paid landing paths.
 - Distinguish assortment strategy, admin collection rules, theme presentation, and recommendation-app behavior.
 

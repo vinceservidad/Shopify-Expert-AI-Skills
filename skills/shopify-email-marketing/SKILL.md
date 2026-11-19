@@ -1,6 +1,6 @@
 ---
 name: shopify-email-marketing
-description: Plans and audits Shopify email and SMS flows, abandoned cart, welcome and winback series, campaigns, segments, and measurement. Use for retention work, not unsupported revenue claims.
+description: Use when reporting or checking email and SMS revenue, Klaviyo attribution, or flow results against Shopify sales, or planning abandoned cart, welcome, and winback flows and segments.
 license: MIT
 metadata:
   author: vinceservidad

@@ -1,6 +1,6 @@
 ---
 name: shopify-creative-strategy
-description: Develops evidence-led ad concepts, hooks, scripts, briefs, and creative tests for Shopify brands. Use for ad angles and asset strategy, not budget changes or fabricated UGC.
+description: Use when picking a winning ad from CTR, hook rate, or ROAS, or planning ad hooks, scripts, briefs, and creative tests for a Shopify or ecommerce brand. Plans creative, not budgets.
 license: MIT
 metadata:
   author: vinceservidad
