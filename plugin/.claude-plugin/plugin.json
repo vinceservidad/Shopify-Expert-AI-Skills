@@ -1,0 +1,12 @@
+{
+  "name": "shopify-va-toolkit",
+  "displayName": "ShopifySkills",
+  "version": "0.2.1",
+  "description": "Independent expert workflows and read-only Shopify tools for VAs, freelancers and store specialists.",
+  "author": {
+    "name": "Vince Servidad"
+  },
+  "homepage": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "license": "MIT"
+}

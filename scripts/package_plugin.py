@@ -1,0 +1,104 @@
+#!/usr/bin/env python3
+"""Build local-connected or portable skills-only plugins from canonical skills."""
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+import shutil
+import tempfile
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+
+from validate_repository import EXPECTED_SKILLS, excluded, private_file, validate_repository, validate_skill
+
+PLUGIN_NAME = "shopify-va-toolkit"
+TARGETS = ("local", "skills-only")
+COMMON_TEMPLATES = ("plugin.json", ".claude-plugin/plugin.json")
+LOCAL_TEMPLATES = ("mcp.json", ".mcp.json", "README.md")
+NATIVE_MANIFEST = Path(".codex-plugin/plugin.json")
+
+
+def package_plugin(root: Path, target: str = "local") -> Path:
+    if target not in TARGETS:
+        raise ValueError(f"Unknown plugin target: {target}")
+    errors = validate_repository(root)
+    if errors:
+        raise ValueError("Plugin packaging blocked:\n" + "\n".join(errors))
+    bundle = root / "connector" / "build" / "plugin" / "connector.cjs"
+    if target == "local" and (not bundle.is_file() or bundle.is_symlink()):
+        raise ValueError("Run npm ci and npm run build inside connector/ before packaging.")
+    destination = root / "dist"
+    if destination.is_symlink():
+        raise ValueError("dist must not be a symlink")
+    destination.mkdir(exist_ok=True)
+    suffix = "" if target == "local" else "-skills-only"
+    archive = destination / f"{PLUGIN_NAME}{suffix}.plugin"
+    with tempfile.TemporaryDirectory(dir=destination) as temporary:
+        stage = Path(temporary) / PLUGIN_NAME
+        stage.mkdir()
+        sources = [(Path(name), root / "plugin" / name) for name in COMMON_TEMPLATES]
+        sources.append((Path("LICENSE"), root / "LICENSE"))
+        if target == "local":
+            sources += [(Path(name), root / "plugin" / name) for name in LOCAL_TEMPLATES]
+            sources += [(Path("server/connector.cjs"), bundle),
+                        (Path("server/THIRD-PARTY-NOTICES.txt"), bundle.parent / "THIRD-PARTY-NOTICES.txt"),
+                        (Path("docs/plugin-and-connector.md"), root / "docs" / "plugin-and-connector.md")]
+            notices = bundle.with_suffix(".cjs.LEGAL.txt")
+            if notices.exists():
+                sources.append((Path("server/connector.cjs.LEGAL.txt"), notices))
+        else:
+            sources.append((NATIVE_MANIFEST, root / NATIVE_MANIFEST))
+            sources.append((Path("README.md"), root / "plugin" / "README.skills-only.md"))
+        for name in EXPECTED_SKILLS:
+            skill = root / "skills" / name
+            sources.extend((Path("skills") / name / path.relative_to(skill), path)
+                           for path in sorted(skill.rglob("*"))
+                           if path.is_file() and not excluded(path.relative_to(skill)))
+        for relative, source in sources:
+            if (source.is_symlink() or private_file(source)
+                    or not source.resolve().is_relative_to(root.resolve())
+                    or any(parent.is_symlink() for parent in source.parents if parent != root and parent.is_relative_to(root))):
+                raise ValueError(f"Unsafe plugin source: {relative}")
+            output_file = stage / relative
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, output_file)
+        json_files = COMMON_TEMPLATES + (("mcp.json", ".mcp.json") if target == "local" else (str(NATIVE_MANIFEST),))
+        for filename in json_files:
+            manifest = json.loads((stage / filename).read_text())
+            if filename == "plugin.json" and manifest.get("name") != PLUGIN_NAME:
+                raise ValueError("Plugin name mismatch")
+        for name in EXPECTED_SKILLS:
+            failures = validate_skill(stage / "skills" / name)
+            if failures:
+                raise ValueError("\n".join(failures))
+        zipped = Path(temporary) / archive.name
+        with ZipFile(zipped, "w") as output:
+            for source in sorted(stage.rglob("*")):
+                if not source.is_file():
+                    continue
+                member = ZipInfo(source.relative_to(stage).as_posix(), date_time=(1980, 1, 1, 0, 0, 0))
+                member.create_system = 3
+                member.external_attr = 0o100644 << 16
+                member.compress_type = ZIP_DEFLATED
+                output.writestr(member, source.read_bytes())
+        with ZipFile(zipped) as check:
+            if check.testzip() is not None:
+                raise ValueError("Plugin integrity check failed")
+        zipped.replace(archive)
+    return archive
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    parser.add_argument("--target", choices=TARGETS, default="local")
+    args = parser.parse_args()
+    try:
+        print(f"Created {package_plugin(args.root, args.target)}")
+    except (OSError, ValueError) as error:
+        parser.exit(1, f"ERROR: {error}\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

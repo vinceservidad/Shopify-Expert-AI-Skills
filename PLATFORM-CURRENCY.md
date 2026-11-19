@@ -26,6 +26,33 @@ For high-change claims, prefer a source reviewed within the last 30 days. Record
 
 ## Source registry
 
+### Claude plugin, Agent Skills, and Shopify VA review on 2026-11-17
+
+| Surface | Source | State | What was verified |
+| --- | --- | --- | --- |
+| Claude plugin manifest | [Plugin manifest reference](https://code.claude.com/docs/en/plugins-reference) and `claude plugin validate --strict` on Claude Code 2.1.326 | `official-documented` | `displayName`, directory listing fields (`icon`, `documentationUrl`, `supportUrl`), `experimental.evals`, icon size rule (square PNG, 512–2048 px, under 2 MB), and that a root `CLAUDE.md` is not loaded by a plugin. Strict validation passes with no warnings |
+| Claude marketplace install | [Publish a plugin](https://code.claude.com/docs/en/plugins/publish.md) and a user install on macOS | `official-documented`, `account-visible` | One-step install: `claude plugin install <name> --marketplace <owner/repo>` (2.1.292+) and `/plugin install <name> --marketplace <owner/repo>` in a session (2.1.275+). Observed on 2.1.326: 0.2.0 installed with 19 skills, no MCP servers, ~1,471 always-on tokens |
+| Claude plugin evals | [Test plugins with evals](https://code.claude.com/docs/en/plugin-evals.md) | `official-documented` | Default eval directory is `evals/` and results go to `<eval dir>/results/`; this repository points `experimental.evals` at `plugin-evals/` so recorded evidence in `evals/results/` is not mixed |
+| Claude project instructions | [Memory docs](https://code.claude.com/docs/en/memory) | `official-documented` | Project instructions load from `./CLAUDE.md` or `./.claude/CLAUDE.md` |
+| Agent Skills format | [Specification](https://github.com/agentskills/agentskills/blob/main/docs/specification.mdx) (source of agentskills.io; the site itself was not reachable from this session) | `official-documented` | Six frontmatter fields, name rules, 1024-character description ceiling, 500-character compatibility, string metadata, references one level deep, SKILL.md under 500 lines. The repository validator now enforces the line limit. The `skills-ref` validator was not run |
+| Shopify collaborator access | [Shopify dev docs: Collaborations](https://shopify.dev/docs/apps/build/stores/collaborations) | `official-documented` | Collaborator access does not count toward the staff limit and expires after 90 days without a login from the partner organization |
+| Shopify automatic discounts | [Shopify developer changelog, Nov 21 2024](https://shopify.dev/changelog/posts/increased-limits-for-automatic-function-based-discounts) | `official-documented` (app-based only) | Automatic app-based discount limit raised from 5 to 25. The general admin limit for all automatic discounts was not verified; skills tell operators to check the current limit |
+| Shopify Help Center facts from the author's VA playbook | help.shopify.com | `unknown` | Not reachable from this session. Plan staff limits, Inbox menu paths, theme count limits, and tag limits were not written into skills as numbers. Verify before adding them |
+
+### Native plugin format review on 2026-10-17
+
+| Surface | Source | What was verified |
+| --- | --- | --- |
+| Codex native plugin manifest | Installed OpenAI `template-creator/.codex-plugin/plugin.json` and native CLI 0.159.2 | Top-level `skills` and `interface` metadata, including the displayed plugin name |
+| Codex repository marketplace | Installed OpenAI `.agents/plugins/marketplace.json`, native CLI discovery, and [official config schema](https://github.com/openai/codex/blob/main/codex-rs/core/config.schema.json) | Local catalog source paths, repository marketplace configuration, and availability of the ShopifySkills 0.2.0 entry |
+| Claude plugin marketplace | [Anthropic marketplace](https://github.com/anthropics/claude-code/blob/main/.claude-plugin/marketplace.json) and [plugin guide](https://github.com/anthropics/claude-code/blob/main/plugins/README.md) | Root manifest, repository marketplace, canonical `skills/` layout, and optional MCP configuration |
+
+These checks establish format and discovery support. They do not establish
+installation in this chat app, public curated-directory publication, or native
+Claude host behavior. Plugin Creator and a directory-publishing API were not
+available to this session. The read-only Codex app-server probe stopped before
+initialization because its default installation state was on a read-only mount.
+
 Reviewed 2026-08-25:
 
 | Surface | First-party source | What it supports |
@@ -47,6 +74,28 @@ Reviewed 2026-08-25:
 | Shopify roles and permissions | <https://help.shopify.com/en/manual/your-account/users/roles/permissions/store-permissions> | Current granular Products, Orders, Inventory, Catalogs, Content, and other store permissions |
 
 Google Ads, Meta Ads, GA4, email-provider, app, or policy claims must add their own dated first-party source before being treated as current.
+
+### Targeted review on 2026-09-30
+
+These reviews refresh only the named claims; the older registry rows retain their
+original review dates.
+
+| Surface | First-party source | What it supports |
+| --- | --- | --- |
+| Shopify high-variant themes | <https://shopify.dev/docs/storefronts/themes/product-merchandising/variants/support-high-variant-products> | Liquid variant cap, option-value selection, deferred rendering and null-selection handling |
+| Codex skills | <https://developers.openai.com/codex/skills/> | Repository discovery under `.agents/skills`, explicit skill invocation and installing from another repository |
+
+### Plugin and connector review on 2026-09-30
+
+| Surface | First-party source | What it supports |
+| --- | --- | --- |
+| Agent Plugins | <https://agent-plugins.org/schemas/1.0.0/plugin.schema.json> and <https://agent-plugins.org/schemas/1.0.0/mcp.schema.json> | Portable manifest and transport shapes |
+| OpenAI plugins | <https://developers.openai.com/plugins/build/plugins> | Packaging, local development and public submission boundaries |
+| Claude connectors | <https://claude.com/docs/connectors/building/authentication> | MCP OAuth discovery, DCR, PKCE and separate client authorization |
+| Shopify app auth | <https://shopify.dev/docs/apps/build/authentication-authorization/authenticate-standalone-apps> | Merchant approval and authorization-code exchange |
+| Shopify query schema | Bundled official Shopify AI Toolkit Admin schema for `2026-07` | All five fixed connector queries validated locally; alternative scopes are not additional requested permissions |
+| Inventory location scope | <https://shopify.dev/docs/api/admin-graphql/2026-07/objects/Location> and the actual development-store response | The location object supports `read_inventory`, but its `name` field was denied without an additional scope; fixed queries return IDs only |
+| Same-organization app auth | <https://shopify.dev/docs/apps/build/authentication-authorization/client-credentials-grant> | Installed apps can obtain short-lived tokens for stores in their own organization; this does not authorize unrelated merchant access |
 
 ## Claim record
 

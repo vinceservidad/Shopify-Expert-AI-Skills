@@ -4,7 +4,7 @@ description: Researches and validates Shopify product opportunities using custom
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.0"
+  version: "0.2.1"
 ---
 
 # Shopify Product Research
@@ -26,13 +26,14 @@ Collect market, customer, job-to-be-done, category, price range, business model,
 
 ## Workflow
 
-1. Define the decision and rejection criteria before collecting evidence.
-2. Map the customer job, alternatives, dissatisfaction, frequency, and willingness-to-pay evidence.
-3. Triangulate demand across first-party store data, search, marketplaces, communities, reviews, ads, and retailer evidence when available.
+1. Define the client decision, market, customer job, deliverable, constraints, and rejection criteria before collecting evidence.
+2. Map customer problems, alternatives, dissatisfaction, and willingness-to-pay evidence. Record source, date, population, and limits; competitor activity alone is not demand validation.
+3. Triangulate available store, search, marketplace, community, review, and retailer evidence. Resolve conflicting product or supplier claims before relying on them.
 4. Compare product, offer, price, proof, distribution, and customer experience without copying protected content.
-5. Model named economics with sourced values and sensitivity ranges.
-6. Screen sourcing, quality, safety, claim, legal, shipping, return, inventory, cash, and operational risk.
-7. Recommend reject, research further, sample, test demand, pilot, or proceed, with a falsifiable validation plan.
+5. Model named economics from dated supplier terms and sourced costs. Keep missing freight, duties, returns, or acquisition costs unknown; use sensitivity ranges rather than treating them as zero.
+6. Screen quality, safety, claims, legal, shipping, inventory, cash, and supplier risk. Missing decision-critical verification blocks sourcing or launch readiness, while a conditional research brief can continue.
+7. Recommend reject, research further, sample, demand test, pilot, or proceed for the supported scope. Define the next test, evidence threshold, budget, owner, and stop before any authorized outreach or purchase.
+8. Handoff the shortlist, source-backed facts, unresolved gates, and next decision owner. Pass only approved product facts to listing; a research recommendation is not permission to source or publish.
 
 Read [references/research-framework.md](references/research-framework.md) for evidence and screening. Use [references/validation-brief.md](references/validation-brief.md) for the opportunity record, economics, and next test.
 

@@ -35,6 +35,11 @@ workflow currently tests Linux and macOS, not Windows.
   missing files when the entire `references` directory is absent.
 - References linked from the entrypoint, links escaping a standalone skill, and
   symlinks that could pull external files into a package.
+- Common credential filenames, including `.env` and `.env.*` (except named
+  example/sample/template files), private-key extensions, SSH private keys,
+  `.netrc`, `.pypirc`, and `credentials.json`. Validation blocks packaging without
+  printing their contents. Filename checks do not detect secrets in other files
+  or establish that example environment files are safe.
 
 Descriptions retain this repository's conservative 200-character limit. This is
 not a universal platform limit. The Agent Skills specification allows up to
@@ -52,10 +57,18 @@ Packaging validates the whole repository first. An invalid unrelated skill block
 packaging too, so release artifacts cannot silently skip a broken catalog entry.
 
 The ZIP contains one skill folder at its root, its resources, and a license file.
-The existing exclusions for `.DS_Store`, `__pycache__`, and `.pyc` files remain.
+Development directories `.git`, `.venv`, and `node_modules` are excluded, along
+with `.DS_Store`, `__pycache__`, and `.pyc` files. Links to excluded files fail
+validation so packages cannot silently lose required resources.
 Sorted files and fixed archive timestamps make repeated builds reproducible in
 the same tooling environment. A temporary file is checked before it replaces the
 last successful archive. Validation or write failures preserve the previous ZIP.
+
+Use `./scripts/package-skill.sh --all` (or
+`python scripts/package_skill.py --all`) for all nineteen archives with one
+validation pass. A validation failure writes none of the selected archives.
+Each ZIP replacement is atomic; the batch is not an atomic release. If a later
+write fails, earlier completed ZIPs remain and the command exits with an error.
 
 The GitHub workflow also extracts each generated archive into an isolated
 directory and validates the skill there. Root-level project guidance is still
@@ -83,7 +96,7 @@ before local browser checks; [adapter limits](theme-verification.md) remain expl
 | Coverage | Scope | Evidence boundary |
 | --- | --- | --- |
 | Structure and standalone packaging | All 19 skills | Tooling integrity |
-| Written behavioral scenarios | Original 21 across all 19 skills plus a catalog-recovery exercise | Unrun unless separately recorded and reviewed |
+| Written behavioral scenarios | Original 21, catalog recovery, five lifecycle cases, embedded-instruction and high-variant cases | Unrun unless separately recorded and reviewed |
 | Deeper authored worked examples | Five priority skills | Teaching data and implementation checks |
 | Recorded model comparison | Ten distinct cases across five priority skills, 60 responses | Sample-bound, answer-withheld and model-judged |
 | Targeted catalog revision follow-up | Two new cases, 12 responses | Different rubric; separate diagnostic comparison |

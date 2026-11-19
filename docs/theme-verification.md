@@ -14,7 +14,7 @@ The teaching theme now runs through Shopify's open-source Ruby Liquid engine bef
 
 The 12 original and 17 Liquid-output browser checks are 29 executions, including 12 deliberately repeated acceptance behaviors across two rendering paths. They are not 29 distinct use cases or independent model trials. Section replacement uses browser DOM replacement and simulated editor lifecycle events; no Shopify theme editor is connected.
 
-Local verification on September 6, 2026 used Ruby 3.3.12, Liquid 5.13.0, Playwright 1.57.0 and Chromium 143.0.7499.4. All 19 renderer regressions and all 29 browser executions passed. Shopify CLI 4.1.0 Theme Check inspected 5 files and reported no offenses. These observations apply to the synthetic example and the documented local adapters; the [worked-example CI workflow](../.github/workflows/worked-examples.yml) provides repeatable checks for subsequent commits.
+Local verification on September 6, 2026 used Ruby 3.3.12, Liquid 5.13.0, Playwright 1.57.0 and Chromium 143.0.7499.4. All 19 renderer regressions and all 29 browser executions passed. Shopify CLI 4.1.0 Theme Check inspected 5 files and reported no offenses. These observations apply to the synthetic example and the documented local adapters; the `theme` stage of [`scripts/ci.sh`](../scripts/ci.sh), run on Cloudflare as described in [Cloudflare CI](cloudflare-ci.md), provides repeatable checks for subsequent commits.
 
 ## Reproduce
 

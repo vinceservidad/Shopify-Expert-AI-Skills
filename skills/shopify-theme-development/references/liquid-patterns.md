@@ -53,3 +53,14 @@ Use appropriately sized responsive media, intrinsic dimensions, meaningful alter
 ## JavaScript state
 
 Define source of truth, initialization, teardown, editor events, variant changes, focus behavior, errors, and repeated section rendering. Avoid global listeners or duplicated initialization without guards.
+
+## High-variant products
+
+Shopify's [high-variant guide](https://shopify.dev/docs/storefronts/themes/product-merchandising/variants/support-high-variant-products), reviewed September 30, 2026, documents a 250-variant cap on Liquid `product.variants`.
+
+- Audit loops and serialized product data for assumptions that all variants are present.
+- Use `product.options_with_values`, `product_option_value`, and deferred section rendering for option selection where compatible with the existing theme.
+- An `option_values` combination without a variant can yield null selected-variant objects. Clear stale form IDs and disable purchasing in that state.
+- For combined listings, update the sibling product's content as well as its options.
+
+Test deep links, rapid changes, stale responses, unavailable combinations, focus restoration, and the intended cart variant in a development store. The three-variant teaching fixture does not verify this path.
