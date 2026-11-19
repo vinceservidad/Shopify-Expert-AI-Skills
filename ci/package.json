@@ -1,0 +1,16 @@
+{
+  "name": "shopify-skills-ci",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Workers Builds entry for repository CI. Serves the latest passing CI report.",
+  "scripts": {
+    "report": "node scripts/write-report.mjs",
+    "deploy": "cf deploy",
+    "preview": "cf previews deploy"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-rc.1",
+    "cf": "1.0.0-rc.1",
+    "vite": "8.3.8"
+  }
+}

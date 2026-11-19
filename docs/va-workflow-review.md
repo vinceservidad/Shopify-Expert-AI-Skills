@@ -62,4 +62,4 @@ All conversations below were reviewed September 30, 2026. The links require acce
 
 Complete original responses and retest captures are preserved privately outside the repository. Original failures have not been erased or replaced by revised answers. This small practice batch does not establish reliability across all 19 skills, every VA task, production stores or separate editing connections.
 
-The workflow behavioral benchmark [scenarios 31–39](../evals/core-scenarios.md) remain `needs-review` and ungraded. This report adds manual observations; it does not change any benchmark grades or imply that the remaining live release checks are complete.
+The workflow behavioral benchmark [scenarios 58–66](../evals/core-scenarios.md) remain `needs-review` and ungraded. This report adds manual observations; it does not change any benchmark grades or imply that the remaining live release checks are complete.

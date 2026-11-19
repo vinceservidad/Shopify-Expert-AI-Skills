@@ -111,7 +111,7 @@ For the permanent connector, set `PUBLIC_URL=https://shopify-mcp.mktskills.com`,
 | Packaging | Actual released plugin contents and installation through supported host surfaces. No invented public-directory or one-click claim. |
 | Shopify approvals | New app's Public distribution, reviewed listing, and protected customer data level 1 approval for Order reads. Custom test access is not public approval. |
 
-Behavioral benchmark scenarios 31–39 remain `needs-review` and ungraded. The separate manual review adds observations of actual responses without changing those benchmark grades. Existing engineering tests, synthetic examples and small qualitative runs do not certify expertise, perfect accuracy, time savings or business results. A separate editing connector remains outside this toolkit's read-only release.
+Behavioral benchmark scenarios 58–66 remain `needs-review` and ungraded. The separate manual review adds observations of actual responses without changing those benchmark grades. Existing engineering tests, synthetic examples and small qualitative runs do not certify expertise, perfect accuracy, time savings or business results. A separate editing connector remains outside this toolkit's read-only release.
 
 Keep the launch stage at `candidate` if any required public gate is outstanding. A review candidate can be built and tested without representing it as an approved, available public app.
 

@@ -10,6 +10,17 @@ The plugin bundles the existing 19 skills. The MCP connector supplies read-only
 store evidence; the skills guide task reasoning and QA. No refund, publish,
 inventory-change, product-write or campaign tool is exposed.
 
+**Using ShopifySkills for research?** Install the native skills-only plugin
+using the [user setup guide](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/ai-agent-setup.md#install-shopifyskills-once).
+It contains all 19 workflows and has no Shopify sign-in or MCP requirement.
+This page covers the separate optional connected runtime and hosting. Native
+plugin registration in a host is required before it appears in that host's picker.
+
+The repository's `.codex-plugin/plugin.json` and `.agents/plugins/marketplace.json`
+provide the native Codex skills profile. The root `.claude-plugin/` provides
+Claude marketplace metadata for the same canonical skills. Neither root profile
+starts a server; `plugin/` retains the optional connected-package templates.
+
 ## Practical VA workflows in source version 0.2.0
 
 The local source and rebuilt package expose twelve tools and eight practical
@@ -55,6 +66,22 @@ download button at a guessed asset, the template folder or an unverified release
 
 ## Build the plugin
 
+### Download a published package
+
+Download the native [v0.2.0 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.0) directly from
+the repository. Versioned packages can also be published through
+[GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases)
+when the release workflow succeeds. Import the chosen
+package using the host's supported installation flow; update or reimport an
+existing installation to receive revised skills. A release publishes packages,
+not a hosted Shopify endpoint or an automatic update to installed copies.
+
+Version tags matching both plugin manifests trigger the release workflow, which
+validates, tests, builds, and publishes the installable downloads. A failed
+workflow does not establish that a release or its downloads are available.
+
+### Build locally
+
 Requirements: Node.js 24+, Python 3.11+ and the repository's Python dependencies.
 
 ```bash
@@ -84,22 +111,24 @@ claude plugin validate /path/to/extracted/shopify-va-toolkit
 claude --plugin-dir /path/to/extracted/shopify-va-toolkit
 ```
 
-For ChatGPT/Codex local development, register the extracted plugin through the
-host's supported local marketplace flow. Root `plugin.json` and `mcp.json` use
+For Codex or another local host that explicitly supports this plugin format,
+register the extracted plugin through that host's documented installation flow.
+Root `plugin.json` and `mcp.json` use
 Agent Plugins 1.0.0; Claude-compatible manifests are included separately.
 The package is not listed in either public directory. Hosted ChatGPT/Claude
 connections use a deployed HTTPS MCP URL, not the local stdio configuration.
 
 ### Build a portable skills-only plugin
 
-For ChatGPT/Codex environments that cannot run a bundled local process, build a
-skills-only archive instead:
+For a host that supports this plugin format but cannot run a bundled local
+process, build a skills-only archive instead:
 
 ```bash
 python scripts/package_plugin.py --target skills-only
 ```
 
-`dist/shopify-va-toolkit-skills-only.plugin` contains the same 19 skills but no
+`dist/shopify-va-toolkit-skills-only.plugin` contains the same 19 skills, a native
+Codex manifest, and Claude-compatible/portable manifests, but no
 `mcp.json`, `.mcp.json`, server bundle, or connector documentation. It is safe to
 upload as a skills-only package and makes no connected-store claim. Adding live
 Shopify tools requires a separately deployed HTTPS MCP endpoint; do not replace

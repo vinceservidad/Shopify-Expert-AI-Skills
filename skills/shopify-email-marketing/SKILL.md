@@ -4,7 +4,7 @@ description: Plans and audits Shopify lifecycle email and SMS flows, campaigns, 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Email Marketing
@@ -26,13 +26,14 @@ Collect lifecycle objective, primary business outcome, platform and integrations
 
 ## Workflow
 
-1. Map lifecycle stages, customer jobs, events, eligibility, consent, and exit conditions.
-2. Audit event quality, identity, timing, suppression, message conflicts, frequency, deliverability, and attribution.
-3. Prioritize lifecycle gaps using business relevance, audience size and quality, evidence, effort, risk, and operational readiness.
-4. Define each flow as entry, filters, branches, delays, messages, exits, frequency rules, and failure handling.
-5. Draft messages from approved product, policy, offer, and proof sources.
-6. Define holdout or comparison logic where feasible, business-outcome measurement, commercial guardrails, and stopping rules.
-7. Require approval before enabling or sending.
+1. Confirm the assigned flow or campaign, channel, platform, audience, objective, deliverable state, consent policy, and approval scope.
+2. Map lifecycle jobs, event sources, identity, timing, eligibility, consent, suppression, exits, and current flow conflicts before drafting activation rules.
+3. Audit event reliability, audience freshness, frequency, deliverability, and attribution. Missing consent or identity evidence blocks enrollment or sending; safe specifications and copy drafts can continue.
+4. Prioritize supported gaps and define entry, filters, branches, delays, messages, exits, frequency rules, and failure handling. Recheck consent, suppression, purchase or cancellation state, and offer eligibility after delays and immediately before each send.
+5. Draft messages from approved product, policy, inventory, offer, and proof sources. Define dynamic-field fallbacks; missing personalization must not expose placeholders or produce false order claims.
+6. QA positive, excluded, unsubscribed, recent-purchase, delayed-event, missing-field, duplicate, and failure cases using approved test recipients or a safe test environment. Verify links, rendering, and actual exit behavior before launch readiness.
+7. Define holdout or comparison logic where feasible, business-outcome measurement, guardrails, stopping rules, and rollback. Require approval before enabling or sending, then verify actual configuration and relevant message/event logs.
+8. Handoff versioned copy and flow specification or verified execution, audience and suppression evidence, test results, pending sends, stop/disable procedure, monitoring owner, and review time. Enabling a flow does not prove delivery or incremental revenue.
 
 Read [references/lifecycle-framework.md](references/lifecycle-framework.md) for strategy and measurement. Read [references/flow-library.md](references/flow-library.md) for reusable flow specifications.
 

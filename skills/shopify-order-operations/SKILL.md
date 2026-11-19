@@ -4,7 +4,7 @@ description: Reviews and manages Shopify orders, payments, fulfillment, edits, r
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.1"
+  version: "0.2.2"
 ---
 
 # Shopify Order Operations
@@ -26,13 +26,14 @@ Collect target store and order, customer request, identity-verification procedur
 
 ## Workflow
 
-1. Build an order-state snapshot from the authoritative order and connected systems.
-2. Separate customer statements, verified facts, policy, internal notes, assumptions, and unknowns.
-3. Choose the applicable workflow and identify financial, inventory, fulfillment, notification, and customer consequences.
-4. Present the proposed action and exact approval required before mutation.
-5. Execute only when authorized and technically permitted.
-6. Reopen the order, payment, fulfillment, return, refund, inventory, and timeline states.
-7. Record the terminal state, exceptions, customer communication state, and escalation.
+1. Confirm the exact store and order, verified customer request, policy version, role, remedy scope, and notification choice. Build a current snapshot across order, payment, fulfillment, carrier, return, refund, and inventory systems.
+2. Separate customer statements, verified facts, internal notes, assumptions, and unknowns. Resolve conflicting fulfillment or payment states before selecting an irreversible action.
+3. Choose the applicable workflow and calculate item quantities, money, tax, shipping, restock locations, notifications, and third-party consequences. Keep return, refund, cancellation, and restock decisions distinct.
+4. Present the exact remedy and obtain required scoped approval. If the approved remedy and permissions already cover the action, reuse them; changed amounts, items, or consequences require reconciliation.
+5. Re-read affected states immediately before execution. Check existing and pending transactions, prior remedies, and fulfillment handoff; stop if the current state invalidates the approved action.
+6. Execute only the authorized action through an available tool. A timeout or uncertain response means outcome unknown: inspect transaction and timeline evidence before retrying to avoid duplicate refunds or notifications.
+7. Reopen relevant order, payment, fulfillment, return, refund, inventory, app, and notification states. Treat processing as pending with an owner and follow-up time, not resolved.
+8. Handoff a minimized action log, verified outcomes, exceptions, communication state, and next owner. Financial actions may require a separately approved correction; do not promise that an opposite action can undo them.
 
 Read [references/order-workflows.md](references/order-workflows.md) for common state transitions. Use [references/exception-handling.md](references/exception-handling.md) for risk, permissions, escalation, and verification.
 

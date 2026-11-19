@@ -95,6 +95,14 @@ class RepositoryToolsTests(unittest.TestCase):
         self.entry.write_text('---\n- name\n- description\n---\nInstructions.\n')
         self.assertInvalid("frontmatter must be a mapping")
 
+    def test_skill_entry_must_stay_under_spec_line_limit(self):
+        self.entry.write_text(self.entry.read_text() + "Detail line.\n" * 495)
+        self.assertInvalid("keep it under 500")
+
+    def test_consecutive_hyphens_in_name_are_rejected(self):
+        self.replace("name: shopify-analytics", "name: shopify--analytics")
+        self.assertInvalid("name must be 1-64 lowercase alphanumeric/hyphen characters")
+
     def test_unsafe_yaml_tag_is_rejected(self):
         self.replace("license: MIT", "license: !!python/object:builtins.object {}")
         self.assertInvalid("invalid YAML")

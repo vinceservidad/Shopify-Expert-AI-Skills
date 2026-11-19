@@ -4,7 +4,7 @@ description: Diagnoses Shopify funnel friction and designs evidence-led conversi
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify CRO
@@ -28,13 +28,14 @@ Confirm that compared rates use compatible numerators, denominators, filters, ti
 
 ## Workflow
 
-1. Define the funnel, business outcome, population, period, and evidence quality.
+1. Define the requested decision, funnel, business outcome, compatible rate definitions, eligible population, period, comparison, and evidence quality.
 2. Localize the change to acquisition, landing, discovery, product evaluation, cart, checkout, payment, fulfillment, or retention.
-3. Check measurement, mix, stock, price, offer, seasonality, and operational explanations before declaring UX friction.
-4. Translate supported problems into hypotheses. One hypothesis should name the observed problem, proposed mechanism, change, expected direction, and falsifying evidence.
-5. Choose the smallest reversible test that can answer the decision.
-6. Define assignment, eligibility, primary metric, commercial and customer guardrails, quality checks, decision rule, minimum duration, and stopping rule.
-7. Require approval before implementation or launch.
+3. Check measurement, traffic mix, stock, price, offer, seasonality, and operations before declaring UX friction. If instrumentation is unreliable, specify its repair and revalidation before using it to judge a test.
+4. Separate reproducible functional defects from uncertain behavioral hypotheses. Route a broken control for scoped correction; do not require an experiment to establish whether the control functions.
+5. For a hypothesis, name the observed problem, proposed mechanism, smallest reversible change, expected direction, alternatives, and falsifying evidence.
+6. Define assignment, eligibility, exposure and conversion QA, primary metric, commercial and customer guardrails, decision rule, minimum duration, and stopping rule. Insufficient volume supports a bounded research or usability plan, not an invented sample size.
+7. Obtain implementation and launch approval, then verify the authorized variant, control, event parity, and purchase path before accepting exposure. Stop on invalid data or harm.
+8. Review data quality and guardrails before interpreting the outcome. Report valid, invalid, or inconclusive results honestly; handoff the decision, uncertainty, rollback or follow-up, and owner without claiming lift from publication.
 
 Read [references/conversion-frameworks.md](references/conversion-frameworks.md) for diagnosis and experiment design. Read [references/examples.md](references/examples.md) when drafting a backlog or experiment brief.
 

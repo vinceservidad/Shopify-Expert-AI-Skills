@@ -4,7 +4,7 @@ description: Diagnoses and implements scoped Shopify theme work in Liquid, JSON 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Theme Development
@@ -26,13 +26,14 @@ Collect the exact problem, affected templates and markets, reproduction steps, e
 
 ## Workflow
 
-1. Reproduce or inspect the issue and identify the authoritative source files.
-2. Separate content, configuration, app, data, browser, network, Liquid, CSS, and JavaScript explanations.
-3. Read existing patterns before designing the smallest compatible change.
-4. Implement with Liquid and JSON validity, merchant editability, localization, accessibility, responsive behavior, performance, and app-block compatibility in mind.
-5. Validate syntax and available project checks, then inspect representative pages, states, variants, markets, and devices.
-6. Review the diff for scope, secrets, unrelated changes, and rollback.
-7. Publish only when explicitly approved. Verify the canonical live storefront after platform processing.
+1. Confirm the exact theme, branch, environment, acceptance criteria, and edit/upload/publish scope. Inspect current changes, reproduce or inspect the issue, and identify authoritative source files.
+2. Separate content, configuration, app, data, browser, network, Liquid, CSS, and JavaScript explanations before choosing a fix.
+3. Read existing patterns and capture a baseline and recovery reference. Missing hosted access limits remote verification while local diagnosis and authorized source work can continue.
+4. Implement the smallest compatible change with Liquid and JSON validity, merchant editability, localization, accessibility, responsiveness, performance, and app-block compatibility in mind.
+5. Run available project checks and inspect representative pages, variants, unavailable states, markets, and devices. For purchase changes, verify submitted identifiers and behavior rather than only the visible label.
+6. Review the diff for scope, secrets, unrelated changes, and rollback. Upload to a named unpublished target only when authorized; source-edit approval alone does not authorize a remote upload.
+7. After an approved upload, verify the exact theme preview, editor re-rendering, apps, and affected purchase path as scoped. Label unavailable hosted checks and local adapters explicitly.
+8. Publish only when explicitly approved, then verify the canonical live storefront after processing. Handoff changed files, test evidence, uploaded/published state, failures, rollback, and next owner; technical QA does not establish conversion impact.
 
 Read [references/liquid-patterns.md](references/liquid-patterns.md) for architecture and implementation rules. Read [references/debugging.md](references/debugging.md) for diagnosis and verification.
 

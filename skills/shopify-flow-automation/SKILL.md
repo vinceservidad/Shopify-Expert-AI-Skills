@@ -4,7 +4,7 @@ description: Designs and audits Shopify Flow workflows with triggers, conditions
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Flow Automation
@@ -26,13 +26,14 @@ Collect business outcome, current manual process, trigger event, authoritative d
 
 ## Workflow
 
-1. Describe the current process, decision, owner, failure cost, and desired terminal state.
-2. Verify the target store and account-visible Flow tasks from current evidence.
-3. Define the trigger contract, condition order, data availability, branches, actions, and exit behavior.
-4. Check idempotency, duplicate events, loops, concurrency, retries, late events, missing fields, permissions, and rate or volume concerns.
-5. Specify logs or trace evidence, alerts, manual fallback, privacy, and retention.
-6. Create positive, negative, boundary, duplicate, failure, and rollback test cases.
-7. Require approval before enabling. Start with the smallest safe scope and verify actual outcomes.
+1. Describe the assigned manual process, decision, exact store, owner, failure cost, approval boundary, and desired terminal state.
+2. Verify account-visible triggers, actions, fields, permissions, and app dependencies using current evidence. Missing task availability blocks implementation of that branch, not a clearly conditional specification.
+3. Define trigger data, safety exclusions, condition order, branches, actions, and exits. After waits or asynchronous handoffs, re-read mutable state and reapply exclusions before consequential actions.
+4. Check duplicates, loops, concurrency, retries, late events, missing fields, permissions, and volume. For each external effect, specify a supported completion signal and duplicate guard; a marker written before success cannot prove completion.
+5. Specify logs, alerts, manual fallback, privacy, and retention. If an external action times out, reconcile its outcome before retrying rather than assuming failure or success.
+6. Test positive, negative, boundary, duplicate, changed-state-after-wait, missing-field, partial-failure, and rollback cases with controlled records. Confirm downstream effects as well as run status.
+7. Capture the prior version and obtain exact enablement approval. Start with the smallest safe scope, verify actual branch results, and stop on unexpected volume, repeated effects, or failed guardrails.
+8. Handoff the versioned specification, field and dependency evidence, test results, run identifiers, manual recovery, monitoring owner, and next review. Disabling prevents future runs only as verified; reconcile in-flight runs and completed effects separately.
 
 Read [references/automation-patterns.md](references/automation-patterns.md) for design rules. Read [references/examples.md](references/examples.md) for specification examples.
 

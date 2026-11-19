@@ -4,7 +4,7 @@ description: Audits and diagnoses Meta Ads for Shopify using creative, delivery,
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.1"
+  version: "0.1.2"
 ---
 
 # Shopify Meta Ads
@@ -29,13 +29,14 @@ If direct account evidence is unavailable, provide a bounded audit plan or condi
 
 ## Workflow
 
-1. Confirm account, timezone, currency, objective, conversion location, attribution, and reporting definitions.
-2. Reconcile Meta events and attributed values with Shopify or the business ledger. Check event quality separately from attribution variance.
-3. Map campaign, ad set, ad, creative, audience, placement, product, market, and customer-type evidence.
-4. Localize the constraint across delivery, creative, traffic quality, landing experience, offer, checkout, availability, retention, or measurement.
-5. Review account and change history before attributing a movement to the latest visible change.
-6. Apply readiness, economics, constraint, marginal-evidence, capacity, guardrail, and authorization gates before any scaling recommendation.
-7. Propose the smallest reversible test with a review date and stopping rule.
+1. Confirm the exact account, campaign scope, requested decision, timezone, currency, reporting period, conversion location, attribution, and permissions.
+2. Reconcile comparable Meta events and attributed values with Shopify or the business ledger. Check collection quality, delayed reporting, and attribution variance separately.
+3. Map campaign, ad set, ad, creative, audience, placement, product, market, and customer-type evidence. Name unavailable breakdowns rather than implying a complete audit.
+4. Localize the constraint across delivery, creative, traffic quality, landing, offer, checkout, availability, retention, or measurement. Review history before blaming the latest change.
+5. Apply readiness, named economics, identified constraint, marginal evidence, capacity, guardrail, and authorization gates before scaling. Failed gates lead to a bounded repair or test, not a default budget increase.
+6. Propose the smallest reversible change with exact controls, protected coverage, hypothesis, review date, stop, and rollback. Capture the current settings and check overlapping changes before approved execution.
+7. Use an available write-capable tool only within authorization. Reopen saved settings and inspect publication, processing, delivery, destination, and event states relevant to the change; a saved budget alone is not verified delivery.
+8. Handoff the audit or verified change log, evidence gaps, business-outcome monitoring, rollback trigger, and next owner. Evaluate outcomes after the agreed window without calling platform ROAS realized profit.
 
 Read [references/campaign-framework.md](references/campaign-framework.md) for audit and diagnosis. Read [references/optimization-rules.md](references/optimization-rules.md) for decision and scaling gates.
 

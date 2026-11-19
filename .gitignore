@@ -16,3 +16,5 @@ connector/.wrangler/
 connector/.dev.vars*
 connector/.shopify/
 connector/worker/generated/
+.ci-venv/
+.ci-bundle/
