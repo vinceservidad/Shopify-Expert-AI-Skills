@@ -1,5 +1,11 @@
 # Deploying the guide through Cloudflare Artifacts
 
+> **Retired November 19, 2026.** The `.github/workflows/artifacts-deploy.yml`
+> workflow was removed to match `main`, which runs no GitHub Actions. Deploy the
+> guide from a machine signed in to the guide's Cloudflare account with
+> `cd connector && npm ci && npm run guide:deploy`. The rest of this page records
+> the earlier automatic setup.
+
 The public guide (`mktskills.com/shopify-va*`, Worker `mkt-skills-shopify-guide`) deploys automatically from
 [Cloudflare Artifacts](https://developers.cloudflare.com/artifacts/). GitHub remains the source of truth:
 pull requests, reviews and CI happen here as before.

@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Guide deploy workflow retired
+
+- Remove `.github/workflows/artifacts-deploy.yml`, which deployed the guide on
+  every push to this branch. `main` runs no GitHub Actions; deploy the guide with
+  `npm run guide:deploy`. `docs/artifacts-deploy.md` is marked retired.
+
 ### Plugin icon
 
 - Replace the placeholder checklist icon with the ShopifySkills logo: a metallic
