@@ -1,0 +1,47 @@
+{
+  "coverage": "limited_to_supplied_synthetic_evidence",
+  "conversion_rates_pct": {
+    "previous": {
+      "mobile": "2.00",
+      "desktop": "5.00",
+      "overall": "3.00"
+    },
+    "current": {
+      "mobile": "1.50",
+      "desktop": "5.00",
+      "overall": "2.67"
+    }
+  },
+  "overall_change_percentage_points": "-0.33",
+  "issues": [
+    {
+      "id": "F1",
+      "priority": 1,
+      "evidence_ids": [
+        "OBS-1"
+      ],
+      "observation": "The supplied mobile interaction record shows a covered checkout control.",
+      "recommended_action": "Prepare a scoped overlay correction; verify keyboard and mobile purchase controls before approval.",
+      "estimated_lift": null
+    },
+    {
+      "id": "F2",
+      "priority": 2,
+      "evidence_ids": [
+        "OBS-2",
+        "OBS-3"
+      ],
+      "observation": "Two supplied UK pages state different delivery windows.",
+      "recommended_action": "Ask the policy owner to resolve the conflict before changing either promise.",
+      "estimated_lift": null
+    }
+  ],
+  "unknowns": [
+    "Actual store access and original screenshots",
+    "Revenue, margin, stock and refund evidence",
+    "Change dates and comparable session-level behavior",
+    "Authoritative delivery policy"
+  ],
+  "causal_claim": false,
+  "external_state": "unchanged"
+}

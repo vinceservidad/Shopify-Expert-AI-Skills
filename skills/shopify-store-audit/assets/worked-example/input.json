@@ -1,0 +1,81 @@
+{
+  "synthetic": true,
+  "authorization": "read-only",
+  "timezone": "Europe/London",
+  "periods": {
+    "previous": "2026-08-01 through 2026-08-14",
+    "current": "2026-08-15 through 2026-08-28"
+  },
+  "metric_contract": "Online-store sessions with at least one purchase / online-store sessions, by device. Not all-channel orders.",
+  "evidence": [
+    {
+      "id": "OBS-1",
+      "kind": "synthetic_interaction_record",
+      "scope": "390 px mobile cart, UK, guest",
+      "record": "The fixed promotional overlay covers the checkout control in the supplied interaction fixture."
+    },
+    {
+      "id": "OBS-2",
+      "kind": "synthetic_copy_record",
+      "scope": "UK product page",
+      "record": "Delivery shown as 2-3 working days."
+    },
+    {
+      "id": "OBS-3",
+      "kind": "synthetic_copy_record",
+      "scope": "UK shipping page",
+      "record": "Delivery shown as 5-7 working days."
+    }
+  ],
+  "funnel": {
+    "previous": [
+      {
+        "device": "mobile",
+        "sessions": 1000,
+        "sessions_with_purchase": 20
+      },
+      {
+        "device": "desktop",
+        "sessions": 500,
+        "sessions_with_purchase": 25
+      }
+    ],
+    "current": [
+      {
+        "device": "mobile",
+        "sessions": 1000,
+        "sessions_with_purchase": 15
+      },
+      {
+        "device": "desktop",
+        "sessions": 500,
+        "sessions_with_purchase": 25
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "kind": "purchase_control_obstructed",
+      "evidence_ids": [
+        "OBS-1"
+      ],
+      "observation": "The supplied mobile interaction record shows a covered checkout control."
+    },
+    {
+      "id": "F2",
+      "kind": "conflicting_delivery_copy",
+      "evidence_ids": [
+        "OBS-2",
+        "OBS-3"
+      ],
+      "observation": "Two supplied UK pages state different delivery windows."
+    }
+  ],
+  "missing_evidence": [
+    "Actual store access and original screenshots",
+    "Revenue, margin, stock and refund evidence",
+    "Change dates and comparable session-level behavior",
+    "Authoritative delivery policy"
+  ]
+}

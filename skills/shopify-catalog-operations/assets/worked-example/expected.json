@@ -1,0 +1,84 @@
+{
+  "candidate_changes": [
+    {
+      "variant_id": "101",
+      "field": "price",
+      "before": "24.00",
+      "after": "26.00"
+    },
+    {
+      "variant_id": "104",
+      "field": "compare_at_price",
+      "before": "15.00",
+      "after": null
+    }
+  ],
+  "exceptions": [
+    {
+      "variant_id": "102",
+      "reason": "blank_invalid_or_ambiguous_value"
+    },
+    {
+      "variant_id": "103",
+      "reason": "out_of_scope_or_conflicting_operation"
+    }
+  ],
+  "rollback_if_applied": [
+    {
+      "variant_id": "101",
+      "field": "price",
+      "restore": "24.00"
+    },
+    {
+      "variant_id": "104",
+      "field": "compare_at_price",
+      "restore": "15.00"
+    }
+  ],
+  "simulated_candidate_rows": [
+    {
+      "variant_id": "101",
+      "product_id": "p1",
+      "handle": "field-mug",
+      "sku": "MUG-SAND",
+      "option": "Sand",
+      "price": "26.00",
+      "compare_at_price": "30.00",
+      "inventory_quantity": 12
+    },
+    {
+      "variant_id": "102",
+      "product_id": "p1",
+      "handle": "field-mug",
+      "sku": "MUG-MOSS",
+      "option": "Moss",
+      "price": "26.00",
+      "compare_at_price": "30.00",
+      "inventory_quantity": 7
+    },
+    {
+      "variant_id": "103",
+      "product_id": "p2",
+      "handle": "field-bottle",
+      "sku": "BOTTLE",
+      "option": "Default Title",
+      "price": "40.00",
+      "compare_at_price": null,
+      "inventory_quantity": 15
+    },
+    {
+      "variant_id": "104",
+      "product_id": "p3",
+      "handle": "field-tote",
+      "sku": "TOTE",
+      "option": "Default Title",
+      "price": "10.00",
+      "compare_at_price": null,
+      "inventory_quantity": 30
+    }
+  ],
+  "record_count": 4,
+  "batch_ready": false,
+  "external_state": "unchanged",
+  "import_file_created": false
+}

@@ -1,0 +1,55 @@
+{
+  "draft": {
+    "title": "Field Ceramic Mug | 350 ml",
+    "handle": "field-ceramic-mug",
+    "vendor": "Field Studio (fictional)",
+    "description": "A 350 ml ceramic mug with a matte finish. Choose Sand or Moss.",
+    "proposed_status": "draft",
+    "proposed_channels": [],
+    "variants": [
+      {
+        "sku": "FIELD-SAND-350",
+        "color": "Sand",
+        "price": "24.00",
+        "barcode": null,
+        "weight_grams": null,
+        "inventory_quantity": null
+      },
+      {
+        "sku": "FIELD-MOSS-350",
+        "color": "Moss",
+        "price": "26.00",
+        "barcode": null,
+        "weight_grams": null,
+        "inventory_quantity": null
+      }
+    ]
+  },
+  "sources": {
+    "title": "approved_source.title",
+    "description": [
+      "approved_source.capacity_ml",
+      "approved_source.material",
+      "approved_source.finish",
+      "approved_source.variants"
+    ],
+    "prices": "approved_source.variants"
+  },
+  "unknown_fields": [
+    "product_category",
+    "barcode",
+    "weight_grams",
+    "inventory_quantity"
+  ],
+  "publication_blockers": [
+    "inventory_quantity",
+    "product_category",
+    "weight_grams"
+  ],
+  "unsupported_claims_excluded": [
+    "Dishwasher safe",
+    "Keeps drinks warm for hours"
+  ],
+  "external_state": "not_saved",
+  "authorization": "draft-only"
+}

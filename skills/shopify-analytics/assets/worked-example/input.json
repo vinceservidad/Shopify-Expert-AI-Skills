@@ -1,0 +1,118 @@
+{
+  "synthetic": true,
+  "authorization": "read-only",
+  "currency": "GBP",
+  "timezone": "Europe/London",
+  "metric_contract": {
+    "net_sales": "gross_sales minus discounts minus returns; excludes tax and shipping revenue",
+    "costs": "cogs already adjusted for resaleable returns; fees, fulfillment and shipping subsidy are actual fixture costs",
+    "profit_level": "contribution after media, before overhead and income tax",
+    "grain": "one row per product per reporting period; complete fixture population",
+    "unit_definition": "net units equals sold minus returned units in the reporting period"
+  },
+  "periods": {
+    "previous": {
+      "start": "2026-08-01",
+      "end": "2026-08-14",
+      "media_cost": "2000.00",
+      "products": [
+        {
+          "product_id": "mug",
+          "gross_sales": "6000.00",
+          "discounts": "600.00",
+          "returns": "400.00",
+          "cogs": "2100.00",
+          "payment_fees": "150.00",
+          "fulfillment": "400.00",
+          "shipping_subsidy": "250.00",
+          "units_sold": 250,
+          "units_returned": 20
+        },
+        {
+          "product_id": "bottle",
+          "gross_sales": "4000.00",
+          "discounts": "400.00",
+          "returns": "200.00",
+          "cogs": "1360.00",
+          "payment_fees": "102.00",
+          "fulfillment": "272.00",
+          "shipping_subsidy": "170.00",
+          "units_sold": 100,
+          "units_returned": 5
+        },
+        {
+          "product_id": "tote",
+          "gross_sales": "2000.00",
+          "discounts": "200.00",
+          "returns": "200.00",
+          "cogs": "640.00",
+          "payment_fees": "48.00",
+          "fulfillment": "128.00",
+          "shipping_subsidy": "80.00",
+          "units_sold": 200,
+          "units_returned": 20
+        }
+      ]
+    },
+    "current": {
+      "start": "2026-08-15",
+      "end": "2026-08-28",
+      "media_cost": "3000.00",
+      "products": [
+        {
+          "product_id": "mug",
+          "gross_sales": "6600.00",
+          "discounts": "600.00",
+          "returns": "600.00",
+          "cogs": "2250.00",
+          "payment_fees": "162.00",
+          "fulfillment": "450.00",
+          "shipping_subsidy": "270.00",
+          "units_sold": 275,
+          "units_returned": 25
+        },
+        {
+          "product_id": "bottle",
+          "gross_sales": "5000.00",
+          "discounts": "400.00",
+          "returns": "400.00",
+          "cogs": "1680.00",
+          "payment_fees": "126.00",
+          "fulfillment": "336.00",
+          "shipping_subsidy": "210.00",
+          "units_sold": 125,
+          "units_returned": 10
+        },
+        {
+          "product_id": "tote",
+          "gross_sales": "1800.00",
+          "discounts": "200.00",
+          "returns": "200.00",
+          "cogs": "560.00",
+          "payment_fees": "42.00",
+          "fulfillment": "112.00",
+          "shipping_subsidy": "70.00",
+          "units_sold": 180,
+          "units_returned": 20
+        }
+      ]
+    }
+  },
+  "attribution_views": [
+    {
+      "source": "Google Ads",
+      "reported_value": "6000.00",
+      "definition": "Attributed conversion value; fixture 30-day click window."
+    },
+    {
+      "source": "Meta Ads",
+      "reported_value": "4500.00",
+      "definition": "Attributed conversion value; fixture 7-day click and 1-day view windows."
+    },
+    {
+      "source": "Email",
+      "reported_value": "2500.00",
+      "definition": "Attributed conversion value; fixture 5-day click window."
+    }
+  ]
+}

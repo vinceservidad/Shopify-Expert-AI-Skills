@@ -1,0 +1,13 @@
+{
+  "synthetic": true,
+  "authorization": "draft-only",
+  "product_title": "Field Ceramic Mug",
+  "product_path": "/products/field-mug",
+  "default_variant": "101",
+  "variants": [
+    {"id": "101", "title": "Sand", "price": "£24.00", "available": true},
+    {"id": "102", "title": "Moss", "price": "£26.00", "available": true},
+    {"id": "103", "title": "Clay", "price": "£28.00", "available": false}
+  ],
+  "scope": "Small single-option product; one-time purchase; no variant-specific media. DOM fixture is not Shopify-rendered Liquid."
+}
