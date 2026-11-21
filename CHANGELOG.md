@@ -8,8 +8,7 @@ All notable changes to this project are documented here.
 
 - Bump all plugin manifests to 0.2.2 so `claude plugin update` delivers the skill
   changes below. Add `releases/v0.2.2` (both plugin targets, 19 skill ZIPs and
-  `SHA256SUMS`), and point the README and setup guides at it. No git tag is
-  created.
+  `SHA256SUMS`), and point the README and setup guides at it.
 
 ### Fixes found by plugin evals
 

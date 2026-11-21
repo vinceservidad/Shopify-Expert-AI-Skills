@@ -39,10 +39,10 @@ No hosted Shopify connector is deployed by these archives.
 
 ## Verification and source
 
-Built on November 19, 2026 with `python scripts/package_plugin.py` (both
-targets) and `python scripts/package_skill.py --all` from the branch for
-[PR #23](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/pull/23). No
-`v0.2.2` git tag exists yet.
+Built on November 21, 2026 with `python scripts/package_plugin.py` (both
+targets) and `python scripts/package_skill.py --all` for
+[PR #23](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/pull/23)
+(`v0.2.2`).
 
 - All 163 Python tests pass.
 - `claude plugin validate --strict` (Claude Code 2.1.328) passes on the

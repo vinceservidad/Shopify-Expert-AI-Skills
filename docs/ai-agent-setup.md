@@ -100,9 +100,9 @@ depend on your account and workspace.
 ## Claude Skills
 
 1. Choose the ZIP for your job from the [skill catalog](../README.md#skill-catalog)
-   and [published downloads](../releases/v0.1.1/README.md). If you need help routing
+   and [published downloads](../releases/v0.2.2/README.md). If you need help routing
    a mixed assignment, start with
-   [shopify-va.zip](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/raw/refs/heads/main/releases/v0.1.1/shopify-va.zip).
+   [shopify-va.zip](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/raw/refs/heads/main/releases/v0.2.2/shopify-va.zip).
 2. In Claude's Skills settings, upload that ZIP and enable the skill. Enable any
    required code-execution/file controls offered by your account. Upload the ZIP
    as-is; do not upload the whole repository or a `.plugin` archive as one Skill.
@@ -126,7 +126,7 @@ Published ZIPs need no build. Contributors building from source can use
 
 ## ChatGPT Projects or ordinary chats
 
-1. Choose and download one [skill ZIP](../releases/v0.1.1/README.md), then extract it.
+1. Choose and download one [skill ZIP](../releases/v0.2.2/README.md), then extract it.
 2. Create a ChatGPT Project. Open the extracted `SKILL.md` and copy its procedure
    into the Project instructions. Omit the opening YAML metadata block. Upload
    that skill's relevant reference files and any required example assets as
