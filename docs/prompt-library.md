@@ -186,6 +186,21 @@ issues, evidence, missing inputs, recommended next steps, guardrails,
 authorization required, rollback, and verification.
 ```
 
+For a growth audit across acquisition, conversion, order value, and retention:
+
+```text
+Use the shopify-store-audit skill in growth audit mode.
+
+Store: [store URL]. Objective: [primary business outcome].
+Revenue basis: [gross or net sales]. Profit level: [named level and costs].
+Period: [date range] versus [comparison range].
+Evidence: [Shopify orders, ad account exports, email platform, analytics, COGS].
+
+Check measurement first. Diagnose the limiting constraint only where the
+evidence supports it. Give a Now/Next/Later/Not now roadmap without lift
+estimates, and an engagement scope outline derived from the roadmap.
+```
+
 ## CRO
 
 ```text
