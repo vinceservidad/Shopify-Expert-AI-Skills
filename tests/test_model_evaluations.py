@@ -538,6 +538,23 @@ class ModelEvaluationTests(unittest.TestCase):
             {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
         self.assertIn("verbatim", model_eval.validate_judge_output(parsed, self.rubric_with_descriptions(), "actual response text"))
 
+    def test_validate_judge_output_rejects_malformed_entry_types(self):
+        rubric = self.rubric_with_descriptions()
+        non_dict = {"criteria": ["truth"]}
+        self.assertIn("object", model_eval.validate_judge_output(non_dict, rubric, "resp"))
+        non_string_quote = {"criteria": [
+            {"id": "truth", "passed": True, "evidence_quote": 123, "rationale": "r"},
+            {"id": "decision", "passed": False, "evidence_quote": "", "rationale": "r"},
+            {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
+        self.assertIn("string", model_eval.validate_judge_output(non_string_quote, rubric, "resp"))
+        for bad_rationale in ("   ", 123):
+            parsed = {"criteria": [
+                {"id": "truth", "passed": False, "evidence_quote": "", "rationale": bad_rationale},
+                {"id": "decision", "passed": False, "evidence_quote": "", "rationale": "r"},
+                {"id": "completeness", "passed": False, "evidence_quote": "", "rationale": "r"}]}
+            with self.subTest(rationale=bad_rationale):
+                self.assertIn("rationale", model_eval.validate_judge_output(parsed, rubric, "resp"))
+
     def judge_packet(self, response_text="Decision based on supplied evidence. No external action occurred."):
         return {"id": "test-resp", "case": self.cases[0], "rubric": self.rubric_with_descriptions(),
                 "response": response_text, "response_sha256": model_eval.digest(response_text)}

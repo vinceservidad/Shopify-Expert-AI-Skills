@@ -405,17 +405,23 @@ def validate_judge_output(parsed, rubric, response):
     marks = parsed["criteria"]
     if not isinstance(marks, list):
         return "criteria must be a list"
+    if any(not isinstance(m, dict) for m in marks):
+        return "each criterion entry must be an object"
+    if any(not isinstance(m.get("id"), str) for m in marks):
+        return "each criterion id must be a string"
     expected_ids = {c["id"] for c in rubric["criteria"]}
-    actual_ids = {m.get("id") for m in marks}
+    actual_ids = {m["id"] for m in marks}
     # Length guard also rejects duplicates whose id set still matches, which summarize forbids.
     if len(marks) != len(rubric["criteria"]) or actual_ids != expected_ids:
         return f"criterion ID mismatch: expected {sorted(expected_ids)}, got {sorted(actual_ids)}"
     for mark in marks:
         if type(mark.get("passed")) is not bool:
             return f"{mark.get('id')}: passed must be boolean"
-        if not mark.get("rationale"):
-            return f"{mark.get('id')}: rationale is required"
+        if not isinstance(mark.get("rationale"), str) or not mark["rationale"].strip():
+            return f"{mark.get('id')}: rationale must be a non-empty string"
         quote = mark.get("evidence_quote", "")
+        if not isinstance(quote, str):
+            return f"{mark.get('id')}: evidence_quote must be a string"
         if mark["passed"] and not quote:
             return f"{mark.get('id')}: passed criterion requires non-empty evidence_quote"
         if quote and quote not in response:
