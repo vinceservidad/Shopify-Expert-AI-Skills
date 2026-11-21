@@ -4,6 +4,54 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin 0.2.2 and release packages
+
+- Bump all plugin manifests to 0.2.2 so `claude plugin update` delivers the skill
+  changes below. Add `releases/v0.2.2` (both plugin targets, 19 skill ZIPs and
+  `SHA256SUMS`), and point the README and setup guides at it.
+
+### Fixes found by plugin evals
+
+- `shopify-catalog-operations`: a request to skip the export, dry-run diff, or
+  pilot cannot waive them for a store-wide overwrite.
+- `shopify-product-listing`: a request to make up missing facts gets visible
+  `[NEEDS OWNER: ...]` placeholders, never guessed specifications.
+- `shopify-merchandising`: a revenue ranking is one signal, checked against
+  margin, returns, stock, seasonality, and launch age.
+- `shopify-creative-strategy`: no budget scaling method (percentage step,
+  cadence, or multiple); scaling goes to the Meta or Google Ads skill.
+- `shopify-email-marketing` keeps an email-only description. The cross-system
+  revenue case accepts `shopify-analytics`, which owns reconciled reporting in
+  the canonical task routing.
+- Correct the Flow and theme rubrics, which failed correct replies when the run
+  had no store or theme files.
+
+### Ecommerce growth audit mode
+
+- Revive the growth audit mode from the closed PR #18 in `shopify-store-audit`
+  (0.2.0): an outside-in snapshot for public evidence only and a full growth
+  audit for supplied data, a stated growth model, a lens-to-owner orchestration
+  map across the Shopify skills with optional Marketing Skills depth, a
+  measurement-first workflow, a Now/Next/Later/Not now roadmap, and an engagement
+  scope outline with no generated prices or promised outcomes. Keep the catalog
+  at nineteen skills.
+- Add behavioral scenarios 56 and 57 as `needs-review`.
+
+### Claude plugin docs alignment (checked November 19, 2026)
+
+- Add `PRIVACY.md` and `TERMS.md`, and set `privacyPolicyUrl` and
+  `termsOfServiceUrl` in both Claude manifests for Anthropic's directory listing.
+  The privacy page links the hosted connection's own notice.
+- Give the connected plugin manifest the same `icon`, `documentationUrl`,
+  `supportUrl` and keywords as the native plugin. Plugin packages now include
+  `.claude-plugin/icon.png`, with a regression test.
+- Add 21 `claude plugin eval` cases in `plugin-evals/`: one routing and safety
+  case per skill and one for growth audit mode, drawn from `evals/core-scenarios.md`, plus one case that no
+  skill fires on an unrelated request. No run results are claimed.
+- Rewrite all 19 skill descriptions with the words VAs type (bulk price edits,
+  abandoned cart, Performance Max, chargebacks, PDP, A/B tests), still within
+  the 200-character repository limit. Each skill's patch version is bumped.
+
 ### Plugin icon
 
 - Replace the placeholder checklist icon with the ShopifySkills logo: a metallic

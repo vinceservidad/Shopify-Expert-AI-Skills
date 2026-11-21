@@ -1,10 +1,10 @@
 ---
 name: shopify-product-page
-description: Audits and drafts Shopify product-page structure, copy, proof, offer, and mobile UX. Use for a specific PDP or product template, not a whole-store audit.
+description: Use when rewriting or auditing a product page, its copy, or product claims such as health, cure, or results claims, plus proof, offer, and mobile layout. One page, not a whole-store audit.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Product Page

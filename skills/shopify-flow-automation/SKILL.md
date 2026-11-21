@@ -1,10 +1,10 @@
 ---
 name: shopify-flow-automation
-description: Designs and audits Shopify Flow workflows with triggers, conditions, actions, tests, failure handling, and rollback. Use for automation specifications and QA.
+description: Designs and audits Shopify Flow workflows and store automations with triggers, conditions, actions, tests, failure handling, and rollback. Use for automation specs and QA.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Flow Automation

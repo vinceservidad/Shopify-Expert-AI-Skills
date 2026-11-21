@@ -1,10 +1,10 @@
 ---
 name: shopify-support
-description: Drafts policy-grounded Shopify support responses, macros, escalation notes, and FAQ plans. Use for customer-service work without inventing order facts or promises.
+description: Drafts policy-grounded Shopify customer service replies, macros, escalation notes, Inbox answers, and FAQs. Use for support tickets without inventing order facts or promises.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Support

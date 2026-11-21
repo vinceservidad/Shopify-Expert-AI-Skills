@@ -24,17 +24,17 @@ starts a server; `plugin/` retains the optional connected-package templates.
 
 ### Download a published package
 
-Download the native [v0.2.0 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.0) directly from
-the repository. Versioned packages can also be published through
-[GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases)
-when the release workflow succeeds. Import the chosen
-package using the host's supported installation flow; update or reimport an
-existing installation to receive revised skills. A release publishes packages,
-not a hosted Shopify endpoint or an automatic update to installed copies.
+Download the native [v0.2.2 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.2) directly from
+the repository or from [GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases).
+Import the chosen package using the host's supported installation flow; update
+or reimport an existing installation to receive revised skills. A release
+publishes packages, not a hosted Shopify endpoint or an automatic update to
+installed copies.
 
-Version tags matching both plugin manifests trigger the release workflow, which
-validates, tests, builds, and publishes the installable downloads. A failed
-workflow does not establish that a release or its downloads are available.
+Packages under `releases/` are built locally with `python scripts/package_plugin.py`
+(both targets) and `python scripts/package_skill.py --all` after `bash scripts/ci.sh`
+passes, and verified against `SHA256SUMS`; no GitHub Actions workflow publishes
+releases (see [Cloudflare CI](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/cloudflare-ci.md)).
 
 ### Build locally
 

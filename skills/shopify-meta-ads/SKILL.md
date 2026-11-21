@@ -1,10 +1,10 @@
 ---
 name: shopify-meta-ads
-description: Audits and diagnoses Meta Ads for Shopify using creative, delivery, measurement, funnel, and economics evidence. Use for account decisions, not unsupported scaling.
+description: Audits Meta (Facebook and Instagram) Ads for Shopify using creative, delivery, pixel and CAPI tracking, funnel, and economics evidence. Use for account decisions, not blind scaling.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Meta Ads
