@@ -9,14 +9,13 @@ Prepared September 30, 2026. **Deployed candidate; not submitted or approved.** 
 - Pricing: free initial release; no in-app billing or app payments.
 - Audience: Shopify store owners and their approved VAs.
 - Purpose: supply read-only store evidence and practical task instructions for use with the merchant's own ChatGPT, Claude or other supported MCP client.
-- Public product guide: planned `https://mktskills.com/shopify-va`.
-- Privacy notice: planned `https://mktskills.com/shopify-va/privacy`.
-- Support: planned `support@mktskills.com`; incoming delivery must be verified.
-- Candidate App Home: `https://mkt-skills-shopify-preview.vinceluxxe.workers.dev/app`, reachable on the deployed preview Worker. A successful live embedded Shopify session is still unverified.
-- Candidate guide: [MKT Skills VA Toolkit preview](https://mkt-skills-shopify-guide.vinceluxxe.workers.dev/shopify-va), live with desktop, 390-pixel mobile, keyboard and overflow checks.
-- Permanent App Home: planned `https://shopify-mcp.mktskills.com/app`.
+- Public product guide: `https://mktskills.com/shopify-va` (live candidate guide on `mkt-skills-shopify-guide`, version `99d1611b-3ac1-40cb-924f-07bdccfbcc28` at 100% traffic).
+- Privacy notice: `https://mktskills.com/shopify-va/privacy` (HTTP 200).
+- Support: `support@mktskills.com` — Cloudflare Email Routing forwarding rule `514a72c4bf03416fbbd8a939b82477d2` (`enabled: true`) is configured to the owner's verified Gmail address; one live test email receipt must still be confirmed.
+- Candidate App Home: `https://shopify-mcp.mktskills.com/app` (HTTP 200 on deployed Worker `mkt-skills-shopify-preview`, version `8c382457-65a0-4b88-ab38-967abf0f0990` at 100% traffic; earlier Sep 30 preview URL was `https://mkt-skills-shopify-preview.vinceluxxe.workers.dev/app`). A successful live embedded Shopify session is still unverified.
+- Earlier preview guide URL: [MKT Skills VA Toolkit preview](https://mkt-skills-shopify-guide.vinceluxxe.workers.dev/shopify-va) (Sep 30 `workers.dev` preview).
 - App ID: `429932052481`, Public distribution.
-- Active app configuration: `public-candidate-webhooks-v1` (`1149628088321`). The app is not yet installed on the development store and its protected Order-data settings are not saved.
+- Active app configuration: `public-candidate-webhooks-v1` (`1149628088321`). Deploying the permanent URLs in `connector/shopify.app.public.toml` (`shopify app deploy --config public --allow-updates`), development-store installation, and saving/approving Protected Customer Data Level 1 Order-data settings remain pending.
 
 Suggested listing description:
 
@@ -60,10 +59,11 @@ The embedded evidence checks and guides are usable without an AI subscription. A
 - Ten-case synthetic workflow replies and focused S06/S07/S10 retests were captured. ChatGPT's focused retest passed manual review. Claude's final fresh retest still has unsupported payment-delay/follow-up wording and an overly conservative S07 overall completion conclusion despite recognizing the verified O-2 title record. These are not an all-case passing result or a behavioral benchmark. See [the manual review](va-workflow-review.md).
 - The final references tighten reply QA and handover status reporting without changing scopes, queries or tools. All 46 Node groups, 151 Python tests, Worker and package checks passed. After the installed Codex `0.2.0` plugin was refreshed, a fresh native check listed eight workflows and read both changed references through actual MCP calls. Their returned text exactly matched final source hashes. No Shopify data/status call or external action occurred; guide retrieval does not establish improved AI behavior. Benchmark scenarios 58–66 remain ungraded.
 - The original development-store Worker remains version `188b1418-cb0c-42ef-aa7c-3b9e2dfbd96e` at 100% traffic. Its prior regression evidence is separate from the new public app.
+- On November 21, 2026 (branch commit `872f950`), 191 Python unit tests and 51 connector/UI/CSP/workflow tests passed alongside both synthetic Worker runtime suites. Permanent-domain guide Worker `mkt-skills-shopify-guide` (`99d1611b-3ac1-40cb-924f-07bdccfbcc28`, deployment `6e824d25-8faf-4d5e-ae30-ceb41ed88591`) and public MCP Worker `mkt-skills-shopify-preview` (`8c382457-65a0-4b88-ab38-967abf0f0990`, deployment `7a033168-cff0-4cfd-8209-3f7c7daa6149`) are live at 100% traffic with `PUBLIC_LAUNCH_STAGE=candidate`, and Cloudflare Email Routing rule `514a72c4bf03416fbbd8a939b82477d2` forwards `support@mktskills.com` to the owner's verified Gmail. Shopify app URL deployment (`shopify app deploy --config public --allow-updates`), development-store installation, Protected Customer Data Level 1 approval, live embedded/webhook/OAuth checks, and screenshots/screencast remain pending.
 
 ## Submission gates
 
-- Purchase/verify the domain, canonical HTTPS routes and incoming support forwarding. The permanent domain has not been purchased and support forwarding is unavailable.
+- Domain (`mktskills.com`), canonical HTTPS routes, and Cloudflare Email Routing for `support@mktskills.com` are configured; confirm one live test email receipt in Gmail and deploy the permanent URLs in `connector/shopify.app.public.toml` to Shopify.
 - Preserve the recorded preview deployment versions and app configuration; verify the final permanent-domain deployment separately.
 - Install the new public app on the authorized development store and complete its protected Order-data configuration before claiming order reads.
 - Complete live embedded UI, blocked-third-party-cookie, browser redirect and both native-client checks.
