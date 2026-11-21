@@ -1,10 +1,10 @@
 ---
 name: shopify-theme-development
-description: Diagnoses and implements scoped Shopify theme work in Liquid, JSON templates, sections, blocks, CSS, and JavaScript. Use for code changes and technical debugging.
+description: Diagnoses and implements scoped Shopify theme code in Liquid, JSON templates, sections, blocks, CSS, and JavaScript. Use for theme bugs, customizations, and code changes.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Theme Development

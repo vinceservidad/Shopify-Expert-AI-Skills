@@ -1,10 +1,10 @@
 ---
 name: shopify-creative-strategy
-description: Develops evidence-led ecommerce ad concepts, hooks, briefs, and creative tests. Use for message and asset strategy, not media-budget changes or fabricated UGC.
+description: Use when picking a winning ad from CTR, hook rate, or ROAS, or planning ad hooks, scripts, briefs, and creative tests for a Shopify or ecommerce brand. Plans creative, not budgets.
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.2"
+  version: "0.1.3"
 ---
 
 # Shopify Creative Strategy
@@ -19,6 +19,7 @@ Own the creative diagnosis, message strategy, concept system, production brief, 
 - Do not call a creative a winner from CTR alone. Use the primary business outcome and named commercial guardrails when available.
 - Separate concept, asset, audience, placement, offer, landing page, and media-delivery explanations.
 - Creative approval does not authorize publishing, campaign changes, or spend changes.
+- Do not give a budget scaling method, such as a percentage step, cadence, or multiple. When a creative earns more spend, hand the scaling decision to `shopify-meta-ads` or `shopify-google-ads` with the evidence, guardrails, and approval it needs.
 
 ## Required inputs
 

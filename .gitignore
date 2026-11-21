@@ -18,3 +18,6 @@ connector/.shopify/
 connector/worker/generated/
 .ci-venv/
 .ci-bundle/
+
+# claude plugin eval run output
+plugin-evals/results/

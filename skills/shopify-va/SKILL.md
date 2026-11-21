@@ -1,6 +1,6 @@
 ---
 name: shopify-va
-description: Plans, routes, tracks, executes, and verifies mixed Shopify tasks through the shared store operating lifecycle. Use as the VA and multi-skill task coordinator.
+description: Plans, routes, tracks, and verifies mixed Shopify task lists through the shared store lifecycle. Use as the VA coordinator for daily tasks, handoffs, and client updates.
 license: MIT
 metadata:
   author: vinceservidad
@@ -77,7 +77,7 @@ Use [references/client-setup.md](references/client-setup.md) for “Set up my cl
 
 Examples:
 
-- whole-store diagnosis → `shopify-store-audit`
+- whole-store diagnosis or ecommerce growth audit → `shopify-store-audit`
 - funnel/CRO decision → `shopify-cro`
 - product-page structure/copy → `shopify-product-page`
 - Liquid/theme implementation → `shopify-theme-development`
