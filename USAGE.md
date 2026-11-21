@@ -64,6 +64,61 @@ Continue from the current verified state. The [canonical lifecycle](skills/shopi
 
 Use the [Initiative Record](skills/shopify-va/references/initiative-record.md) for work spanning skills, sessions, or handoffs. Specialists own their domain decisions; merchant/client approval and commercial authority do not transfer merely because someone has a skill or tool connection.
 
+## Choose an everyday VA job
+
+The toolkit also has eight repeatable workflows using the existing guides. A workflow tells the AI which information to check and what result to prepare.
+
+| Say... | Have ready |
+| --- | --- |
+| “Set up my client's work guide.” | Brand voice, policies, assigned tasks and who approves or handles exceptions. |
+| “Plan today's work.” | Client brief, dated task list, deadlines and available working time. |
+| “Check this product listing.” | Target product, current listing and approved product facts. |
+| “Review my product catalog.” | Products or export to check, approved identifiers and naming rules. |
+| “Review stock.” | Target items, stock by location and the owner's stock thresholds. |
+| “Help me answer this customer.” | Customer question, approved policy and verified order facts when relevant. |
+| “Prepare my handover.” | Work log, drafts, verification evidence, blocked tasks and next owners. |
+| “Train a new VA.” | Assigned task, current instructions, sanitized examples and reviewer criteria. |
+
+Open [Practical VA jobs](docs/va-workflows.md), attach the job's owner guide and linked reference, then use its [sample request](docs/prompt-library.md#practical-va-jobs). Missing policies, facts or thresholds remain gaps for the owner to resolve. A checklist alone does not prove that a task or store change is complete.
+
+Keep the client brief and evidence in your chat or ChatGPT/Claude project files. The task-preparation tool receives only the names of available inputs; it does not upload or store those documents. These workflows run on request and do not schedule future work.
+
+## Connect your store (optional)
+
+Connecting a store lets the AI use current store information instead of relying only on files you upload. Check which connection you are using and what it is allowed to do.
+
+| Connection | What it allows |
+| --- | --- |
+| No connection | Drafting and review using the facts and files you provide. |
+| This toolkit's hosted connector | Reading store details, products, variants, stock, and order summaries. It cannot edit the store. |
+| A separate approved Shopify editing connection | Supported changes allowed by that connection, your account permissions, and your approval. |
+
+Our hosted connector is **read-only**. It was verified on **VA Toolkit Connector Test**, a development store with sample data, on September 30, 2026. It has not been verified for every merchant store. The original hosted order test returned no orders. Later local 0.2.0 testing read an unpaid sample order and both item pages; that did not replace the hosted service or verify a public app.
+
+The released hosted Worker is **0.1.0 with eight tools**. The local **0.2.0** plugin/connector source adds workflow discovery, task preparation, product details and order details for a total of **12 tools**. Using the hosted URL does not enable these four new tools before a separate release. The upgrade keeps the existing read permissions (`read_products`, `read_inventory`, `read_orders`) and cannot edit the store. The new order-details read excludes customer identities, addresses and payment details.
+
+Supported editing depends on the separate integration. See Shopify's instructions for [ChatGPT](https://help.shopify.com/en/manual/ai-powered-tools/connecting-ai-tools/shopify-plugin-for-chatgpt) or [Claude](https://help.shopify.com/en/manual/ai-powered-tools/connecting-ai-tools/shopify-connector-for-claude). Installing the guides alone does not give either app access to your store.
+
+The read-only connector and a separate editing connection can serve different parts of a task. The combined workflow in native ChatGPT or Claude has not been tested end to end here.
+
+For technical setup, the connection method is called **MCP**. The hosted URL is `https://shopify-va-toolkit.vinceluxxe.workers.dev/mcp`. Give the [connector setup guide](docs/plugin-and-connector.md) to the person helping with your setup. Other merchants still need an approved Shopify app installation and suitable app distribution. Opening that URL in a browser without signing in returns an authorization error; it is not an installation button.
+
+### Public store connection being prepared
+
+The planned public guide is `mktskills.com/shopify-va`. The planned connection address is `https://shopify-mcp.mktskills.com/mcp`. Do not use it until the [public release record](docs/public-release.md) confirms the domain, app approval and client tests.
+
+After release, the steps will be:
+
+1. The owner opens the app's verified Shopify App Store page and installs it on the intended store. Shopify handles store selection.
+2. In **ChatGPT or Claude**, add a custom connection using the verified address. Your account must support that option.
+3. Follow sign-in and copy its connection request code into **MKT Skills VA Toolkit** inside Shopify.
+4. The owner checks the store, requesting app, return destination and read permissions, then approves the request.
+5. Return to the original sign-in tab to finish. Ask the AI to confirm which store is connected before reading it.
+
+Staff can inspect information allowed by their Shopify permissions inside the app. The owner approves offline AI connections and can disconnect them in the app. An expired or used request code requires a new sign-in request. No password, API key or manual store address is needed in this public flow.
+
+Custom connection availability changes by account and organization. Check the official [ChatGPT setup guide](https://help.openai.com/en/articles/11487775-connectors-in-chatgpt) or [Claude setup guide](https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp). Installing this toolkit is separate from installing Shopify's own editing integrations.
+
 ## What evidence should you provide?
 
 Complete the relevant parts of the [business context template](docs/business-context-template.md): task, store/market, objective, scope, period/comparison, source files, acceptance criteria, and approval owner. Include metric and profit definitions for commercial analysis.
@@ -72,7 +127,7 @@ Attach the sources that matter: approved product specifications and claims for l
 
 Remove passwords, API keys, payment data, and unnecessary customer information. Missing evidence should limit the result or block dependent work; it must not become an invented fact.
 
-## Tell the skill what it is allowed to do
+If the controls are missing, check the current [Claude skill instructions](https://support.claude.com/en/articles/12512180-use-skills-in-claude). Skills require Code execution and file creation to be enabled; an organization may restrict custom uploads. Packaging and upload instructions were checked against [Claude's custom skill guide](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills) on September 30, 2026. This is a manual custom skill upload, not a public one-click plugin installation.
 
 | Scope | Allowed work |
 | --- | --- |

@@ -4,7 +4,7 @@ description: Plans, routes, tracks, executes, and verifies mixed Shopify tasks t
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.3.5"
+  version: "0.3.6"
 ---
 
 # Shopify VA
@@ -66,6 +66,10 @@ Collect only what can change the decision:
 9. Handoff one task report with completed deliverables, dependencies, evidence, exceptions, actual state, and next accountable owners. For recurring client updates, use exact figures with date ranges, write "cause not confirmed" when no evidence shows why a figure moved, and end with decisions the owner must make. For recurring work, check the last verified run and duplicate protection before catch-up execution.
 
 Read [references/store-operating-lifecycle.md](references/store-operating-lifecycle.md) for the full lifecycle, role boundaries, stage contracts, and examples. Use [references/initiative-record.md](references/initiative-record.md) when work spans several stages, specialists, sessions, or handoffs. Read [references/task-routing.md](references/task-routing.md) to choose the owner skill. Use [references/operating-checklists.md](references/operating-checklists.md) for task records, recurring work, QA, handoff, the owner approval matrix, and end-of-day or weekly client updates.
+
+## Practical VA workflows
+
+Use [references/client-setup.md](references/client-setup.md) for “Set up my client's work guide,” [references/daily-work-plan.md](references/daily-work-plan.md) for “Plan today's work,” and [references/end-of-day-handover.md](references/end-of-day-handover.md) for “Prepare my handover.” Run these when requested. Keep client briefs in the user's chat or project files; the read-only connector does not store them or grant editing permission.
 
 ## Ownership boundary
 

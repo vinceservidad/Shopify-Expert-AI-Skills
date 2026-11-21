@@ -1,6 +1,6 @@
 {
   "name": "shopify-va-toolkit-connector",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Read-only Shopify MCP connector for the independent Shopify VA Toolkit",
   "type": "module",
@@ -13,7 +13,18 @@
     "test:package": "node tests/packaged-runtime.mjs",
     "build": "tsc && node build-plugin.mjs",
     "start": "node build/http.js",
-    "stdio": "node build/stdio.js"
+    "stdio": "node build/stdio.js",
+    "worker:catalog": "node --import tsx worker/build-catalog.ts",
+    "worker:types": "wrangler types worker-configuration.d.ts --include-runtime=false --env-file worker/.env.example",
+    "worker:typecheck": "npm run worker:catalog && npm run worker:types && tsc -p tsconfig.worker.json",
+    "worker:build": "npm run worker:catalog && wrangler deploy --dry-run --outdir build/worker",
+    "worker:dev": "npm run worker:catalog && wrangler dev",
+    "worker:deploy": "npm run worker:catalog && wrangler deploy",
+    "worker:test": "npm run worker:build && node tests/worker-runtime.mjs && node tests/public-worker-runtime.mjs",
+    "worker:public:build": "npm run worker:catalog && wrangler deploy --dry-run --config wrangler.public.jsonc --env-file worker/.env.example --outdir build/public-worker",
+    "worker:public:deploy": "npm run worker:catalog && wrangler deploy --config wrangler.public.jsonc --env-file worker/.env.example",
+    "guide:build": "wrangler deploy --dry-run --config wrangler.guide.jsonc --env-file worker/.env.example --outdir build/guide-worker",
+    "guide:deploy": "wrangler deploy --config wrangler.guide.jsonc --env-file worker/.env.example"
   },
   "license": "MIT",
   "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
@@ -28,10 +39,13 @@
     "zod": "4.6.5"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "5.20260930.1",
     "@types/express": "5.0.6",
     "@types/node": "26.6.3",
     "esbuild": "0.28.2",
+    "miniflare": "5.20260926.1-alpha",
     "tsx": "4.23.15",
-    "typescript": "7.0.2"
+    "typescript": "7.0.2",
+    "wrangler": "4.144.0"
   }
 }

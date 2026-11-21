@@ -8,7 +8,7 @@
 # Stages:
 #   core       Python tooling: unit tests, skill validation, evidence, packaging, worked examples
 #   plugin     claude plugin validate --strict (needs the claude CLI; skipped with a notice if absent)
-#   connector  connector/ typecheck, tests, build, plugin package runtime (skipped if connector/ is absent)
+#   connector  connector/ typecheck, tests, build, Worker suites when present, plugin package runtime (skipped if connector/ is absent)
 #   theme      Liquid rendering, theme check, browser checks (skipped per tool if Ruby/Chromium are absent)
 #
 # Writes a machine-readable summary to ${CI_REPORT:-dist/ci-report.json}.
@@ -90,6 +90,12 @@ stage_connector() {
     run "typecheck" npm run typecheck &&
     run "tests" npm test &&
     run "build" npm run build) || return 1
+  # The hosted Worker suites replace the removed connector.yml workflow steps.
+  if grep -q '"worker:test"' connector/package.json; then
+    (cd connector &&
+      run "worker typecheck" npm run worker:typecheck &&
+      run "worker tests" npm run worker:test) || return 1
+  fi
   setup_python || return 1
   run "local plugin package" python scripts/package_plugin.py &&
   (cd connector && run "package runtime" npm run test:package)

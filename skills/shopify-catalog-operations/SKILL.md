@@ -38,6 +38,8 @@ Collect target store, business purpose, source and destination schema, authorita
 
 Read [references/catalog-governance.md](references/catalog-governance.md) for field and taxonomy rules. Use [references/bulk-operations.md](references/bulk-operations.md) for CSV, bulk-edit, pilot, rollback, and reconciliation.
 
+For “Review my product catalog,” use [references/catalog-review.md](references/catalog-review.md) to report conflicts and proposed corrections within the inspected records. For “Review stock,” use [references/stock-review.md](references/stock-review.md) to identify exceptions using the merchant's thresholds and record location and pagination coverage. Both workflows are read-only.
+
 ## Worked example
 
 Read [references/worked-example.md](references/worked-example.md) for a complete synthetic case, supplied inputs, expected outcome, and acceptance checks. Treat its facts and thresholds as example-specific, not merchant evidence or default policy.

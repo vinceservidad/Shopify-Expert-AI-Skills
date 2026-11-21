@@ -24,6 +24,15 @@ export const QUERIES = {
       }
     }
   }`,
+  productDetails: `query ToolkitProductDetails($id: ID!, $first: Int!, $after: String) {
+    product(id: $id) {
+      id descriptionHtml seo { title description }
+      media(first: $first, after: $after) {
+        nodes { id alt mediaContentType status }
+        pageInfo { hasNextPage endCursor }
+      }
+    }
+  }`,
   inventory: `query ToolkitInventory($id: ID!, $first: Int!, $after: String) {
     inventoryItem(id: $id) {
       id sku tracked
@@ -39,7 +48,22 @@ export const QUERIES = {
       pageInfo { hasNextPage endCursor }
     }
   }`,
+  orderDetails: `query ToolkitOrderDetails($id: ID!, $first: Int!, $after: String) {
+    order(id: $id) {
+      id displayFinancialStatus displayFulfillmentStatus cancelledAt
+      lineItems(first: $first, after: $after) {
+        nodes { id name quantity sku }
+        pageInfo { hasNextPage endCursor }
+      }
+    }
+  }`,
 } as const;
+
+// Exhaustive mapping prevents a new order read from accidentally using product permissions.
+const OPERATION_SCOPE = {
+  shop: 'read_products', products: 'read_products', variants: 'read_products', productDetails: 'read_products',
+  inventory: 'read_inventory', orders: 'read_orders', orderDetails: 'read_orders',
+} satisfies Record<keyof typeof QUERIES, string>;
 
 export class ConnectorError extends Error {
   constructor(public code: string, message: string, public retryable = false) { super(message); }
@@ -50,7 +74,7 @@ export async function queryShopify(
   variables: Record<string, unknown> = {}, fetcher: Fetch = fetch, signal?: AbortSignal,
 ): Promise<Record<string, unknown>> {
   const shop = shopDomain.parse(connection.shop);
-  const needed = operation === 'orders' ? 'read_orders' : operation === 'inventory' ? 'read_inventory' : 'read_products';
+  const needed = OPERATION_SCOPE[operation];
   if (!connection.scopes.includes(needed)) {
     throw new ConnectorError('MISSING_SCOPE', `Reconnect with ${needed} for this operation.`);
   }
@@ -79,11 +103,24 @@ export async function queryShopify(
   }
   if (payload.errors?.length) {
     const throttled = payload.errors.some(error => error.extensions?.code === 'THROTTLED');
+    const denied = payload.errors.some(error => error.extensions?.code === 'ACCESS_DENIED');
     throw new ConnectorError(throttled ? 'SHOPIFY_THROTTLED' : 'GRAPHQL_ERROR',
-      throttled ? 'Shopify query budget exceeded. Retry later.' : 'Shopify rejected the query. Check scopes, API version, and inputs.', throttled);
+      throttled ? 'Shopify query budget exceeded. Retry later.'
+        : denied ? 'Shopify denied this read. Check app data-access approval, read scopes and store permissions. Order objects can require protected customer data approval even without identity fields.'
+        : 'Shopify rejected the query. Check scopes, API version, and inputs.', throttled);
   }
   if (!payload.data || typeof payload.data !== 'object') {
     throw new ConnectorError('INVALID_RESPONSE', 'Shopify returned no data. No result was verified.');
+  }
+  if (operation === 'productDetails' || operation === 'orderDetails') {
+    const field = operation === 'productDetails' ? 'product' : 'order';
+    if (!Object.hasOwn(payload.data, field)) throw new ConnectorError('INVALID_RESPONSE', 'Shopify returned no resource field. No result was verified.');
+    const resource = payload.data[field];
+    if (resource === null) throw new ConnectorError('RESOURCE_NOT_FOUND', 'This resource is unavailable in the connected store or permitted access window.');
+    if (!resource || typeof resource !== 'object' || Array.isArray(resource)
+        || (resource as Record<string, unknown>).id !== variables.id) {
+      throw new ConnectorError('INVALID_RESPONSE', 'Shopify returned an unexpected resource. No result was verified.');
+    }
   }
   return { source: 'shopify-admin-graphql', shop, apiVersion: API_VERSION,
     observedAt: new Date().toISOString(), operation, data: payload.data,

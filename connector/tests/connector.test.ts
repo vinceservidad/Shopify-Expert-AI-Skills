@@ -20,6 +20,23 @@ const json = (data: unknown, status = 200) => new Response(JSON.stringify(data),
 const fakeFetch = (handler: (url: string, init: RequestInit) => Promise<Response> | Response): Fetch =>
   ((url: string | URL | Request, init?: RequestInit) => handler(String(url), init ?? {})) as Fetch;
 
+// Freeze the original public input contracts so additive tools cannot silently change older clients.
+const schemaVersion = 'https://json-schema.org/draft/2020-12/schema';
+const emptySchema = { type: 'object', properties: {}, $schema: schemaVersion };
+const pageProperties = { first: { default: 20, type: 'integer', minimum: 1, maximum: 50 }, after: { type: 'string', maxLength: 512 } };
+const searchProperties = { ...pageProperties, query: { description: 'Shopify search syntax; use pageInfo to continue results.', type: 'string', maxLength: 500 } };
+const pageSchema = (properties: Record<string, unknown>, required?: string[]) => ({ type: 'object', properties, ...(required ? { required } : {}), $schema: schemaVersion });
+const legacySchemas = {
+  list_shopify_skills: emptySchema,
+  read_shopify_skill: pageSchema({ name: { type: 'string' }, resource: { default: 'SKILL.md', type: 'string' } }, ['name']),
+  shopify_connection_status: emptySchema,
+  shopify_get_shop: emptySchema,
+  shopify_search_products: pageSchema(searchProperties),
+  shopify_get_product_variants: pageSchema({ id: { type: 'string', pattern: '^gid:\\/\\/shopify\\/Product\\/[0-9]+$' }, ...pageProperties }, ['id']),
+  shopify_get_inventory_levels: pageSchema({ id: { type: 'string', pattern: '^gid:\\/\\/shopify\\/InventoryItem\\/[0-9]+$' }, ...pageProperties }, ['id']),
+  shopify_list_order_summaries: pageSchema(searchProperties),
+};
+
 test('skill catalog is complete and rejects traversal / outside symlinks', async () => {
   assert.equal((await listSkills(root)).length, 19);
   assert.match(await readSkill(root, 'shopify-va'), /Shopify/);
@@ -96,7 +113,10 @@ test('MCP protocol discovers tools/resources/prompts and validates input without
   await server.connect(serverTransport); await client.connect(clientTransport);
   try {
     const tools = await client.listTools();
-    assert.equal(tools.tools.length, 8);
+    assert.equal(tools.tools.length, 12);
+    for (const [name, schema] of Object.entries(legacySchemas)) {
+      assert.deepEqual(tools.tools.find(tool => tool.name === name)?.inputSchema, schema, `${name} preserves its original input schema`);
+    }
     assert.ok(tools.tools.every(tool => tool.annotations?.readOnlyHint && tool.annotations.destructiveHint === false));
     const skills = await client.callTool({ name: 'list_shopify_skills', arguments: {} });
     assert.equal((skills.structuredContent?.skills as unknown[]).length, 19);
@@ -139,6 +159,7 @@ async function setup() {
   const address = listener.address() as {port:number};
   const base = `http://127.0.0.1:${address.port}`;
   const tokenCalls: string[] = [];
+  const upstreamCalls: { shop: string; query: string; variables: Record<string, unknown> }[] = [];
   const { app } = createApp({ store, publicUrl: base, clientId: 'synthetic-app', clientSecret: 'synthetic-app-secret', skillsRoot: root,
     fetcher: fakeFetch((url, init) => {
       tokenCalls.push(url);
@@ -148,11 +169,23 @@ async function setup() {
     upstreamFetcher: fakeFetch((url, init) => {
       const shop = new URL(url).hostname;
       assert.equal((init.headers as Record<string,string>)['X-Shopify-Access-Token'], `upstream-${shop}`);
+      assert.equal(url, `https://${shop}/admin/api/${API_VERSION}/graphql.json`);
+      const { query, variables } = JSON.parse(init.body as string);
+      upstreamCalls.push({ shop, query, variables });
+      if (query === QUERIES.productDetails) return json({ data: { product: { id: variables.id,
+        descriptionHtml: `<p>Product from ${shop}</p>`, seo: { title: `Product from ${shop}`, description: null },
+        media: { nodes: [{ id: 'gid://shopify/MediaImage/1', alt: shop, mediaContentType: 'IMAGE', status: 'READY' }], pageInfo: { hasNextPage: true, endCursor: 'media-next' } },
+      } } });
+      if (query === QUERIES.orderDetails) return json({ data: { order: { id: variables.id,
+        displayFinancialStatus: 'PAID', displayFulfillmentStatus: 'UNFULFILLED', cancelledAt: null,
+        lineItems: { nodes: [{ id: 'gid://shopify/LineItem/1', name: `Product from ${shop}`, quantity: 2, sku: 'TEST-1' }], pageInfo: { hasNextPage: true, endCursor: 'lines-next' } },
+      } } });
+      assert.equal(query, QUERIES.shop);
       return json({ data: { shop: { id: `gid://shopify/Shop/1`, name: shop, currencyCode: 'GBP', ianaTimezone: 'Europe/London', primaryDomain: { url: `https://${shop}` } } } });
     }),
   });
   listener.on('request', app);
-  return { base, store, tokenCalls, close: async () => { listener.closeAllConnections(); await new Promise<void>(resolve => listener.close(() => resolve())); store.close(); } };
+  return { base, store, tokenCalls, upstreamCalls, close: async () => { listener.closeAllConnections(); await new Promise<void>(resolve => listener.close(() => resolve())); store.close(); } };
 }
 
 async function authorize(base: string, shop = 'synthetic-a.myshopify.com') {
@@ -197,18 +230,39 @@ test('OAuth to MCP to Shopify flow isolates stores, binds PKCE/resource, rotates
       const client = new Client({name:'http-protocol-test',version:'1.0.0'});
       await client.connect(new StreamableHTTPClientTransport(new URL(`${fixture.base}/mcp`), {requestInit:{headers:{Authorization:`Bearer ${record.tokens.access_token}`}}}));
       try {
-        assert.equal((await client.listTools()).tools.length, 8);
+        assert.equal((await client.listTools()).tools.length, 12);
         const result = await client.callTool({name:'shopify_get_shop',arguments:{}});
         assert.equal(result.structuredContent?.shop, shop);
         assert.ok(!JSON.stringify(result).includes(`upstream-${shop}`));
+        for (const [name, id, field, query] of [
+          ['shopify_get_product_details', 'gid://shopify/Product/1', 'product', QUERIES.productDetails],
+          ['shopify_get_order_details', 'gid://shopify/Order/1', 'order', QUERIES.orderDetails],
+        ] as const) {
+          const details = await client.callTool({ name, arguments: { id, first: 1, after: 'synthetic-cursor' } });
+          assert.equal(details.isError, undefined);
+          assert.equal(details.structuredContent?.shop, shop);
+          assert.equal(details.structuredContent?.apiVersion, API_VERSION);
+          assert.equal((details.structuredContent?.data as Record<string, {id: string}>)[field]?.id, id);
+          assert.ok(JSON.stringify(details).includes(`Product from ${shop}`));
+          assert.ok(!JSON.stringify(details).includes(`upstream-${shop}`));
+          assert.deepEqual(fixture.upstreamCalls.at(-1), { shop, query, variables: { id, first: 1, after: 'synthetic-cursor' } });
+        }
       } finally { await client.close(); }
     }
+    assert.equal(fixture.tokenCalls.length, 2, 'New reads reuse the existing OAuth grant');
     const refreshBody = {client_id:first.clientId,grant_type:'refresh_token',refresh_token:first.tokens.refresh_token,resource:`${fixture.base}/mcp`};
     const refresh = await fetch(`${fixture.base}/token`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(refreshBody)});
     assert.equal(refresh.status, 200);
     const rotated = await refresh.json() as {access_token:string};
     assert.notEqual(rotated.access_token, first.tokens.access_token);
     assert.equal((await fetch(`${fixture.base}/token`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(refreshBody)})).status, 400);
+    const refreshedClient = new Client({name:'refreshed-detail-test',version:'1.0.0'});
+    await refreshedClient.connect(new StreamableHTTPClientTransport(new URL(`${fixture.base}/mcp`), {requestInit:{headers:{Authorization:`Bearer ${rotated.access_token}`}}}));
+    try {
+      const details = await refreshedClient.callTool({name:'shopify_get_order_details',arguments:{id:'gid://shopify/Order/1'}});
+      assert.equal(details.structuredContent?.shop, 'synthetic-a.myshopify.com');
+      assert.deepEqual(fixture.upstreamCalls.at(-1)?.variables, {id:'gid://shopify/Order/1',first:20});
+    } finally { await refreshedClient.close(); }
     await fetch(`${fixture.base}/revoke`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({client_id:first.clientId,token:rotated.access_token})});
     assert.equal((await fetch(`${fixture.base}/mcp`, {method:'POST',headers:{Authorization:`Bearer ${first.tokens.access_token}`,'Content-Type':'application/json'},body:'{}'})).status, 401);
   } finally { await fixture.close(); }

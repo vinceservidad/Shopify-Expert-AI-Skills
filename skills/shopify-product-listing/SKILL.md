@@ -37,6 +37,8 @@ Collect target store, create or update mode, product source, title, description,
 
 Read [references/listing-fields.md](references/listing-fields.md) for the field contract. Use [references/qa-checklist.md](references/qa-checklist.md) before save, activation, publication, and handoff.
 
+For “Check this product listing,” use [references/product-listing-check.md](references/product-listing-check.md) to compare approved facts with the inspected record, draft corrections, and report evidence gaps. This review makes no store changes.
+
 ## Worked example
 
 Read [references/worked-example.md](references/worked-example.md) for a complete synthetic case, supplied inputs, expected outcome, and acceptance checks. Treat its facts and thresholds as example-specific, not merchant evidence or default policy.
