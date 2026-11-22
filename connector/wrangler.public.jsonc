@@ -13,7 +13,7 @@
     "SHOPIFY_PUBLIC_APP_HANDLE": "",
     "SHOPIFY_PUBLIC_INSTALL_URL": "https://admin.shopify.com/?organization_id=128968056&no_redirect=true&redirect=/oauth/redirect_from_developer_dashboard?client_id%3D7e38c21aa48c6eaccafb98e4f90f2f43",
     "PUBLIC_LAUNCH_STAGE": "candidate",
-    "PLUGIN_DOWNLOAD_URL": ""
+    "PLUGIN_DOWNLOAD_URL": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.2/shopify-va-toolkit-skills-only.plugin"
   },
   "durable_objects": {"bindings": [{"name": "OAUTH_ISSUER", "class_name": "OAuthIssuer"}]},
   "migrations": [{"tag": "v1", "new_sqlite_classes": ["OAuthIssuer"]}],

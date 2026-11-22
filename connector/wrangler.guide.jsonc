@@ -11,7 +11,7 @@
     "CONNECTOR_PUBLIC_URL": "https://shopify-mcp.mktskills.com",
     "PUBLIC_LAUNCH_STAGE": "candidate",
     "SHOPIFY_PUBLIC_APP_HANDLE": "",
-    "PLUGIN_DOWNLOAD_URL": ""
+    "PLUGIN_DOWNLOAD_URL": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.2/shopify-va-toolkit-skills-only.plugin"
   },
   "observability": {"enabled": true, "redact_query_string": true, "logs": {"enabled": true, "invocation_logs": false}},
   "minify": true
