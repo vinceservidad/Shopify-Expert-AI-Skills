@@ -20,7 +20,7 @@
   "dependencies": {
     "@modelcontextprotocol/client": "2.2.0",
     "@modelcontextprotocol/express": "2.0.1",
-    "@modelcontextprotocol/node": "2.1.0",
+    "@modelcontextprotocol/node": "2.1.2",
     "@modelcontextprotocol/server": "2.2.0",
     "@shopify/shopify-api": "15.0.0",
     "express": "5.2.1",
