@@ -64,6 +64,7 @@ codex plugin add shopify-va-toolkit@shopify-skills
 
 ### Other options
 - **Live guide:** https://mktskills.com/shopify-va (also mirrored at https://shopify-mcp.mktskills.com)
+- **Need a Shopify store?** [Start with Shopify](https://shopify.pxf.io/c/2227499/2974326/13624) (affiliate link)
 - **Standalone ZIPs & `.plugin` packages:** [v0.2.2 release](releases/v0.2.2/README.md) (for [Claude Skills ZIP](docs/ai-agent-setup.md#claude-skills) or [ChatGPT Projects](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats))
 - **Full setup & MCP docs:** [Agent setup guide](docs/ai-agent-setup.md) · [Plugin & MCP reference](docs/plugin-and-connector.md)
 
