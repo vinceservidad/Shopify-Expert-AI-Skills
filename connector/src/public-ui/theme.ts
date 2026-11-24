@@ -42,6 +42,45 @@ export const THEME_SCRIPT = `(function () {
         }).catch(function () {});
       });
     });
+    var filterInput = document.querySelector('[data-skill-filter]');
+    if (filterInput) {
+      var filterWrap = filterInput.closest('[data-skill-filter-wrap]');
+      if (filterWrap) filterWrap.hidden = false;
+      var status = document.querySelector('[data-skill-status]');
+      var groups = document.querySelectorAll('.skill-group');
+      filterInput.addEventListener('input', function () {
+        var q = (filterInput.value || '').trim().toLowerCase();
+        var shown = 0;
+        Array.prototype.forEach.call(groups, function (group) {
+          var items = group.querySelectorAll('li');
+          var groupShown = 0;
+          Array.prototype.forEach.call(items, function (li) {
+            var match = !q || (li.textContent || '').toLowerCase().indexOf(q) !== -1;
+            li.hidden = !match;
+            if (match) { groupShown++; shown++; }
+          });
+          group.hidden = groupShown === 0;
+        });
+        if (status) status.textContent = q ? (shown + ' matching') : (shown + ' skills');
+      });
+    }
+    var reduced = false;
+    try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+    var reveals = document.querySelectorAll('[data-reveal]');
+    if (!reduced && 'IntersectionObserver' in window && reveals.length) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -32px 0px' });
+      Array.prototype.forEach.call(reveals, function (el) {
+        el.classList.add('will-reveal');
+        io.observe(el);
+      });
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();
