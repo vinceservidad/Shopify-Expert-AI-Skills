@@ -176,6 +176,33 @@ try {
   assert.equal((await post('/mcp', {})).status, 401);
   const metadata = await okJson(await send('/.well-known/oauth-protected-resource/mcp'));
   assert.equal(metadata.resource, origin + '/mcp');
+  assert.equal((await send('/.well-known/oauth-protected-resource')).status, 404, 'Root OAuth resource metadata must not trigger login for /mcp/shopify-skills');
+  assert.equal((await send('/.well-known/oauth-protected-resource/mcp/shopify-skills', { headers: { Origin: 'https://claude.ai' } })).status, 404);
+  const openPreflight = await send('/mcp/shopify-skills', { method: 'OPTIONS', headers: { Origin: 'https://claude.ai' } });
+  assert.equal(openPreflight.status, 204);
+  assert.equal(openPreflight.headers.get('access-control-allow-origin'), '*');
+  assert.equal((await send('/mcp/shopify-skills', { method: 'GET' })).status, 405);
+  const openRpc = async (method, params = {}) => {
+    const res = await send('/mcp/shopify-skills', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Origin: 'https://claude.ai' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.get('access-control-allow-origin'), '*');
+    assert.equal(res.headers.get('www-authenticate'), null);
+    return res.json();
+  };
+  const openInit = await openRpc('initialize', { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'test', version: '1.0' } });
+  assert.equal(openInit.result.serverInfo.name, 'shopify-va-skills');
+  const openTools = (await openRpc('tools/list')).result.tools;
+  assert.deepEqual(openTools.map(t => t.name).sort(), ['list_shopify_skills', 'list_shopify_va_workflows', 'prepare_shopify_va_task', 'read_shopify_skill']);
+  assert.ok(openTools.every(t => t.annotations.readOnlyHint && t.annotations.destructiveHint === false));
+  const openSkills = (await openRpc('tools/call', { name: 'list_shopify_skills', arguments: {} })).result.structuredContent.skills;
+  assert.equal(openSkills.length, 19);
+  assert.deepEqual(openSkills, source.skills);
+  const openRef = (await openRpc('tools/call', { name: 'read_shopify_skill', arguments: { name: 'shopify-product-listing', resource: 'references/listing-fields.md' } })).result.structuredContent;
+  assert.ok(typeof openRef.text === 'string' && openRef.text.length > 50);
 
   for (const path of ['/shopify-va', '/help', '/privacy']) {
     const response = await send(path);

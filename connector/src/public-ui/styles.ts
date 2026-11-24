@@ -44,7 +44,7 @@ p{max-width:800px;margin:0 0 16px}
 .hero-files pre{margin:0;padding:16px 14px;font-size:13px;line-height:1.7;color:var(--term-ink);white-space:pre;overflow-x:auto;scrollbar-width:thin}
 .hero-files .t-dir{color:var(--term-cmd)}.hero-files .t-file{color:var(--term-str)}.hero-files .t-glyph{color:var(--term-muted)}
 .hero-files .t-line{display:block;animation:term-show .2s both}
-.hero-files .t-line:nth-child(2){animation-delay:.12s}.hero-files .t-line:nth-child(3){animation-delay:.24s}.hero-files .t-line:nth-child(4){animation-delay:.36s}.hero-files .t-line:nth-child(5){animation-delay:.48s}
+.hero-files .t-line:nth-child(2){animation-delay:.12s}.hero-files .t-line:nth-child(3){animation-delay:.24s}.hero-files .t-line:nth-child(4){animation-delay:.36s}.hero-files .t-line:nth-child(5){animation-delay:.48s}.hero-files .t-line:nth-child(6){animation-delay:.6s}
 @keyframes term-show{from{opacity:0}to{opacity:1}}
 .facts{margin:20px 0 0;font-family:var(--mono);font-size:12px;color:var(--muted)}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;margin:24px 0 0}
@@ -101,6 +101,8 @@ p{max-width:800px;margin:0 0 16px}
 .card-steps{margin:0;padding-left:20px;font-size:15px;color:var(--ink-2)}
 .card-steps li+li{margin-top:8px}
 .install-card .actions{margin-top:auto;padding-top:4px;gap:12px 16px}
+.mcp-url{margin:12px 0 16px}
+.retention-list{padding-left:20px;margin:12px 0 16px}.retention-list li+li{margin-top:6px}
 .steps>li{margin-block:16px}.file-list{padding-left:20px;margin-top:12px}.file-list li{margin-block:8px}
 .request{background:var(--ground);color:var(--ink);border:1px solid var(--border);border-radius:6px;padding:14px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.65;max-width:100%}
 .callout{padding:32px!important;margin-block:24px;border:1px solid var(--border)!important;border-radius:8px;background:var(--paper)}

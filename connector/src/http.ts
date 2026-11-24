@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ShopifyOAuth, type AuthOptions } from './auth.js';
 import { discoverSkillsRoot } from './catalog.js';
-import { createServer } from './mcp.js';
+import { createServer, createSkillsOnlyServer } from './mcp.js';
 import { SecretStore } from './store.js';
 import type { Fetch } from './shopify.js';
 import { installAppChecks } from './app-checks.js';
@@ -35,6 +35,25 @@ export function createApp(options: AuthOptions & PublicPageConfig & { skillsRoot
     const content = publicContent(request.path, options);
     if (!content) { response.status(404).end(); return; }
     response.type(content.contentType).send(content.body);
+  });
+  app.all('/mcp/shopify-skills', async (request: Request, response) => {
+    response.set({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Accept, MCP-Protocol-Version, Mcp-Session-Id',
+      'Access-Control-Expose-Headers': 'Mcp-Session-Id',
+    });
+    if (request.method === 'OPTIONS') { response.status(204).end(); return; }
+    if (request.method !== 'POST') { response.set('Allow', 'POST, OPTIONS').status(405).end(); return; }
+    const accept = request.get('accept') ?? '';
+    if (!accept.includes('application/json') || !accept.includes('text/event-stream')) {
+      request.headers.accept = 'application/json, text/event-stream';
+    }
+    const server = createSkillsOnlyServer({ skillsRoot: options.skillsRoot });
+    const transport = new NodeStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
+    response.on('close', () => { void server.close(); });
+    await server.connect(transport);
+    await transport.handleRequest(request, response, request.body);
   });
   app.all('/mcp', async (request: Request, response) => {
     const match = /^Bearer ([A-Za-z0-9_-]{43})$/.exec(request.get('authorization') ?? '');

@@ -6,51 +6,70 @@ This independent project complements Shopify Sidekick and authorized integration
 
 [Choose a VA job](docs/va-workflows.md) for the files to provide, or [copy a request](docs/prompt-library.md#practical-va-jobs). Keep client briefs in your ChatGPT or Claude chat/project files. These jobs run when you request them; they do not create schedules or background monitoring.
 
-**ShopifySkills is one plugin containing all 19 workflows.** In a host that
-supports installing this plugin, install it once, select **ShopifySkills** in
-its plugin picker, and ask:
+## Quick Start
 
-```text
-@ShopifySkills research ceramic mug opportunities for the UK market.
-Use public sources, show your evidence, and keep the work read-only.
+Pick the easiest way to connect all **19 Shopify skills** (and their reference files). No Shopify account is needed to use the skills.
+
+### 1. One-command CLI (all 19 skills)
+Works with Claude Code, Codex, Cursor, and other tools that support Agent Skills:
+
+```bash
+npx skills add vinceservidad/Shopify-Expert-AI-Skills
 ```
 
-Research uses the host's available tools or your supplied files. **No Shopify
-sign-in, local server, or API key is required for the skills-only plugin.**
-Connecting private store data is an optional separate step.
+Preview the full list first:
 
-**Claude Code (2.1.292 or later), in your terminal:**
+```bash
+npx skills add vinceservidad/Shopify-Expert-AI-Skills --list
+```
+
+### 2. No-login MCP link (Claude, ChatGPT, Cursor)
+Add this URL as a custom MCP server with **no sign-in required**:
+
+```text
+https://shopify-mcp.mktskills.com/mcp/shopify-skills
+```
+
+It serves all 19 Shopify skills, their reference files, and 8 VA task guides read-only. It never asks for a Shopify login.
+
+### 3. Signed-in MCP link (optional live Shopify store data)
+When you want read-only live store data (products, variants, stock, and limited order summaries after owner approval), connect the signed-in MCP endpoint:
+
+```text
+https://shopify-mcp.mktskills.com/mcp
+```
+
+*(Live public store sign-in is pending Shopify App Store review. Use the no-login MCP link or CLI today.)*
+
+### 4. Claude Code & Codex GitHub plugin marketplaces
+
+**Claude Code** (terminal, `2.1.292+`):
 
 ```bash
 claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills
 ```
 
-**Inside a Claude Code session (2.1.275 or later):**
+**Claude Code** (inside a session, `2.1.275+`):
 
 ```text
 /plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills
 ```
 
-`/plugin` only works inside a session. Typed into a terminal, it fails with
-`no such file or directory`. Run `claude plugin details shopify-va-toolkit` to
-confirm that 19 skills loaded.
+Check that all 19 skills loaded with `claude plugin details shopify-va-toolkit`.
 
-For older versions and other hosts, follow the
-[one-time plugin installation guide](docs/ai-agent-setup.md#install-shopifyskills-once).
-The repository supplies native Codex and Claude plugin marketplaces and the
-[installable v0.2.2 package](releases/v0.2.2/README.md). Existing v0.1.1
-downloads remain available; native plugin metadata starts with v0.2.0.
+**Codex**:
 
-**Directory status:** ShopifySkills is not yet registered in this app's curated
-plugin directory. A repository or ZIP does not automatically create an `@`
-entry. The exact picker and mention behavior must be verified after installing
-or importing the plugin in the intended host; no curated `plugin://` link is
-claimed here.
+```bash
+codex plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills --ref main
+codex plugin add shopify-va-toolkit@shopify-skills
+```
 
-If your ChatGPT or Claude surface cannot import custom plugins, the guide also
-covers a [Claude Skill ZIP](docs/ai-agent-setup.md#claude-skills) and
-[ChatGPT Project](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats) fallback.
-For optional store access, see the [developer MCP guide](docs/plugin-and-connector.md).
+### Other options
+- **Live guide:** https://mktskills.com/shopify-va (also mirrored at https://shopify-mcp.mktskills.com)
+- **Standalone ZIPs & `.plugin` packages:** [v0.2.2 release](releases/v0.2.2/README.md) (for [Claude Skills ZIP](docs/ai-agent-setup.md#claude-skills) or [ChatGPT Projects](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats))
+- **Full setup & MCP docs:** [Agent setup guide](docs/ai-agent-setup.md) · [Plugin & MCP reference](docs/plugin-and-connector.md)
+
+**Directory status:** The Anthropic Plugin Directory listing (`MKT Skills — Shopify VA`) is under review. Use the CLI, no-login MCP link, or GitHub plugin commands today.
 
 ## How does it work?
 

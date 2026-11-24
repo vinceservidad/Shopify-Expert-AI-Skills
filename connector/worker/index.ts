@@ -5,7 +5,7 @@ import express from 'express';
 import { hostHeaderValidation, originValidation } from '@modelcontextprotocol/express';
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/server';
 import { ShopifyOAuth } from '../src/auth.js';
-import { createServer, type SkillCatalog } from '../src/mcp.js';
+import { createServer, createSkillsOnlyServer, type SkillCatalog } from '../src/mcp.js';
 import { ConnectorError, type Fetch } from '../src/shopify.js';
 import { installAppChecks } from '../src/app-checks.js';
 import { renderAppHome, type PublicPageConfig } from '../src/public-pages.js';
@@ -92,13 +92,46 @@ export class OAuthIssuer extends DurableObject<Env> {
 }
 
 const headers = SECURITY_HEADERS;
+const OPEN_MCP_CORS: Record<string, string> = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Accept, MCP-Protocol-Version, Mcp-Session-Id',
+  'Access-Control-Expose-Headers': 'Mcp-Session-Id',
+};
 const json = (data: unknown, status = 200, extra: Record<string, string> = {}) => Response.json(data, { status, headers: { ...headers, ...extra } });
+
+function normalizeStreamableAccept(request: Request): Request {
+  const accept = request.headers.get('accept') ?? '';
+  if (accept.includes('application/json') && accept.includes('text/event-stream')) return request;
+  const nextHeaders = new Headers(request.headers);
+  nextHeaders.set('accept', 'application/json, text/event-stream');
+  return new Request(request, { headers: nextHeaders });
+}
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     try {
       const url = new URL(request.url), origin = new URL(env.PUBLIC_URL).origin;
       if (url.origin !== origin || request.headers.get('host') !== new URL(origin).host) return json({ error: 'host_not_allowed' }, 403);
+      // No-login read-only skills MCP endpoint: serves only public Markdown skills and workflow guides with CORS.
+      if (url.pathname === '/.well-known/oauth-protected-resource' || url.pathname === '/.well-known/oauth-protected-resource/mcp/shopify-skills') {
+        if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, ...OPEN_MCP_CORS } });
+        return new Response(null, { status: 404, headers: { ...headers, ...OPEN_MCP_CORS } });
+      }
+      if (url.pathname === '/mcp/shopify-skills') {
+        if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, ...OPEN_MCP_CORS } });
+        if (request.method !== 'POST') return json({ error: 'method_not_allowed' }, 405, { Allow: 'POST, OPTIONS', ...OPEN_MCP_CORS });
+        const server = createSkillsOnlyServer({ skillsRoot: '', catalog });
+        const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true, maxRequestBodySize: 32768 });
+        try {
+          await server.connect(transport);
+          const response = await transport.handleRequest(normalizeStreamableAccept(request));
+          const output = new Response(response.body, response);
+          for (const [name, value] of Object.entries(headers)) output.headers.set(name, value);
+          for (const [name, value] of Object.entries(OPEN_MCP_CORS)) output.headers.set(name, value);
+          return output;
+        } finally { await server.close(); }
+      }
       const suppliedOrigin = request.headers.get('origin');
       if (suppliedOrigin && suppliedOrigin !== origin) return json({ error: 'origin_not_allowed' }, 403);
       if (url.pathname === '/health' && request.method === 'GET') return json({ status: 'ok', name: 'shopify-va-toolkit', mode: 'read-only', runtime: 'cloudflare-workers', version: '0.2.0', authMode: authMode(env.SHOPIFY_AUTH_MODE), tools: 12, skills: 19 });
