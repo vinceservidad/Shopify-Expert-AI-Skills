@@ -47,20 +47,21 @@ body.has-hero .family-nav a{color:var(--stage-muted)}body.has-hero .family-nav a
 .hero-cta:hover{text-decoration:none;filter:brightness(1.06);transform:translateY(-1px)}
 .hero-cta svg{width:18px;height:18px;flex-shrink:0;transition:transform .18s var(--ease)}.hero-cta:hover svg{transform:translateX(3px)}
 
-/* Wide interactive segmented workbench inside the hero (zero JS, strict-CSP safe) */
-.workbench{max-width:860px;margin:48px auto 0;text-align:left;border-top:1px solid var(--stage-line);padding-top:24px}
+/* Wide interactive 2-tab setup bar inside the hero (zero inline JS, strict-CSP safe) */
+.workbench{max-width:760px;margin:36px auto 0;text-align:left}
 .wb-radio{position:absolute;opacity:0;pointer-events:none}
-.wb-tabs{display:inline-flex;flex-wrap:wrap;gap:2px;padding:3px;border-radius:8px;background:rgba(255,255,255,.07);border:1px solid var(--stage-line);margin-bottom:20px}
-.wb-tabs label{padding:8px 16px;border-radius:6px;font-size:14px;font-weight:600;color:var(--stage-muted);cursor:pointer;user-select:none;transition:background-color .16s var(--ease),color .16s var(--ease)}
+.wb-tabs{display:inline-flex;gap:2px;padding:3px;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid var(--stage-line);margin-bottom:16px}
+.wb-tabs label{padding:8px 18px;border-radius:6px;font-size:14px;font-weight:600;color:var(--stage-muted);cursor:pointer;user-select:none;transition:background-color .16s var(--ease),color .16s var(--ease)}
 .wb-tabs label:hover{color:var(--stage-ink)}
-#wb-cli:checked ~ .wb-tabs label[for=wb-cli],#wb-open:checked ~ .wb-tabs label[for=wb-open],#wb-plugins:checked ~ .wb-tabs label[for=wb-plugins],#wb-store:checked ~ .wb-tabs label[for=wb-store]{background:var(--lime);color:var(--on-lime)}
+#wb-open:checked ~ .wb-tabs label[for=wb-open],#wb-cli:checked ~ .wb-tabs label[for=wb-cli]{background:var(--lime);color:var(--on-lime)}
 .wb-panel{display:none}
-#wb-cli:checked ~ .wb-panels .wb-cli,#wb-open:checked ~ .wb-panels .wb-open,#wb-plugins:checked ~ .wb-panels .wb-plugins,#wb-store:checked ~ .wb-panels .wb-store{display:block;animation:fade-in 180ms var(--ease)}
-.wb-panel p{font-size:16px;color:var(--stage-muted);margin:0 0 12px;max-width:65ch}
-.wb-panel .wb-note{font-size:14px;color:var(--stage-muted);margin:12px 0 0}
-.wb-code{margin:0;padding:14px 16px;border-radius:8px;background:rgba(0,16,12,.72);border:1px solid var(--stage-line);color:var(--stage-ink);font-size:14px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
-.wb-code + .wb-code{margin-top:10px}
-.wb-panel a{color:var(--lime)}
+#wb-open:checked ~ .wb-panels .wb-open,#wb-cli:checked ~ .wb-panels .wb-cli{display:block;animation:fade-in 180ms var(--ease)}
+.wb-row{display:flex;align-items:center;gap:12px;padding:8px 8px 8px 16px;border-radius:10px;background:rgba(0,16,12,.78);border:1px solid var(--stage-line)}
+.wb-row code{flex:1;min-width:0;font-size:14px;line-height:1.5;color:var(--stage-ink);overflow-wrap:anywhere}
+.copy-btn{flex-shrink:0;min-height:38px;padding:6px 16px;border:0;border-radius:6px;background:var(--lime);color:var(--on-lime);font-family:inherit;font-size:14px;font-weight:650;cursor:pointer;transition:filter .16s var(--ease)}
+.copy-btn:hover{filter:brightness(1.06)}
+.wb-note{font-size:14px;color:var(--stage-muted);margin:12px 0 0}
+.wb-note a{color:var(--lime)}
 
 /* Body sections: strict 3-size body scale (14px small, 16px body/lists/h3, 28px h2) */
 .page-body section{padding:64px 0;border-top:1px solid var(--border);scroll-margin-top:20px}

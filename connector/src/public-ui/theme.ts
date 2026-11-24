@@ -29,6 +29,19 @@ export const THEME_SCRIPT = `(function () {
         Array.prototype.forEach.call(buttons, function (b) { label(b, current); });
       });
     });
+    var copyButtons = document.querySelectorAll('[data-copy]');
+    Array.prototype.forEach.call(copyButtons, function (btn) {
+      btn.hidden = false;
+      btn.addEventListener('click', function () {
+        var text = btn.getAttribute('data-copy') || '';
+        if (!text || !navigator.clipboard) return;
+        navigator.clipboard.writeText(text).then(function () {
+          var prev = btn.textContent;
+          btn.textContent = 'Copied';
+          setTimeout(function () { btn.textContent = prev; }, 1500);
+        }).catch(function () {});
+      });
+    });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();
