@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { renderHelpPage, renderPrivacyPage, renderProductPage, type PublicPageConfig } from '../src/public-pages.js';
+import { PUBLIC_STYLES, renderHelpPage, renderPrivacyPage, renderProductPage, type PublicPageConfig } from '../src/public-pages.js';
 import { publicContent } from '../src/public-routes.js';
 
 const RELEASE_PLUGIN_URL =
@@ -110,6 +110,21 @@ test('public pages exclude stale copy, deprecated Custom GPT wording, and sloppy
     for (const pattern of STALE_OR_SLOP_PATTERNS) {
       assert.doesNotMatch(html, pattern, `Unexpected stale or sloppy phrase matching ${pattern}`);
     }
+  }
+});
+
+test('public pages and styles enforce clean design rules (no pills, eyebrows, beige, purple, or <13px fonts)', () => {
+  for (const html of [
+    renderProductPage(candidateConfig),
+    renderHelpPage(candidateConfig),
+    renderPrivacyPage(candidateConfig),
+  ]) {
+    assert.doesNotMatch(html, /class="[^"]*\b(?:eyebrow|stage-badge|install-tag|term-dots|callout|install-card|job-card)\b/);
+  }
+  assert.doesNotMatch(PUBLIC_STYLES, /border-radius\s*:\s*999px/);
+  assert.doesNotMatch(PUBLIC_STYLES, /#(?:f6f4ee|fffefb|e3dfd3|ebe8df|eeebe1|eeebe3|7e3bd0|c9a7ff)/i);
+  for (const match of PUBLIC_STYLES.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)) {
+    assert.ok(Number(match[1]) >= 13, `Found font-size < 13px: ${match[0]}`);
   }
 });
 
