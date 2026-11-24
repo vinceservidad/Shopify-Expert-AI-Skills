@@ -55,6 +55,8 @@ test('product page publishes v0.2.2 install paths and Remote MCP details in cand
   assert.ok(html.includes('read_inventory'));
   assert.ok(html.includes('read_orders'));
 
+  assert.ok(html.includes('https://shopify.pxf.io/c/2227499/2974326/13624'));
+  assert.ok(html.includes('rel="sponsored noopener noreferrer"'));
   assert.ok(html.includes('Shopify App Store review pending'));
   assert.doesNotMatch(html, /https:\/\/apps\.shopify\.com\//);
 });
