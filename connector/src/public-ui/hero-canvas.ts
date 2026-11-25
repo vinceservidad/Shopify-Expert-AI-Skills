@@ -1,22 +1,31 @@
-/** Subtle hero canvas animation, served from 'self' so the strict CSP holds.
- *  Decorative only (aria-hidden), stops offscreen/hidden, and respects reduced motion. */
+/** Hero stage animation, served from 'self' so the strict CSP holds.
+ *  Decorative only (aria-hidden), stops offscreen/hidden, and honors reduced motion.
+ *  Motif: Shopify commerce emerald glow waves + price-tag checkmarks drifting upward. */
 export const HERO_SCRIPT = `(function () {
   var canvas = document.querySelector('[data-hero-canvas]');
   if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var width = 0, height = 0, ratio = 1, dots = [], running = false, visible = true, start = 0;
-  var BLUE = [63, 169, 255], MINT = [95, 227, 161];
+  var width = 0, height = 0, ratio = 1, tags = [], dots = [], running = false, visible = true, last = 0, start = 0;
+  var EMERALD = [95, 227, 161], LIME = [185, 235, 106], MINT = [142, 224, 184];
 
   function rgba(c, a) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
   function rand(min, max) { return min + Math.random() * (max - min); }
 
+  function makeTag(initial) {
+    var size = rand(24, 48) * Math.min(1, Math.max(.7, width / 1100));
+    return { x: rand(0, width), y: initial ? rand(0, height) : height + size * 2, size: size,
+      speed: rand(8, 18), drift: rand(-5, 5), angle: rand(-.45, .45), spin: rand(-.06, .06),
+      alpha: rand(.08, .22), checkAt: rand(.28, .72), checked: 0 };
+  }
+
   function seed() {
-    dots = [];
-    var count = Math.min(72, Math.max(24, Math.round(width / 20)));
-    for (var j = 0; j < count; j++) {
-      dots.push({ x: rand(0, width), y: rand(0, height), r: rand(.7, 1.8), tw: rand(0, Math.PI * 2), sp: rand(.5, 1.3), c: j % 3 === 0 ? MINT : BLUE });
+    var count = Math.round(Math.min(12, Math.max(5, width / 110)));
+    tags = []; dots = [];
+    for (var i = 0; i < count; i++) tags.push(makeTag(true));
+    for (var j = 0; j < Math.min(64, Math.max(22, Math.round(width / 22))); j++) {
+      dots.push({ x: rand(0, width), y: rand(0, height), r: rand(.6, 1.6), tw: rand(0, Math.PI * 2), sp: rand(.5, 1.4) });
     }
   }
 
@@ -33,24 +42,72 @@ export const HERO_SCRIPT = `(function () {
   function wave(t, y0, amp, len, speed, color, alpha, lineWidth) {
     ctx.beginPath();
     for (var x = 0; x <= width + 10; x += 10) {
-      var y = y0 * height + Math.sin(x / len + t * speed) * amp + Math.sin(x / (len * .55) - t * speed * .65) * amp * .35;
+      var y = y0 * height + Math.sin(x / len + t * speed) * amp + Math.sin(x / (len * .54) - t * speed * .68) * amp * .35;
       if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.strokeStyle = rgba(color, alpha); ctx.lineWidth = lineWidth;
     ctx.stroke();
   }
 
+  function tagPath(s) {
+    var w = s * 1.25, h = s * .82, r = s * .16, p = s * .42;
+    ctx.beginPath();
+    ctx.moveTo(-w / 2 + r, -h / 2);
+    ctx.lineTo(w / 2 - r, -h / 2); ctx.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+    ctx.lineTo(w / 2, h / 2 - r); ctx.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
+    ctx.lineTo(-w / 2 + r * .4, h / 2);
+    ctx.lineTo(-w / 2 - p, 0);
+    ctx.lineTo(-w / 2 + r * .4, -h / 2);
+    ctx.closePath();
+  }
+
+  function drawTag(tag) {
+    var calm = width > 900 && tag.x > width * .24 && tag.x < width * .76 ? .32 : 1;
+    ctx.save();
+    ctx.globalAlpha = calm;
+    ctx.translate(tag.x, tag.y); ctx.rotate(tag.angle);
+    var s = tag.size;
+    tagPath(s);
+    ctx.fillStyle = rgba(MINT, tag.alpha * .28); ctx.fill();
+    ctx.strokeStyle = rgba(MINT, tag.alpha * 1.45); ctx.lineWidth = 1.2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(-s * .52, 0, s * .08, 0, Math.PI * 2);
+    ctx.strokeStyle = rgba(MINT, tag.alpha * 1.45); ctx.stroke();
+    if (tag.checked > 0) {
+      var k = Math.min(1, tag.checked), c = k < 1 ? MINT : LIME;
+      ctx.beginPath();
+      var a = [-s * .16, s * .02], b = [-s * .02, s * .17], d = [s * .3, -s * .17];
+      ctx.moveTo(a[0], a[1]);
+      if (k < .4) ctx.lineTo(a[0] + (b[0] - a[0]) * k / .4, a[1] + (b[1] - a[1]) * k / .4);
+      else { ctx.lineTo(b[0], b[1]); var q = (k - .4) / .6; ctx.lineTo(b[0] + (d[0] - b[0]) * q, b[1] + (d[1] - b[1]) * q); }
+      ctx.strokeStyle = rgba(c, Math.min(.9, tag.alpha * 3)); ctx.lineWidth = Math.max(1.8, s * .085);
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function draw(now) {
-    var t = reduce ? 0 : (now - start) / 1000;
+    var t = (now - start) / 1000, dt = last ? Math.min(.05, (now - last) / 1000) : 0;
+    last = now;
     ctx.clearRect(0, 0, width, height);
     for (var i = 0; i < dots.length; i++) {
-      var dot = dots[i], tw = .25 + .3 * Math.sin(t * dot.sp + dot.tw);
+      var dot = dots[i], tw = .3 + .3 * Math.sin(t * dot.sp + dot.tw);
       ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
-      ctx.fillStyle = rgba(dot.c, tw * .45); ctx.fill();
+      ctx.fillStyle = rgba(MINT, tw * .42); ctx.fill();
     }
-    wave(t, .22, 16, 220, .28, BLUE, .22, 1.5);
-    wave(t, .78, 20, 260, .24, MINT, .20, 1.5);
-    wave(t, .86, 12, 180, -.20, BLUE, .14, 1);
+    wave(t, .22, 16, 210, .30, EMERALD, .28, 1.6);
+    wave(t, .80, 20, 240, .25, EMERALD, .26, 1.6);
+    wave(t, .88, 12, 180, -.20, LIME, .18, 1.1);
+    for (var n = 0; n < tags.length; n++) {
+      var tag = tags[n];
+      if (!reduce) {
+        tag.y -= tag.speed * dt; tag.x += tag.drift * dt; tag.angle += tag.spin * dt;
+        var progress = 1 - tag.y / height;
+        if (progress > tag.checkAt && tag.checked < 1.2) tag.checked += dt * 1.5;
+        if (tag.y < -tag.size * 2) tags[n] = makeTag(false);
+      } else if (n % 2 === 0) tag.checked = 1.2;
+      drawTag(tags[n]);
+    }
   }
 
   function frame(now) {
@@ -61,7 +118,7 @@ export const HERO_SCRIPT = `(function () {
 
   function update() {
     var should = !reduce && visible && !document.hidden;
-    if (should && !running) { running = true; requestAnimationFrame(frame); }
+    if (should && !running) { running = true; last = 0; requestAnimationFrame(frame); }
     else if (!should) running = false;
   }
 

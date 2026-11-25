@@ -49,13 +49,15 @@ const escape = (value: string) =>
 const sourceFile = (path: string) => `${REPOSITORY}/blob/main/${path}`;
 const sourceCandidateFile = (path: string) => `${REPOSITORY}/blob/feat/cloudflare-hosted-mcp/${path}`;
 
-const PRODUCT_TITLE = 'Shopify VA Skills for AI Agents — 19 Free Playbooks | Marketing Skills';
+const MARK = '<svg class="mark" aria-hidden="true" focusable="false" viewBox="0 0 32 32"><path d="M9.2 7.5h15.3a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H9.2L2.6 16z" fill="currentColor"/><circle class="mark-hole" cx="8.6" cy="16" r="1.7"/><path class="mark-check" d="M13.4 15.6l3.3 3.6 6.4-6.6"/></svg>';
+
+const PRODUCT_TITLE = 'Shopify VA Skills for AI Agents: 19 Free Playbooks | Marketing Skills';
 const PRODUCT_DESCRIPTION =
   'Free, MIT open-source library of 19 Shopify skills for ChatGPT, Claude, Claude Code, Codex, Cursor, and Antigravity. Read and draft only, with no login.';
-const HELP_TITLE = 'Setup & Help — Shopify VA Skills | Marketing Skills';
+const HELP_TITLE = 'Setup & Help | Shopify VA Skills | Marketing Skills';
 const HELP_DESCRIPTION =
   'Connect all 19 Shopify VA skills in ChatGPT, Claude, Claude Code, Codex, Cursor, Windsurf, Copilot, or Antigravity in under a minute.';
-const PRIVACY_TITLE = 'Privacy Notice — Shopify VA Skills | Marketing Skills';
+const PRIVACY_TITLE = 'Privacy Notice | Shopify VA Skills | Marketing Skills';
 const PRIVACY_DESCRIPTION =
   'What the read-only Shopify VA MCP server reads, stores, and deletes. Free, MIT open source, no trackers.';
 
@@ -264,7 +266,7 @@ function productJsonLd(): string {
       },
       {
         '@type': 'WebSite',
-        name: 'Marketing Skills — Shopify VA Skills',
+        name: 'Marketing Skills: Shopify VA Skills',
         url: `${SITE_ORIGIN}/shopify-va`,
         description: PRODUCT_DESCRIPTION,
         publisher: { '@type': 'Person', name: 'Vince Servidad', url: AUTHOR },
@@ -307,7 +309,7 @@ function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): st
     : '';
   const ldTag = meta.jsonLd ? `<script type="application/ld+json">${meta.jsonLd}</script>` : '';
   const heroScript = meta.hasHero ? `<script src="${pagePath(config, '/assets/hero.js')}" defer></script>` : '';
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(meta.title)}</title><meta name="description" content="${escape(meta.description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow"><meta name="theme-color" content="#020812"><meta name="color-scheme" content="dark"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#setup')}">Setup</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/help')}">Help</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start with Shopify (affiliate)</a><a href="${pagePath(config, '/help')}">Help</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(meta.title)}</title><meta name="description" content="${escape(meta.description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#setup')}">Setup</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/help')}">Help</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start with Shopify (affiliate)</a><a href="${pagePath(config, '/help')}">Help</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
 }
 
 function heroWorkbench(openMcpUrl: string): string {
@@ -333,7 +335,7 @@ function heroWorkbench(openMcpUrl: string): string {
 
 function bottleneckTable(): string {
   const rows = BOTTLENECKS.map(
-    row => `<tr><td class="bn-problem">${escape(row.problem)}</td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-quiet" data-copy="${escape(row.prompt)}">Copy prompt</button></td></tr>`,
+    row => `<tr><td class="bn-problem">${escape(row.problem)}</td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(row.prompt)}">Copy prompt</button></td></tr>`,
   ).join('');
   return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Bottleneck</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -342,13 +344,13 @@ function skillCatalogSection(): string {
   const tabs = ['All', ...SKILL_CATEGORIES]
     .map(
       (cat, index) =>
-        `<button type="button" class="cat-btn" data-skill-cat="${escape(cat)}" aria-pressed="${index === 0 ? 'true' : 'false'}">${escape(cat)}</button>`,
+        `<button type="button" class="seg-tab" data-skill-cat="${escape(cat)}" aria-pressed="${index === 0 ? 'true' : 'false'}">${escape(cat)}</button>`,
     )
     .join('');
   const items = SKILL_CATALOG.map(
-    skill => `<article class="skill-item" data-skill-card data-cat="${escape(skill.category)}"><div><h3>${escape(skill.name)}</h3><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-quiet" data-copy="${escape(skill.prompt)}">Copy prompt</button><a href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}">Read guide</a></div></article>`,
+    skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div><h3>${escape(skill.name)}</h3><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}">Read guide</a></div></article>`,
   ).join('');
-  return `<div class="catalog-controls" data-skill-filter-wrap><div class="cat-tabs" role="group" aria-label="Filter playbooks by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search playbooks (stock, ads, Flow)" aria-label="Search Shopify playbooks"><span data-skill-status>${SKILL_COUNT} playbooks</span></div></div><div class="skill-grid">${items}</div>`;
+  return `<div class="catalog-controls" data-skill-filter-wrap><div class="seg-tabs" role="group" aria-label="Filter playbooks by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search playbooks (stock, ads, Flow)" aria-label="Search Shopify playbooks"><span data-skill-status>${SKILL_COUNT} playbooks</span></div></div><div class="skill-index">${items}</div>`;
 }
 
 function sidekickComparisonTable(): string {
@@ -358,8 +360,8 @@ function sidekickComparisonTable(): string {
   return `<div class="table-wrap"><table class="compare-table"><thead><tr><th scope="col">Store job</th><th scope="col" class="cmp-ours">Shopify VA Skills</th><th scope="col">Shopify Sidekick</th></tr></thead><tbody>${rows}</tbody></table></div><p class="compare-note"><strong>Best workflow:</strong> Plan, audit, and write checked drafts here, then apply approved clicks inside Shopify Admin or Sidekick.</p>`;
 }
 
-function supportedAppsGrid(): string {
-  return `<div class="apps-grid">${SUPPORTED_APPS.map(
+function supportedAppsMatrix(): string {
+  return `<div class="apps-matrix">${SUPPORTED_APPS.map(
     app => `<div class="app-cell"><span class="app-name">${escape(app.name)}</span><span class="app-mode">${escape(app.mode)}</span></div>`,
   ).join('')}</div>`;
 }
@@ -398,17 +400,18 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
     <section class="hero stage">
       <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
       <div class="shell hero-inner">
-        <h1 class="hero-h1">Shopify skills for AI agents.</h1>
-        <p class="hero-sub">Stop fixing messy AI drafts for your store. Load ${SKILL_COUNT} free playbooks that check your facts first, follow real Shopify rules, and keep your store safe.</p>
-        <p class="hero-proof"><strong>Free &amp; MIT open source</strong> &middot; <strong>ChatGPT &amp; Claude with no terminal and no login</strong> &middot; <strong>Read &amp; draft only</strong></p>
+        <h1 class="hero-h1">${MARK}Shopify skills for AI agents.</h1>
+        <p class="hero-sub">19 free, MIT open-source playbooks for ChatGPT, Claude, and code editors. Read and draft only, with no terminal and no login.</p>
         ${heroWorkbench(openMcpUrl)}
       </div>
     </section>
 
     <section id="how-it-works" class="band" aria-labelledby="how-heading">
       <div class="shell" data-reveal>
-        <h2 id="how-heading">How it works in three steps.</h2>
-        <p class="lead">Give your AI clear Shopify rules once. Get clean, checked drafts on every store task.</p>
+        <div class="section-head">
+          <h2 id="how-heading">How it works in three steps.</h2>
+          <p>Give your AI clear Shopify rules once. Get clean, checked drafts on every store task.</p>
+        </div>
         <div class="steps-grid">
           <div class="step-item">
             <span class="step-num">01</span>
@@ -429,79 +432,83 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="bottlenecks" class="band band-alt" aria-labelledby="bottlenecks-heading">
+    <section id="bottlenecks" class="band band-mist" aria-labelledby="bottlenecks-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
-          <div>
-            <h2 id="bottlenecks-heading">Fix the real store bottleneck first.</h2>
-            <p class="lead">Pick what slows down your store below. See what to fix first and copy a plain-English prompt.</p>
-          </div>
+          <h2 id="bottlenecks-heading">Fix the real store bottleneck first.</h2>
+          <p>Pick what slows down your store below. See what to fix first and copy a plain-English prompt.</p>
         </div>
         ${bottleneckTable()}
       </div>
     </section>
 
-    <section id="skills" class="band" aria-labelledby="skills-heading">
+    <section id="skills" class="band band-forest" aria-labelledby="skills-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
-          <div>
-            <h2 id="skills-heading">Browse all ${SKILL_COUNT} Shopify playbooks.</h2>
-            <p class="lead">Filter by area or search any task. Copy a starter prompt or open the full playbook on GitHub.</p>
-          </div>
+          <h2 id="skills-heading">Browse all ${SKILL_COUNT} Shopify playbooks.</h2>
+          <p>Filter by area or search any task. Copy a starter prompt or open the full playbook on GitHub.</p>
         </div>
         ${skillCatalogSection()}
       </div>
     </section>
 
-    <section id="sidekick" class="band band-alt" aria-labelledby="sidekick-heading">
+    <section id="sidekick" class="band" aria-labelledby="sidekick-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
-          <div>
-            <h2 id="sidekick-heading">Why teams use this alongside Shopify Sidekick.</h2>
-            <p class="lead">Sidekick helps click buttons inside one admin. These playbooks cover the full Shopify VA job across ads, feeds, code, chargebacks, and client rules.</p>
-          </div>
+          <h2 id="sidekick-heading">Why teams use this alongside Shopify Sidekick.</h2>
+          <p>Sidekick helps click buttons inside one admin. These playbooks cover the full Shopify VA job across ads, feeds, code, chargebacks, and client rules.</p>
         </div>
         ${sidekickComparisonTable()}
       </div>
     </section>
 
-    <section id="setup" class="band" aria-labelledby="setup-heading">
+    <section id="setup" class="band band-mist" aria-labelledby="setup-heading">
       <div class="shell" data-reveal>
-        <h2 id="setup-heading">Set up in under a minute.</h2>
-        <p class="lead">Works in chat apps with no terminal, or installs locally in your code editor. Free with no login.</p>
-        ${supportedAppsGrid()}
+        <div class="section-head">
+          <h2 id="setup-heading">Set up in under a minute.</h2>
+          <p>Works in chat apps with no terminal, or installs locally in your code editor. Free with no login.</p>
+        </div>
+        ${supportedAppsMatrix()}
         <div class="cmd-list">
           <div class="cmd-item">
             <div class="cmd-label"><strong>ChatGPT &amp; Claude</strong><span>No terminal · No login</span></div>
-            <div class="cmd-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy</button></div>
+            <code class="cmd-code">${escape(openMcpUrl)}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(openMcpUrl)}" hidden>Copy</button>
           </div>
           <div class="cmd-item">
             <div class="cmd-label"><strong>Agent Skills CLI</strong><span>All ${SKILL_COUNT} playbooks</span></div>
-            <div class="cmd-row"><code>${CLI_ADD_CMD}</code><button type="button" class="copy-btn" data-copy="${CLI_ADD_CMD}" hidden>Copy</button></div>
+            <code class="cmd-code">${CLI_ADD_CMD}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${CLI_ADD_CMD}" hidden>Copy</button>
           </div>
           <div class="cmd-item">
             <div class="cmd-label"><strong>Context7 CLI</strong><span>One-command install</span></div>
-            <div class="cmd-row"><code>${CTX7_ADD_CMD}</code><button type="button" class="copy-btn" data-copy="${CTX7_ADD_CMD}" hidden>Copy</button></div>
+            <code class="cmd-code">${CTX7_ADD_CMD}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${CTX7_ADD_CMD}" hidden>Copy</button>
           </div>
           <div class="cmd-item">
             <div class="cmd-label"><strong>Claude Code</strong><span>GitHub plugin</span></div>
-            <div class="cmd-row"><code>${CLAUDE_PLUGIN_CMD}</code><button type="button" class="copy-btn" data-copy="${CLAUDE_PLUGIN_CMD}" hidden>Copy</button></div>
+            <code class="cmd-code">${CLAUDE_PLUGIN_CMD}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${CLAUDE_PLUGIN_CMD}" hidden>Copy</button>
           </div>
           <div class="cmd-item">
             <div class="cmd-label"><strong>Cursor</strong><span>Inside chat</span></div>
-            <div class="cmd-row"><code>${CURSOR_PLUGIN_CMD}</code><button type="button" class="copy-btn" data-copy="${CURSOR_PLUGIN_CMD}" hidden>Copy</button></div>
+            <code class="cmd-code">${CURSOR_PLUGIN_CMD}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${CURSOR_PLUGIN_CMD}" hidden>Copy</button>
           </div>
           <div class="cmd-item">
             <div class="cmd-label"><strong>Antigravity</strong><span>Native plugin</span></div>
-            <div class="cmd-row"><code>${AGY_PLUGIN_CMD}</code><button type="button" class="copy-btn" data-copy="${AGY_PLUGIN_CMD}" hidden>Copy</button></div>
+            <code class="cmd-code">${AGY_PLUGIN_CMD}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${AGY_PLUGIN_CMD}" hidden>Copy</button>
           </div>
           <div class="cmd-item">
             <div class="cmd-label"><strong>OpenAI Codex</strong><span>Marketplace plugin</span></div>
-            <div class="cmd-row"><code>${CODEX_MARKETPLACE_CMD}</code><button type="button" class="copy-btn" data-copy="${CODEX_MARKETPLACE_CMD}" hidden>Copy</button></div>
+            <code class="cmd-code">${CODEX_MARKETPLACE_CMD}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${CODEX_MARKETPLACE_CMD}" hidden>Copy</button>
           </div>
           <div class="cmd-item" id="mcp">
             <div class="cmd-label"><strong>Live store reads (optional)</strong><span>Read-only OAuth 2.1</span></div>
-            <div class="cmd-row"><code>${escape(mcpUrl)}</code><button type="button" class="copy-btn copy-btn-quiet" data-copy="${escape(mcpUrl)}" hidden>Copy</button></div>
+            <code class="cmd-code">${escape(mcpUrl)}</code>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(mcpUrl)}" hidden>Copy</button>
           </div>
         </div>
         <p class="setup-foot">${liveStoreNote}</p>
@@ -509,10 +516,12 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="faq" class="band band-alt" aria-labelledby="faq-heading">
+    <section id="faq" class="band" aria-labelledby="faq-heading">
       <div class="shell" data-reveal>
-        <h2 id="faq-heading">Frequently asked questions.</h2>
-        <p class="lead">Quick answers on cost, supported AI apps, store safety, and how to pick your first task.</p>
+        <div class="section-head">
+          <h2 id="faq-heading">Frequently asked questions.</h2>
+          <p>Quick answers on cost, supported AI apps, store safety, and how to pick your first task.</p>
+        </div>
         ${faqSection()}
       </div>
     </section>`,
@@ -536,7 +545,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
     <div class="page-body shell">
       <div class="doc-head">
         <h1>Setup and help.</h1>
-        <p class="lead">Connect all ${SKILL_COUNT} Shopify playbooks with no login, or install them locally in your code editor.</p>
+        <p>Connect all ${SKILL_COUNT} Shopify playbooks with no login, or install them locally in your code editor.</p>
       </div>
       <section id="install-help">
         <h2>All ways to connect</h2>
@@ -611,7 +620,7 @@ export function renderPrivacyPage(config: PublicPageConfig = {}): string {
     <div class="page-body shell">
       <div class="doc-head">
         <h1>Privacy notice.</h1>
-        <p class="lead">${config.launchStage === 'public' ? 'This notice covers the live read-only Shopify MCP server.' : 'This notice covers the candidate Shopify MCP server awaiting Shopify App Store review.'}</p>
+        <p>${config.launchStage === 'public' ? 'This notice covers the live read-only Shopify MCP server.' : 'This notice covers the candidate Shopify MCP server awaiting Shopify App Store review.'}</p>
         <p class="muted">Updated November 25, 2026. Operator: Vince Servidad.</p>
       </div>
       <section>
@@ -650,13 +659,13 @@ export function renderLlmsTxt(config: PublicPageConfig = {}): string {
   const skillLines = SKILL_CATALOG.map(
     skill => `- [${skill.name}](${sourceFile(`skills/${skill.slug}/SKILL.md`)}): ${skill.summary}`,
   ).join('\n');
-  return `# Marketing Skills — Shopify VA Skills
+  return `# Marketing Skills: Shopify VA Skills
 
-> 19 free, MIT open-source Shopify playbooks for ChatGPT, Claude, Claude Code, Codex, Cursor, Windsurf, GitHub Copilot, and Antigravity. Read and draft only — never edits live Shopify stores automatically. Built by Vince Servidad.
+> 19 free, MIT open-source Shopify playbooks for ChatGPT, Claude, Claude Code, Codex, Cursor, Windsurf, GitHub Copilot, and Antigravity. Read and draft only. Built by Vince Servidad.
 
 ## Connect or install
 
-- [Live guide](${SITE_ORIGIN}/shopify-va): Interactive bottleneck finder, searchable 19-playbook catalog, and FAQ
+- [Live guide](${SITE_ORIGIN}/shopify-va): Interactive bottleneck finder, searchable 19-playbook catalog, Sidekick comparison, and FAQ
 - [Setup and help](${SITE_ORIGIN}/shopify-va/help): Full install options and troubleshooting
 - [No-login Remote MCP server](${openMcpUrl}): Streamable HTTP, no account or sign-in required. Serves all ${SKILL_COUNT} Shopify skills, official playbooks, and 8 VA task guides read-only
 - [Optional signed-in Remote MCP server](${mcpUrl}): Streamable HTTP with OAuth 2.1 + PKCE for read-only Shopify Admin checks (pending Shopify App Store review)

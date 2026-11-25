@@ -54,10 +54,12 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   const navLinks = navMatch[1].match(/<a\b/g) ?? [];
   assert.equal(navLinks.length, 4, 'top nav should have exactly 4 links');
 
-  // Above-the-fold trust highlights
-  assert.ok(html.includes('Free &amp; MIT open source'));
-  assert.ok(html.includes('ChatGPT &amp; Claude with no terminal and no login'));
-  assert.ok(html.includes('Read &amp; draft only'));
+  // Above-the-fold trust highlights (<= 25 words, no hero KPI strip, no em-dashes)
+  assert.ok(html.includes('19 free, MIT open-source playbooks'));
+  assert.ok(html.includes('Read and draft only, with no terminal and no login.'));
+  assert.doesNotMatch(stripToVisibleText(html), /—|\s–\s/, 'Product page generated copy must contain zero em-dashes or spaced en-dashes');
+  assert.ok(html.includes('class="seg-tabs"'), 'Category filter must use connected segmented tabs');
+  assert.ok(html.includes('class="apps-matrix"'), 'Supported AI apps must use unified hairline matrix');
 
   // 3-step explainer
   assert.ok(html.includes('Connect once'));
@@ -258,6 +260,7 @@ test('public pages and styles enforce strict design guardrails (0 webfonts, 13/1
     assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/i);
   }
   assert.doesNotMatch(PUBLIC_STYLES, /@font-face/i);
+  assert.doesNotMatch(PUBLIC_STYLES, /transition\s*:\s*all\b/i);
   assert.doesNotMatch(PUBLIC_STYLES, /border-radius\s*:\s*999px/);
   assert.doesNotMatch(PUBLIC_STYLES, /#(?:f6f4ee|fffefb|e3dfd3|ebe8df|eeebe1|eeebe3|7e3bd0|c9a7ff)/i);
   for (const match of PUBLIC_STYLES.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)) {
