@@ -64,11 +64,16 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   assert.ok(html.includes('Pick the store task'));
   assert.ok(html.includes('Review drafts before publishing'));
 
-  // Bottleneck table
+  // Bottleneck table & Sidekick comparison
   assert.ok(html.includes('id="bottlenecks"'));
   assert.ok(html.includes('Bottleneck'));
   assert.ok(html.includes('Fix first'));
   assert.ok(html.includes('Check next'));
+  assert.ok(html.includes('id="sidekick"'));
+  assert.ok(html.includes('Shopify Sidekick'));
+  assert.ok(html.includes('Chargeback'));
+  assert.ok(html.includes('BFCM'));
+  assert.ok(html.includes('TikTok Shop'));
 
   // 19-skill catalog parity & clean human names
   assert.equal(SKILL_CATALOG.length, 19);
@@ -179,6 +184,11 @@ test('OG image and llms.txt discovery routes return valid payloads', () => {
     assert.ok(llms.body.includes('checkout-extensibility-pixels.md'));
     assert.ok(llms.body.includes('multi-location-routing-markets.md'));
     assert.ok(llms.body.includes('official-flow-recipes.md'));
+    assert.ok(llms.body.includes('chargeback-evidence.md'));
+    assert.ok(llms.body.includes('shipping-3pl-exceptions.md'));
+    assert.ok(llms.body.includes('launch-migration-bfcm.md'));
+    assert.ok(llms.body.includes('app-stack-reviews.md'));
+    assert.ok(llms.body.includes('subscriptions-multichannel.md'));
   }
   assert.ok(renderLlmsTxt(candidateConfig).includes('npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills'));
 });

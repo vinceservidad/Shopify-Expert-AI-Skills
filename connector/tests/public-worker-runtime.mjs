@@ -208,6 +208,11 @@ try {
     ['shopify-meta-ads', 'references/advantage-plus-capi.md'],
     ['shopify-theme-development', 'references/checkout-extensibility-pixels.md'],
     ['shopify-order-operations', 'references/multi-location-routing-markets.md'],
+    ['shopify-order-operations', 'references/chargeback-evidence.md'],
+    ['shopify-order-operations', 'references/shipping-3pl-exceptions.md'],
+    ['shopify-store-audit', 'references/launch-migration-bfcm.md'],
+    ['shopify-store-audit', 'references/app-stack-reviews.md'],
+    ['shopify-catalog-operations', 'references/subscriptions-multichannel.md'],
     ['shopify-flow-automation', 'references/official-flow-recipes.md'],
   ]) {
     const pb = (await openRpc('tools/call', { name: 'read_shopify_skill', arguments: { name: skillName, resource: refPath } })).result.structuredContent;

@@ -86,16 +86,34 @@ const BOTTLENECKS: readonly BottleneckRow[] = [
     prompt: 'Review this Shopify product page on mobile. List the top three things stopping buyers and draft clearer copy.',
   },
   {
-    problem: 'Split shipments or multi-warehouse holds',
+    problem: 'Split shipments, shipping errors, or stuck 3PL orders',
     fixFirst: 'Order Operations',
     checkNext: 'Shopify Flow, Customer Support',
-    prompt: 'Check our Shopify Markets and order routing rules. Show why orders split across warehouses and write a safe fix plan.',
+    prompt: 'Check our Shopify shipping profiles, Markets routing, and stuck 3PL orders. Show why orders split or fail checkout and write a safe fix plan.',
   },
   {
-    problem: 'Support inbox keeps piling up',
+    problem: 'Chargeback dispute deadline is coming up',
+    fixFirst: 'Order Operations',
+    checkNext: 'Customer Support, Store Audit',
+    prompt: 'Build a factual Shopify Payments chargeback evidence packet from these order timestamps, carrier delivery scans, and support emails.',
+  },
+  {
+    problem: 'Support inbox or subscription cancels keep growing',
     fixFirst: 'Customer Support',
     checkNext: 'Order Operations, Email & SMS Flows',
-    prompt: 'Draft calm replies for these customer tickets using only our shipping and return rules. Flag any policy gaps first.',
+    prompt: 'Draft calm replies for these customer and subscription tickets using only our shipping and return rules. Flag any policy gaps first.',
+  },
+  {
+    problem: 'Store launch, migration, or BFCM sale is coming up',
+    fixFirst: 'Store Audit',
+    checkNext: 'Merchandising, Theme Development',
+    prompt: 'Run a pre-launch and BFCM readiness check on our Shopify store covering 301 redirects, discount stacking, stock buffers, and mobile checkout.',
+  },
+  {
+    problem: 'App bloat, slow mobile, or TikTok Shop sync errors',
+    fixFirst: 'Catalog & Inventory',
+    checkNext: 'Store Audit, Theme Development',
+    prompt: 'Audit our installed Shopify apps, review spam rules, and multi-channel SKU sync for TikTok Shop and Shop App. Rank the safest fixes first.',
   },
   {
     problem: 'Shopping ads get disapproved or waste spend',
@@ -108,6 +126,39 @@ const BOTTLENECKS: readonly BottleneckRow[] = [
     fixFirst: 'Meta Ads',
     checkNext: 'Ad Creative Strategy, Theme Development',
     prompt: 'Check our Meta Advantage+ campaigns, Conversions API match quality, and ad variety. Tell me what to fix before raising spend.',
+  },
+];
+
+const SIDEKICK_ROWS: readonly { job: string; ours: string; sidekick: string }[] = [
+  {
+    job: 'Ads, feeds & email (Google, Meta, Klaviyo)',
+    ours: 'Full playbooks for Merchant Center, PMax, CAPI, and email flows.',
+    sidekick: 'Admin only. Cannot audit ad accounts or Shopping feeds.',
+  },
+  {
+    job: 'Raw Liquid code & Web Pixels',
+    ours: 'Full theme code rules, Checkout UI limits, and pixel checks.',
+    sidekick: 'Theme editor tweaks only. Cannot edit raw Liquid files.',
+  },
+  {
+    job: 'VA safety, approvals & handovers',
+    ours: 'Written owner approval rules, rollback steps, and daily shift logs.',
+    sidekick: 'Built for solo owners, not VA client handovers.',
+  },
+  {
+    job: 'Chargebacks, 3PLs & multi-channel sync',
+    ours: 'Dispute packets, shipping rates, TikTok Shop, and subscriptions.',
+    sidekick: 'Basic admin help. No external 3PL or channel sync audits.',
+  },
+  {
+    job: 'Multi-client & pre-launch work',
+    ours: 'Runs in ChatGPT, Claude, Cursor, and Codex with no store login.',
+    sidekick: 'Needs sign-in inside one paid Shopify Admin at a time.',
+  },
+  {
+    job: 'Clicking buttons inside Shopify Admin',
+    ours: 'Read and draft only so nothing changes live by mistake.',
+    sidekick: 'Built into Shopify Admin for quick in-app drafts.',
   },
 ];
 
@@ -126,7 +177,7 @@ export const FAQ_ITEMS: readonly { question: string; answer: string }[] = [
   {
     question: 'What are Shopify skills for AI agents?',
     answer:
-      'Shopify skills are step-by-step playbooks your AI loads for real store work. Each skill tells your AI what facts to ask for, which Shopify rules to follow, and what to check before writing a draft. This free library includes 19 tested playbooks.',
+      'Shopify skills are step-by-step playbooks your AI loads for real store work. Each skill tells your AI what facts to ask for, which Shopify rules to follow, and what to check before writing a draft. This free library includes 19 tested playbooks covering everything from listings and chargebacks to ads and theme code.',
   },
   {
     question: 'Are these Shopify skills free?',
@@ -300,6 +351,13 @@ function skillCatalogSection(): string {
   return `<div class="catalog-controls" data-skill-filter-wrap><div class="cat-tabs" role="group" aria-label="Filter playbooks by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search playbooks (stock, ads, Flow)" aria-label="Search Shopify playbooks"><span data-skill-status>${SKILL_COUNT} playbooks</span></div></div><div class="skill-grid">${items}</div>`;
 }
 
+function sidekickComparisonTable(): string {
+  const rows = SIDEKICK_ROWS.map(
+    row => `<tr><td class="cmp-job">${escape(row.job)}</td><td class="cmp-ours">${escape(row.ours)}</td><td class="cmp-other">${escape(row.sidekick)}</td></tr>`,
+  ).join('');
+  return `<div class="table-wrap"><table class="compare-table"><thead><tr><th scope="col">Store job</th><th scope="col" class="cmp-ours">Shopify VA Skills</th><th scope="col">Shopify Sidekick</th></tr></thead><tbody>${rows}</tbody></table></div><p class="compare-note"><strong>Best workflow:</strong> Plan, audit, and write checked drafts here, then apply approved clicks inside Shopify Admin or Sidekick.</p>`;
+}
+
 function supportedAppsGrid(): string {
   return `<div class="apps-grid">${SUPPORTED_APPS.map(
     app => `<div class="app-cell"><span class="app-name">${escape(app.name)}</span><span class="app-mode">${escape(app.mode)}</span></div>`,
@@ -395,7 +453,19 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="setup" class="band band-alt" aria-labelledby="setup-heading">
+    <section id="sidekick" class="band band-alt" aria-labelledby="sidekick-heading">
+      <div class="shell" data-reveal>
+        <div class="section-head">
+          <div>
+            <h2 id="sidekick-heading">Why teams use this alongside Shopify Sidekick.</h2>
+            <p class="lead">Sidekick helps click buttons inside one admin. These playbooks cover the full Shopify VA job across ads, feeds, code, chargebacks, and client rules.</p>
+          </div>
+        </div>
+        ${sidekickComparisonTable()}
+      </div>
+    </section>
+
+    <section id="setup" class="band" aria-labelledby="setup-heading">
       <div class="shell" data-reveal>
         <h2 id="setup-heading">Set up in under a minute.</h2>
         <p class="lead">Works in chat apps with no terminal, or installs locally in your code editor. Free with no login.</p>
@@ -439,7 +509,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="faq" class="band" aria-labelledby="faq-heading">
+    <section id="faq" class="band band-alt" aria-labelledby="faq-heading">
       <div class="shell" data-reveal>
         <h2 id="faq-heading">Frequently asked questions.</h2>
         <p class="lead">Quick answers on cost, supported AI apps, store safety, and how to pick your first task.</p>
@@ -598,13 +668,18 @@ export function renderLlmsTxt(config: PublicPageConfig = {}): string {
 - OpenAI Codex plugin: \`${CODEX_MARKETPLACE_CMD}\` then \`${CODEX_PLUGIN_CMD}\`
 - [GitHub repository](${REPOSITORY})
 
-## Official playbooks included
+## Official & end-to-end VA playbooks included
 
 - Google Merchant Center Next & Performance Max Feed Playbook (\`skills/shopify-google-ads/references/merchant-center-next-pmax.md\`)
 - Meta Advantage+ Shopping & Conversions API (CAPI) Playbook (\`skills/shopify-meta-ads/references/advantage-plus-capi.md\`)
 - Checkout Extensibility, Web Pixels & Shopify Functions Playbook (\`skills/shopify-theme-development/references/checkout-extensibility-pixels.md\`)
 - Shopify Markets & Multi-Location Order Routing Playbook (\`skills/shopify-order-operations/references/multi-location-routing-markets.md\`)
 - Official Shopify Flow Operational Recipes (\`skills/shopify-flow-automation/references/official-flow-recipes.md\`)
+- Chargeback & Payment Dispute Evidence Playbook (\`skills/shopify-order-operations/references/chargeback-evidence.md\`)
+- Shipping Profiles, Carrier Rates & 3PL Exceptions Playbook (\`skills/shopify-order-operations/references/shipping-3pl-exceptions.md\`)
+- Store Launch, Migration & Peak-Sale (BFCM) Readiness Playbook (\`skills/shopify-store-audit/references/launch-migration-bfcm.md\`)
+- App Stack Hygiene & Product Review Moderation Playbook (\`skills/shopify-store-audit/references/app-stack-reviews.md\`)
+- Subscriptions & Multi-Channel Sales Sync Playbook (\`skills/shopify-catalog-operations/references/subscriptions-multichannel.md\`)
 
 ## All ${SKILL_COUNT} Shopify skills
 

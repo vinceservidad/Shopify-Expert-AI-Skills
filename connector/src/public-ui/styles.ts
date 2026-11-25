@@ -125,6 +125,18 @@ p{margin:0 0 14px;max-width:65ch}
 .bottleneck-table td.bn-next{font-size:13px;color:var(--muted)}
 .bottleneck-table td.bn-action{text-align:right;white-space:nowrap}
 
+/* Sidekick comparison table */
+.compare-table{width:100%;border-collapse:collapse;text-align:left}
+.compare-table th{padding:14px 16px;font-size:13px;font-weight:650;color:var(--muted);background:var(--side);border-bottom:1px solid var(--border)}
+.compare-table th.cmp-ours{color:var(--accent-va)}
+.compare-table td{padding:15px 16px;font-size:15px;line-height:1.45;color:var(--ink-2);border-bottom:1px solid var(--hair);vertical-align:top}
+.compare-table tbody tr:last-child td{border-bottom:0}
+.compare-table td.cmp-job{font-weight:600;color:#ffffff;width:28%}
+.compare-table td.cmp-ours{color:var(--ink);width:38%}
+.compare-table td.cmp-other{color:var(--muted);width:34%}
+.compare-note{margin:16px 0 0;font-size:15px;color:var(--ink-2)}
+.compare-note strong{color:#ffffff}
+
 /* Searchable & filterable 19-skill catalog */
 .catalog-controls{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 20px;margin-bottom:24px}
 .cat-tabs{display:flex;flex-wrap:wrap;gap:8px}
@@ -222,6 +234,8 @@ dd{margin:6px 0 0;font-size:15px;color:var(--ink-2)}
   .wb-tabs label{flex:1;text-align:center;padding:8px 10px}
   .bottleneck-table th:nth-child(3),.bottleneck-table td:nth-child(3){display:none}
   .bn-first{white-space:normal}
+  .compare-table th,.compare-table td{padding:12px 10px;font-size:13px}
+  .compare-table td.cmp-job,.compare-table td.cmp-ours,.compare-table td.cmp-other{width:auto}
   .app-home input{width:100%}
   .connection-card dl,.app-home #pairing-facts{grid-template-columns:1fr;gap:4px}
 }
