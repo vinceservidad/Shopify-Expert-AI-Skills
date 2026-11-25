@@ -54,7 +54,7 @@ const sourceCandidateFile = (path: string) => `${REPOSITORY}/blob/feat/cloudflar
 const PRODUCT_TITLE = 'Shopify VA Skills for AI Agents: 19 Free Playbooks | Marketing Skills';
 const PRODUCT_DESCRIPTION =
   '19 free, open-source Shopify skills for ChatGPT, Claude, Claude Code, Codex, and Cursor. Your AI reads and drafts. You decide what changes in your store.';
-const HELP_TITLE = 'Setup & Help | Shopify VA Skills | Marketing Skills';
+const HELP_TITLE = 'How to Set Up | Shopify VA Skills | Marketing Skills';
 const HELP_DESCRIPTION =
   'How to add the 19 Shopify VA skills to ChatGPT, Claude, Claude Code, Codex, Cursor, Windsurf, GitHub Copilot, or Antigravity, plus fixes for common setup issues.';
 const PRIVACY_TITLE = 'Privacy Notice | Shopify VA Skills | Marketing Skills';
@@ -311,7 +311,7 @@ function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): st
     : '';
   const ldTag = meta.jsonLd ? `<script type="application/ld+json">${meta.jsonLd}</script>` : '';
   const heroScript = meta.hasHero ? `<script src="${pagePath(config, '/assets/hero.js')}" defer></script>` : '';
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(meta.title)}</title><meta name="description" content="${escape(meta.description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#setup')}">Setup</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/help')}">Help</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/help')}">Help</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(meta.title)}</title><meta name="description" content="${escape(meta.description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/help')}">How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/help')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
 }
 
 function heroWorkbench(openMcpUrl: string): string {
@@ -325,7 +325,7 @@ function heroWorkbench(openMcpUrl: string): string {
     <div class="wb-panels">
       <div class="wb-panel wb-open">
         <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
-        <p class="wb-note">Add this link as a custom connector in Claude or ChatGPT. No sign-in needed. <a href="#setup">See all 8 apps</a></p>
+        <p class="wb-note">Add this link as a custom connector in Claude or ChatGPT. No sign-in needed. <a href="${pagePath(config, '/help')}">How to set up, step by step</a> · <a href="#setup">See all 8 apps</a></p>
       </div>
       <div class="wb-panel wb-cli">
         <div class="wb-row"><code>${CLI_ADD_CMD}</code><button type="button" class="copy-btn" data-copy="${CLI_ADD_CMD}" hidden>Copy command</button></div>
@@ -468,7 +468,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell" data-reveal>
         <div class="section-head">
           <h2 id="setup-heading">Setup</h2>
-          <p>Use the link in ChatGPT or Claude, or install the skills for your coding agent.</p>
+          <p>Use the link in ChatGPT or Claude, or install the skills for your coding agent. New to this? Follow the <a href="${pagePath(config, '/help')}">four-step setup guide</a>.</p>
         </div>
         ${supportedAppsMatrix()}
         <div class="cmd-list">
@@ -545,11 +545,11 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
     `
     <div class="page-body shell">
       <div class="doc-head">
-        <h1>Setup and help</h1>
-        <p>Add all ${SKILL_COUNT} Shopify playbooks to your AI app, and fix common setup problems.</p>
+        <h1>How to set up</h1>
+        <p>Connect all ${SKILL_COUNT} Shopify playbooks in four steps. Other ways to connect and fixes for common problems are further down.</p>
       </div>
       <section id="quick-start">
-        <h2>Quick start for VAs</h2>
+        <h2>Set up in four steps</h2>
         <p>You need no account, no sign-in, and no store access to begin.</p>
         <h3>1. Connect your AI</h3>
         <p><strong>Claude:</strong> open <strong>Settings → Connectors → Add custom connector</strong>, paste this link, and save.</p>
@@ -689,7 +689,7 @@ export function renderLlmsTxt(config: PublicPageConfig = {}): string {
 ## Connect or install
 
 - [Live guide](${SITE_ORIGIN}/shopify-va): Problem finder, a searchable list of all 19 playbooks, where each step happens, and an FAQ
-- [Setup and help](${SITE_ORIGIN}/shopify-va/help): Full install options and troubleshooting
+- [How to set up](${SITE_ORIGIN}/shopify-va/help): Four-step setup guide, all install options, and troubleshooting
 - [No-login Remote MCP server](${openMcpUrl}): Streamable HTTP, no account or sign-in. Serves all ${SKILL_COUNT} Shopify skills, official playbooks, and 8 VA task guides read-only
 - [Optional signed-in Remote MCP server](${mcpUrl}): Streamable HTTP with OAuth 2.1 + PKCE for read-only Shopify Admin checks (pending Shopify App Store review)
 - Agent Skills CLI: \`${CLI_ADD_CMD}\`
