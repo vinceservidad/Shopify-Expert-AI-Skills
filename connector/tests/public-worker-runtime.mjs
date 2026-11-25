@@ -203,12 +203,28 @@ try {
   assert.deepEqual(openSkills, source.skills);
   const openRef = (await openRpc('tools/call', { name: 'read_shopify_skill', arguments: { name: 'shopify-product-listing', resource: 'references/listing-fields.md' } })).result.structuredContent;
   assert.ok(typeof openRef.text === 'string' && openRef.text.length > 50);
+  for (const [skillName, refPath] of [
+    ['shopify-google-ads', 'references/merchant-center-next-pmax.md'],
+    ['shopify-meta-ads', 'references/advantage-plus-capi.md'],
+    ['shopify-theme-development', 'references/checkout-extensibility-pixels.md'],
+    ['shopify-order-operations', 'references/multi-location-routing-markets.md'],
+    ['shopify-flow-automation', 'references/official-flow-recipes.md'],
+  ]) {
+    const pb = (await openRpc('tools/call', { name: 'read_shopify_skill', arguments: { name: skillName, resource: refPath } })).result.structuredContent;
+    assert.ok(typeof pb.text === 'string' && pb.text.length > 200, `Missing new playbook ${skillName}/${refPath}`);
+  }
 
   for (const path of ['/shopify-va', '/help', '/privacy']) {
     const response = await send(path);
     assert.equal(response.status, 200); assert.match(response.headers.get('content-type'), /text\/html/);
-    const html = await response.text(); assert.ok(html.includes('MKT Skills')); assert.ok(!html.includes('synthetic-offline'));
+    const html = await response.text(); assert.ok(html.includes('Marketing Skills')); assert.ok(!html.includes('synthetic-offline'));
   }
+  const ogImg = await send('/shopify-va/og-shopify-va.png');
+  assert.equal(ogImg.status, 200);
+  assert.equal(ogImg.headers.get('content-type'), 'image/png');
+  const llmsRes = await send('/shopify-va/llms.txt');
+  assert.equal(llmsRes.status, 200);
+  assert.match(await llmsRes.text(), /merchant-center-next-pmax\.md/);
   const appPage = await send('/app?shop=' + shopA);
   assert.equal(appPage.status, 200);
   const appHtml = await appPage.text();

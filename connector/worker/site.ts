@@ -19,6 +19,8 @@ export default {
       appHandle: env.SHOPIFY_PUBLIC_APP_HANDLE || undefined, pluginDownloadUrl: env.PLUGIN_DOWNLOAD_URL || undefined,
       launchStage: env.PUBLIC_LAUNCH_STAGE === 'public' ? 'public' : 'candidate' });
     if (!content) return new Response('Page not found', { status: 404, headers: SECURITY_HEADERS });
-    return new Response(request.method === 'HEAD' ? null : content.body, { headers: { ...SECURITY_HEADERS, 'Content-Type': content.contentType } });
+    const responseHeaders: Record<string, string> = { ...SECURITY_HEADERS, 'Content-Type': content.contentType };
+    if (content.cacheControl) responseHeaders['Cache-Control'] = content.cacheControl;
+    return new Response(request.method === 'HEAD' ? null : content.body, { headers: responseHeaders });
   },
 } satisfies ExportedHandler<GuideEnv>;

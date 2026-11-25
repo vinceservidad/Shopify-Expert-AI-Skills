@@ -135,9 +135,13 @@ export default {
       const suppliedOrigin = request.headers.get('origin');
       if (suppliedOrigin && suppliedOrigin !== origin) return json({ error: 'origin_not_allowed' }, 403);
       if (url.pathname === '/health' && request.method === 'GET') return json({ status: 'ok', name: 'shopify-va-toolkit', mode: 'read-only', runtime: 'cloudflare-workers', version: '0.2.0', authMode: authMode(env.SHOPIFY_AUTH_MODE), tools: 12, skills: 19 });
-      if (request.method === 'GET') {
+      if (request.method === 'GET' || request.method === 'HEAD') {
         const content = publicContent(url.pathname, pageConfig(env));
-        if (content) return new Response(content.body, { headers: { ...headers, 'Content-Type': content.contentType } });
+        if (content) {
+          const responseHeaders: Record<string, string> = { ...headers, 'Content-Type': content.contentType };
+          if (content.cacheControl) responseHeaders['Cache-Control'] = content.cacheControl;
+          return new Response(request.method === 'HEAD' ? null : content.body, { headers: responseHeaders });
+        }
       }
       const issuer = env.OAUTH_ISSUER.getByName(origin);
       if (url.pathname === '/mcp') {
