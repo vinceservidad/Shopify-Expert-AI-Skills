@@ -48,6 +48,7 @@ function openMcpAliasOrigin(env: Env): string | undefined {
 function pageConfig(env: Env): PublicPageConfig {
   return { publicUrl: env.PUBLIC_URL, appHandle: env.SHOPIFY_PUBLIC_APP_HANDLE || undefined,
     pluginDownloadUrl: env.PLUGIN_DOWNLOAD_URL || undefined, basePath: '/shopify-va',
+    openMcpUrl: openMcpAliasOrigin(env) ? `${openMcpAliasOrigin(env)}/mcp/shopify-skills` : undefined,
     launchStage: String(env.PUBLIC_LAUNCH_STAGE) === 'public' ? 'public' : 'candidate' };
 }
 

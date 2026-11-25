@@ -15,6 +15,8 @@ export type PublicPageConfig = {
   launchStage?: 'candidate' | 'public';
   /** Set only after the exact versioned GitHub release asset exists and was checked. */
   pluginDownloadUrl?: string;
+  /** The advertised no-login MCP link, when it is served on another origin than publicUrl. */
+  openMcpUrl?: string;
 };
 export type PageConfig = PublicPageConfig;
 export type AppHomeConfig = { clientId: string; publicUrl: string; appHandle?: string };
@@ -27,7 +29,7 @@ const REPOSITORY = 'https://github.com/vinceservidad/Shopify-Expert-AI-Skills';
 const AUTHOR = 'https://www.vinceservidad.com/';
 const SHOPIFY_AFFILIATE = 'https://shopify.pxf.io/c/2227499/2974326/13624';
 const DEFAULT_MCP_URL = 'https://shopify-mcp.mktskills.com/mcp';
-const DEFAULT_OPEN_MCP_URL = 'https://shopify-mcp.mktskills.com/mcp/shopify-skills';
+const DEFAULT_OPEN_MCP_URL = 'https://mktskills.com/mcp/shopify-skills';
 const CLI_ADD_CMD = 'npx skills add vinceservidad/Shopify-Expert-AI-Skills';
 const CTX7_ADD_CMD = 'npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills';
 const CLAUDE_PLUGIN_CMD = 'claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills';
@@ -227,6 +229,7 @@ function mcpEndpoint(config: PublicPageConfig): string {
 }
 
 function openMcpEndpoint(config: PublicPageConfig): string {
+  if (config.openMcpUrl) return config.openMcpUrl;
   if (!config.publicUrl) return DEFAULT_OPEN_MCP_URL;
   try { return `${new URL(config.publicUrl).origin}/mcp/shopify-skills`; } catch { return DEFAULT_OPEN_MCP_URL; }
 }

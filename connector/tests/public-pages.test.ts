@@ -12,6 +12,7 @@ const candidateConfig: PublicPageConfig = {
   basePath: '/shopify-va',
   launchStage: 'candidate',
   pluginDownloadUrl: RELEASE_PLUGIN_URL,
+  openMcpUrl: 'https://mktskills.com/mcp/shopify-skills',
 };
 
 const STALE_OR_SLOP_PATTERNS = [
@@ -94,7 +95,7 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   }
 
   // All multi-platform install commands + affiliate link
-  assert.ok(html.includes('https://shopify-mcp.mktskills.com/mcp/shopify-skills'));
+  assert.ok(html.includes('https://mktskills.com/mcp/shopify-skills'));
   assert.ok(html.includes('npx skills add vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(html.includes('npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(html.includes('claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills'));
@@ -180,7 +181,7 @@ test('OG image and llms.txt discovery routes return valid payloads', () => {
     const llms = publicContent(path, candidateConfig);
     assert.ok(llms && typeof llms.body === 'string', path);
     assert.equal(llms.contentType, 'text/markdown; charset=utf-8');
-    assert.ok(llms.body.includes('https://shopify-mcp.mktskills.com/mcp/shopify-skills'));
+    assert.ok(llms.body.includes('https://mktskills.com/mcp/shopify-skills'));
     assert.ok(llms.body.includes('merchant-center-next-pmax.md'));
     assert.ok(llms.body.includes('advantage-plus-capi.md'));
     assert.ok(llms.body.includes('checkout-extensibility-pixels.md'));
@@ -217,7 +218,7 @@ test('help and privacy pages cover all install paths and Remote MCP accurately',
   assert.ok(helpHtml.includes('id="install-help"'));
   assert.ok(helpHtml.includes('npx skills add vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills'));
-  assert.ok(helpHtml.includes('https://shopify-mcp.mktskills.com/mcp/shopify-skills'));
+  assert.ok(helpHtml.includes('https://mktskills.com/mcp/shopify-skills'));
   assert.ok(helpHtml.includes('claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('/add-plugin vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('agy plugin install https://github.com/vinceservidad/Shopify-Expert-AI-Skills'));

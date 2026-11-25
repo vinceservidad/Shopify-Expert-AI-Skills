@@ -12,7 +12,7 @@ Pick the easiest way to connect all **19 Shopify skills** (and their reference f
 Add this URL as a custom MCP server with **no sign-in required**:
 
 ```text
-https://shopify-mcp.mktskills.com/mcp/shopify-skills
+https://mktskills.com/mcp/shopify-skills
 ```
 
 It serves all 19 Shopify skills, their official playbook references, and 8 VA task guides read-only. It never asks for a Shopify login.
