@@ -49,8 +49,6 @@ const escape = (value: string) =>
 const sourceFile = (path: string) => `${REPOSITORY}/blob/main/${path}`;
 const sourceCandidateFile = (path: string) => `${REPOSITORY}/blob/feat/cloudflare-hosted-mcp/${path}`;
 
-const MARK = '<svg class="mark" aria-hidden="true" focusable="false" viewBox="0 0 32 32"><path d="M9.2 7.5h15.3a3 3 0 0 1 3 3v11a3 3 0 0 1-3 3H9.2L2.6 16z" fill="currentColor"/><circle class="mark-hole" cx="8.6" cy="16" r="1.7"/><path class="mark-check" d="M13.4 15.6l3.3 3.6 6.4-6.6"/></svg>';
-
 const PRODUCT_TITLE = 'Shopify VA Skills for AI Agents: 19 Free Playbooks | Marketing Skills';
 const PRODUCT_DESCRIPTION =
   'Free, MIT open-source library of 19 Shopify skills for ChatGPT, Claude, Claude Code, Codex, Cursor, and Antigravity. Read and draft only, with no login.';
@@ -400,7 +398,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
     <section class="hero stage">
       <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
       <div class="shell hero-inner">
-        <h1 class="hero-h1">${MARK}Shopify skills for AI agents.</h1>
+        <h1 class="hero-h1">Shopify skills for AI agents.</h1>
         <p class="hero-sub">19 free, MIT open-source playbooks for ChatGPT, Claude, and code editors. Read and draft only, with no terminal and no login.</p>
         ${heroWorkbench(openMcpUrl)}
       </div>

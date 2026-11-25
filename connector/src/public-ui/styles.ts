@@ -69,19 +69,16 @@ body.has-hero .family-nav a{color:var(--forest-ink-2)}
 body.has-hero .family-nav a:hover{color:#ffffff}
 body.has-hero a:focus-visible,body.has-hero button:focus-visible,body.has-hero input:focus-visible,body.has-hero label:focus-visible{outline-color:var(--lime)}
 
-/* Full-bleed Shopify emerald-forest hero bleeding to y = 0 */
-.hero.stage{position:relative;isolation:isolate;overflow:hidden;width:100%;padding:124px 0 84px;color:var(--forest-ink);background:radial-gradient(110% 95% at 50% 0%,var(--forest-2) 0%,var(--forest) 58%,var(--forest-deep) 100%)}
+/* Full-bleed Shopify emerald-forest hero bleeding to y = 0, anchored on the same left axis as every section below */
+.hero.stage{position:relative;isolation:isolate;overflow:hidden;width:100%;padding:120px 0 76px;color:var(--forest-ink);background:radial-gradient(95% 110% at 85% 15%,var(--forest-2) 0%,var(--forest) 56%,var(--forest-deep) 100%)}
 .hero-canvas{position:absolute;inset:0;z-index:-1;width:100%;height:100%;display:block;opacity:0;transition:opacity .7s var(--ease)}
 .hero-canvas.is-live{opacity:1}
-.hero-inner{max-width:860px;margin-inline:auto;text-align:center;animation:hero-rise 260ms var(--ease)}
-.hero-h1{font-size:clamp(42px,6.8vw,80px);line-height:.98;font-weight:800;letter-spacing:-.045em;color:#ffffff;margin:0 0 22px}
-.hero-h1 .mark{display:inline-block;vertical-align:-.11em;width:.74em;height:.74em;margin-right:.14em;color:var(--lime)}
-.mark-hole{fill:var(--forest)}
-.mark-check{fill:none;stroke:var(--forest);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
-.hero-sub{font-size:15px;line-height:1.6;color:var(--forest-ink-2);max-width:54ch;margin:0 auto 32px}
+.hero-inner{text-align:left;animation:hero-rise 260ms var(--ease)}
+.hero-h1{font-size:clamp(40px,6.2vw,74px);line-height:1;font-weight:800;letter-spacing:-.042em;color:#ffffff;margin:0 0 18px;max-width:15ch}
+.hero-sub{font-size:15px;line-height:1.6;color:var(--forest-ink-2);max-width:56ch;margin:0 0 28px}
 
-/* Wide interactive 2-tab setup workbench inside the hero (connected segmented toggle) */
-.workbench{max-width:740px;margin:0 auto;text-align:left}
+/* Wide interactive 2-tab setup workbench inside the hero (left-aligned to the shared editorial axis) */
+.workbench{max-width:680px;margin:0;text-align:left}
 .wb-radio{position:absolute;opacity:0;pointer-events:none}
 .wb-tabs{display:inline-flex;border-radius:6px;background:rgba(2,18,14,.72);border:1px solid var(--forest-line);overflow:hidden;margin-bottom:14px}
 .wb-tabs label{padding:9px 18px;font-size:13px;font-weight:600;color:var(--forest-ink-2);cursor:pointer;user-select:none;transition:background-color .16s var(--ease),color .16s var(--ease)}
