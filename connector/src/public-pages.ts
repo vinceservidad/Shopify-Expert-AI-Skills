@@ -53,7 +53,7 @@ const sourceCandidateFile = (path: string) => `${REPOSITORY}/blob/feat/cloudflar
 
 const PRODUCT_TITLE = 'Shopify VA Skills for AI Agents: 19 Free Playbooks | Marketing Skills';
 const PRODUCT_DESCRIPTION =
-  '19 free, open-source Shopify skills for ChatGPT, Claude, Claude Code, Codex, and Cursor. Your AI reads and drafts. You decide what changes in your store.';
+  '19 free, open-source Shopify skills for ChatGPT, Claude, Claude Code, Codex, and Cursor. Your AI drafts the work, and you approve anything that changes the store.';
 const HELP_TITLE = 'How to Set Up | Shopify VA Skills | Marketing Skills';
 const HELP_DESCRIPTION =
   'How to add the 19 Shopify VA skills to ChatGPT, Claude, Claude Code, Codex, Cursor, Windsurf, GitHub Copilot, or Antigravity, plus fixes for common setup issues.';
@@ -160,7 +160,7 @@ const SIDEKICK_ROWS: readonly { job: string; ours: string; sidekick: string }[] 
   },
   {
     job: 'Quick edits inside the admin',
-    ours: 'Not needed. The playbooks only read and draft, so nothing changes by accident.',
+    ours: 'The playbooks don\'t make store changes.',
     sidekick: 'Use Shopify admin, or Shopify Sidekick, the AI assistant built into it.',
   },
 ];
@@ -325,7 +325,7 @@ function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
     <div class="wb-panels">
       <div class="wb-panel wb-open">
         <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
-        <p class="wb-note">Add this link as a custom connector in Claude or ChatGPT. No sign-in needed. <a href="${guideUrl}">How to set up, step by step</a> · <a href="#setup">See all 8 apps</a></p>
+        <p class="wb-note">Add this link as a custom connector in Claude or ChatGPT. <a href="${guideUrl}">Setup guide</a> · <a href="#setup">See all 8 apps</a></p>
       </div>
       <div class="wb-panel wb-cli">
         <div class="wb-row"><code>${CLI_ADD_CMD}</code><button type="button" class="copy-btn" data-copy="${CLI_ADD_CMD}" hidden>Copy command</button></div>
@@ -359,7 +359,7 @@ function sidekickComparisonTable(): string {
   const rows = SIDEKICK_ROWS.map(
     row => `<tr><td class="cmp-job">${escape(row.job)}</td><td class="cmp-ours">${escape(row.ours)}</td><td class="cmp-other">${escape(row.sidekick)}</td></tr>`,
   ).join('');
-  return `<div class="table-wrap"><table class="compare-table"><thead><tr><th scope="col">Store job</th><th scope="col" class="cmp-ours">Plan and draft with the playbooks</th><th scope="col">Make the approved change</th></tr></thead><tbody>${rows}</tbody></table></div><p class="compare-note">Keep the steps in this order: audit, draft, get approval, then change the store.</p>`;
+  return `<div class="table-wrap"><table class="compare-table"><thead><tr><th scope="col">Store job</th><th scope="col" class="cmp-ours">Plan and draft with the playbooks</th><th scope="col">Make the approved change</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function supportedAppsMatrix(): string {
@@ -403,7 +403,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
       <div class="shell hero-inner">
         <h1 class="hero-h1">Shopify skills for AI agents</h1>
-        <p class="hero-sub">19 free playbooks for the daily work of a Shopify virtual assistant (VA): listings, inventory, orders, support, ads, and theme code. They work in ChatGPT, Claude, and coding agents. Your AI reads and drafts. You approve every change.</p>
+        <p class="hero-sub">19 free playbooks for the daily work of a Shopify virtual assistant (VA): listings, inventory, orders, support, ads, and theme code. They work in ChatGPT, Claude, and coding agents. Your AI drafts the work, and you approve anything that changes the store.</p>
         ${heroWorkbench(openMcpUrl, pagePath(config, '/setup'))}
       </div>
     </section>
@@ -437,8 +437,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
     <section id="bottlenecks" class="band band-mist" aria-labelledby="bottlenecks-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
-          <h2 id="bottlenecks-heading">Start with the problem in front of you</h2>
-          <p>Find the problem that sounds like your store. Each row shows which playbook to use first, what to check next, and a prompt you can copy.</p>
+          <h2 id="bottlenecks-heading">Common store problems</h2>
+          <p>Each row lists a problem, the playbook to start with, what to check next, and a prompt you can copy.</p>
         </div>
         ${bottleneckTable()}
       </div>
@@ -457,8 +457,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
     <section id="sidekick" class="band" aria-labelledby="sidekick-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
-          <h2 id="sidekick-heading">Where each step happens</h2>
-          <p>The playbooks plan and draft in your AI app. The approved change is still made in Shopify admin or the ad platform, by someone with the right permissions.</p>
+          <h2 id="sidekick-heading">What the playbooks do, and what happens in Shopify</h2>
+          <p>The playbooks plan and draft in your AI app. Someone with the right permissions still makes the approved change in Shopify admin or the ad platform.</p>
         </div>
         ${sidekickComparisonTable()}
       </div>
@@ -468,7 +468,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell" data-reveal>
         <div class="section-head">
           <h2 id="setup-heading">Setup</h2>
-          <p>Use the link in ChatGPT or Claude, or install the skills for your coding agent. New to this? Follow the <a href="${pagePath(config, '/setup')}">four-step setup guide</a>.</p>
+          <p>Use the link in ChatGPT or Claude, or install the skills for your coding agent. Step-by-step instructions are in the <a href="${pagePath(config, '/setup')}">setup guide</a>.</p>
         </div>
         ${supportedAppsMatrix()}
         <div class="cmd-list">
@@ -550,7 +550,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
       </div>
       <section id="quick-start">
         <h2>Set up in four steps</h2>
-        <p>You need no account, no sign-in, and no store access to begin.</p>
+        <p>You don't need an account or store access to start.</p>
         <h3>1. Connect your AI</h3>
         <p><strong>Claude:</strong> open <strong>Settings → Connectors → Add custom connector</strong>, paste this link, and save.</p>
         <pre class="command" tabindex="0"><code>${escape(openMcpUrl)}</code></pre>
@@ -579,7 +579,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         <h2>All ways to connect</h2>
         <dl>
           <dt>ChatGPT and Claude (custom connector)</dt>
-          <dd><p>Add <code>${escape(openMcpUrl)}</code> as a custom connector (remote MCP server). It gives your AI all ${SKILL_COUNT} playbooks and task guides. No sign-in needed.</p></dd>
+          <dd><p>Add <code>${escape(openMcpUrl)}</code> as a custom connector (remote MCP server). It gives your AI all ${SKILL_COUNT} playbooks and task guides.</p></dd>
           <dt>Agent Skills CLI (most coding agents)</dt>
           <dd><p>Run <code>${CLI_ADD_CMD}</code>. To see the list before you install, run <code>${CLI_ADD_CMD} --list</code>.</p></dd>
           <dt>Context7 CLI</dt>
