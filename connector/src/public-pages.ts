@@ -548,6 +548,33 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         <h1>Setup and help</h1>
         <p>Add all ${SKILL_COUNT} Shopify playbooks to your AI app, and fix common setup problems.</p>
       </div>
+      <section id="quick-start">
+        <h2>Quick start for VAs</h2>
+        <p>You need no account, no sign-in, and no store access to begin.</p>
+        <h3>1. Connect your AI</h3>
+        <p><strong>Claude:</strong> open <strong>Settings → Connectors → Add custom connector</strong>, paste this link, and save.</p>
+        <pre class="command" tabindex="0"><code>${escape(openMcpUrl)}</code></pre>
+        <p><strong>ChatGPT:</strong> open <strong>Settings → Apps &amp; Connectors</strong> and create a custom connector with the same link. Some plans need <strong>Developer mode</strong> turned on first.</p>
+        <p><strong>Coding agents</strong> (Claude Code, Codex, Cursor, and others): run <code>${CLI_ADD_CMD}</code> once.</p>
+        <h3>2. Try one product listing</h3>
+        <p>Open a new chat and paste this prompt. Fill in the brackets with facts the store owner has confirmed. The AI asks about anything missing, then writes the draft.</p>
+        <pre class="request" tabindex="0"><code>${escape(firstRequest)}</code></pre>
+        <h3>3. Use it for daily tasks</h3>
+        <p>Describe the problem in plain words, and the AI picks the right playbook. For example:</p>
+        <ul>
+          <li>"Check this product CSV for missing prices and duplicate SKUs."</li>
+          <li>"Draft a reply to this late-order email using our shipping policy."</li>
+          <li>"Build a chargeback evidence packet from these order details."</li>
+          <li>"Our Merchant Center feed has disapproved products. What should I fix first?"</li>
+        </ul>
+        <h3>4. Follow three rules</h3>
+        <ol class="steps">
+          <li><strong>Paste only what the task needs.</strong> Never paste passwords, API keys, card details, or extra customer data.</li>
+          <li><strong>Treat every answer as a draft.</strong> Check it against the store's real facts before you use it.</li>
+          <li><strong>Get approval before any store change.</strong> The AI only reads and drafts. You or the owner make the change in Shopify admin.</li>
+        </ol>
+        <p>Each playbook is listed on the <a href="${pagePath(config, '#skills')}">main page</a> with a starter prompt you can copy. Other ways to connect are below.</p>
+      </section>
       <section id="install-help">
         <h2>All ways to connect</h2>
         <dl>
@@ -571,11 +598,6 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
           <dd><p>Download and unzip a skill ZIP from <a href="${RELEASE_TAG_URL}">${RELEASE_VERSION}</a>. Paste the text of <code>SKILL.md</code> into <strong>Project instructions</strong>. Upload the files in <code>references/</code> as project files.</p></dd>
         </dl>
         <p><a href="${sourceFile('docs/ai-agent-setup.md')}">Full agent setup guide</a> · <a href="${RELEASE_TAG_URL}">All ${RELEASE_VERSION} downloads</a> · <a href="${SOURCE_ZIP}">Full source ZIP</a></p>
-      </section>
-      <section>
-        <h2>Try it with one product listing</h2>
-        <p>Pick one real product and paste the specs you've confirmed. Don't paste passwords, API keys, card details, or customer data you don't need.</p>
-        <pre class="request" tabindex="0"><code>${escape(firstRequest)}</code></pre>
       </section>
       <section id="store-connection">
         <h2>Optional: read live store data</h2>
