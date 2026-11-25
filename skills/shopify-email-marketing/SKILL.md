@@ -1,6 +1,6 @@
 ---
 name: shopify-email-marketing
-description: Plans and audits Shopify email and SMS flows, abandoned cart, welcome and winback series, campaigns, segments, and measurement. Use for retention work, not unsupported revenue claims.
+description: "Plans and audits Shopify email and SMS flows, abandoned cart, welcome and winback series, campaigns, segments, and measurement. Use for retention work, not unsupported revenue claims."
 license: MIT
 metadata:
   author: vinceservidad

@@ -1,6 +1,6 @@
 ---
 name: shopify-creative-strategy
-description: Use when picking a winning ad from CTR, hook rate, or ROAS, or planning ad hooks, scripts, briefs, and creative tests for a Shopify or ecommerce brand. Plans creative, not budgets.
+description: "Use when picking a winning ad from CTR, hook rate, or ROAS, or planning ad hooks, scripts, briefs, and creative tests for a Shopify or ecommerce brand. Plans creative, not budgets."
 license: MIT
 metadata:
   author: vinceservidad

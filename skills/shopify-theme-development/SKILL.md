@@ -1,6 +1,6 @@
 ---
 name: shopify-theme-development
-description: Diagnoses and implements scoped Shopify theme code in Liquid, JSON templates, sections, blocks, CSS, and JavaScript. Use for theme bugs, customizations, and code changes.
+description: "Diagnoses and implements scoped Shopify theme code in Liquid, JSON templates, sections, blocks, CSS, and JavaScript. Use for theme bugs, customizations, and code changes."
 license: MIT
 metadata:
   author: vinceservidad
@@ -35,7 +35,7 @@ Collect the exact problem, affected templates and markets, reproduction steps, e
 7. After an approved upload, verify the exact theme preview, editor re-rendering, apps, and affected purchase path as scoped. Label unavailable hosted checks and local adapters explicitly.
 8. Publish only when explicitly approved, then verify the canonical live storefront after processing. Handoff changed files, test evidence, uploaded/published state, failures, rollback, and next owner; technical QA does not establish conversion impact.
 
-Read [references/liquid-patterns.md](references/liquid-patterns.md) for architecture and implementation rules. Read [references/debugging.md](references/debugging.md) for diagnosis and verification.
+Read [references/liquid-patterns.md](references/liquid-patterns.md) for architecture and implementation rules. Read [references/debugging.md](references/debugging.md) for diagnosis and verification. Read [references/checkout-extensibility-pixels.md](references/checkout-extensibility-pixels.md) for Checkout Extensibility, Web Pixels, and Shopify Functions boundaries.
 
 For variant-picker work, read the high-variant guidance in `references/liquid-patterns.md` before assuming a Liquid variant array contains every variant.
 

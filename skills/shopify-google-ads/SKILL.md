@@ -1,6 +1,6 @@
 ---
 name: shopify-google-ads
-description: Audits Google Ads for Shopify, including ROAS, budgets, search terms, Shopping, Performance Max, and Merchant Center. Use when deciding Google Ads budgets, bids, or scaling.
+description: "Audits Google Ads for Shopify, including ROAS, budgets, search terms, Shopping, Performance Max, and Merchant Center. Use when deciding Google Ads budgets, bids, or scaling."
 license: MIT
 metadata:
   author: vinceservidad
@@ -36,7 +36,7 @@ Collect account and Merchant Center scope, objective, dates, timezone, currency,
 7. Before an approved change, capture current settings and recheck conflicts. After execution, verify saved controls and relevant product diagnostics, publication, processing, landing, and delivery states; submission is not acceptance.
 8. Handoff the diagnosis or change log, unavailable evidence, pending feed or policy review, verification owner, and follow-up time. Judge the business result only after a suitable observation window.
 
-Read [references/campaign-structure.md](references/campaign-structure.md) for structural choices. Use [references/audit-checklist.md](references/audit-checklist.md) for exhaustive audit coverage.
+Read [references/campaign-structure.md](references/campaign-structure.md) for structural choices. Use [references/audit-checklist.md](references/audit-checklist.md) for exhaustive audit coverage. Read [references/merchant-center-next-pmax.md](references/merchant-center-next-pmax.md) for Merchant Center Next feeds, PMax guardrails, and disapproval/suspension triage.
 
 ## Output contract
 

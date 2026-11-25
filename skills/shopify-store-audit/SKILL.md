@@ -1,6 +1,6 @@
 ---
 name: shopify-store-audit
-description: Audits a whole Shopify store or its growth system across journey, trust, speed, tracking, acquisition, and retention, then ranks fixes. Use for store or growth audits, not one page.
+description: "Audits a whole Shopify store or its growth system across journey, trust, speed, tracking, acquisition, and retention, then ranks fixes. Use for store or growth audits, not one page."
 license: MIT
 metadata:
   author: vinceservidad

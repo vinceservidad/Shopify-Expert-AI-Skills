@@ -1,6 +1,6 @@
 ---
 name: shopify-catalog-operations
-description: Plans and runs bulk Shopify catalog work, including CSV imports, bulk price or tag edits, variants, metafields, taxonomy, collections, and cleanup. Use when many products change at once.
+description: "Plans and runs bulk Shopify catalog work, including CSV imports, bulk price or tag edits, variants, metafields, taxonomy, collections, and cleanup. Use when many products change at once."
 license: MIT
 metadata:
   author: vinceservidad

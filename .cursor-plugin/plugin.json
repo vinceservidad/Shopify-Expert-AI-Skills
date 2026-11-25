@@ -1,0 +1,21 @@
+{
+  "name": "shopify-va-toolkit",
+  "version": "0.2.3",
+  "description": "19 free, MIT open-source Shopify skills for AI agents: product listings, catalog & inventory ops, order operations, customer support, store audit, CRO, SEO, Meta & Google Ads, Shopify Flow, and theme development.",
+  "author": {
+    "name": "Vince Servidad"
+  },
+  "skills": "./skills",
+  "homepage": "https://mktskills.com/shopify-va",
+  "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "license": "MIT",
+  "keywords": [
+    "shopify",
+    "shopify-va",
+    "ecommerce",
+    "agent-skills",
+    "shopify-flow",
+    "shopify-theme",
+    "merchant-center"
+  ]
+}

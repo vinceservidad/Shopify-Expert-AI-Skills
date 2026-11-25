@@ -1,6 +1,6 @@
 ---
 name: shopify-va-training
-description: Builds Shopify VA onboarding, SOPs, practice tasks, quizzes, QA scorecards, store access plans, and coaching. Use to train or assess a VA or set up their store access.
+description: "Builds Shopify VA onboarding, SOPs, practice tasks, quizzes, QA scorecards, store access plans, and coaching. Use to train or assess a VA or set up their store access."
 license: MIT
 metadata:
   author: vinceservidad

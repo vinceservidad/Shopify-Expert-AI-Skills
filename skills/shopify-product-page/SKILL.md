@@ -1,6 +1,6 @@
 ---
 name: shopify-product-page
-description: Use when rewriting or auditing a product page, its copy, or product claims such as health, cure, or results claims, plus proof, offer, and mobile layout. One page, not a whole-store audit.
+description: "Use when rewriting or auditing a product page, its copy, or product claims such as health, cure, or results claims, plus proof, offer, and mobile layout. One page, not a whole-store audit."
 license: MIT
 metadata:
   author: vinceservidad

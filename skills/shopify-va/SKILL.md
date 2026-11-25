@@ -1,6 +1,6 @@
 ---
 name: shopify-va
-description: Plans, routes, tracks, and verifies mixed Shopify task lists through the shared store lifecycle. Use as the VA coordinator for daily tasks, handoffs, and client updates.
+description: "Plans, routes, tracks, and verifies mixed Shopify task lists through the shared store lifecycle. Use as the VA coordinator for daily tasks, handoffs, and client updates."
 license: MIT
 metadata:
   author: vinceservidad
