@@ -56,20 +56,20 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   assert.equal(navLinks.length, 4, 'top nav should have exactly 4 links');
 
   // Above-the-fold trust highlights (<= 25 words, no hero KPI strip, no em-dashes)
-  assert.ok(html.includes('19 free, MIT open-source playbooks'));
-  assert.ok(html.includes('Read and draft only, with no terminal and no login.'));
+  assert.ok(html.includes('19 free playbooks for the daily work of a Shopify virtual assistant (VA)'));
+  assert.ok(html.includes('Your AI reads and drafts. You approve every change.'));
   assert.doesNotMatch(stripToVisibleText(html), /—|\s–\s/, 'Product page generated copy must contain zero em-dashes or spaced en-dashes');
   assert.ok(html.includes('class="seg-tabs"'), 'Category filter must use connected segmented tabs');
   assert.ok(html.includes('class="apps-matrix"'), 'Supported AI apps must use unified hairline matrix');
 
   // 3-step explainer
-  assert.ok(html.includes('Connect once'));
-  assert.ok(html.includes('Pick the store task'));
-  assert.ok(html.includes('Review drafts before publishing'));
+  assert.ok(html.includes('<h3>Connect</h3>'));
+  assert.ok(html.includes('<h3>Ask</h3>'));
+  assert.ok(html.includes('<h3>Review</h3>'));
 
   // Bottleneck table & Sidekick comparison
   assert.ok(html.includes('id="bottlenecks"'));
-  assert.ok(html.includes('Bottleneck'));
+  assert.ok(html.includes('<th scope="col">Problem</th>'));
   assert.ok(html.includes('Fix first'));
   assert.ok(html.includes('Check next'));
   assert.ok(html.includes('id="sidekick"'));
@@ -105,7 +105,7 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   assert.ok(html.includes('https://shopify-mcp.mktskills.com/mcp'));
   assert.ok(html.includes('https://shopify.pxf.io/c/2227499/2974326/13624'));
   assert.ok(html.includes('rel="sponsored noopener noreferrer"'));
-  assert.ok(html.includes('Shopify App Store review pending'));
+  assert.ok(html.includes('waiting for Shopify App Store review'));
   assert.doesNotMatch(html, /https:\/\/apps\.shopify\.com\//);
 });
 
