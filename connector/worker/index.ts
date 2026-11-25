@@ -39,6 +39,12 @@ function authMode(value: string | undefined): 'custom' | 'public' {
   if (value === 'public') return 'public';
   throw new Error('Invalid Shopify authorization mode.');
 }
+// Optional second origin (https://mktskills.com) whose zone route sends only the no-login skills endpoint here.
+// It never serves OAuth, store tools or pages, so origin-bound grants stay on PUBLIC_URL.
+function openMcpAliasOrigin(env: Env): string | undefined {
+  const value = (env as Env & { OPEN_MCP_ALIAS_ORIGIN?: string }).OPEN_MCP_ALIAS_ORIGIN;
+  return value ? new URL(value).origin : undefined;
+}
 function pageConfig(env: Env): PublicPageConfig {
   return { publicUrl: env.PUBLIC_URL, appHandle: env.SHOPIFY_PUBLIC_APP_HANDLE || undefined,
     pluginDownloadUrl: env.PLUGIN_DOWNLOAD_URL || undefined, basePath: '/shopify-va',
@@ -112,7 +118,9 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     try {
       const url = new URL(request.url), origin = new URL(env.PUBLIC_URL).origin;
-      if (url.origin !== origin || request.headers.get('host') !== new URL(origin).host) return json({ error: 'host_not_allowed' }, 403);
+      const host = request.headers.get('host'), alias = openMcpAliasOrigin(env);
+      const viaAlias = alias !== undefined && url.origin === alias && host === new URL(alias).host;
+      if (viaAlias ? url.pathname !== '/mcp/shopify-skills' : url.origin !== origin || host !== new URL(origin).host) return json({ error: 'host_not_allowed' }, 403);
       // No-login read-only skills MCP endpoint: serves only public Markdown skills and workflow guides with CORS.
       if (url.pathname === '/.well-known/oauth-protected-resource' || url.pathname === '/.well-known/oauth-protected-resource/mcp/shopify-skills') {
         if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { ...headers, ...OPEN_MCP_CORS } });

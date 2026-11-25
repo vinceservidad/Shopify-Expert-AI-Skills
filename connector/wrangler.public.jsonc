@@ -9,6 +9,7 @@
   "preview_urls": false,
   "vars": {
     "PUBLIC_URL": "https://shopify-mcp.mktskills.com",
+    "OPEN_MCP_ALIAS_ORIGIN": "https://mktskills.com",
     "SHOPIFY_AUTH_MODE": "public",
     "SHOPIFY_PUBLIC_APP_HANDLE": "",
     "SHOPIFY_PUBLIC_INSTALL_URL": "https://admin.shopify.com/?organization_id=128968056&no_redirect=true&redirect=/oauth/redirect_from_developer_dashboard?client_id%3D7e38c21aa48c6eaccafb98e4f90f2f43",

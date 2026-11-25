@@ -25,6 +25,7 @@ assert.deepEqual(source.scopes, ['read_products', 'read_inventory', 'read_orders
 assert.equal(Object.keys(source.queries).length, 7);
 
 const origin = 'https://shopify-mcp.synthetic-mktskills.test';
+const aliasOrigin = 'https://alias.synthetic-mktskills.test';
 const shopA = 'synthetic-a.myshopify.com', shopB = 'synthetic-b.myshopify.com';
 const clientId = 'synthetic-public-app', clientSecret = 'synthetic-public-app-secret';
 const installUrl = 'https://admin.shopify.com/oauth/install?client_id=synthetic-public-app&signature=synthetic-install-signature';
@@ -63,7 +64,7 @@ const options = {
   upstream: origin, modules: true, scriptPath: 'build/worker/index.js', compatibilityDate: '2026-09-30', compatibilityFlags: ['nodejs_compat'],
   bindings: { PUBLIC_URL: origin, SHOPIFY_CLIENT_ID: clientId, SHOPIFY_CLIENT_SECRET: clientSecret,
     CONNECTOR_STORAGE_KEY: randomBytes(32).toString('base64'), SHOPIFY_AUTH_MODE: 'public',
-    SHOPIFY_PUBLIC_INSTALL_URL: installUrl, PUBLIC_LAUNCH_STAGE: 'candidate' },
+    SHOPIFY_PUBLIC_INSTALL_URL: installUrl, PUBLIC_LAUNCH_STAGE: 'candidate', OPEN_MCP_ALIAS_ORIGIN: aliasOrigin },
   durableObjects: { OAUTH_ISSUER: { className: 'OAuthIssuer', useSQLite: true } }, resourcePersistencePath: persist,
   ratelimits: { AUTH_RATE_LIMITER: { namespace_id: '7142001', simple: { limit: 30, period: 60 } }, MCP_RATE_LIMITER: { namespace_id: '7142002', simple: { limit: 120, period: 60 } } },
   outboundService: async request => {
@@ -198,6 +199,21 @@ try {
   const openTools = (await openRpc('tools/list')).result.tools;
   assert.deepEqual(openTools.map(t => t.name).sort(), ['list_shopify_skills', 'list_shopify_va_workflows', 'prepare_shopify_va_task', 'read_shopify_skill']);
   assert.ok(openTools.every(t => t.annotations.readOnlyHint && t.annotations.destructiveHint === false));
+  // The alias origin (mktskills.com) reaches only the no-login skills endpoint; OAuth, store tools and pages stay on PUBLIC_URL.
+  // A zone-routed request keeps its own URL and Host. A second instance with the alias as upstream reproduces that;
+  // the direct worker binding would replace Host with the loopback address.
+  const aliasPersist = await mkdtemp(join(tmpdir(), 'toolkit-public-alias-'));
+  const mfAlias = new Miniflare(convertV4MiniflareOptions({ ...options, upstream: aliasOrigin, resourcePersistencePath: aliasPersist }));
+  const viaAlias = (path, init = {}) => mfAlias.dispatchFetch(aliasOrigin + path, { redirect: 'manual', ...init, headers: { host: new URL(aliasOrigin).host, 'cf-connecting-ip': '198.51.100.7', ...init.headers } });
+  try {
+  const aliasInit = await viaAlias('/mcp/shopify-skills', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://claude.ai' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: '2025-03-26', capabilities: {}, clientInfo: { name: 'test', version: '1.0' } } }) });
+  assert.equal(aliasInit.status, 200);
+  assert.equal((await aliasInit.json()).result.serverInfo.name, 'shopify-va-skills');
+  assert.equal((await viaAlias('/mcp/shopify-skills', { method: 'OPTIONS', headers: { Origin: 'https://claude.ai' } })).status, 204);
+  for (const path of ['/mcp', '/health', '/authorize', '/token', '/.well-known/oauth-protected-resource/mcp', '/'])
+    assert.equal((await viaAlias(path)).status, 403, `Alias origin must not serve ${path}`);
+  } finally { await mfAlias.dispose(); await rm(aliasPersist, { recursive: true, force: true }); }
   const openSkills = (await openRpc('tools/call', { name: 'list_shopify_skills', arguments: {} })).result.structuredContent.skills;
   assert.equal(openSkills.length, 19);
   assert.deepEqual(openSkills, source.skills);
