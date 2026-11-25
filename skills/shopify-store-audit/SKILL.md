@@ -44,7 +44,7 @@ Continue safely when inputs are missing. Name the gaps that could change priorit
 7. Assign each proposed correction or test to its specialist owner with prerequisites, acceptance checks, approval scope, and rollback. Preserve observed strengths and working paths.
 8. Handoff the limited or complete audit deliverable with coverage, evidence, unknowns, priorities, and next owners. Audit completion does not mean the recommended fixes were implemented or verified.
 
-For lenses and prioritization, read [references/frameworks.md](references/frameworks.md). For page and system coverage, read [references/checklist.md](references/checklist.md).
+For lenses and prioritization, read [references/frameworks.md](references/frameworks.md). For page and system coverage, read [references/checklist.md](references/checklist.md). Read [references/launch-migration-bfcm.md](references/launch-migration-bfcm.md) for store launch, migration, and BFCM readiness checks. Read [references/app-stack-reviews.md](references/app-stack-reviews.md) for app stack hygiene and product review moderation.
 
 ## Growth audit mode
 

@@ -64,3 +64,10 @@ verification:
 Follow the merchant's approved route for threats to safety, legal demands, privacy or data requests, payment disputes, suspected fraud, regulated product concerns, discrimination or harassment, repeated failed remedies, media or public escalation, and exceptions beyond the agent's authority.
 
 Do not use a generic escalation label when an immediate safety or legal process is required.
+
+## Subscription support tickets (skip, swap, dunning, cancel)
+
+- Verify the customer's active subscription status, next charge date, and already-billed orders inside the subscription app (Shopify Subscriptions, Recharge, Skio, Appstle) before replying.
+- Respect cancellation requests promptly and without dark patterns—offer an approved skip, delay, or flavor/product swap only once as a helpful option, never as an obstacle to canceling.
+- If a renewal already billed before the customer canceled, state the verified charge timestamp and policy honestly; do not promise a refund or shipment intercept before checking fulfillment status and owner authority.
+- For failed renewal payments (dunning), send the secure official customer-portal update link only—never ask customers to reply with card details by email or chat.
