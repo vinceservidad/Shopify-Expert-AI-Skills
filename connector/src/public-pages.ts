@@ -198,7 +198,7 @@ export const FAQ_ITEMS: readonly { question: string; answer: string }[] = [
       'No. Paste product specs, CSV exports, support tickets, or ad reports into the chat, and the skills work from those. A read-only connection to your live store is optional.',
   },
   {
-    question: 'Can these skills change my store, prices or orders?',
+    question: 'Can these skills change my store, prices, or orders?',
     answer:
       'No. The skills and the store connection can only read data and write drafts. Your AI gives you drafts, plans, and review checklists. You make any change yourself in Shopify admin.',
   },
