@@ -1,6 +1,6 @@
 ---
 name: shopify-flow-automation
-description: Designs and audits Shopify Flow workflows and store automations with triggers, conditions, actions, tests, failure handling, and rollback. Use for automation specs and QA.
+description: "Designs and audits Shopify Flow workflows and store automations with triggers, conditions, actions, tests, failure handling, and rollback. Use for automation specs and QA."
 license: MIT
 metadata:
   author: vinceservidad
@@ -35,7 +35,7 @@ Collect business outcome, current manual process, trigger event, authoritative d
 7. Capture the prior version and obtain exact enablement approval. Start with the smallest safe scope, verify actual branch results, and stop on unexpected volume, repeated effects, or failed guardrails.
 8. Handoff the versioned specification, field and dependency evidence, test results, run identifiers, manual recovery, monitoring owner, and next review. Disabling prevents future runs only as verified; reconcile in-flight runs and completed effects separately.
 
-Read [references/automation-patterns.md](references/automation-patterns.md) for design rules. Read [references/examples.md](references/examples.md) for specification examples.
+Read [references/automation-patterns.md](references/automation-patterns.md) for design rules. Read [references/examples.md](references/examples.md) for specification examples. Read [references/official-flow-recipes.md](references/official-flow-recipes.md) for proven fraud-hold, low-stock, VIP, preorder, and SLA digest Flow recipes.
 
 ## Output contract
 

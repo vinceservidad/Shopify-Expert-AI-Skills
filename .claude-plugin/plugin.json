@@ -1,13 +1,20 @@
 {
   "name": "mkt-skills-shopify-va",
-  "displayName": "MKT Skills — Shopify VA",
+  "displayName": "MKT Skills \u2014 Shopify VA",
   "version": "0.2.2",
   "description": "19 independent Shopify research and VA job procedures. Read-only workflows for supplied files and public research; no store connection required.",
-  "author": { "name": "Vince Servidad" },
-  "homepage": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
+  "author": {
+    "name": "Vince Servidad"
+  },
+  "homepage": "https://mktskills.com/shopify-va",
   "repository": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills",
   "license": "MIT",
-  "keywords": ["shopify", "virtual-assistant", "ecommerce", "research"],
+  "keywords": [
+    "shopify",
+    "virtual-assistant",
+    "ecommerce",
+    "research"
+  ],
   "icon": "./.claude-plugin/icon.png",
   "documentationUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills#readme",
   "supportUrl": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/issues",

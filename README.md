@@ -43,3 +43,9 @@ Choose the skill that owns the deliverable. Use `shopify-va` for mixed tasks and
 - [Worked examples](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/worked-examples.md)
 - [Optional plugin and MCP connector documentation](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/docs/plugin-and-connector.md)
 - [Privacy](PRIVACY.md) · [Terms of use](TERMS.md) · [MIT License](LICENSE)
+
+## Install in Claude Code
+
+```text
+/plugin install mkt-skills-shopify-va --marketplace vinceservidad/Shopify-Expert-AI-Skills
+```

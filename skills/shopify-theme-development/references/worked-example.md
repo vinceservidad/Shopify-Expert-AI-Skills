@@ -4,9 +4,9 @@
 
 The [three-variant input](../assets/worked-example/input.json) defines a synthetic single-option mug. Source files are included in this skill:
 
-- [Product section](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/skills/shopify-theme-development/assets/worked-example/theme/sections/main-product.liquid)
-- [Variant controller](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/skills/shopify-theme-development/assets/worked-example/theme/assets/skills-variant-picker.js)
-- [Minimal layout](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/blob/main/skills/shopify-theme-development/assets/worked-example/theme/layout/theme.liquid)
+- [Product section](../assets/worked-example/theme/sections/main-product.liquid)
+- [Variant controller](../assets/worked-example/theme/assets/skills-variant-picker.js)
+- [Minimal layout](../assets/worked-example/theme/layout/theme.liquid)
 - [Product template](../assets/worked-example/theme/templates/product.json)
 - [English strings](../assets/worked-example/theme/locales/en.default.json)
 - [Empty teaching settings schema](../assets/worked-example/theme/config/settings_schema.json)
