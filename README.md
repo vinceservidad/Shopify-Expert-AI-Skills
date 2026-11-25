@@ -8,8 +8,18 @@ This independent project complements Shopify Sidekick and authorized integration
 
 Pick the easiest way to connect all **19 Shopify skills** (and their reference files). No Shopify account is needed to use the skills.
 
-### 1. One-command CLI (all 19 skills)
-Works with Claude Code, Codex, Cursor, and other tools that support Agent Skills:
+### 1. No-login MCP link (ChatGPT, Claude, Cursor — no terminal)
+Add this URL as a custom MCP server with **no sign-in required**:
+
+```text
+https://shopify-mcp.mktskills.com/mcp/shopify-skills
+```
+
+It serves all 19 Shopify skills, their official playbook references, and 8 VA task guides read-only. It never asks for a Shopify login.
+
+### 2. One-command CLI installs (all 19 skills)
+
+**Agent Skills CLI** (Claude Code, Codex, Cursor, Windsurf, Copilot, Antigravity):
 
 ```bash
 npx skills add vinceservidad/Shopify-Expert-AI-Skills
@@ -21,25 +31,13 @@ Preview the full list first:
 npx skills add vinceservidad/Shopify-Expert-AI-Skills --list
 ```
 
-### 2. No-login MCP link (Claude, ChatGPT, Cursor)
-Add this URL as a custom MCP server with **no sign-in required**:
+**Context7 CLI**:
 
-```text
-https://shopify-mcp.mktskills.com/mcp/shopify-skills
+```bash
+npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills
 ```
 
-It serves all 19 Shopify skills, their reference files, and 8 VA task guides read-only. It never asks for a Shopify login.
-
-### 3. Signed-in MCP link (optional live Shopify store data)
-When you want read-only live store data (products, variants, stock, and limited order summaries after owner approval), connect the signed-in MCP endpoint:
-
-```text
-https://shopify-mcp.mktskills.com/mcp
-```
-
-*(Live public store sign-in is pending Shopify App Store review. Use the no-login MCP link or CLI today.)*
-
-### 4. Claude Code & Codex GitHub plugin marketplaces
+### 3. Native plugins (Claude Code, Codex, Cursor, Antigravity)
 
 **Claude Code** (terminal, `2.1.292+`):
 
@@ -61,6 +59,27 @@ Check that all 19 skills loaded with `claude plugin details shopify-va-toolkit`.
 codex plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills --ref main
 codex plugin add shopify-va-toolkit@shopify-skills
 ```
+
+**Cursor** (inside chat):
+
+```text
+/add-plugin vinceservidad/Shopify-Expert-AI-Skills
+```
+
+**Antigravity**:
+
+```bash
+agy plugin install https://github.com/vinceservidad/Shopify-Expert-AI-Skills
+```
+
+### 4. Signed-in MCP link (optional live Shopify store data)
+When you want read-only live store data (products, variants, stock, and limited order summaries after owner approval), connect the signed-in MCP endpoint:
+
+```text
+https://shopify-mcp.mktskills.com/mcp
+```
+
+*(Live public store sign-in is pending Shopify App Store review. Use the no-login MCP link, CLI, or native plugin today.)*
 
 ### Other options
 - **Live guide:** https://mktskills.com/shopify-va (also mirrored at https://shopify-mcp.mktskills.com)

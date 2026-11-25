@@ -1,6 +1,6 @@
 ---
 name: shopify-cro
-description: Diagnoses Shopify conversion rate drops, cart and checkout friction, and designs A/B tests. Use for conversion optimization, not general redesign or promised lift.
+description: "Diagnoses Shopify conversion rate drops, cart and checkout friction, and designs A/B tests. Use for conversion optimization, not general redesign or promised lift."
 license: MIT
 metadata:
   author: vinceservidad

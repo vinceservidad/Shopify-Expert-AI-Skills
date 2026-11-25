@@ -1,6 +1,6 @@
 ---
 name: shopify-merchandising
-description: Plans Shopify collections, collection sorting, featured or hidden products, bundles, upsells, and discount codes with checkout tests. Use when deciding which products to show, order, or promote.
+description: "Plans Shopify collections, collection sorting, featured or hidden products, bundles, upsells, and discount codes with checkout tests. Use when deciding which products to show, order, or promote."
 license: MIT
 metadata:
   author: vinceservidad

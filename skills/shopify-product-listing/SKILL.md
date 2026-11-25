@@ -1,6 +1,6 @@
 ---
 name: shopify-product-listing
-description: Creates and quality-checks Shopify product listings from approved data, including titles, descriptions, images, variants, pricing, inventory, and SEO. Use to add or update products.
+description: "Creates and quality-checks Shopify product listings from approved data, including titles, descriptions, images, variants, pricing, inventory, and SEO. Use to add or update products."
 license: MIT
 metadata:
   author: vinceservidad

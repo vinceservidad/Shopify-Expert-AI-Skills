@@ -1,6 +1,6 @@
 ---
 name: shopify-order-operations
-description: Handles Shopify orders, payments, fulfillment, order edits, returns, refunds, cancellations, chargebacks, and fraud flags with approval checks. Use for controlled order work.
+description: "Handles Shopify orders, payments, fulfillment, order edits, returns, refunds, cancellations, chargebacks, and fraud flags with approval checks. Use for controlled order work."
 license: MIT
 metadata:
   author: vinceservidad
@@ -35,7 +35,7 @@ Collect target store and order, customer request, identity-verification procedur
 7. Reopen relevant order, payment, fulfillment, return, refund, inventory, app, and notification states. Treat processing as pending with an owner and follow-up time, not resolved.
 8. Handoff a minimized action log, verified outcomes, exceptions, communication state, and next owner. Financial actions may require a separately approved correction; do not promise that an opposite action can undo them.
 
-Read [references/order-workflows.md](references/order-workflows.md) for common state transitions. Use [references/exception-handling.md](references/exception-handling.md) for risk, permissions, escalation, and verification.
+Read [references/order-workflows.md](references/order-workflows.md) for common state transitions. Use [references/exception-handling.md](references/exception-handling.md) for risk, permissions, escalation, and verification. Read [references/multi-location-routing-markets.md](references/multi-location-routing-markets.md) for Shopify Markets and multi-location order routing rules.
 
 ## Output contract
 

@@ -1,6 +1,6 @@
 ---
 name: shopify-seo
-description: Audits and plans Shopify SEO, including technical issues, keyword targeting, product and collection pages, blog content, schema, and internal links. Use for organic-search decisions.
+description: "Audits and plans Shopify SEO, including technical issues, keyword targeting, product and collection pages, blog content, schema, and internal links. Use for organic-search decisions."
 license: MIT
 metadata:
   author: vinceservidad
