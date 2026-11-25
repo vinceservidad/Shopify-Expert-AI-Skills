@@ -62,7 +62,7 @@ export const HERO_SCRIPT = `(function () {
   }
 
   function drawTag(tag) {
-    var calm = width > 900 && tag.x < width * .58 ? .25 : 1;
+    var calm = width > 900 && tag.x > width * .24 && tag.x < width * .76 ? .28 : 1;
     ctx.save();
     ctx.globalAlpha = calm;
     ctx.translate(tag.x, tag.y); ctx.rotate(tag.angle);
