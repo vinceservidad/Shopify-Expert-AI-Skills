@@ -68,7 +68,7 @@ After a merge, check the workflow run summary for the mirrored commit, then the 
 curl -s https://mktskills.com/shopify-va | grep -c 'family-tabs'
 ```
 
-A successful mirror or build is not proof the page is correct; open `/shopify-va`, `/shopify-va/help` and
+A successful mirror or build is not proof the page is correct; open `/shopify-va`, `/shopify-va/setup` (and check `/shopify-va/help` redirects to it) and
 `/shopify-va/privacy` and check them.
 
 ## Rollback

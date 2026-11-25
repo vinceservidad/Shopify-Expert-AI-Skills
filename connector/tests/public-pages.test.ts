@@ -53,7 +53,8 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   const navMatch = /<nav class="family-nav"[^>]*>([\s\S]*?)<\/nav>/.exec(html);
   assert.ok(navMatch, 'family-nav missing');
   const navLinks = navMatch[1].match(/<a\b/g) ?? [];
-  assert.equal(navLinks.length, 4, 'top nav should have exactly 4 links');
+  assert.equal(navLinks.length, 3, 'top nav should have exactly 3 links: Problems, Skills, How to set up');
+  assert.ok(navMatch[1].includes('href="/shopify-va/setup">How to set up</a>'));
 
   // Above-the-fold trust highlights (<= 25 words, no hero KPI strip, no em-dashes)
   assert.ok(html.includes('19 free playbooks for the daily work of a Shopify virtual assistant (VA)'));
@@ -272,7 +273,7 @@ test('public pages and styles enforce strict design guardrails (0 webfonts, 13/1
 });
 
 test('public pages preserve strict CSP invariants while permitting non-executable JSON-LD', () => {
-  for (const path of ['/shopify-va', '/shopify-va/help', '/shopify-va/privacy']) {
+  for (const path of ['/shopify-va', '/shopify-va/setup', '/shopify-va/privacy']) {
     const content = publicContent(path, candidateConfig);
     assert.ok(content && typeof content.body === 'string', path);
     for (const tag of content.body.match(/<script\b[^>]*>/g) ?? []) {

@@ -26,7 +26,7 @@ export function publicContent(path: string, config: PublicPageConfig): PublicRou
     return { body: renderLlmsTxt(config), contentType: 'text/markdown; charset=utf-8' };
   }
   if (['/', '/shopify-va', '/shopify-va/'].includes(path)) return { body: renderProductPage(config), contentType: 'text/html; charset=utf-8' };
-  if (['/help', '/shopify-va/help', '/shopify-va/help/'].includes(path)) return { body: renderHelpPage(config), contentType: 'text/html; charset=utf-8' };
+  if (['/help', '/setup', '/shopify-va/setup', '/shopify-va/setup/'].includes(path)) return { body: renderHelpPage(config), contentType: 'text/html; charset=utf-8' };
   if (['/privacy', '/shopify-va/privacy', '/shopify-va/privacy/'].includes(path)) return { body: renderPrivacyPage(config), contentType: 'text/html; charset=utf-8' };
   return undefined;
 }

@@ -21,7 +21,7 @@ test('the product page loads the hero script by URL and marks the canvas decorat
 });
 
 test('public pages stay inside the CSP: no executable inline scripts, handlers, or style attributes', () => {
-  for (const path of ['/shopify-va', '/shopify-va/help', '/shopify-va/privacy']) {
+  for (const path of ['/shopify-va', '/shopify-va/setup', '/shopify-va/privacy']) {
     const html = publicContent(path, config)!.body as string;
     for (const tag of html.match(/<script\b[^>]*>/g) ?? []) {
       if (/type="application\/ld\+json"/.test(tag)) continue;

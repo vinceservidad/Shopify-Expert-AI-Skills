@@ -16,6 +16,10 @@ export default {
     if (url.origin !== site.origin || request.headers.get('host') !== site.host) return Response.json({ error: 'host_not_allowed' }, { status: 403, headers: SECURITY_HEADERS });
     if (request.method !== 'GET' && request.method !== 'HEAD') return new Response(null, { status: 405, headers: { ...SECURITY_HEADERS, Allow: 'GET, HEAD' } });
     if (!url.pathname.startsWith('/shopify-va')) return new Response('Page not found', { status: 404, headers: SECURITY_HEADERS });
+    // The setup guide moved from /shopify-va/help; keep old links and search results working.
+    if (url.pathname === '/shopify-va/help' || url.pathname === '/shopify-va/help/') {
+      return new Response(null, { status: 301, headers: { ...SECURITY_HEADERS, Location: `${site.origin}/shopify-va/setup${url.search}` } });
+    }
     const content = publicContent(url.pathname, { publicUrl: env.CONNECTOR_PUBLIC_URL, basePath: '/shopify-va',
       appHandle: env.SHOPIFY_PUBLIC_APP_HANDLE || undefined, pluginDownloadUrl: env.PLUGIN_DOWNLOAD_URL || undefined, openMcpUrl: env.OPEN_MCP_URL || undefined,
       launchStage: env.PUBLIC_LAUNCH_STAGE === 'public' ? 'public' : 'candidate' });
