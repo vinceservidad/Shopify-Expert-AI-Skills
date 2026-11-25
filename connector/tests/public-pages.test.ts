@@ -57,7 +57,7 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   assert.ok(navMatch[1].includes('href="/shopify-va/setup">How to set up</a>'));
 
   // Above-the-fold trust highlights (<= 25 words, no hero KPI strip, no em-dashes)
-  assert.ok(html.includes('19 free playbooks for the daily work of a Shopify virtual assistant (VA)'));
+  assert.ok(html.includes('19 free skills for the daily work of a Shopify virtual assistant (VA)'));
   assert.ok(html.includes('Your AI drafts the work, and you approve anything that changes the store.'));
   assert.doesNotMatch(stripToVisibleText(html), /—|\s–\s/, 'Product page generated copy must contain zero em-dashes or spaced en-dashes');
   assert.ok(html.includes('class="seg-tabs"'), 'Category filter must use connected segmented tabs');

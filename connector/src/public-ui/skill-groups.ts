@@ -158,7 +158,7 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-theme-development',
     name: 'Theme Development',
     category: 'Store & Theme',
-    summary: 'Edit Liquid, theme sections, checkout UI extensions, and web pixels, testing on a duplicate theme first.',
+    summary: 'Edit Liquid, theme sections, checkout UI extensions, and web pixels. Test changes on a duplicate theme first.',
     prompt: 'Check this Shopify theme bug and tell me whether the fix belongs in Liquid theme code, a web pixel, or checkout settings.',
   },
 ];

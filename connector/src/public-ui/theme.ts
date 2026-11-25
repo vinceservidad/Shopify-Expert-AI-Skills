@@ -57,7 +57,7 @@ export const THEME_SCRIPT = `(function () {
         if (visible) shown++;
       });
       if (status) {
-        status.textContent = shown === 1 ? '1 playbook' : (shown + ' playbooks');
+        status.textContent = shown === 1 ? '1 skill' : (shown + ' skills');
       }
     }
 
