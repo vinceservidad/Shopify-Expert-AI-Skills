@@ -1,6 +1,6 @@
 # Shopify VA Toolkit: 19 Free Skills, Plugins & MCP
 
-19 MIT-licensed Shopify skills and 95 Markdown files for Shopify virtual assistants (VAs), freelancers, and store operators. Each skill covers prerequisites, ordered steps, decision checks, QA, and handoff.
+19 MIT-licensed Shopify skills for Shopify virtual assistants (VAs), freelancers, and store operators. Each skill walks your AI app through required client facts, ordered steps, quality checks, and handoff notes.
 
 This independent project runs outside Shopify and pairs with Shopify Sidekick and authorized integrations. Installing the skills does not connect a live store or change store data.
 
@@ -20,7 +20,7 @@ It serves all 19 Shopify skills, their reference files, and 8 VA task workflows 
 
 ### 2. One-command CLI installs (all 19 skills)
 
-#### Agent Skills CLI (Claude Code, OpenAI Codex, Cursor, Windsurf, GitHub Copilot, Antigravity)
+#### Agent Skills CLI (Claude Code, Codex, Cursor, and other coding agents)
 
 ```bash
 npx skills add vinceservidad/Shopify-Expert-AI-Skills
@@ -75,7 +75,7 @@ agy plugin install https://github.com/vinceservidad/Shopify-Expert-AI-Skills
 
 ### 4. Signed-in MCP link (optional live Shopify store data)
 
-When you want read-only live store data, connect the signed-in MCP endpoint. After owner approval it reads products, variants, inventory, collections, metafields, and order summaries, and runs a one-call daily store check. Four optional permissions the owner grants in the app add fixed sales and traffic reports, discounts, theme files, and customer totals (never names or emails).
+When you want read-only live store data, connect the signed-in MCP endpoint. After owner approval it reads your catalog, inventory, and order summaries, plus a one-call daily store check. Store owners can also grant four optional read permissions in the app for sales reports, discounts, theme files, and customer totals (never buyer names or emails).
 
 ```text
 https://shopify-mcp.mktskills.com/mcp
@@ -90,7 +90,7 @@ Live public store sign-in is waiting for Shopify App Store review. Use the no-lo
 - Standalone ZIPs and `.plugin` packages: [v0.2.5 release](releases/v0.2.5/README.md) (for [Claude Skills ZIP](docs/ai-agent-setup.md#claude-skills) or [ChatGPT Projects](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats))
 - Full setup and MCP docs: [Agent setup guide](docs/ai-agent-setup.md) and [Plugin and MCP reference](docs/plugin-and-connector.md)
 
-Anthropic Plugin Directory status: `MKT Skills — Shopify VA` is under review. Use the CLI, no-login MCP URL, or GitHub plugin commands today.
+The Anthropic Plugin Directory listing is under review. Use the CLI, no-login MCP URL, or GitHub plugin commands today.
 
 ## Skill catalog
 
@@ -120,11 +120,11 @@ Choose the skill that owns the deliverable. Use `shopify-va` for mixed tasks and
 
 ## How work flows
 
-Provide the task, target store, evidence, acceptance criteria, and exact authorization. Start read-only, resolve prerequisites, follow the owning skill, verify the resulting state, and hand back completed work, blockers, and the next owner.
+Start by giving your AI app the task, target store, source files, and what needs approval. Work read-only first, follow the owning skill, check the result, and finish with a clear handoff of what is done and what is blocked.
 
 The shared [Store Operating Lifecycle](skills/shopify-va/references/store-operating-lifecycle.md) is a state model: begin at the earliest unresolved stage that can change the decision. Short jobs need only the relevant stages. Use the [Initiative Record](skills/shopify-va/references/initiative-record.md) for work spanning skills, sessions, or handoffs.
 
-Keep facts, calculations, inferences, assumptions, and unknowns separate. Live changes require explicit scope, permissions, and an available tool. The custom MCP server exposes read-only store data; it cannot publish, refund, or change products, inventory, ads, or budgets. A save or successful build does not prove a verified live result or business impact. See [Evidence and authorization](docs/evidence-and-authorization.md).
+Keep confirmed facts separate from calculations, assumptions, and unknowns. Live changes need clear approval, store permissions, and an authorized tool. The custom MCP server is read-only and cannot edit products, process refunds, or change ad budgets. A save or successful build does not prove a verified live result or business impact. See [Evidence and authorization](docs/evidence-and-authorization.md).
 
 ## Examples, testing, and evidence
 
