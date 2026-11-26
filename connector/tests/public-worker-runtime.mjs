@@ -22,7 +22,7 @@ const source = JSON.parse(execFileSync(process.execPath, ['--import', 'tsx', '--
 `], { encoding: 'utf8' }));
 assert.equal(source.apiVersion, '2026-07');
 assert.deepEqual(source.scopes, ['read_products', 'read_inventory', 'read_orders']);
-assert.equal(Object.keys(source.queries).length, 7);
+assert.equal(Object.keys(source.queries).length, 15);
 
 const origin = 'https://shopify-mcp.synthetic-mktskills.test';
 const aliasOrigin = 'https://alias.synthetic-mktskills.test';
@@ -271,7 +271,7 @@ try {
   const first = await authorize(shopA, 'Synthetic first AI'), second = await authorize(shopB, 'Synthetic second AI');
   for (const [grant, shop] of [[first, shopA], [second, shopB]]) {
     const tools = (await rpc(grant.tokens.access_token, 'tools/list')).result.tools;
-    assert.equal(tools.length, 12); assert.deepEqual(tools, source.tools);
+    assert.equal(tools.length, 20); assert.deepEqual(tools, source.tools);
     assert.ok(tools.every(tool => tool.annotations.readOnlyHint && tool.annotations.destructiveHint === false));
     const skills = (await rpc(grant.tokens.access_token, 'tools/call', { name: 'list_shopify_skills', arguments: {} })).result.structuredContent.skills;
     assert.equal(skills.length, 19); assert.deepEqual(skills, source.skills);
@@ -335,7 +335,7 @@ try {
   upstreamRedirect = false;
 
   await mf.dispose(); mf = new Miniflare(convertV4MiniflareOptions(options));
-  assert.equal((await rpc(first.tokens.access_token, 'tools/list')).result.tools.length, 12, 'Public grants survive runtime restart');
+  assert.equal((await rpc(first.tokens.access_token, 'tools/list')).result.tools.length, 20, 'Public grants survive runtime restart');
   const refreshed = await okJson(await post('/token', { client_id: first.clientId, grant_type: 'refresh_token', refresh_token: first.tokens.refresh_token, resource: origin + '/mcp' }));
   assert.equal((await post('/token', { client_id: first.clientId, grant_type: 'refresh_token', refresh_token: first.tokens.refresh_token, resource: origin + '/mcp' })).status, 400);
   first.tokens = refreshed;
@@ -347,7 +347,7 @@ try {
   assert.equal((await appPost('/app/disconnect', { connection_id: connectionsA.connections[0].id }, shopA, '2001')).status, 403);
   await okJson(await appPost('/app/disconnect', { connection_id: connectionsA.connections[0].id }, shopA));
   assert.equal((await post('/mcp', {}, { Authorization: `Bearer ${first.tokens.access_token}` })).status, 401);
-  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 12);
+  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 20);
   const beforeReconnect = exchanges.filter(exchange => exchange.requested_token_type === 'urn:shopify:params:oauth:token-type:offline-access-token').length;
   const reconnected = await authorize(shopA, 'Synthetic reconnect');
   assert.equal(exchanges.filter(exchange => exchange.requested_token_type === 'urn:shopify:params:oauth:token-type:offline-access-token').length, beforeReconnect, 'Clients share one encrypted installation credential');
@@ -355,26 +355,26 @@ try {
   const uninstalled = '{\n  "myshopify_domain": "' + shopA + '",\n  "synthetic_marker": "no customer identity is retained"\n}\n';
   const canonical = JSON.stringify(JSON.parse(uninstalled));
   assert.equal((await webhook(shopA, 'app/uninstalled', 'wrong-bytes', uninstalled, canonical)).status, 401, 'HMAC authenticates raw bytes, not parsed JSON');
-  assert.equal((await rpc(reconnected.tokens.access_token, 'tools/list')).result.tools.length, 12, 'Rejected webhooks preserve access');
+  assert.equal((await rpc(reconnected.tokens.access_token, 'tools/list')).result.tools.length, 20, 'Rejected webhooks preserve access');
   await okJson(await webhook(shopA, 'app/uninstalled', 'uninstall-a', uninstalled));
   await okJson(await webhook(shopA, 'app/uninstalled', 'uninstall-a', uninstalled));
   assert.equal((await post('/mcp', {}, { Authorization: `Bearer ${reconnected.tokens.access_token}` })).status, 401, 'Signed uninstall removes every shop grant');
   assert.equal((await post('/token', { client_id: reconnected.clientId, grant_type: 'refresh_token', refresh_token: reconnected.tokens.refresh_token, resource: origin + '/mcp' })).status, 400);
-  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 12, 'Uninstall preserves the other shop');
+  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 20, 'Uninstall preserves the other shop');
 
   // Reinstall must use a fresh Shopify session, issued after the uninstall barrier.
   await delay(1100);
   const reinstalled = await authorize(shopA, 'Synthetic reinstall');
-  assert.equal((await rpc(reinstalled.tokens.access_token, 'tools/list')).result.tools.length, 12);
+  assert.equal((await rpc(reinstalled.tokens.access_token, 'tools/list')).result.tools.length, 20);
   await okJson(await webhook(shopA, 'app/uninstalled', 'uninstall-a', uninstalled));
-  assert.equal((await rpc(reinstalled.tokens.access_token, 'tools/list')).result.tools.length, 12, 'Duplicate old delivery cannot revoke a new verified installation');
+  assert.equal((await rpc(reinstalled.tokens.access_token, 'tools/list')).result.tools.length, 20, 'Duplicate old delivery cannot revoke a new verified installation');
   const redact = '{\n "shop_domain": "' + shopA + '", "shop_id": 1\n}\n';
   await okJson(await webhook(shopA, 'shop/redact', 'redact-after-reinstall', redact));
-  assert.equal((await rpc(reinstalled.tokens.access_token, 'tools/list')).result.tools.length, 12, 'Delayed privacy delivery preserves a verified reinstall');
+  assert.equal((await rpc(reinstalled.tokens.access_token, 'tools/list')).result.tools.length, 20, 'Delayed privacy delivery preserves a verified reinstall');
   const customer = JSON.stringify({ shop_domain: shopB, shop_id: 2, customer: { id: 1, email: 'synthetic-private-customer@example.test' }, orders_requested: [] });
   await okJson(await webhook(shopB, 'customers/data_request', 'request-b', customer));
   await okJson(await webhook(shopB, 'customers/redact', 'redact-b', customer));
-  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 12);
+  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 20);
 
   async function inspectPersistence(directory) {
     for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -390,5 +390,5 @@ try {
   }
   await mf.dispose(); mf = undefined;
   await inspectPersistence(persist);
-  console.log('Public Workers runtime passed: managed public pairing, SDK session identity, owner approval, strict browser/origin protections, 19 skills, 8 workflows, 12 tools, all 7 fixed reads, online staff checks, pagination, restart, client reconnect/disconnect, raw-byte HMAC webhooks, encrypted persistence, two-store uninstall isolation and verified reinstall. Synthetic runtime verification only; native AI clients and real Shopify deliveries remain separate live checks.');
+  console.log('Public Workers runtime passed: managed public pairing, SDK session identity, owner approval, strict browser/origin protections, 19 skills, 8 workflows, 20 tools, all 15 fixed reads, online staff checks, pagination, restart, client reconnect/disconnect, raw-byte HMAC webhooks, encrypted persistence, two-store uninstall isolation and verified reinstall. Synthetic runtime verification only; native AI clients and real Shopify deliveries remain separate live checks.');
 } finally { if (mf) await mf.dispose(); await rm(persist, { recursive: true, force: true }); }

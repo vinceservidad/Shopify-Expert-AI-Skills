@@ -95,7 +95,7 @@ try {
   const first = await authorize('synthetic-a.myshopify.com'), second = await authorize('synthetic-b.myshopify.com');
   for (const [grant, shop] of [[first, 'synthetic-a.myshopify.com'], [second, 'synthetic-b.myshopify.com']]) {
     const tools = (await rpc(grant.tokens.access_token, 'tools/list')).result.tools;
-    assert.equal(tools.length, 12); assert.deepEqual(tools, source.tools, 'Worker tools retain Node input contracts');
+    assert.equal(tools.length, 20); assert.deepEqual(tools, source.tools, 'Worker tools retain Node input contracts');
     for (const name of legacyNames) assert.ok(tools.some(tool => tool.name === name));
     assert.ok(tools.every(tool => tool.annotations?.readOnlyHint === true && tool.annotations?.destructiveHint === false));
     const skills = (await rpc(grant.tokens.access_token, 'tools/call', { name: 'list_shopify_skills', arguments: {} })).result.structuredContent.skills;
@@ -137,7 +137,7 @@ try {
   assert.equal((await rpc(first.tokens.access_token, 'tools/call', { name: 'shopify_get_shop', arguments: {} })).result.isError, true);
   upstreamRedirect = false;
   await mf.dispose(); mf = new Miniflare(convertV4MiniflareOptions(options));
-  assert.equal((await rpc(first.tokens.access_token, 'tools/list')).result.tools.length, 12, 'OAuth grant survives runtime restart');
+  assert.equal((await rpc(first.tokens.access_token, 'tools/list')).result.tools.length, 20, 'OAuth grant survives runtime restart');
   const restartedOrder = (await rpc(first.tokens.access_token,'tools/call',{name:'shopify_get_order_details',arguments:{id:'gid://shopify/Order/1'}})).result;
   assert.equal(restartedOrder.structuredContent.shop,'synthetic-a.myshopify.com');
   assert.deepEqual(upstreamCalls.at(-1).variables,{id:'gid://shopify/Order/1',first:20});
@@ -151,7 +151,7 @@ try {
   await post('/revoke', { client_id: first.client_id, token: tokens.access_token });
   assert.equal((await post('/mcp', {}, { Authorization: 'Bearer ' + first.tokens.access_token })).status, 401);
   assert.equal((await post('/mcp', {}, { Authorization: 'Bearer ' + tokens.access_token })).status, 401);
-  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 12);
+  assert.equal((await rpc(second.tokens.access_token, 'tools/list')).result.tools.length, 20);
   const unaffectedOrder = (await rpc(second.tokens.access_token,'tools/call',{name:'shopify_get_order_details',arguments:{id:'gid://shopify/Order/1'}})).result;
   assert.equal(unaffectedOrder.structuredContent.shop,'synthetic-b.myshopify.com','Revocation cannot change another store grant');
   async function checkFiles(directory) {
@@ -163,5 +163,5 @@ try {
   }
   await mf.dispose(); mf = undefined;
   await checkFiles(persist);
-  console.log('Workers runtime passed: browser origin protection, real OAuth/PKCE/HMAC flow, 19 skills, 8 complete VA workflows, 12 tools, Node contract parity, detail-read store isolation, durable restart, encrypted persistence, single-use codes, refresh rotation and revocation.');
+  console.log('Workers runtime passed: browser origin protection, real OAuth/PKCE/HMAC flow, 19 skills, 8 complete VA workflows, 20 tools, Node contract parity, detail-read store isolation, durable restart, encrypted persistence, single-use codes, refresh rotation and revocation.');
 } finally { if (mf) await mf.dispose(); await rm(persist, { recursive: true, force: true }); }
