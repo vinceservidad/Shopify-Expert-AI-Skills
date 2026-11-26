@@ -4,7 +4,7 @@ description: "Plans and audits Shopify email and SMS flows, abandoned cart, welc
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Email Marketing

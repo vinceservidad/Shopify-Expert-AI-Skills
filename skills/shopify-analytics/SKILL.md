@@ -4,7 +4,7 @@ description: "Analyzes Shopify sales, top sellers, AOV, and profit changes. Reco
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.4"
+  version: "0.1.5"
 ---
 
 # Shopify Analytics

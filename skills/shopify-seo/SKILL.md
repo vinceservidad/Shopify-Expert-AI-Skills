@@ -4,7 +4,7 @@ description: "Audits and plans Shopify SEO, including technical issues, keyword 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify SEO

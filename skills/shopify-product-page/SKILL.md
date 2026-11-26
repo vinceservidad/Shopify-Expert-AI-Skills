@@ -4,7 +4,7 @@ description: "Use when rewriting or auditing a product page, its copy, or produc
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Product Page
