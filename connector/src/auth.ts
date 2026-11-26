@@ -4,7 +4,7 @@ import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import express, { type Express, type Request, type Response } from 'express';
 import { z } from 'zod';
 import type { RecordStore } from './record-store.js';
-import { Connection, Fetch, SHOPIFY_SCOPES, shopDomain } from './shopify.js';
+import { Connection, Fetch, SHOPIFY_REQUESTED_SCOPES, SHOPIFY_SCOPES, shopDomain } from './shopify.js';
 import { PublicShopifyAuth, type PublicGrant, type AppAuthorization, type AppHomeConfig } from './public-auth.js';
 
 const token = () => Buffer.from(randomBytes(32)).toString('base64url');
@@ -138,7 +138,7 @@ export class ShopifyOAuth {
       const state = token();
       store.put(`shopify-state:${state}`, { ...pending, shop: parsed.data.shop }, 600);
       const url = new URL(`https://${parsed.data.shop}/admin/oauth/authorize`);
-      url.search = new URLSearchParams({ client_id: this.options.clientId, scope: SHOPIFY_SCOPES.join(','),
+      url.search = new URLSearchParams({ client_id: this.options.clientId, scope: SHOPIFY_REQUESTED_SCOPES.join(','),
         redirect_uri: `${base}/oauth/shopify/callback`, state }).toString();
       response.redirect(url.href);
     });

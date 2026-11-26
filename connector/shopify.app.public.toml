@@ -8,7 +8,7 @@ embedded = true
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
 scopes = "read_products,read_inventory,read_orders"
-optional_scopes = [ ]
+optional_scopes = [ "read_reports", "read_discounts", "read_themes", "read_customers" ]
 use_legacy_install_flow = false
 
 [auth]

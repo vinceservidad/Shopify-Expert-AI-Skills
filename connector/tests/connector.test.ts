@@ -113,7 +113,7 @@ test('MCP protocol discovers tools/resources/prompts and validates input without
   await server.connect(serverTransport); await client.connect(clientTransport);
   try {
     const tools = await client.listTools();
-    assert.equal(tools.tools.length, 12);
+    assert.equal(tools.tools.length, 20);
     for (const [name, schema] of Object.entries(legacySchemas)) {
       assert.deepEqual(tools.tools.find(tool => tool.name === name)?.inputSchema, schema, `${name} preserves its original input schema`);
     }
@@ -230,7 +230,7 @@ test('OAuth to MCP to Shopify flow isolates stores, binds PKCE/resource, rotates
       const client = new Client({name:'http-protocol-test',version:'1.0.0'});
       await client.connect(new StreamableHTTPClientTransport(new URL(`${fixture.base}/mcp`), {requestInit:{headers:{Authorization:`Bearer ${record.tokens.access_token}`}}}));
       try {
-        assert.equal((await client.listTools()).tools.length, 12);
+        assert.equal((await client.listTools()).tools.length, 20);
         const result = await client.callTool({name:'shopify_get_shop',arguments:{}});
         assert.equal(result.structuredContent?.shop, shop);
         assert.ok(!JSON.stringify(result).includes(`upstream-${shop}`));

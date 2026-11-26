@@ -4,6 +4,23 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Store data tools and daily store check (connector)
+
+- Add 8 read-only connector tools: `shopify_daily_store_check`,
+  `shopify_list_collections`, `shopify_get_product_metafields`,
+  `shopify_run_report` (6 fixed ShopifyQL reports over 7, 30, 90 or 365 days),
+  `shopify_list_discounts`, `shopify_list_themes`, `shopify_read_theme_files`
+  and `shopify_customer_summary` (totals only, never names or emails).
+- The 3 required scopes are unchanged. `read_reports`, `read_discounts`,
+  `read_themes` and `read_customers` are optional scopes in
+  `shopify.app.public.toml`; the owner grants them from the app page in Shopify
+  admin. Tools that need a missing optional scope return `MISSING_SCOPE` and
+  send nothing to Shopify.
+- Reports and the daily check build Shopify queries only from named options,
+  never from caller text. `tests/store-tools.test.ts` covers fixed queries,
+  excluded customer fields, input rejection, optional-scope errors and the
+  daily check summary.
+
 ### Guide deploy workflow retired
 
 - Remove `.github/workflows/artifacts-deploy.yml`, which deployed the guide on

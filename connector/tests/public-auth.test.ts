@@ -151,6 +151,10 @@ test('public session validates exact Shopify identity and time before exchanging
     const result = await (await f.post('/app/session', {})).json() as { is_owner: boolean; permissions: string[] };
     assert.equal(result.is_owner, false); assert.deepEqual(result.permissions, ['read_products']);
     assert.equal(f.store.listByShop(shopA, '').length, 0, 'Online tokens and identities are never retained');
+    f.staffScopes(['read_products', 'read_reports', 'write_products']);
+    const optional = await (await f.post('/app/session', {})).json() as { permissions: string[] };
+    assert.deepEqual(optional.permissions, ['read_products', 'read_reports'], 'Granted optional reads are kept; scopes the app never requested are dropped');
+    f.staffScopes(['read_products']);
     f.scopes(['read_products']); assert.equal((await f.post('/app/session', {})).status, 403);
     const frame = await fetch(`${f.base}/app?shop=${shopA}`);
     assert.match(frame.headers.get('content-security-policy')!, new RegExp(`frame-ancestors https://admin.shopify.com https://${shopA}`));

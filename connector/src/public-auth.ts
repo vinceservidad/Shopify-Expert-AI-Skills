@@ -3,7 +3,7 @@ import { Buffer } from 'node:buffer';
 import express, { type Express, type Request, type Response } from 'express';
 import { z } from 'zod';
 import type { RecordStore } from './record-store.js';
-import { SHOPIFY_SCOPES, shopDomain, type Connection, type Fetch } from './shopify.js';
+import { SHOPIFY_OPTIONAL_SCOPES, SHOPIFY_REQUESTED_SCOPES, SHOPIFY_SCOPES, shopDomain, type Connection, type Fetch } from './shopify.js';
 
 const TTL = 7 * 24 * 3600;
 const PAIR_TTL = 600;
@@ -93,7 +93,7 @@ export class PublicShopifyAuth {
       this.options.store.put(`pairing-review:${hash(review)}`, { pairingKey: key, shop: authorization.connection.shop,
         subjectHash: authorization.subjectHash, generation: authorization.generation, expiresAt: Date.now() + 120000 } satisfies Review, 120, authorization.connection.shop);
       response.json({ shop: authorization.connection.shop, client_name: pair.clientName, return_origin: pair.returnOrigin,
-        permissions: SHOPIFY_SCOPES, expires_at: pair.expiresAt, review_token: review });
+        permissions: SHOPIFY_SCOPES, optional_permissions: SHOPIFY_OPTIONAL_SCOPES, expires_at: pair.expiresAt, review_token: review });
     }));
     app.post('/app/pairing/approve', this.appHandler(async (authorization, request, response) => {
       if (!authorization.isOwner) { failure(response, 'owner_approval_required', 403); return; }
@@ -224,7 +224,7 @@ export class PublicShopifyAuth {
     const online = z.object({ access_token: z.string().min(1), scope: z.string(), expires_in: z.number().positive(),
       associated_user_scope: z.string(), associated_user: z.object({ account_owner: z.boolean() }) }).safeParse(data);
     if (!online.success) throw new PublicAuthError('shopify_authorization_failed', 502);
-    const scopes = online.data.associated_user_scope.split(',').map(value => value.trim()).filter(value => SHOPIFY_SCOPES.includes(value));
+    const scopes = online.data.associated_user_scope.split(',').map(value => value.trim()).filter(value => SHOPIFY_REQUESTED_SCOPES.includes(value));
     if (!scopes.length || !SHOPIFY_SCOPES.every(scope => online.data.scope.split(',').map(value => value.trim()).includes(scope))) throw new PublicAuthError('missing_approved_scope', 403);
     if (this.lifecycle(shop).generation !== lifecycle.generation) throw new PublicAuthError('invalid_session', 401);
     return { connection: { shop, accessToken: online.data.access_token, scopes }, isOwner: online.data.associated_user.account_owner,

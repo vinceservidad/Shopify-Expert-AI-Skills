@@ -276,10 +276,35 @@ export const APP_HOME_SCRIPT = String.raw`(() => {
       status('session-status', 'Verified store: ' + text(result.shop) + '. ' + (isOwner ? 'Store owner approval is available.' : 'Your staff permissions apply to store reads. Owner approval is required for AI connections.'));
       element('owner-guidance').textContent = isOwner ? 'Review the connection request from ChatGPT or Claude before approving read access to this store.' : 'You can view permitted store evidence. Ask the store owner to review connection requests inside this app.';
       disabled(element('inspect-pairing'), !isOwner);
+      await showOptionalScopes();
       await loadConnections();
     } catch (error) { if (generation === sessionGeneration) status('session-status', errorText(error), true); }
     finally { if (generation === sessionGeneration) disabled(element('retry-session'), false); }
   }
+  const OPTIONAL_SCOPES = ['read_reports', 'read_discounts', 'read_themes', 'read_customers'];
+  const scopesApi = () => (window.shopify && window.shopify.scopes && typeof window.shopify.scopes.query === 'function') ? window.shopify.scopes : undefined;
+  async function showOptionalScopes() {
+    const api_ = scopesApi(), button = element('request-optional-scopes');
+    if (!api_) { status('optional-scopes-status', 'This Shopify admin cannot show permission requests here. Update the app from the Shopify admin and try again.', true); disabled(button, true); return; }
+    try {
+      const current = await api_.query();
+      const granted = Array.isArray(current && current.granted) ? current.granted : [];
+      const missing = OPTIONAL_SCOPES.filter(scope => !granted.includes(scope));
+      status('optional-scopes-status', missing.length ? 'Not granted yet: ' + missing.join(', ') + '.' : 'All extra read permissions are granted.');
+      disabled(button, !isOwner || !missing.length);
+    } catch { status('optional-scopes-status', 'Permission status could not be checked. Try again later.', true); disabled(button, true); }
+  }
+  element('request-optional-scopes').addEventListener('click', async () => {
+    const api_ = scopesApi(), button = element('request-optional-scopes');
+    if (!api_ || !isOwner) return;
+    disabled(button, true); status('optional-scopes-status', 'Waiting for the store owner to answer the Shopify permission request…');
+    try {
+      const response = await api_.request(OPTIONAL_SCOPES);
+      const declined = response && response.detail && Array.isArray(response.detail.declined) ? response.detail.declined : [];
+      status('optional-scopes-status', declined.length ? 'Not granted: ' + declined.join(', ') + '. Tools that need them stay unavailable.' : 'Granted. Connected AI apps can use the new reads after their access next refreshes, within about an hour.');
+    } catch { status('optional-scopes-status', 'The permission request did not complete. Nothing was changed.', true); }
+    await showOptionalScopes();
+  });
   element('retry-session').addEventListener('click', loadSession);
   element('product-search').addEventListener('submit', event => {event.preventDefault(); read('products', {first: 20, query: element('product-query').value.trim()});});
   element('read-shop').addEventListener('click', () => read('shop', {}));
