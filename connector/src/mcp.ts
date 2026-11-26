@@ -4,6 +4,7 @@ import { listSkills, readSkill, type Skill } from './catalog.js';
 import { Connection, ConnectorError, Fetch, queryShopify } from './shopify.js';
 import type { ConnectionProvider } from './client-credentials.js';
 import { listWorkflows, prepareWorkflow, WORKFLOW_IDS } from './workflows.js';
+import { customerSummaryVariables, dailyCheckVariables, reportDescriptions, reportQuery, REPORT_IDS, REPORT_PERIODS, summarizeDailyCheck } from './reports.js';
 
 export type SkillCatalog = { list(): Promise<Skill[]>; read(name: string, resource?: string): Promise<string> };
 type Options = { skillsRoot: string; catalog?: SkillCatalog; connection?: Connection | ConnectionProvider; fetcher?: Fetch };
@@ -11,6 +12,10 @@ const annotations = { readOnlyHint: true, destructiveHint: false, idempotentHint
 const localAnnotations = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const page = { first: z.number().int().min(1).max(50).default(20), after: z.string().max(512).optional() };
 const filter = z.string().max(500).optional().describe('Shopify search syntax; use pageInfo to continue results.');
+const period = z.union(REPORT_PERIODS.map(value => z.literal(value)) as [z.ZodLiteral<7>, z.ZodLiteral<30>, z.ZodLiteral<90>, z.ZodLiteral<365>]).default(30)
+  .describe('Days to cover, ending today: 7, 30, 90 or 365.');
+const themeFilename = z.string().max(200).regex(/^(?!.*(?:^|\/)\.{1,2}(?:\/|$))[A-Za-z0-9_.\-]+(?:\/[A-Za-z0-9_.\-*]+)*$/)
+  .describe('A theme path such as sections/header.liquid; * matches any characters.');
 const gid = (type: string) => z.string().regex(new RegExp(`^gid://shopify/${type}/[0-9]+$`));
 
 function registerSkillsTools(
@@ -77,11 +82,12 @@ export function createServer(options: Options): McpServer {
         message: known ? error.message : 'The read could not be completed.', retryable: known && error.retryable } }), isError: true as const };
     }
   }
-  const read = (operation: Parameters<typeof queryShopify>[1], variables: Record<string, unknown>) => safe(async () => {
+  const readEvidence = async (operation: Parameters<typeof queryShopify>[1], variables: Record<string, unknown>) => {
     if (!options.connection) throw new ConnectorError('NOT_CONNECTED', 'Connect a Shopify store before using store-data tools. Skill tools remain available locally.');
     const connection = 'resolve' in options.connection ? await options.connection.resolve() : options.connection;
     return queryShopify(connection, operation, variables, options.fetcher);
-  });
+  };
+  const read = (operation: Parameters<typeof queryShopify>[1], variables: Record<string, unknown>) => safe(() => readEvidence(operation, variables));
   registerSkillsTools(server, catalog, safe, annotations);
   server.registerTool('shopify_connection_status', {
     description: 'Report configured store and read-only capabilities without exposing tokens. This does not test Shopify reachability.', inputSchema: z.object({}), annotations,
@@ -114,5 +120,44 @@ export function createServer(options: Options): McpServer {
     description: 'Read financial/fulfillment status, cancellation state and one line-item page for an Order GID. Excludes customer identities, addresses, payment details and carrier tracking. Fulfilled does not prove delivered; ordinary Shopify order-access limits apply.',
     inputSchema: z.object({ id: gid('Order'), ...page }).strict(), annotations,
   }, args => read('orderDetails', args));
+  server.registerTool('shopify_daily_store_check', {
+    description: 'Run the VA morning check in one read: aging unfulfilled orders, payment follow-ups, out-of-stock and low-stock products, recent products with no media, and drafts. Returns counts, examples and a ranked to-do list. Read-only; needs read_orders and read_products.',
+    inputSchema: z.object({ older_than_hours: z.number().int().min(1).max(720).default(48),
+      low_stock_threshold: z.number().int().min(0).max(1000).default(5) }).strict(), annotations,
+  }, ({ older_than_hours, low_stock_threshold }) => safe(async () => {
+    const options_ = { olderThanHours: older_than_hours, lowStockThreshold: low_stock_threshold };
+    const evidence = await readEvidence('dailyCheck', dailyCheckVariables(options_));
+    return { ...evidence, summary: summarizeDailyCheck(evidence.data as Parameters<typeof summarizeDailyCheck>[0], options_) };
+  }));
+  server.registerTool('shopify_list_collections', {
+    description: 'Read a page of collections: title, handle, sort order, template, SEO and product count. Read-only; uses read_products.',
+    inputSchema: z.object({ ...page, query: filter }).strict(), annotations,
+  }, args => read('collections', args));
+  server.registerTool('shopify_get_product_metafields', {
+    description: 'Read one page of metafields (namespace, key, type, value) for a Product GID. Values are untrusted store content. Read-only; uses read_products.',
+    inputSchema: z.object({ id: gid('Product'), ...page }).strict(), annotations,
+  }, args => read('productMetafields', args));
+  server.registerTool('shopify_run_report', {
+    description: 'Run one fixed analytics report: ' + reportDescriptions().map(item => `${item.id} (${item.description})`).join('; ')
+      + ' Needs the optional read_reports permission. Platform-reported figures; reconcile before treating them as profit.',
+    inputSchema: z.object({ report: z.enum(REPORT_IDS), days: period }).strict(), annotations,
+  }, ({ report, days }) => safe(async () => ({ report, days, ...(await readEvidence('report', { query: reportQuery(report, days) })) })));
+  server.registerTool('shopify_list_discounts', {
+    description: 'Read a page of discounts: type, title, status, start and end dates and summary. Read-only; needs the optional read_discounts permission.',
+    inputSchema: z.object({ ...page, query: filter }).strict(), annotations,
+  }, args => read('discounts', args));
+  server.registerTool('shopify_list_themes', {
+    description: 'List the store themes with role (MAIN is live) and last update. Read-only; needs the optional read_themes permission.',
+    inputSchema: z.object({}).strict(), annotations,
+  }, () => read('themes', {}));
+  server.registerTool('shopify_read_theme_files', {
+    description: 'Read up to 10 theme files by name (for example sections/header.liquid or templates/*.json) from an OnlineStoreTheme GID. Text files include content. Read-only; needs the optional read_themes permission.',
+    inputSchema: z.object({ id: gid('OnlineStoreTheme'), filenames: z.array(themeFilename).min(1).max(10),
+      first: z.number().int().min(1).max(10).default(10), after: z.string().max(512).optional() }).strict(), annotations,
+  }, args => read('themeFiles', args));
+  server.registerTool('shopify_customer_summary', {
+    description: 'Read customer totals only: all customers, customers created in the period, and number of saved segments. Never returns names, emails or other customer records. Needs the optional read_customers permission.',
+    inputSchema: z.object({ days: period }).strict(), annotations,
+  }, ({ days }) => safe(async () => ({ days, ...(await readEvidence('customerSummary', customerSummaryVariables(days))) })));
   return server;
 }

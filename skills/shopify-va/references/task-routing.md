@@ -29,12 +29,18 @@ Start at the earliest unresolved stage that can materially change the requested 
 | Request | Owner skill | Escalate when |
 | --- | --- | --- |
 | Mixed routine admin task list | `shopify-va` | Scope, access, priority, stage, or ownership is ambiguous |
+| Morning store check or daily to-do list | `shopify-va` | Store identity is unconfirmed or a count is unavailable |
 | Product opportunity or supplier research | `shopify-product-research` | Legal, regulated, financial, or supplier-verification risk is material |
 | Create or update one product | `shopify-product-listing` | Product truth, price, tax, claims, or publishing approval is missing |
+| Translated listings, market prices, or market availability | `shopify-product-listing` | Translated copy is unapproved, or a restricted product appears in a market |
 | Bulk products, taxonomy, tags, metafields, imports | `shopify-catalog-operations` | Overwrite, deletion, inventory, handle, or channel risk exists |
+| Import file and diff instead of a live edit | `shopify-catalog-operations` | No written approval of the exact file, or the export is stale |
+| Reorder quantities or a purchase order | `shopify-catalog-operations` | Lead time, cost, case pack, or budget is missing, or the order would be sent to a supplier |
 | Collections, sorting, assortment, bundles, cross-sells | `shopify-merchandising` | Commercial strategy or theme implementation is required |
 | Discount code or automatic discount setup | `shopify-merchandising` | Value, scope, eligibility, combinations, or dates lack written approval, or the promotion must be sent to customers |
 | Order, fulfillment, return, refund, or cancellation | `shopify-order-operations` | Money, customer harm, fraud, payment, or policy exception is involved |
+| Wholesale buyer, B2B price list, or payment terms | `shopify-order-operations` | Credit terms, tax exemption, or price changes lack owner approval |
+| In-store POS returns, transfers, or end-of-day checks | `shopify-order-operations` | A cash or payment difference exists, or a refund exceeds staff permission |
 | SOP, onboarding, quiz, or QA program | `shopify-va-training` | Policy owner or system access is unavailable |
 | Whole-store diagnosis | `shopify-store-audit` | Technical, legal, or measurement work needs a specialist |
 | Funnel experiment | `shopify-cro` | Live test launch or tracking changes are requested |
@@ -46,6 +52,7 @@ Start at the earliest unresolved stage that can materially change the requested 
 | Email or SMS | `shopify-email-marketing` | Consent, suppression, sending, or offer changes are involved |
 | Shopify Flow | `shopify-flow-automation` | Enabling, customer data, or external actions are involved |
 | Customer message or FAQ | `shopify-support` | Sending, refunding, or policy exceptions are involved |
+| Customer data access, correction, or deletion request | `shopify-support` | Identity is unverified, a legal deadline is close, or a lawyer or regulator is involved |
 | Liquid or theme code | `shopify-theme-development` | Publishing or production risk is involved |
 | Reporting and diagnosis | `shopify-analytics` | Definitions, data quality, or source reconciliation is unresolved |
 
