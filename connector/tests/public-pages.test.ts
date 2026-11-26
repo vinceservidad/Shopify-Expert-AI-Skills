@@ -5,7 +5,7 @@ import { publicContent } from '../src/public-routes.js';
 import { SKILL_CATALOG, SKILL_GROUPS } from '../src/public-ui/skill-groups.js';
 
 const RELEASE_PLUGIN_URL =
-  'https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.2/shopify-va-toolkit-skills-only.plugin';
+  'https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.4/shopify-va-toolkit-skills-only.plugin';
 
 const candidateConfig: PublicPageConfig = {
   publicUrl: 'https://shopify-mcp.mktskills.com',
@@ -67,6 +67,25 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   assert.ok(html.includes('<h3>Connect</h3>'));
   assert.ok(html.includes('<h3>Ask</h3>'));
   assert.ok(html.includes('<h3>Review</h3>'));
+
+  // Setup steps live on the landing page so first-time visitors see everything on one page
+  const setupMatch = /<section id="setup"[\s\S]*?<\/section>/.exec(html);
+  assert.ok(setupMatch, 'landing setup section missing');
+  const setup = setupMatch[0];
+  assert.ok(setup.includes('<h2 id="setup-heading">How to set up</h2>'));
+  assert.equal((setup.match(/<ol class="quick-setup">[\s\S]*?<\/ol>/)?.[0].match(/<li>/g) ?? []).length, 3, 'landing quick setup should have 3 steps');
+  for (const step of ['Connect your AI', 'Try one product listing', 'Review before anything goes live']) {
+    assert.ok(setup.includes(`<h3>${step}</h3>`), `Missing setup step: ${step}`);
+  }
+  assert.ok(setup.includes('Settings → Connectors → Add custom connector'));
+  assert.ok(setup.includes('Settings → Apps &amp; Connectors'));
+  assert.ok(setup.includes('Write one Shopify product title'), 'first prompt must be on the landing page');
+  assert.ok(setup.includes('data-copy="Write one Shopify product title'), 'first prompt needs a copy button');
+  assert.ok(setup.includes('<h3 class="setup-subhead">All ways to connect</h3>'));
+  assert.ok(setup.includes('href="/shopify-va/setup">The setup guide</a>'), 'landing must still link the full setup guide');
+  assert.ok(html.includes('<a href="#setup">Step-by-step setup</a>'), 'hero must point to the on-page setup steps');
+  assert.ok(html.includes('releases/download/v0.2.4/shopify-va-toolkit-skills-only.plugin'));
+  assert.ok(!html.includes('v0.2.2'), 'landing must not link the old v0.2.2 release');
 
   // Bottleneck table & Sidekick comparison
   assert.ok(html.includes('id="bottlenecks"'));
@@ -199,7 +218,7 @@ test('OG image and llms.txt discovery routes return valid payloads', () => {
 
 test('product page rejects invalid pluginDownloadUrl values', () => {
   const invalidUrls = [
-    'https://evil.example.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.2/shopify-va-toolkit-skills-only.plugin',
+    'https://evil.example.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.4/shopify-va-toolkit-skills-only.plugin',
     `${RELEASE_PLUGIN_URL}?download=1`,
     `${RELEASE_PLUGIN_URL}#fragment`,
     'https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.2/custom-archive.zip',

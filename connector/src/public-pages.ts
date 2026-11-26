@@ -38,7 +38,7 @@ const CURSOR_PLUGIN_CMD = '/add-plugin vinceservidad/Shopify-Expert-AI-Skills';
 const AGY_PLUGIN_CMD = `agy plugin install ${REPOSITORY}`;
 const CODEX_MARKETPLACE_CMD = 'codex plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills --ref main';
 const CODEX_PLUGIN_CMD = 'codex plugin add shopify-va-toolkit@shopify-skills';
-const RELEASE_VERSION = 'v0.2.2';
+const RELEASE_VERSION = 'v0.2.4';
 const RELEASE_TAG_URL = `${REPOSITORY}/releases/tag/${RELEASE_VERSION}`;
 const RELEASE_DOWNLOAD_BASE = `${REPOSITORY}/releases/download/${RELEASE_VERSION}`;
 const STARTER_SKILL_ZIP_URL = `${RELEASE_DOWNLOAD_BASE}/shopify-va.zip`;
@@ -325,7 +325,7 @@ function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
     <div class="wb-panels">
       <div class="wb-panel wb-open">
         <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
-        <p class="wb-note">Add this link as a custom connector in Claude or ChatGPT. <a href="${guideUrl}">Setup guide</a> · <a href="#setup">See all 8 apps</a></p>
+        <p class="wb-note">Add this link as a custom connector in Claude or ChatGPT. <a href="#setup">Step-by-step setup</a> · <a href="${guideUrl}">Troubleshooting</a></p>
       </div>
       <div class="wb-panel wb-cli">
         <div class="wb-row"><code>${CLI_ADD_CMD}</code><button type="button" class="copy-btn" data-copy="${CLI_ADD_CMD}" hidden>Copy command</button></div>
@@ -467,9 +467,30 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
     <section id="setup" class="band band-mist" aria-labelledby="setup-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
-          <h2 id="setup-heading">Setup</h2>
-          <p>Use the link in ChatGPT or Claude, or install the skills for your coding agent. Step-by-step instructions are in the <a href="${pagePath(config, '/setup')}">setup guide</a>.</p>
+          <h2 id="setup-heading">How to set up</h2>
+          <p>Connect all ${SKILL_COUNT} skills in three steps. You don't need an account or store access to start.</p>
         </div>
+        <ol class="quick-setup">
+          <li>
+            <h3>Connect your AI</h3>
+            <p><strong>Claude:</strong> open Settings → Connectors → Add custom connector, paste the link below, and save.</p>
+            <p><strong>ChatGPT:</strong> open Settings → Apps &amp; Connectors and create a custom connector with the same link. Some plans need Developer mode turned on first.</p>
+            <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
+            <p><strong>Coding agents</strong> (Claude Code, Codex, Cursor, and others): run <code>${CLI_ADD_CMD}</code> once.</p>
+          </li>
+          <li>
+            <h3>Try one product listing</h3>
+            <p>Open a new chat and paste this prompt. Fill in the brackets with facts the store owner has confirmed. The AI asks about anything missing, then writes the draft.</p>
+            <pre class="request" tabindex="0"><code>${escape(firstRequest)}</code></pre>
+            <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(firstRequest)}" hidden>Copy prompt</button>
+          </li>
+          <li>
+            <h3>Review before anything goes live</h3>
+            <p>Paste only what the task needs, and never paste passwords, API keys, or card details. Check each draft against the owner's facts. The AI only reads and drafts, so you or the owner make the change in Shopify admin.</p>
+          </li>
+        </ol>
+        <h3 class="setup-subhead">All ways to connect</h3>
+        <p class="setup-intro">Pick your app. <a href="${pagePath(config, '/setup')}">The setup guide</a> covers ZIP files, ChatGPT Projects, and fixes for common problems.</p>
         ${supportedAppsMatrix()}
         <div class="cmd-list">
           <div class="cmd-item">
