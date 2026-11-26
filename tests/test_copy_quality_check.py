@@ -7,6 +7,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 REFERENCE = "references/copy-quality-check.md"
 COPY_SKILLS = (
+    "shopify-analytics",
     "shopify-creative-strategy",
     "shopify-email-marketing",
     "shopify-google-ads",

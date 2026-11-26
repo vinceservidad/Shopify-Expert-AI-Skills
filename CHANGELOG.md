@@ -6,11 +6,11 @@ All notable changes to this project are documented here.
 
 ### Copy quality check
 
-- Add `references/copy-quality-check.md`, a 15-point anti-AI copy pass, to the 9
-  skills that write customer or client copy: creative strategy, email marketing,
+- Add `references/copy-quality-check.md`, a 15-point anti-AI copy pass, to the 10
+  skills that write customer or client copy: analytics, creative strategy, email marketing,
   Google Ads, Meta Ads, product listing, product page, SEO, support, and the
   Shopify VA coordinator. Each `SKILL.md` runs it before handoff.
-- `tests/test_copy_quality_check.py` keeps the 9 copies identical and linked.
+- `tests/test_copy_quality_check.py` keeps the 10 copies identical and linked.
 - `shopify-creative-strategy` hooks no longer recommend question hooks.
 - Rewrite a "not X" line in the Meta Advantage+ creative guidance.
 
