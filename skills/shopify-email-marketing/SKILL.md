@@ -35,7 +35,7 @@ Collect lifecycle objective, primary business outcome, platform and integrations
 7. Define holdout or comparison logic where feasible, business-outcome measurement, guardrails, stopping rules, and rollback. Require approval before enabling or sending, then verify actual configuration and relevant message/event logs.
 8. Handoff versioned copy and flow specification or verified execution, audience and suppression evidence, test results, pending sends, stop/disable procedure, monitoring owner, and review time. Enabling a flow does not prove delivery or incremental revenue.
 
-Read [references/lifecycle-framework.md](references/lifecycle-framework.md) for strategy and measurement. Read [references/flow-library.md](references/flow-library.md) for reusable flow specifications.
+Read [references/lifecycle-framework.md](references/lifecycle-framework.md) for strategy and measurement. Read [references/flow-library.md](references/flow-library.md) for reusable flow specifications. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Output contract
 

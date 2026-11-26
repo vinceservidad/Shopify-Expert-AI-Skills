@@ -36,7 +36,7 @@ Collect account and Merchant Center scope, objective, dates, timezone, currency,
 7. Before an approved change, capture current settings and recheck conflicts. After execution, verify saved controls and relevant product diagnostics, publication, processing, landing, and delivery states; submission is not acceptance.
 8. Handoff the diagnosis or change log, unavailable evidence, pending feed or policy review, verification owner, and follow-up time. Judge the business result only after a suitable observation window.
 
-Read [references/campaign-structure.md](references/campaign-structure.md) for structural choices. Use [references/audit-checklist.md](references/audit-checklist.md) for exhaustive audit coverage. Read [references/merchant-center-next-pmax.md](references/merchant-center-next-pmax.md) for Merchant Center Next feeds, PMax guardrails, and disapproval/suspension triage.
+Read [references/campaign-structure.md](references/campaign-structure.md) for structural choices. Use [references/audit-checklist.md](references/audit-checklist.md) for exhaustive audit coverage. Read [references/merchant-center-next-pmax.md](references/merchant-center-next-pmax.md) for Merchant Center Next feeds, PMax guardrails, and disapproval/suspension triage. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Output contract
 
