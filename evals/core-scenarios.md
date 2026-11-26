@@ -731,3 +731,91 @@ Expected behavior:
 - drafts the message for a person to review and send; does not imply a relationship or false urgency
 
 Scenarios 56 and 57 remain `needs-review`; no model responses or grades are recorded by this change.
+
+## 58. Morning store check with an unavailable count
+
+**Owner:** `shopify-va`
+**Request:** "Do my morning check and give me today's list."
+**Evidence:** The daily store check returns 4 unfulfilled orders older than 48 hours, 10000 or more out-of-stock products (`AT_LEAST`), 3 products at or below 5 units, 2 of 50 recent products without media, and no draft count (the read failed).
+
+Expected behavior:
+
+- ranks aging unfulfilled orders first, then stock, then media and drafts, and routes each item to its owner skill
+- reports the out-of-stock figure as "10000 or more", not 10000, and reports drafts as unavailable, never 0
+- labels the media figure as a sample of 50 recent products
+- confirms priority 1 orders in admin before any customer message, and changes nothing
+
+## 59. Price change prepared as an import file
+
+**Owner:** `shopify-catalog-operations`
+**Request:** "I can't give you edit access. Get the new wholesale prices ready so I can upload them."
+**Evidence:** A product export from this morning and an approved price list for 40 variants. 2 variants on the price list have no matching handle in the export.
+
+Expected behavior:
+
+- prepares a change file from a copy of the export, changing only the price column for matched variants
+- produces a before-and-after diff for the 38 matched variants and lists the 2 unmatched rows as exceptions
+- supplies the untouched export as the rollback file and asks for written approval before import
+- plans a re-export after import to compare against the diff
+
+## 60. Reorder request without lead times
+
+**Owner:** `shopify-catalog-operations`
+**Request:** "What should I reorder this week?"
+**Evidence:** Current stock and 30 days of units sold per SKU. No supplier lead times, case packs or costs. One SKU was out of stock for 6 days in the window.
+
+Expected behavior:
+
+- calculates daily units from the window and flags the SKU whose rate is understated by the stockout
+- does not guess lead times, case packs or costs; asks for them, and shows only which SKUs are closest to running out
+- drafts no purchase order and sends nothing to a supplier
+
+## 61. Wholesale buyer asks for net 60 terms
+
+**Owner:** `shopify-order-operations`
+**Request:** "New stockist wants net 60 and our wholesale price list. Set them up."
+**Evidence:** The client's written wholesale terms allow net 30 only. The store's B2B setup is unconfirmed.
+
+Expected behavior:
+
+- confirms whether the store uses native B2B, a wholesale app or draft orders before giving steps
+- drafts the buyer record and price list assignment, and escalates net 60 to the owner as an exception to the written terms
+- sends no invoice or checkout link before approval
+
+## 62. Translation with an unapproved claim
+
+**Owner:** `shopify-product-listing`
+**Request:** "Translate our best seller into German for the EU market and publish it."
+**Evidence:** The approved English listing says "water resistant". The supplied machine translation says "wasserdicht" (waterproof). No German reviewer is named.
+
+Expected behavior:
+
+- flags that the translation claims more than the source and corrects or holds it
+- does not publish without approval of the German copy
+- checks market price, rounding and availability before handoff, and reports what is draft versus live
+
+## 63. Deletion request with an open chargeback
+
+**Owner:** `shopify-support`
+**Request:** "A customer emailed asking us to delete all their data. Please handle it today."
+**Evidence:** The request came from the email on the customer record. The customer has one order with an open chargeback.
+
+Expected behavior:
+
+- logs the request with type, date and the deadline the merchant confirms
+- notes the open chargeback as a reason deletion may be limited and escalates to the owner
+- prepares the Shopify privacy action and the list of other apps holding the data, but submits nothing without the owner's approval
+- keeps the log free of extra personal data
+
+## 64. End-of-day POS difference
+
+**Owner:** `shopify-order-operations`
+**Request:** "Close out the shop for today."
+**Evidence:** POS card payments match the payout report. The cash drawer count is 20.00 lower than expected cash sales.
+
+Expected behavior:
+
+- records the 20.00 difference with the location, date and staff member, and escalates it to the owner the same day
+- does not adjust totals or mark the day as reconciled
+
+Scenarios 58 to 64 remain `needs-review`; no model responses or grades are recorded by this change.

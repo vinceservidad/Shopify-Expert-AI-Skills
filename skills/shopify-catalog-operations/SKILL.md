@@ -4,7 +4,7 @@ description: "Plans and runs bulk Shopify catalog work, including CSV imports, b
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.5"
+  version: "0.2.6"
 ---
 
 # Shopify Catalog Operations
@@ -37,7 +37,7 @@ Collect target store, business purpose, source and destination schema, authorita
 7. Re-export or re-query the authoritative state. Count intended changes, actual field changes, already-correct no-ops, and fully conforming records separately; verify channels or feeds where required.
 8. For failed records, distinguish captured before values, latest observed values, and proposed recovery targets. Obtain corrective-write authority, preserve later legitimate edits, and repeat a bounded pilot before resuming. Handoff reconciliation, exceptions, evidence, and next owner.
 
-Read [references/catalog-governance.md](references/catalog-governance.md) for field and taxonomy rules. Use [references/bulk-operations.md](references/bulk-operations.md) for CSV, bulk-edit, pilot, rollback, and reconciliation. Read [references/subscriptions-multichannel.md](references/subscriptions-multichannel.md) for multi-channel sales sync (TikTok Shop, Shop App, Amazon) and subscription selling-plan operations.
+Read [references/catalog-governance.md](references/catalog-governance.md) for field and taxonomy rules. Use [references/bulk-operations.md](references/bulk-operations.md) for CSV, bulk-edit, pilot, rollback, and reconciliation. Read [references/subscriptions-multichannel.md](references/subscriptions-multichannel.md) for multi-channel sales sync (TikTok Shop, Shop App, Amazon) and subscription selling-plan operations. Use [references/change-files.md](references/change-files.md) to prepare import files and a before-and-after diff instead of live edits. Use [references/reorder-planning.md](references/reorder-planning.md) for reorder points, order quantities and draft purchase orders.
 
 ## Worked example
 

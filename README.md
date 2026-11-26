@@ -73,7 +73,7 @@ agy plugin install https://github.com/vinceservidad/Shopify-Expert-AI-Skills
 ```
 
 ### 4. Signed-in MCP link (optional live Shopify store data)
-When you want read-only live store data (products, variants, stock, and limited order summaries after owner approval), connect the signed-in MCP endpoint:
+When you want read-only live store data, connect the signed-in MCP endpoint. After owner approval it reads products, variants, stock, collections, metafields and order summaries, and runs a one-call daily store check. Four optional permissions the owner grants in the app add fixed sales and traffic reports, discounts, theme files and customer totals (never names or emails).
 
 ```text
 https://shopify-mcp.mktskills.com/mcp
@@ -84,7 +84,7 @@ https://shopify-mcp.mktskills.com/mcp
 ### Other options
 - **Live guide:** https://mktskills.com/shopify-va (also mirrored at https://shopify-mcp.mktskills.com)
 - **Need a Shopify store?** [Start a free Shopify trial](https://shopify.pxf.io/c/2227499/2974326/13624). We may earn a commission if you sign up through this link.
-- **Standalone ZIPs & `.plugin` packages:** [v0.2.4 release](releases/v0.2.4/README.md) (for [Claude Skills ZIP](docs/ai-agent-setup.md#claude-skills) or [ChatGPT Projects](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats))
+- **Standalone ZIPs & `.plugin` packages:** [v0.2.5 release](releases/v0.2.5/README.md) (for [Claude Skills ZIP](docs/ai-agent-setup.md#claude-skills) or [ChatGPT Projects](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats))
 - **Full setup & MCP docs:** [Agent setup guide](docs/ai-agent-setup.md) · [Plugin & MCP reference](docs/plugin-and-connector.md)
 
 **Directory status:** The Anthropic Plugin Directory listing (`MKT Skills — Shopify VA`) is under review. Use the CLI, no-login MCP link, or GitHub plugin commands today.
@@ -126,6 +126,7 @@ Keep facts, calculations, inferences, assumptions, and unknowns separate. Live c
 ## Examples, testing, and evidence
 
 - [Five worked examples](docs/worked-examples.md): synthetic teaching cases with inputs, walkthroughs, and explicit limits.
+- [Case study template](docs/case-studies/template.md): how to write up one real store's results without unconfirmed numbers. No case studies are published yet.
 - [Recorded model evaluations](evals/RESULTS.md): complete results, failures, and limitations for the tested cases; other skills do not inherit those results.
 - [Repository reliability](docs/reliability.md): tooling setup, validation, packaging guarantees, and remaining coverage.
 - [Theme verification](docs/theme-verification.md): Liquid rendering, browser checks, and Theme Check boundaries.
