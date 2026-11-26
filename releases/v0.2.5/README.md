@@ -58,7 +58,7 @@ Every other install option and fixes for common problems are in the
     (`shopify-order-operations`)
   - translated listings and market prices (`shopify-product-listing`)
   - customer data access and deletion requests (`shopify-support`)
-- 7 new behavior scenarios (58 to 64), marked `needs-review`, and a case study
+- 7 new behavior scenarios (67 to 73), marked `needs-review`, and a case study
   template.
 
 ## Optional alternatives
@@ -81,7 +81,7 @@ byte-identical files.
   pass.
 - `claude plugin validate --strict` passes on the repository and on both
   extracted plugin packages.
-- `claude plugin eval` and model runs of scenarios 58 to 64 were not run for
+- `claude plugin eval` and model runs of scenarios 67 to 73 were not run for
   this release.
 
 Installation in the Claude or ChatGPT apps was not re-verified for this release.

@@ -17,7 +17,7 @@ All notable changes to this project are documented here.
 - `shopify-product-listing`: `references/markets-localization.md`.
 - `shopify-support`: `references/privacy-requests.md`.
 - Task routing rows for each new job. The catalog stays at 19 skills.
-- Behavioral scenarios 58 to 64, marked `needs-review`.
+- Behavioral scenarios 67 to 73, marked `needs-review`.
 - `docs/case-studies/template.md` for real-store write-ups. No case studies are
   published yet.
 - Bump the six plugin manifests to 0.2.5 and the patch version of the 5 changed
