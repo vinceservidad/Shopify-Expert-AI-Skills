@@ -4,6 +4,25 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin 0.2.5: daily store check, change files and new job modes
+
+- `shopify-va`: `references/daily-store-check.md`, the ranked morning check
+  (aging orders, payment follow-ups, stock, media, drafts) and its client update.
+- `shopify-catalog-operations`: `references/change-files.md` (import file,
+  before-and-after diff and rollback file instead of live edits) and
+  `references/reorder-planning.md` (reorder points, order quantities, draft
+  purchase orders from client-supplied lead times and costs).
+- `shopify-order-operations`: `references/b2b-wholesale.md` and
+  `references/pos-operations.md`.
+- `shopify-product-listing`: `references/markets-localization.md`.
+- `shopify-support`: `references/privacy-requests.md`.
+- Task routing rows for each new job. The catalog stays at 19 skills.
+- Behavioral scenarios 58 to 64, marked `needs-review`.
+- `docs/case-studies/template.md` for real-store write-ups. No case studies are
+  published yet.
+- Bump the six plugin manifests to 0.2.5 and the patch version of the 5 changed
+  skills. Add `releases/v0.2.5` and point the README and setup guides at it.
+
 ### Plugin 0.2.4 and release packages
 
 - Bump all six plugin manifests to 0.2.4 so `claude plugin update` delivers the

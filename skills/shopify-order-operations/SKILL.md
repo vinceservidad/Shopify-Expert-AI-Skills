@@ -4,7 +4,7 @@ description: "Handles Shopify orders, payments, fulfillment, order edits, return
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.3"
+  version: "0.2.4"
 ---
 
 # Shopify Order Operations
@@ -35,7 +35,7 @@ Collect target store and order, customer request, identity-verification procedur
 7. Reopen relevant order, payment, fulfillment, return, refund, inventory, app, and notification states. Treat processing as pending with an owner and follow-up time, not resolved.
 8. Handoff a minimized action log, verified outcomes, exceptions, communication state, and next owner. Financial actions may require a separately approved correction; do not promise that an opposite action can undo them.
 
-Read [references/order-workflows.md](references/order-workflows.md) for common state transitions. Use [references/exception-handling.md](references/exception-handling.md) for risk, permissions, escalation, and verification. Read [references/multi-location-routing-markets.md](references/multi-location-routing-markets.md) for Shopify Markets and multi-location order routing rules. Read [references/chargeback-evidence.md](references/chargeback-evidence.md) for payment dispute evidence packets. Read [references/shipping-3pl-exceptions.md](references/shipping-3pl-exceptions.md) for shipping profile audits and 3PL/supplier fulfillment exceptions.
+Read [references/order-workflows.md](references/order-workflows.md) for common state transitions. Use [references/exception-handling.md](references/exception-handling.md) for risk, permissions, escalation, and verification. Read [references/multi-location-routing-markets.md](references/multi-location-routing-markets.md) for Shopify Markets and multi-location order routing rules. Read [references/chargeback-evidence.md](references/chargeback-evidence.md) for payment dispute evidence packets. Read [references/shipping-3pl-exceptions.md](references/shipping-3pl-exceptions.md) for shipping profile audits and 3PL/supplier fulfillment exceptions. Use [references/b2b-wholesale.md](references/b2b-wholesale.md) for wholesale buyers, price lists and payment terms, and [references/pos-operations.md](references/pos-operations.md) for in-store POS returns, transfers and end-of-day checks.
 
 ## Output contract
 

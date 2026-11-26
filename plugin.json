@@ -1,7 +1,7 @@
 {
   "name": "shopify-va-toolkit",
   "displayName": "Shopify VA Skills",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "19 free, MIT open-source Shopify skills for AI agents: product listings, catalog & inventory ops, order operations, customer support, store audit, CRO, SEO, Meta & Google Ads, Shopify Flow, and theme development.",
   "author": {
     "name": "Vince Servidad"
