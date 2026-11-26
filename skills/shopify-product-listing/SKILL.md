@@ -36,7 +36,7 @@ Collect target store, create or update mode, product source, title, description,
 7. Reopen the saved record and compare decision-critical and protected fields with the approved map. Stop further writes on unexpected variant, inventory, price, or channel changes.
 8. After approved publication, verify scoped channels, markets, product page, variants, price, availability, purchase behavior, structured output, and feed state where in scope. Handoff product identifiers, QA evidence, processing states, exceptions, rollback, and next owner.
 
-Read [references/listing-fields.md](references/listing-fields.md) for the field contract. Use [references/qa-checklist.md](references/qa-checklist.md) before save, activation, publication, and handoff.
+Read [references/listing-fields.md](references/listing-fields.md) for the field contract. Use [references/qa-checklist.md](references/qa-checklist.md) before save, activation, publication, and handoff. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Worked example
 
