@@ -4,6 +4,15 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin 0.2.4 and release packages
+
+- Bump all six plugin manifests to 0.2.4 so `claude plugin update` delivers the
+  copy quality check and the Shopify playbooks. The root and Cursor manifests
+  were already at 0.2.3, so 0.2.3 is skipped for the Claude and Codex manifests.
+- Bump the patch version of the 10 skills that gained the copy quality check.
+- Add `releases/v0.2.4` (both plugin targets, 19 skill ZIPs and `SHA256SUMS`),
+  and point the README and setup guides at it.
+
 ### Copy quality check
 
 - Add `references/copy-quality-check.md`, a 15-point anti-AI copy pass, to the 10
@@ -13,6 +22,15 @@ All notable changes to this project are documented here.
 - `tests/test_copy_quality_check.py` keeps the 10 copies identical and linked.
 - `shopify-creative-strategy` hooks no longer recommend question hooks.
 - Rewrite a "not X" line in the Meta Advantage+ creative guidance.
+
+### Shopify playbooks
+
+- Add 10 reference playbooks: official Flow recipes, Merchant Center Next and
+  PMax, Meta Advantage+ and CAPI, multi-location routing and Markets, checkout
+  extensibility and pixels, chargeback evidence, shipping and 3PL exceptions,
+  launch, migration and BFCM readiness, app stack and reviews, and
+  subscriptions and multichannel selling.
+- Add Cursor and Antigravity plugin manifests.
 
 ### Plugin 0.2.2 and release packages
 

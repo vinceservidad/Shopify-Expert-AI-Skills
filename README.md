@@ -84,7 +84,7 @@ https://shopify-mcp.mktskills.com/mcp
 ### Other options
 - **Live guide:** https://mktskills.com/shopify-va (also mirrored at https://shopify-mcp.mktskills.com)
 - **Need a Shopify store?** [Start a free Shopify trial](https://shopify.pxf.io/c/2227499/2974326/13624). We may earn a commission if you sign up through this link.
-- **Standalone ZIPs & `.plugin` packages:** [v0.2.2 release](releases/v0.2.2/README.md) (for [Claude Skills ZIP](docs/ai-agent-setup.md#claude-skills) or [ChatGPT Projects](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats))
+- **Standalone ZIPs & `.plugin` packages:** [v0.2.4 release](releases/v0.2.4/README.md) (for [Claude Skills ZIP](docs/ai-agent-setup.md#claude-skills) or [ChatGPT Projects](docs/ai-agent-setup.md#chatgpt-projects-or-ordinary-chats))
 - **Full setup & MCP docs:** [Agent setup guide](docs/ai-agent-setup.md) · [Plugin & MCP reference](docs/plugin-and-connector.md)
 
 **Directory status:** The Anthropic Plugin Directory listing (`MKT Skills — Shopify VA`) is under review. Use the CLI, no-login MCP link, or GitHub plugin commands today.

@@ -4,7 +4,7 @@ description: "Creates and quality-checks Shopify product listings from approved 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.4"
+  version: "0.2.5"
 ---
 
 # Shopify Product Listing

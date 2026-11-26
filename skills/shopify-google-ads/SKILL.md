@@ -4,7 +4,7 @@ description: "Audits Google Ads for Shopify, including ROAS, budgets, search ter
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Google Ads

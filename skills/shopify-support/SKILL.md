@@ -4,7 +4,7 @@ description: "Drafts policy-grounded Shopify customer service replies, macros, e
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.4"
+  version: "0.1.5"
 ---
 
 # Shopify Support

@@ -4,7 +4,7 @@ description: "Use when picking a winning ad from CTR, hook rate, or ROAS, or pla
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Creative Strategy

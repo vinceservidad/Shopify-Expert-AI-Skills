@@ -4,7 +4,7 @@ description: "Audits Meta (Facebook and Instagram) Ads for Shopify using creativ
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Meta Ads
