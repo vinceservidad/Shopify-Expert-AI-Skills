@@ -117,7 +117,32 @@ p,li,dd{font-size:15px;line-height:1.62;color:var(--ink-2)}
 p{margin:0 0 14px;max-width:65ch}
 .muted{font-size:13px;color:var(--muted)}
 
-/* Hairline-ruled architectural tables (Bottlenecks & Sidekick comparison) */
+/* Hairline-ruled architectural tables & sequence/example sections */
+.ex-box{max-width:920px;margin:0 auto}
+.ex-radio{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%);white-space:nowrap;border:0;pointer-events:none}
+.ex-tabs-wrap{text-align:center}
+.ex-tabs{display:inline-flex;border-radius:6px;border:1px solid var(--border);background:var(--mist);overflow:hidden;margin:0 auto 24px}
+.ex-tabs label{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;user-select:none;transition:background-color .16s var(--ease),color .16s var(--ease)}
+.ex-tabs label+label{border-left:1px solid var(--border)}
+.ex-tabs label:hover{color:var(--ink)}
+#ex-csv:checked ~ .ex-tabs-wrap label[for=ex-csv],#ex-cb:checked ~ .ex-tabs-wrap label[for=ex-cb],#ex-list:checked ~ .ex-tabs-wrap label[for=ex-list]{background:var(--accent);color:var(--on-accent)}
+.ex-panel{display:none}
+#ex-csv:checked ~ .ex-panels .ex-csv,#ex-cb:checked ~ .ex-panels .ex-cb,#ex-list:checked ~ .ex-panels .ex-list{display:block;animation:fade-in 180ms var(--ease)}
+.ex-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:28px 36px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 0;text-align:left}
+.ex-col{min-width:0}
+.ex-col p{margin:0}
+.ex-label{display:block;font-size:13px;font-weight:650;color:var(--accent);margin-bottom:8px}
+.ex-list{padding-left:18px;margin:0}
+.ex-list li{margin-bottom:8px}
+.ex-list li:last-child{margin-bottom:0}
+
+.sequence-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--border)}
+.seq-item{display:grid;grid-template-columns:36px minmax(150px,190px) minmax(180px,240px) 1fr;gap:8px 20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--hair)}
+.seq-num{font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:13px;font-weight:700;color:var(--accent)}
+.seq-stage{font-size:15px;font-weight:650;color:var(--ink)}
+.seq-skills{font-size:13px;font-weight:600;color:var(--accent)}
+.seq-gate{font-size:15px;line-height:1.5;color:var(--ink-2)}
+
 .table-wrap{width:100%;overflow-x:auto;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .bottleneck-table,.compare-table{width:100%;border-collapse:collapse;text-align:left}
 .bottleneck-table th,.compare-table th{padding:14px 12px;font-size:13px;font-weight:650;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
@@ -227,6 +252,8 @@ dd{margin:6px 0 0}
 
 @media(max-width:960px){
   .skill-index{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .seq-item{grid-template-columns:32px minmax(130px,160px) 1fr}
+  .seq-gate{grid-column:2 / -1}
   .cmd-item{grid-template-columns:1fr auto;gap:6px 14px}
   .cmd-label{grid-column:1 / -1}
 }
@@ -241,6 +268,12 @@ dd{margin:6px 0 0}
   .family-tabs a:first-child{padding-left:0}
   .hero.stage{padding:128px 0 56px}
   .hero-h1{font-size:clamp(34px,9.5vw,52px)}
+  .ex-tabs{display:flex;width:100%}
+  .ex-tabs label{flex:1;padding:8px 8px}
+  .ex-grid{grid-template-columns:1fr;gap:20px}
+  .ex-col+.ex-col{padding-top:18px;border-top:1px solid var(--hair)}
+  .seq-item{grid-template-columns:28px 1fr;gap:4px 12px}
+  .seq-skills,.seq-gate{grid-column:2 / -1}
   .apps-matrix{grid-template-columns:repeat(2,minmax(0,1fr))}
   .skill-index{grid-template-columns:1fr}
   .seg-tabs{width:100%}
@@ -269,7 +302,7 @@ dd{margin:6px 0 0}
   .cmd-item .copy-btn{justify-self:start}
 }
 @media(prefers-reduced-motion:reduce){
-  .hero-inner,.wb-panel,.will-reveal{animation:none;transition:none;opacity:1;transform:none}
-  .hero-canvas,.family-tabs a,.family-nav a,.wb-tabs label,.seg-tab,.copy-btn,.site-footer a{transition:none}
+  .hero-inner,.wb-panel,.ex-panel,.will-reveal{animation:none;transition:none;opacity:1;transform:none}
+  .hero-canvas,.family-tabs a,.family-nav a,.wb-tabs label,.ex-tabs label,.seg-tab,.copy-btn,.site-footer a{transition:none}
 }
 `;

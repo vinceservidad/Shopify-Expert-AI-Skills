@@ -176,6 +176,95 @@ const SUPPORTED_APPS: readonly { name: string; mode: string }[] = [
   { name: 'Antigravity', mode: 'Plugin or CLI' },
 ];
 
+type SampleOutput = {
+  id: 'ex-csv' | 'ex-cb' | 'ex-list';
+  tab: string;
+  skill: string;
+  inputText: string;
+  outputPoints: readonly string[];
+};
+
+const SAMPLE_OUTPUTS: readonly SampleOutput[] = [
+  {
+    id: 'ex-csv',
+    tab: 'Messy CSV',
+    skill: 'Catalog & Inventory',
+    inputText: 'Product export CSV with 4 rows: 2 price updates, 1 blank inventory count, and 1 variant missing a SKU.',
+    outputPoints: [
+      'Splits the file into 2 safe rows for a pilot test and 2 blocked rows.',
+      'Prevents the blank inventory cell from resetting live stock to 0.',
+      'Returns a before-and-after rollback table you review before importing.',
+    ],
+  },
+  {
+    id: 'ex-cb',
+    tab: 'Chargeback',
+    skill: 'Order Operations',
+    inputText: 'Order #4812 payment timestamps, carrier delivery scans, checkout policy URL, and two customer support emails.',
+    outputPoints: [
+      'Builds a factual Shopify Payments evidence packet with AVS, CVV, and delivery timestamps.',
+      'Quotes the exact checkout return and shipping terms active on the order date.',
+      'Flags a missing signed delivery receipt before you submit the response.',
+    ],
+  },
+  {
+    id: 'ex-list',
+    tab: 'New listing',
+    skill: 'Product Listings',
+    inputText: 'Supplier sheet for a 500 ml stainless steel travel mug. Product weight and dishwasher rules are missing.',
+    outputPoints: [
+      'Drafts the product title, short description, and three bullets from confirmed facts only.',
+      'Lists product weight and care rules as owner questions instead of guessing.',
+      'Keeps the draft unsaved until the store owner confirms pricing and stock.',
+    ],
+  },
+];
+
+const SKILL_SEQUENCE: readonly { step: string; stage: string; skills: string; gate: string }[] = [
+  {
+    step: '01',
+    stage: 'Research and segment',
+    skills: 'Product Research',
+    gate: 'Confirm buyer demand, segments, competitors, and landed cost before creating listings.',
+  },
+  {
+    step: '02',
+    stage: 'Target and product truth',
+    skills: 'Product Listings, Catalog & Inventory, Merchandising',
+    gate: 'Lock confirmed specs, SKU structure, collections, and pricing before building pages.',
+  },
+  {
+    step: '03',
+    stage: 'Storefront and tracking',
+    skills: 'Product Pages, Theme Development, Store Audit, Conversion Rate (CRO)',
+    gate: 'Fix mobile product pages, Checkout Extensibility, Web Pixels, and speed before paid traffic.',
+  },
+  {
+    step: '04',
+    stage: 'Operations and guardrails',
+    skills: 'Order Operations, Shopify Flow, Customer Support',
+    gate: 'Verify shipping profiles, 3PL routing, fraud holds, and return rules before order spikes.',
+  },
+  {
+    step: '05',
+    stage: 'Retention and organic',
+    skills: 'Email & SMS Flows, Shopify SEO',
+    gate: 'Turn on welcome, abandoned cart, and post-purchase flows plus collection SEO so traffic stays.',
+  },
+  {
+    step: '06',
+    stage: 'Creative and paid ads',
+    skills: 'Ad Creative Strategy, Google Ads & Shopping, Meta Ads',
+    gate: 'Build review-backed hooks, Merchant Center feeds, and Advantage+ campaigns after tracking passes.',
+  },
+  {
+    step: '07',
+    stage: 'Reconcile and iterate',
+    skills: 'Store Analytics, Daily Store Coordinator',
+    gate: 'Reconcile Shopify net sales, refunds, and profit after ad spend before scaling.',
+  },
+];
+
 export const FAQ_ITEMS: readonly { question: string; answer: string }[] = [
   {
     question: 'What are Shopify skills for AI agents?',
@@ -344,6 +433,24 @@ function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
   </div>`;
 }
 
+function sampleOutputsSection(): string {
+  const radios = SAMPLE_OUTPUTS.map(
+    (item, index) => `<input class="ex-radio" type="radio" name="ex" id="${item.id}"${index === 0 ? ' checked' : ''}>`,
+  ).join('');
+  const labels = SAMPLE_OUTPUTS.map(item => `<label for="${item.id}">${escape(item.tab)}</label>`).join('');
+  const panels = SAMPLE_OUTPUTS.map(
+    item => `<div class="ex-panel ${item.id}"><div class="ex-grid"><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-list">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
+  ).join('');
+  return `<div class="ex-box">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" role="tablist" aria-label="Sample outputs">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
+}
+
+function sequenceSection(): string {
+  const rows = SKILL_SEQUENCE.map(
+    row => `<li class="seq-item"><span class="seq-num">${row.step}</span><span class="seq-stage">${escape(row.stage)}</span><span class="seq-skills">${escape(row.skills)}</span><span class="seq-gate">${escape(row.gate)}</span></li>`,
+  ).join('');
+  return `<ol class="sequence-list">${rows}</ol>`;
+}
+
 function bottleneckTable(): string {
   const rows = BOTTLENECKS.map(
     row => `<tr><td class="bn-problem">${escape(row.problem)}</td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(row.prompt)}">Copy prompt</button></td></tr>`,
@@ -414,6 +521,26 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
         <h1 class="hero-h1">Shopify skills for AI agents</h1>
         <p class="hero-sub">19 free Shopify skills under the MIT license for product listings, orders, ads, and Liquid themes. Connect them to ChatGPT, Claude, or your coding agent to draft the work, then approve every change in Shopify Admin.</p>
         ${heroWorkbench(openMcpUrl, pagePath(config, '/setup'))}
+      </div>
+    </section>
+
+    <section id="examples" class="band" aria-labelledby="examples-heading">
+      <div class="shell" data-reveal>
+        <div class="section-head">
+          <h2 id="examples-heading">See what the skills return</h2>
+          <p>Paste store specs, exports, or order logs and get back structured checks instead of guessed copy.</p>
+        </div>
+        ${sampleOutputsSection()}
+      </div>
+    </section>
+
+    <section id="sequence" class="band band-mist" aria-labelledby="sequence-heading">
+      <div class="shell" data-reveal>
+        <div class="section-head">
+          <h2 id="sequence-heading">What comes first</h2>
+          <p>Follow this seven-stage order for a new store or launch. For a live store with one clear problem, start at that stage instead.</p>
+        </div>
+        ${sequenceSection()}
       </div>
     </section>
 
@@ -716,6 +843,8 @@ export function renderLlmsTxt(config: PublicPageConfig = {}): string {
 - Store Launch, Migration & Peak-Sale (BFCM) Readiness guide (\`skills/shopify-store-audit/references/launch-migration-bfcm.md\`)
 - App Stack Hygiene & Product Review Moderation guide (\`skills/shopify-store-audit/references/app-stack-reviews.md\`)
 - Subscriptions & Multi-Channel Sales Sync guide (\`skills/shopify-catalog-operations/references/subscriptions-multichannel.md\`)
+- Cross-Skill Build, Launch & Marketing Sequence guide (\`skills/shopify-va/references/skill-sequence.md\`)
+- Client Deliverable Templates: CSV QA, BFCM, Chargeback & Handover (\`skills/shopify-va/references/deliverable-templates.md\`)
 
 ## All ${SKILL_COUNT} Shopify skills
 

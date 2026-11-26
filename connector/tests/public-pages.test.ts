@@ -100,6 +100,18 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
   assert.ok(html.includes('data-skill-cat="Catalog" aria-pressed="true"'));
   assert.ok(html.includes('data-skill-cat="All" aria-pressed="false"'));
 
+  // Sample outputs and 7-stage sequence sections
+  assert.ok(html.includes('id="examples"'));
+  for (const id of ['ex-csv', 'ex-cb', 'ex-list']) {
+    assert.ok(html.includes(`id="${id}"`), `Missing example tab input: ${id}`);
+  }
+  for (const tab of ['Messy CSV', 'Chargeback', 'New listing']) {
+    assert.ok(html.includes(tab), `Missing example tab label: ${tab}`);
+  }
+  assert.ok(html.includes('id="sequence"'));
+  assert.ok(html.includes('Research and segment'));
+  assert.ok(html.includes('Reconcile and iterate'));
+
   // Bottleneck table & Sidekick comparison
   assert.ok(html.includes('id="bottlenecks"'));
   assert.ok(html.includes('<th scope="col">Problem</th>'));
@@ -225,6 +237,8 @@ test('OG image and llms.txt discovery routes return valid payloads', () => {
     assert.ok(llms.body.includes('launch-migration-bfcm.md'));
     assert.ok(llms.body.includes('app-stack-reviews.md'));
     assert.ok(llms.body.includes('subscriptions-multichannel.md'));
+    assert.ok(llms.body.includes('skill-sequence.md'));
+    assert.ok(llms.body.includes('deliverable-templates.md'));
   }
   assert.ok(renderLlmsTxt(candidateConfig).includes('npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills'));
 });
