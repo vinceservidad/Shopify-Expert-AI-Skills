@@ -127,3 +127,5 @@ Rules:
   diagnosing them inside the update.
 - Report mistakes the same day: what happened, what was fixed, and what changes
   next time.
+
+For copy-ready bulk CSV QA, BFCM readiness, chargeback evidence, and daily shift handover sheets, see [deliverable-templates.md](deliverable-templates.md).
