@@ -1,10 +1,35 @@
-# Deploying the guide through Cloudflare Artifacts
+# Deploying the guide
+
+## Current setup: Workers Builds from GitHub (since November 26, 2026)
+
+Every push to `feat/cloudflare-hosted-mcp` on GitHub, including a merged pull
+request, builds and deploys the guide Worker `mkt-skills-shopify-guide`
+(`mktskills.com/shopify-va*`) through Cloudflare Workers Builds. Nobody needs to
+run a deploy by hand.
+
+| Setting | Value |
+| --- | --- |
+| Repository | GitHub `vinceservidad/Shopify-Expert-AI-Skills`, through the Cloudflare GitHub app |
+| Branch | `feat/cloudflare-hosted-mcp` only |
+| Root directory | `connector` |
+| Build command | `npm ci && npm run typecheck && npm test` |
+| Deploy command | `npm run guide:deploy` |
+| Build variable | `NODE_VERSION=24` |
+
+A failing typecheck or test stops the build before the deploy command runs, so
+the live guide stays on the previous version. Watch builds and roll back in
+Workers & Pages → `mkt-skills-shopify-guide` → Deployments. To deploy by hand
+in an emergency, run `cd connector && npm ci && npm run guide:deploy` from a
+machine signed in to the account with `npx wrangler login`.
+
+The first Workers Builds run (build `d2167d89`, commit `0598b76`) passed all 60
+tests and deployed version `bb17f380`.
+
+## Earlier setup: Cloudflare Artifacts mirror (retired)
 
 > **Retired November 19, 2026.** The `.github/workflows/artifacts-deploy.yml`
-> workflow was removed to match `main`, which runs no GitHub Actions. Deploy the
-> guide from a machine signed in to the guide's Cloudflare account with
-> `cd connector && npm ci && npm run guide:deploy`. The rest of this page records
-> the earlier automatic setup.
+> workflow was removed to match `main`, which runs no GitHub Actions. The rest of
+> this page records that earlier setup.
 
 The public guide (`mktskills.com/shopify-va*`, Worker `mkt-skills-shopify-guide`) deploys automatically from
 [Cloudflare Artifacts](https://developers.cloudflare.com/artifacts/). GitHub remains the source of truth:
