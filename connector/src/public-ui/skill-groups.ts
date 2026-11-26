@@ -145,7 +145,7 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     name: 'Store Audit',
     category: 'Store & Theme',
     summary: 'Run full store reviews, launch and Black Friday checks, app cleanup, and review moderation.',
-    prompt: 'Run a full store review and launch readiness check covering checkout, apps, tracking, and mobile speed. Rank the top five fixes.',
+    prompt: 'Run a store review and launch check on checkout, apps, tracking, and mobile speed. Rank the top five fixes.',
   },
   {
     slug: 'shopify-analytics',
@@ -158,7 +158,7 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-theme-development',
     name: 'Theme Development',
     category: 'Store & Theme',
-    summary: 'Edit Liquid, theme sections, checkout UI extensions, and web pixels. Test changes on a duplicate theme first.',
-    prompt: 'Check this Shopify theme bug and tell me whether the fix belongs in Liquid theme code, a web pixel, or checkout settings.',
+    summary: 'Edit Liquid, theme sections, Checkout UI extensions, and Web Pixels. Test changes on a duplicate theme first.',
+    prompt: 'Check this Shopify theme bug and tell me whether the fix belongs in Liquid theme code, a Web Pixel, or Shopify Admin checkout settings.',
   },
 ];

@@ -25,7 +25,10 @@ const STALE_OR_SLOP_PATTERNS = [
   /mailbox is being prepared/,
   /connector address provided by the operator/,
   /September 30, 2026/,
-  /\b(?:delve|supercharge|game-changer|cutting-edge|synergy|holistic|revolutionize|unleash|effortlessly|streamline|empower|leverage)\b/i,
+  /\b(?:delve|supercharge|game-changer|cutting-edge|synergy|holistic|revolutionize|unleash|effortlessly|streamline|empower|leverage|unlock|elevate|robust|harness|transformative)\b/i,
+  /\b(?:highlighting|showcasing|underscoring|reflecting)\b/i,
+  /\b(?:experts agree|studies show|What if I told you|Think about it:|Plot twist:|Opening a new store\?|What do you think\?|In conclusion)\b/i,
+  /\bOverall,/,
   /\b(?:diagnose|diagnosis|triage|symptom|prescribe|clinical|pathology)\b/i,
 ];
 
@@ -56,9 +59,9 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   assert.equal(navLinks.length, 3, 'top nav should have exactly 3 links: Problems, Skills, How to set up');
   assert.ok(navMatch[1].includes('href="/shopify-va/setup">How to set up</a>'));
 
-  // Above-the-fold trust highlights (<= 25 words, no hero KPI strip, no em-dashes)
-  assert.ok(html.includes('19 free skills for the daily work of a Shopify virtual assistant (VA)'));
-  assert.ok(html.includes('Your AI drafts the work, and you approve anything that changes the store.'));
+  // Above-the-fold trust highlights (<= 35 words, no hero KPI strip, no em-dashes)
+  assert.ok(html.includes('19 free MIT skills and 95 Markdown files for Shopify'));
+  assert.ok(html.includes('approve every change in Shopify Admin.'));
   assert.doesNotMatch(stripToVisibleText(html), /—|\s–\s/, 'Product page generated copy must contain zero em-dashes or spaced en-dashes');
   assert.ok(html.includes('class="seg-tabs"'), 'Category filter must use connected segmented tabs');
   assert.ok(html.includes('class="apps-matrix"'), 'Supported AI apps must use unified hairline matrix');
@@ -257,12 +260,13 @@ test('help and privacy pages cover all install paths and Remote MCP accurately',
   assert.ok(privacyHtml.includes('read_orders'));
 });
 
-test('public pages exclude AI slop, medical jargon, and stale copy', () => {
+test('public pages exclude AI slop, mid-sentence bold, medical jargon, and stale copy', () => {
   for (const html of [
     renderProductPage(candidateConfig),
     renderHelpPage(candidateConfig),
     renderPrivacyPage(candidateConfig),
   ]) {
+    assert.doesNotMatch(html, /<(p|li)\b[^>]*>(?:(?!<\/\1>)[\s\S])*?<strong\b/i, 'Paragraphs and list items must not contain mid-sentence bold');
     const visible = stripToVisibleText(html);
     for (const pattern of STALE_OR_SLOP_PATTERNS) {
       assert.doesNotMatch(visible, pattern, `Unexpected sloppy/medical/stale phrase matching ${pattern}`);
