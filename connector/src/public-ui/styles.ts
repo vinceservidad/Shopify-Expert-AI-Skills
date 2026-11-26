@@ -179,6 +179,14 @@ p{margin:0 0 14px;max-width:65ch}
 .cmd-label strong{display:block;font-size:15px;color:var(--ink);font-weight:650}
 .cmd-label span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
 .cmd-code{font-family:var(--mono);font-size:13px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;min-width:0}
+.quick-setup{list-style:none;counter-reset:qs;max-width:760px;margin:0 auto 40px;padding:0;border-top:1px solid var(--border)}
+.quick-setup>li{counter-increment:qs;position:relative;padding:22px 0 22px 44px;border-bottom:1px solid var(--hair)}
+.quick-setup>li::before{content:counter(qs);position:absolute;left:0;top:22px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent);border:1px solid var(--border)}
+.quick-setup h3{margin-bottom:8px}
+.quick-setup .wb-row{margin:4px 0 14px}
+.quick-setup .request{margin-bottom:8px}
+.setup-subhead{text-align:center;margin-bottom:6px}
+.setup-intro{text-align:center;margin:0 auto 0}
 .setup-foot{margin:18px auto 0;font-size:13px;color:var(--muted);text-align:center}
 
 /* FAQ hairline accordion */

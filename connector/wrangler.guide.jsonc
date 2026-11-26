@@ -12,7 +12,7 @@
     "OPEN_MCP_URL": "https://mktskills.com/mcp/shopify-skills",
     "PUBLIC_LAUNCH_STAGE": "candidate",
     "SHOPIFY_PUBLIC_APP_HANDLE": "",
-    "PLUGIN_DOWNLOAD_URL": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.2/shopify-va-toolkit-skills-only.plugin"
+    "PLUGIN_DOWNLOAD_URL": "https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases/download/v0.2.4/shopify-va-toolkit-skills-only.plugin"
   },
   "observability": {"enabled": true, "redact_query_string": true, "logs": {"enabled": true, "invocation_logs": false}},
   "minify": true
