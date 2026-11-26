@@ -212,10 +212,10 @@ dd{margin:6px 0 0}
 
 /* Footer */
 .footer-band{width:100%;background:var(--forest-deep);border-top:1px solid var(--forest-line)}
-.site-footer{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding:28px 0 36px;font-size:13px;color:var(--forest-muted)}
-.site-footer p{margin:0;font-size:13px;color:var(--forest-muted)}
+.site-footer{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:28px 0 36px;font-size:13px;color:var(--forest-muted)}
+.site-footer p{margin:0 auto;font-size:13px;color:var(--forest-muted)}
 .site-footer p a{color:#ffffff}
-.site-footer nav{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px}
+.site-footer nav{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 22px}
 .site-footer a{color:var(--forest-muted);font-size:13px;transition:color .16s var(--ease)}
 .site-footer a:hover{color:var(--lime)}
 
