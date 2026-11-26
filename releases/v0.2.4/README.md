@@ -4,6 +4,44 @@ One plugin containing the 19 existing Shopify workflows. Public-source research
 and work from supplied files do not require Shopify sign-in, an API key, Node,
 or an MCP server in the skills-only profile.
 
+## Set up in three steps
+
+You don't need an account or store access to start.
+
+1. **Connect your AI.**
+   - Claude: open Settings → Connectors → Add custom connector, paste
+     `https://mktskills.com/mcp/shopify-skills`, and save.
+   - ChatGPT: open Settings → Apps & Connectors and create a custom connector
+     with the same link. Some plans need Developer mode turned on first.
+   - Claude Code, Codex, Cursor and other coding agents: run
+     `npx skills add vinceservidad/Shopify-Expert-AI-Skills` once.
+   - Claude Code plugin: run
+     `claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills`.
+     If you already have it, run
+     `claude plugin update shopify-va-toolkit@shopify-skills`.
+   - Claude web or desktop with Skills: download `shopify-va.zip` below and
+     upload it without unzipping under Customize → Skills.
+2. **Try one product listing.** Open a new chat and paste this prompt. Fill in
+   the brackets with facts the store owner has confirmed.
+
+   ```text
+   Write one Shopify product title, a short description, and three clear bullet points.
+   Use only these approved facts. Ask about missing facts first. Do not save or publish anything.
+
+   Product name: [name]
+   Approved facts: [materials, size, features, and confirmed details]
+   Target buyer: [who uses it, if known]
+   Brand tone: [for example, warm and simple]
+
+   Return the draft, missing facts, and a short review checklist.
+   ```
+3. **Review before anything goes live.** Paste only what the task needs, and
+   never paste passwords, API keys, or card details. The AI only reads and
+   drafts, so you or the owner make the change in Shopify admin.
+
+Every other install option and fixes for common problems are in the
+[setup guide](https://mktskills.com/shopify-va/setup).
+
 ## What changed since v0.2.2
 
 - A 15-point copy quality check in the 10 skills that write customer or client
@@ -20,14 +58,6 @@ or an MCP server in the skills-only profile.
   launch, migration and BFCM readiness, app stack and reviews, and
   subscriptions and multichannel selling.
 - Cursor and Antigravity plugin manifests.
-
-## Install once, then ask
-
-- [Download ShopifySkills skills-only plugin](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/raw/refs/heads/main/releases/v0.2.4/shopify-va-toolkit-skills-only.plugin)
-- [One-time native plugin installation](../../docs/ai-agent-setup.md#install-shopifyskills-once)
-
-Claude Code users who installed from the marketplace get this version with
-`claude plugin update shopify-va-toolkit@shopify-skills`.
 
 ## Optional alternatives
 
