@@ -4,7 +4,7 @@ description: "Audits Meta (Facebook and Instagram) Ads for Shopify using creativ
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify Meta Ads
@@ -38,7 +38,7 @@ If direct account evidence is unavailable, provide a bounded audit plan or condi
 7. Use an available write-capable tool only within authorization. Reopen saved settings and inspect publication, processing, delivery, destination, and event states relevant to the change; a saved budget alone is not verified delivery.
 8. Handoff the audit or verified change log, evidence gaps, business-outcome monitoring, rollback trigger, and next owner. Evaluate outcomes after the agreed window without calling platform ROAS realized profit.
 
-Read [references/campaign-framework.md](references/campaign-framework.md) for audit and diagnosis. Read [references/optimization-rules.md](references/optimization-rules.md) for decision and scaling gates. Read [references/advantage-plus-capi.md](references/advantage-plus-capi.md) for Advantage+ Shopping, Shopify CAPI deduplication, EMQ, and creative diversification.
+Read [references/campaign-framework.md](references/campaign-framework.md) for audit and diagnosis. Read [references/optimization-rules.md](references/optimization-rules.md) for decision and scaling gates. Read [references/advantage-plus-capi.md](references/advantage-plus-capi.md) for Advantage+ Shopping, Shopify CAPI deduplication, EMQ, and creative diversification. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Output contract
 

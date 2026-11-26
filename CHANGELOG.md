@@ -4,6 +4,52 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Plugin 0.2.5: daily store check, change files and new job modes
+
+- `shopify-va`: `references/daily-store-check.md`, the ranked morning check
+  (aging orders, payment follow-ups, stock, media, drafts) and its client update.
+- `shopify-catalog-operations`: `references/change-files.md` (import file,
+  before-and-after diff and rollback file instead of live edits) and
+  `references/reorder-planning.md` (reorder points, order quantities, draft
+  purchase orders from client-supplied lead times and costs).
+- `shopify-order-operations`: `references/b2b-wholesale.md` and
+  `references/pos-operations.md`.
+- `shopify-product-listing`: `references/markets-localization.md`.
+- `shopify-support`: `references/privacy-requests.md`.
+- Task routing rows for each new job. The catalog stays at 19 skills.
+- Behavioral scenarios 67 to 73 (numbered 58 to 64 on `main` before the merge with the hosted branch), marked `needs-review`.
+- `docs/case-studies/template.md` for real-store write-ups. No case studies are
+  published yet.
+- Bump the six plugin manifests to 0.2.5 and the patch version of the 5 changed
+  skills. Add `releases/v0.2.5` and point the README and setup guides at it.
+
+### Plugin 0.2.4 and release packages
+
+- Bump all six plugin manifests to 0.2.4 so `claude plugin update` delivers the
+  copy quality check and the Shopify playbooks. The root and Cursor manifests
+  were already at 0.2.3, so 0.2.3 is skipped for the Claude and Codex manifests.
+- Bump the patch version of the 10 skills that gained the copy quality check.
+- Add `releases/v0.2.4` (both plugin targets, 19 skill ZIPs and `SHA256SUMS`),
+  and point the README and setup guides at it.
+
+### Copy quality check
+
+- Add `references/copy-quality-check.md`, a 15-point anti-AI copy pass, to the 10
+  skills that write customer or client copy: analytics, creative strategy, email marketing,
+  Google Ads, Meta Ads, product listing, product page, SEO, support, and the
+  Shopify VA coordinator. Each `SKILL.md` runs it before handoff.
+- `tests/test_copy_quality_check.py` keeps the 10 copies identical and linked.
+- `shopify-creative-strategy` hooks no longer recommend question hooks.
+- Rewrite a "not X" line in the Meta Advantage+ creative guidance.
+
+### Shopify playbooks
+
+- Add 10 reference playbooks: official Flow recipes, Merchant Center Next and
+  PMax, Meta Advantage+ and CAPI, multi-location routing and Markets, checkout
+  extensibility and pixels, chargeback evidence, shipping and 3PL exceptions,
+  launch, migration and BFCM readiness, app stack and reviews, and
+  subscriptions and multichannel selling.
+- Add Cursor and Antigravity plugin manifests.
 ### Store data tools and daily store check (connector)
 
 - Add 8 read-only connector tools: `shopify_daily_store_check`,

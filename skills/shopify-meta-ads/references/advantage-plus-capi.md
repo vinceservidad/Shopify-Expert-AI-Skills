@@ -32,7 +32,7 @@ Use this playbook when auditing Meta Advantage+ Shopping Campaigns (ASC / Advant
 
 ## 3. True creative diversification
 
-Uploading 10 slight headline or color tweaks of the same video is **not** creative diversification—Meta treats near-duplicates as the same concept and saturates one audience pocket quickly.
+Meta treats 10 slight headline or color tweaks of the same video as one concept, so they saturate one audience pocket quickly.
 
 Plan creative volume around **distinct concepts, formats, and buyer motivations** (typically 8–15 active ads in a mature Advantage+ campaign, scaled to budget):
 

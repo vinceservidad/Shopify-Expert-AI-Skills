@@ -84,3 +84,4 @@ The exact order should follow the customer's decision and mobile context. Do not
 - avoid fake scarcity, fake social proof, and unsupported superlatives
 - preserve search-relevant product language where it helps discovery and comprehension
 - use short paragraphs and scannable labels without reducing important policy information
+- run [copy-quality-check.md](copy-quality-check.md) as a separate pass before handoff

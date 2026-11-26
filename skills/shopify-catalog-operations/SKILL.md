@@ -4,7 +4,7 @@ description: "Plans and runs bulk Shopify catalog work, including CSV imports, b
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.5"
+  version: "0.2.6"
 ---
 
 # Shopify Catalog Operations
