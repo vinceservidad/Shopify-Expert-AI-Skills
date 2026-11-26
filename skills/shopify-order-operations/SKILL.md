@@ -4,7 +4,7 @@ description: "Handles Shopify orders, payments, fulfillment, order edits, return
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.2.3"
+  version: "0.2.4"
 ---
 
 # Shopify Order Operations

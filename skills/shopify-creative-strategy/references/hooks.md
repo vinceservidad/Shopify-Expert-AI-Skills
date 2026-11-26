@@ -1,6 +1,6 @@
 # Hook Development
 
-Hooks earn attention by making a relevant promise, tension, question, demonstration, or proof legible quickly. They do not need sensationalism.
+Hooks earn attention by making a relevant promise, tension, demonstration, or proof legible quickly. Lead with the result, the number, or the product in use. Avoid question hooks and rhetorical setups; [copy-quality-check.md](copy-quality-check.md) lists the patterns to fix.
 
 ## Evidence sources
 
@@ -23,7 +23,7 @@ Use these as generation frameworks:
 - **Objection:** address a sourced reason not to buy.
 - **Comparison:** clarify a real selection difference using a fair basis.
 - **Proof:** lead with verifiable evidence and its scope.
-- **Curiosity:** create a relevant information gap that the asset actually resolves.
+- **Curiosity:** state a specific, surprising fact that the asset then explains. Do not open with a question.
 - **Identity or job:** connect the product to a supported role, value, or task.
 
 ## Hook record
@@ -50,3 +50,4 @@ restricted_language:
 - distinct enough to answer a learning question
 - usable within placement safe zones and accessibility needs
 - free of fabricated urgency, shame, impersonation, or unsupported transformation
+- passes [copy-quality-check.md](copy-quality-check.md)

@@ -68,7 +68,7 @@ download button at a guessed asset, the template folder or an unverified release
 
 ### Download a published package
 
-Download the native [v0.2.2 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.2) directly from
+Download the native [v0.2.5 packages](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/tree/main/releases/v0.2.5) directly from
 the repository or from [GitHub releases](https://github.com/vinceservidad/Shopify-Expert-AI-Skills/releases).
 Import the chosen package using the host's supported installation flow; update
 or reimport an existing installation to receive revised skills. A release

@@ -4,7 +4,7 @@ description: "Plans, routes, tracks, and verifies mixed Shopify task lists throu
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.3.6"
+  version: "0.3.8"
 ---
 
 # Shopify VA
@@ -65,7 +65,7 @@ Collect only what can change the decision:
 8. Measure only when the goal requires it and the observation window is adequate. Use the domain owner for the next keep, iterate, rollback, stop, or diagnostic decision.
 9. Handoff one task report with completed deliverables, dependencies, evidence, exceptions, actual state, and next accountable owners. For recurring client updates, use exact figures with date ranges, write "cause not confirmed" when no evidence shows why a figure moved, and end with decisions the owner must make. For recurring work, check the last verified run and duplicate protection before catch-up execution.
 
-Read [references/store-operating-lifecycle.md](references/store-operating-lifecycle.md) for the full lifecycle, role boundaries, stage contracts, and examples. Use [references/initiative-record.md](references/initiative-record.md) when work spans several stages, specialists, sessions, or handoffs. Read [references/task-routing.md](references/task-routing.md) to choose the owner skill. Use [references/operating-checklists.md](references/operating-checklists.md) for task records, recurring work, QA, handoff, the owner approval matrix, and end-of-day or weekly client updates. Run [references/daily-store-check.md](references/daily-store-check.md) for the morning check: aging orders, payment follow-ups, stock, media and drafts, ranked into the day's to-do list.
+Read [references/store-operating-lifecycle.md](references/store-operating-lifecycle.md) for the full lifecycle, role boundaries, stage contracts, and examples. Use [references/initiative-record.md](references/initiative-record.md) when work spans several stages, specialists, sessions, or handoffs. Read [references/task-routing.md](references/task-routing.md) to choose the owner skill. Use [references/operating-checklists.md](references/operating-checklists.md) for task records, recurring work, QA, handoff, the owner approval matrix, and end-of-day or weekly client updates. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read. Run [references/daily-store-check.md](references/daily-store-check.md) for the morning check: aging orders, payment follow-ups, stock, media and drafts, ranked into the day's to-do list.
 
 ## Practical VA workflows
 

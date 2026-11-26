@@ -4,7 +4,7 @@ description: "Audits and plans Shopify SEO, including technical issues, keyword 
 license: MIT
 metadata:
   author: vinceservidad
-  version: "0.1.3"
+  version: "0.1.4"
 ---
 
 # Shopify SEO
@@ -35,7 +35,7 @@ Collect objective, markets and languages, business outcomes, product and collect
 7. After approved implementation, verify live response and rendered content, metadata, internal links, directives, structured data, and relevant sitemap state. Escalate unexpected access or indexability regressions before expanding changes.
 8. Handoff the change map, rollback, technical verification, and dated follow-up owner for crawl, index, ranking, traffic, and business outcomes. A live page or accepted submission does not prove indexation or improvement.
 
-Read [references/keyword-framework.md](references/keyword-framework.md) for query and page mapping. Read [references/content-map.md](references/content-map.md) for architecture and briefs.
+Read [references/keyword-framework.md](references/keyword-framework.md) for query and page mapping. Read [references/content-map.md](references/content-map.md) for architecture and briefs. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Output contract
 

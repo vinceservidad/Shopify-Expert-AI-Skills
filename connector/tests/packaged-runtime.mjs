@@ -42,7 +42,7 @@ try {
     await client.connect(new StdioClientTransport({command:process.execPath,args,env:{PATH:process.env.PATH ?? '',...env},stderr:'pipe'}));
     try {
       const tools = (await client.listTools()).tools;
-      assert.equal(tools.length,12);
+      assert.equal(tools.length,20);
       assert.deepEqual(tools, sourceTools, `${config} exposes the same contracts as the Node connector`);
       for (const name of legacyNames) assert.ok(tools.some(tool => tool.name === name));
       assert.ok(tools.every(tool => tool.annotations?.readOnlyHint === true && tool.annotations?.destructiveHint === false));
@@ -73,7 +73,7 @@ try {
         const result = await client.callTool({name,arguments:{id}});
         assert.equal(result.isError,true); assert.equal(result.structuredContent.error.code,'NOT_CONNECTED');
       }
-      console.log(`Verified extracted standalone runtime using ${config}: 19 skills, 8 complete VA workflows, 12 read-only tools, Node contract parity, no credentials required.`);
+      console.log(`Verified extracted standalone runtime using ${config}: 19 skills, 8 complete VA workflows, 20 read-only tools, Node contract parity, no credentials required.`);
     } finally { await client.close(); }
   }
 } finally { await rm(destination,{recursive:true,force:true}); }
