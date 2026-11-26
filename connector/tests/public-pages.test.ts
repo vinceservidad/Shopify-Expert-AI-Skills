@@ -60,7 +60,7 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
   assert.ok(navMatch[1].includes('href="/shopify-va/setup">How to set up</a>'));
 
   // Above-the-fold trust highlights (<= 35 words, no hero KPI strip, no em-dashes)
-  assert.ok(html.includes('19 free MIT skills and 95 Markdown files for Shopify'));
+  assert.ok(html.includes('19 free Shopify skills under the MIT license'));
   assert.ok(html.includes('approve every change in Shopify Admin.'));
   assert.doesNotMatch(stripToVisibleText(html), /—|\s–\s/, 'Product page generated copy must contain zero em-dashes or spaced en-dashes');
   assert.ok(html.includes('class="seg-tabs"'), 'Category filter must use connected segmented tabs');
@@ -88,8 +88,6 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
     assert.ok(setup.includes(`<h3>${step}</h3>`), `Missing setup step: ${step}`);
   }
   assert.ok(!setup.includes('data-copy="https://mktskills.com/mcp/shopify-skills"'), '#setup must not duplicate the hero MCP URL copy button');
-  assert.ok(setup.includes('Settings → Connectors → Add custom connector'));
-  assert.ok(setup.includes('Settings → Apps &amp; Connectors'));
   assert.ok(setup.includes('Write one Shopify product title'), 'first prompt must be on the landing page');
   assert.ok(setup.includes('data-copy="Write one Shopify product title'), 'first prompt needs a copy button');
   assert.ok(setup.includes('<details class="setup-drawer">'), 'secondary install paths must sit inside a collapsed drawer');
@@ -260,7 +258,7 @@ test('help and privacy pages cover all install paths and Remote MCP accurately',
   assert.ok(helpHtml.includes('/add-plugin vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('agy plugin install https://github.com/vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('shopify-va.zip'));
-  assert.ok(helpHtml.includes('MKT Skills — Shopify VA'));
+  assert.ok(helpHtml.includes('Anthropic Plugin Directory listing'));
   assert.ok(helpHtml.includes('Project instructions'));
   assert.ok(helpHtml.includes('codex plugin marketplace add vinceservidad/Shopify-Expert-AI-Skills --ref main'));
   assert.ok(helpHtml.includes(`href="${RELEASE_PLUGIN_URL}"`));
@@ -282,6 +280,7 @@ test('public pages exclude AI slop, mid-sentence bold, medical jargon, and stale
   ]) {
     assert.doesNotMatch(html, /<(p|li)\b[^>]*>(?:(?!<\/\1>)[\s\S])*?<strong\b/i, 'Paragraphs and list items must not contain mid-sentence bold');
     const visible = stripToVisibleText(html);
+    assert.doesNotMatch(visible, /—|\s–\s/, 'Public pages must contain zero em-dashes or spaced en-dashes');
     for (const pattern of STALE_OR_SLOP_PATTERNS) {
       assert.doesNotMatch(visible, pattern, `Unexpected sloppy/medical/stale phrase matching ${pattern}`);
     }
