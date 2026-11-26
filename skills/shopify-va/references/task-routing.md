@@ -22,7 +22,7 @@ Lifecycle stage and specialist owner are separate decisions. A request may be at
 | `measure` | `shopify-analytics` owns reconciled cross-system/business performance; domain specialists may own bounded local measurement |
 | `optimize` | Domain specialist owns the next change; merchant/client/accountable owner approves material business tradeoffs or scope expansion |
 
-Start at the earliest unresolved stage that can materially change the requested decision. Do not force every task through all nine stages.
+Start at the earliest unresolved stage that can materially change the requested decision. Do not force every task through all nine stages. For the exact dependency order across a full build or campaign launch, see [skill-sequence.md](skill-sequence.md).
 
 ## Specialist routing
 

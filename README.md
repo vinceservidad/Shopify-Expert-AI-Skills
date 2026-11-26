@@ -122,7 +122,7 @@ Choose the skill that owns the deliverable. Use `shopify-va` for mixed tasks and
 
 Start by giving your AI app the task, target store, source files, and what needs approval. Work read-only first, follow the owning skill, check the result, and finish with a clear handoff of what is done and what is blocked.
 
-The shared [Store Operating Lifecycle](skills/shopify-va/references/store-operating-lifecycle.md) is a state model: begin at the earliest unresolved stage that can change the decision. Short jobs need only the relevant stages. Use the [Initiative Record](skills/shopify-va/references/initiative-record.md) for work spanning skills, sessions, or handoffs.
+The shared [Store Operating Lifecycle](skills/shopify-va/references/store-operating-lifecycle.md) is a state model: begin at the earliest unresolved stage that can change the decision. Short jobs need only the relevant stages. Use [Skill Sequence](skills/shopify-va/references/skill-sequence.md) for the seven-stage build and marketing order across all 19 skills, [Deliverable Templates](skills/shopify-va/references/deliverable-templates.md) for copy-ready client sheets, and the [Initiative Record](skills/shopify-va/references/initiative-record.md) for work spanning skills, sessions, or handoffs.
 
 Keep confirmed facts separate from calculations, assumptions, and unknowns. Live changes need clear approval, store permissions, and an authorized tool. The custom MCP server is read-only and cannot edit products, process refunds, or change ad budgets. A save or successful build does not prove a verified live result or business impact. See [Evidence and authorization](docs/evidence-and-authorization.md).
 

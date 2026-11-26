@@ -247,7 +247,7 @@ This lifecycle is the orchestration layer. The skills remain the decision and ex
 
 `shopify-va` owns mixed routine-task intake, lifecycle state coordination, routing, execution tracking, QA, and handoff. It does **not** become the expert owner of every domain. Whole-store diagnosis remains with `shopify-store-audit`; funnel decisions with `shopify-cro`; theme code with `shopify-theme-development`; product/catalog/order/ads/SEO/email/analytics decisions remain with their respective skills.
 
-For a single clear task, use the specialist directly and apply only the lifecycle stages needed.
+For a single clear task, use the specialist directly and apply only the lifecycle stages needed. When coordinating a full store build, launch, or marketing push across skills, follow the seven-stage order in [skill-sequence.md](skill-sequence.md).
 
 ## Interface aliases
 
