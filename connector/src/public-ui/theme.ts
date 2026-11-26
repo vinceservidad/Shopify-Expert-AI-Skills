@@ -43,6 +43,11 @@ export const THEME_SCRIPT = `(function () {
     var cards = document.querySelectorAll('[data-skill-card]');
     var status = document.querySelector('[data-skill-status]');
     var activeCat = 'All';
+    Array.prototype.forEach.call(catButtons, function (btn) {
+      if (btn.getAttribute('aria-pressed') === 'true') {
+        activeCat = btn.getAttribute('data-skill-cat') || 'All';
+      }
+    });
 
     function applyFilter() {
       var q = filterInput ? (filterInput.value || '').trim().toLowerCase() : '';
@@ -50,14 +55,16 @@ export const THEME_SCRIPT = `(function () {
       Array.prototype.forEach.call(cards, function (card) {
         var cat = card.getAttribute('data-cat') || '';
         var text = (card.textContent || '').toLowerCase();
-        var catOk = activeCat === 'All' || cat === activeCat;
+        var catOk = q.length > 0 || activeCat === 'All' || cat === activeCat;
         var qOk = !q || text.indexOf(q) !== -1;
         var visible = catOk && qOk;
         card.hidden = !visible;
         if (visible) shown++;
       });
       if (status) {
-        status.textContent = shown === 1 ? '1 skill' : (shown + ' skills');
+        status.textContent = shown === cards.length
+          ? (cards.length + ' skills')
+          : (shown + ' of ' + cards.length + ' skills');
       }
     }
 

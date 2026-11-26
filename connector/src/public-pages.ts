@@ -316,20 +316,29 @@ function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): st
 
 function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
   return `<div class="workbench" id="install">
-    <input class="wb-radio" type="radio" name="wb" id="wb-open" checked>
+    <input class="wb-radio" type="radio" name="wb" id="wb-claude" checked>
+    <input class="wb-radio" type="radio" name="wb" id="wb-chatgpt">
     <input class="wb-radio" type="radio" name="wb" id="wb-cli">
     <div class="wb-tabs" role="tablist" aria-label="Quick setup">
-      <label for="wb-open">ChatGPT &amp; Claude</label>
+      <label for="wb-claude">Claude</label>
+      <label for="wb-chatgpt">ChatGPT</label>
       <label for="wb-cli">Coding agents</label>
     </div>
     <div class="wb-panels">
-      <div class="wb-panel wb-open">
+      <div class="wb-panel wb-claude">
         <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
-        <p class="wb-note">Add this link as a custom connector in Claude or ChatGPT. <a href="#setup">Step-by-step setup</a> · <a href="${guideUrl}">Troubleshooting</a></p>
+        <p class="wb-note">Open Settings → Connectors → Add custom connector, paste this link, and save.</p>
+        <div class="wb-links"><a href="#setup">Step-by-step setup</a><a href="${guideUrl}">Troubleshooting</a></div>
+      </div>
+      <div class="wb-panel wb-chatgpt">
+        <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
+        <p class="wb-note">Open Settings → Apps &amp; Connectors and add a custom connector with this link (some plans need Developer mode on).</p>
+        <div class="wb-links"><a href="#setup">Step-by-step setup</a><a href="${guideUrl}">Troubleshooting</a></div>
       </div>
       <div class="wb-panel wb-cli">
         <div class="wb-row"><code>${CLI_ADD_CMD}</code><button type="button" class="copy-btn" data-copy="${CLI_ADD_CMD}" hidden>Copy command</button></div>
-        <p class="wb-note">Installs all ${SKILL_COUNT} skills in Claude Code, Codex, Cursor, Windsurf, Copilot, and Antigravity.</p>
+        <p class="wb-note">Installs all ${SKILL_COUNT} skills in Claude Code, Codex, Cursor, Windsurf, GitHub Copilot, and Antigravity.</p>
+        <div class="wb-links"><a href="#setup">Step-by-step setup</a><a href="${guideUrl}">Troubleshooting</a></div>
       </div>
     </div>
   </div>`;
@@ -343,7 +352,7 @@ function bottleneckTable(): string {
 }
 
 function skillCatalogSection(): string {
-  const tabs = ['All', ...SKILL_CATEGORIES]
+  const tabs = [...SKILL_CATEGORIES, 'All']
     .map(
       (cat, index) =>
         `<button type="button" class="seg-tab" data-skill-cat="${escape(cat)}" aria-pressed="${index === 0 ? 'true' : 'false'}">${escape(cat)}</button>`,
@@ -408,33 +417,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="how-it-works" class="band" aria-labelledby="how-heading">
-      <div class="shell" data-reveal>
-        <div class="section-head">
-          <h2 id="how-heading">How it works</h2>
-          <p>Each skill tells your AI app which Shopify fields, store policies, and numbers to check before it writes a draft.</p>
-        </div>
-        <div class="steps-grid">
-          <div class="step-item">
-            <span class="step-num">01</span>
-            <h3>Connect</h3>
-            <p>Add ${escape(openMcpUrl)} in ChatGPT or Claude, or run one install command in your coding agent.</p>
-          </div>
-          <div class="step-item">
-            <span class="step-num">02</span>
-            <h3>Ask</h3>
-            <p>Paste product specs, a product CSV, an order export, or a support ticket and name the Shopify job.</p>
-          </div>
-          <div class="step-item">
-            <span class="step-num">03</span>
-            <h3>Review</h3>
-            <p>Your AI app flags missing specs or policy gaps, then writes a draft. You decide what goes live in Shopify Admin.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="bottlenecks" class="band band-mist" aria-labelledby="bottlenecks-heading">
+    <section id="bottlenecks" class="band" aria-labelledby="bottlenecks-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
           <h2 id="bottlenecks-heading">Common store problems</h2>
@@ -473,10 +456,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
         <ol class="quick-setup">
           <li>
             <h3>Connect your AI</h3>
-            <p>Claude: open Settings → Connectors → Add custom connector, paste the link below, and save.</p>
-            <p>ChatGPT: open Settings → Apps &amp; Connectors and create a custom connector with the same link. Some plans require Developer mode turned on first.</p>
-            <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
-            <p>Coding agents (Claude Code, Codex, Cursor, and others): run <code>${CLI_ADD_CMD}</code> once.</p>
+            <p>Pick Claude, ChatGPT, or Coding agents in the <a href="#install">copy box at the top of this page</a>.</p>
+            <p>Claude: Settings → Connectors → Add custom connector. ChatGPT: Settings → Apps &amp; Connectors (turn on Developer mode if your plan asks for it). Coding agents: run <code>${CLI_ADD_CMD}</code> once.</p>
           </li>
           <li>
             <h3>Try one product listing</h3>
@@ -489,53 +470,53 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
             <p>Paste only what the task needs, and never paste passwords, API keys, or card details. Check each draft against the owner's facts before you or the owner apply changes in Shopify Admin.</p>
           </li>
         </ol>
-        <h3 class="setup-subhead">All ways to connect</h3>
-        <p class="setup-intro">Pick your app. <a href="${pagePath(config, '/setup')}">The setup guide</a> covers ZIP files, ChatGPT Projects, and fixes for common problems.</p>
-        ${supportedAppsMatrix()}
-        <div class="cmd-list">
-          <div class="cmd-item">
-            <div class="cmd-label"><strong>ChatGPT and Claude</strong><span>Custom connector, no sign-in</span></div>
-            <code class="cmd-code">${escape(openMcpUrl)}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(openMcpUrl)}" hidden>Copy</button>
+        <details class="setup-drawer">
+          <summary>Other ways to install (plugins, CLI, ZIP files, and live store)</summary>
+          <div class="setup-drawer-body">
+            <p class="setup-intro">Pick your AI app below, or open <a href="${pagePath(config, '/setup')}">the setup guide</a> for ZIP uploads, ChatGPT Projects, and troubleshooting.</p>
+            ${supportedAppsMatrix()}
+            <div class="cmd-list">
+              <div class="cmd-item">
+                <div class="cmd-label"><strong>Agent Skills CLI</strong><span>All ${SKILL_COUNT} skills</span></div>
+                <code class="cmd-code">${CLI_ADD_CMD}</code>
+                <button type="button" class="copy-btn copy-btn-line" data-copy="${CLI_ADD_CMD}" hidden>Copy</button>
+              </div>
+              <div class="cmd-item">
+                <div class="cmd-label"><strong>Context7 CLI</strong><span>All ${SKILL_COUNT} skills</span></div>
+                <code class="cmd-code">${CTX7_ADD_CMD}</code>
+                <button type="button" class="copy-btn copy-btn-line" data-copy="${CTX7_ADD_CMD}" hidden>Copy</button>
+              </div>
+              <div class="cmd-item">
+                <div class="cmd-label"><strong>Claude Code</strong><span>GitHub plugin</span></div>
+                <code class="cmd-code">${CLAUDE_PLUGIN_CMD}</code>
+                <button type="button" class="copy-btn copy-btn-line" data-copy="${CLAUDE_PLUGIN_CMD}" hidden>Copy</button>
+              </div>
+              <div class="cmd-item">
+                <div class="cmd-label"><strong>Cursor</strong><span>Run in Cursor chat</span></div>
+                <code class="cmd-code">${CURSOR_PLUGIN_CMD}</code>
+                <button type="button" class="copy-btn copy-btn-line" data-copy="${CURSOR_PLUGIN_CMD}" hidden>Copy</button>
+              </div>
+              <div class="cmd-item">
+                <div class="cmd-label"><strong>Antigravity</strong><span>Plugin</span></div>
+                <code class="cmd-code">${AGY_PLUGIN_CMD}</code>
+                <button type="button" class="copy-btn copy-btn-line" data-copy="${AGY_PLUGIN_CMD}" hidden>Copy</button>
+              </div>
+              <div class="cmd-item">
+                <div class="cmd-label"><strong>OpenAI Codex</strong><span>Marketplace plugin</span></div>
+                <code class="cmd-code">${CODEX_MARKETPLACE_CMD}</code>
+                <button type="button" class="copy-btn copy-btn-line" data-copy="${CODEX_MARKETPLACE_CMD}" hidden>Copy</button>
+              </div>
+              <div class="cmd-item" id="mcp">
+                <div class="cmd-label"><strong>Live store data (optional)</strong><span>Read-only, owner approves</span></div>
+                <code class="cmd-code">${escape(mcpUrl)}</code>
+                <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(mcpUrl)}" hidden>Copy</button>
+              </div>
+            </div>
+            <p class="setup-foot">${liveStoreNote}</p>
+            <p class="setup-foot">${releaseNote}</p>
           </div>
-          <div class="cmd-item">
-            <div class="cmd-label"><strong>Agent Skills CLI</strong><span>All ${SKILL_COUNT} skills</span></div>
-            <code class="cmd-code">${CLI_ADD_CMD}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${CLI_ADD_CMD}" hidden>Copy</button>
-          </div>
-          <div class="cmd-item">
-            <div class="cmd-label"><strong>Context7 CLI</strong><span>All ${SKILL_COUNT} skills</span></div>
-            <code class="cmd-code">${CTX7_ADD_CMD}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${CTX7_ADD_CMD}" hidden>Copy</button>
-          </div>
-          <div class="cmd-item">
-            <div class="cmd-label"><strong>Claude Code</strong><span>GitHub plugin</span></div>
-            <code class="cmd-code">${CLAUDE_PLUGIN_CMD}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${CLAUDE_PLUGIN_CMD}" hidden>Copy</button>
-          </div>
-          <div class="cmd-item">
-            <div class="cmd-label"><strong>Cursor</strong><span>Run in Cursor chat</span></div>
-            <code class="cmd-code">${CURSOR_PLUGIN_CMD}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${CURSOR_PLUGIN_CMD}" hidden>Copy</button>
-          </div>
-          <div class="cmd-item">
-            <div class="cmd-label"><strong>Antigravity</strong><span>Plugin</span></div>
-            <code class="cmd-code">${AGY_PLUGIN_CMD}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${AGY_PLUGIN_CMD}" hidden>Copy</button>
-          </div>
-          <div class="cmd-item">
-            <div class="cmd-label"><strong>OpenAI Codex</strong><span>Marketplace plugin</span></div>
-            <code class="cmd-code">${CODEX_MARKETPLACE_CMD}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${CODEX_MARKETPLACE_CMD}" hidden>Copy</button>
-          </div>
-          <div class="cmd-item" id="mcp">
-            <div class="cmd-label"><strong>Live store data (optional)</strong><span>Read-only, owner approves</span></div>
-            <code class="cmd-code">${escape(mcpUrl)}</code>
-            <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(mcpUrl)}" hidden>Copy</button>
-          </div>
-        </div>
-        <p class="setup-foot">${liveStoreNote}</p>
-        <p class="setup-foot">${releaseNote} · <a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a> (affiliate link).</p>
+        </details>
+        <p class="setup-foot">ZIP files, ChatGPT Projects, and error fixes are in <a href="${pagePath(config, '/setup')}">the setup guide</a> · <a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a> (affiliate link).</p>
       </div>
     </section>
 
@@ -575,11 +556,13 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         <h3>1. Connect your AI</h3>
         <p>Claude: open Settings → Connectors → Add custom connector, paste this link, and save.</p>
         <pre class="command" tabindex="0"><code>${escape(openMcpUrl)}</code></pre>
+        <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button>
         <p>ChatGPT: open Settings → Apps &amp; Connectors and create a custom connector with the same link. Some plans need Developer mode turned on first.</p>
         <p>Coding agents (Claude Code, Codex, Cursor, and others): run <code>${CLI_ADD_CMD}</code> once.</p>
         <h3>2. Try one product listing</h3>
         <p>Open a new chat and paste this prompt. Fill in the brackets with facts the store owner has confirmed. Your AI app asks about anything missing, then writes the draft.</p>
         <pre class="request" tabindex="0"><code>${escape(firstRequest)}</code></pre>
+        <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(firstRequest)}" hidden>Copy prompt</button>
         <h3>3. Use it for daily tasks</h3>
         <p>Describe the problem in plain words, and your AI app picks the right skill. For example:</p>
         <ul>

@@ -46,7 +46,7 @@ function stripToVisibleText(html: string): string {
     .trim();
 }
 
-test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-skill catalog, 4x2 apps grid, and multi-platform setup', () => {
+test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-skill catalog, 4x2 apps grid, and setup drawer', () => {
   const html = renderProductPage(candidateConfig);
 
   // Header brand parity with mktskills.com + 4 clean nav links
@@ -66,12 +66,19 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   assert.ok(html.includes('class="seg-tabs"'), 'Category filter must use connected segmented tabs');
   assert.ok(html.includes('class="apps-matrix"'), 'Supported AI apps must use unified hairline matrix');
 
-  // 3-step explainer
-  assert.ok(html.includes('<h3>Connect</h3>'));
-  assert.ok(html.includes('<h3>Ask</h3>'));
-  assert.ok(html.includes('<h3>Review</h3>'));
+  // Duplicate #how-it-works band removed; 3-tab hero workbench shows click paths above the fold
+  assert.ok(!html.includes('id="how-it-works"'), 'duplicate #how-it-works section must be removed');
+  const heroInstallMatch = /<div class="workbench" id="install">[\s\S]*?<\/section>/.exec(html);
+  assert.ok(heroInstallMatch, 'hero workbench missing');
+  const heroInstall = heroInstallMatch[0];
+  assert.ok(heroInstall.includes('for="wb-claude">Claude</label>'));
+  assert.ok(heroInstall.includes('for="wb-chatgpt">ChatGPT</label>'));
+  assert.ok(heroInstall.includes('for="wb-cli">Coding agents</label>'));
+  assert.ok(heroInstall.includes('Settings → Connectors → Add custom connector'));
+  assert.ok(heroInstall.includes('Settings → Apps &amp; Connectors'));
+  assert.ok(heroInstall.includes('<a href="#setup">Step-by-step setup</a>'), 'hero must point to the on-page setup steps');
 
-  // Setup steps live on the landing page so first-time visitors see everything on one page
+  // Setup steps live on the landing page without duplicating the MCP URL copy button; secondary methods stay in a collapsed drawer
   const setupMatch = /<section id="setup"[\s\S]*?<\/section>/.exec(html);
   assert.ok(setupMatch, 'landing setup section missing');
   const setup = setupMatch[0];
@@ -80,15 +87,20 @@ test('product page brand, 4-item header, 3-step explainer, bottleneck table, 19-
   for (const step of ['Connect your AI', 'Try one product listing', 'Review before anything goes live']) {
     assert.ok(setup.includes(`<h3>${step}</h3>`), `Missing setup step: ${step}`);
   }
+  assert.ok(!setup.includes('data-copy="https://mktskills.com/mcp/shopify-skills"'), '#setup must not duplicate the hero MCP URL copy button');
   assert.ok(setup.includes('Settings → Connectors → Add custom connector'));
   assert.ok(setup.includes('Settings → Apps &amp; Connectors'));
   assert.ok(setup.includes('Write one Shopify product title'), 'first prompt must be on the landing page');
   assert.ok(setup.includes('data-copy="Write one Shopify product title'), 'first prompt needs a copy button');
-  assert.ok(setup.includes('<h3 class="setup-subhead">All ways to connect</h3>'));
-  assert.ok(setup.includes('href="/shopify-va/setup">The setup guide</a>'), 'landing must still link the full setup guide');
-  assert.ok(html.includes('<a href="#setup">Step-by-step setup</a>'), 'hero must point to the on-page setup steps');
+  assert.ok(setup.includes('<details class="setup-drawer">'), 'secondary install paths must sit inside a collapsed drawer');
+  assert.ok(!setup.includes('<details class="setup-drawer" open>'), 'setup drawer must start collapsed');
+  assert.ok(setup.includes('href="/shopify-va/setup">the setup guide</a>'), 'landing must still link the full setup guide');
   assert.ok(html.includes('releases/download/v0.2.4/shopify-va-toolkit-skills-only.plugin'));
   assert.ok(!html.includes('v0.2.2'), 'landing must not link the old v0.2.2 release');
+
+  // Skills section defaults to Catalog (5 skills) with All available as a tab
+  assert.ok(html.includes('data-skill-cat="Catalog" aria-pressed="true"'));
+  assert.ok(html.includes('data-skill-cat="All" aria-pressed="false"'));
 
   // Bottleneck table & Sidekick comparison
   assert.ok(html.includes('id="bottlenecks"'));
@@ -242,6 +254,8 @@ test('help and privacy pages cover all install paths and Remote MCP accurately',
   assert.ok(helpHtml.includes('npx skills add vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('https://mktskills.com/mcp/shopify-skills'));
+  assert.ok(helpHtml.includes('data-copy="https://mktskills.com/mcp/shopify-skills"'));
+  assert.ok(helpHtml.includes('data-copy="Write one Shopify product title'));
   assert.ok(helpHtml.includes('claude plugin install shopify-va-toolkit --marketplace vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('/add-plugin vinceservidad/Shopify-Expert-AI-Skills'));
   assert.ok(helpHtml.includes('agy plugin install https://github.com/vinceservidad/Shopify-Expert-AI-Skills'));
