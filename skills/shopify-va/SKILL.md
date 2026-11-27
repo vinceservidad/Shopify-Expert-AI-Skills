@@ -67,6 +67,10 @@ Collect only what can change the decision:
 
 Read [references/store-operating-lifecycle.md](references/store-operating-lifecycle.md) for the full lifecycle, role boundaries, stage contracts, and examples. Use [references/skill-sequence.md](references/skill-sequence.md) for the seven-stage build, launch, and marketing dependency order across all 19 skills. Use [references/initiative-record.md](references/initiative-record.md) when work spans several stages, specialists, sessions, or handoffs. Read [references/task-routing.md](references/task-routing.md) to choose the owner skill. Use [references/operating-checklists.md](references/operating-checklists.md) for task records, recurring work, QA, handoff, the owner approval matrix, and end-of-day or weekly client updates, and [references/deliverable-templates.md](references/deliverable-templates.md) for copy-ready CSV QA, BFCM, chargeback, and shift handover templates. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read. Run [references/daily-store-check.md](references/daily-store-check.md) for the morning check: aging orders, payment follow-ups, stock, media and drafts, ranked into the day's to-do list.
 
+## Practical VA workflows
+
+Use [references/client-setup.md](references/client-setup.md) for “Set up my client's work guide,” [references/daily-work-plan.md](references/daily-work-plan.md) for “Plan today's work,” and [references/end-of-day-handover.md](references/end-of-day-handover.md) for “Prepare my handover.” Run these when requested. Keep client briefs in the user's chat or project files; the read-only connector does not store them or grant editing permission.
+
 ## Ownership boundary
 
 `shopify-va` coordinates multi-skill routine work; it does not inherit every expert decision.

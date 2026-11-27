@@ -1,30 +1,61 @@
 import express, { type Request } from 'express';
-import { createMcpExpressApp } from '@modelcontextprotocol/express';
+import { hostHeaderValidation, originValidation } from '@modelcontextprotocol/express';
 import { NodeStreamableHTTPServerTransport } from '@modelcontextprotocol/node';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { ShopifyOAuth, type AuthOptions } from './auth.js';
 import { discoverSkillsRoot } from './catalog.js';
-import { createServer } from './mcp.js';
+import { createServer, createSkillsOnlyServer } from './mcp.js';
 import { SecretStore } from './store.js';
 import type { Fetch } from './shopify.js';
+import { installAppChecks } from './app-checks.js';
+import { renderAppHome, type PublicPageConfig } from './public-pages.js';
+import { publicContent, SECURITY_HEADERS } from './public-routes.js';
 
-export function createApp(options: AuthOptions & { skillsRoot: string; upstreamFetcher?: Fetch }) {
-  const host = new URL(options.publicUrl).hostname;
-  const app = createMcpExpressApp({ host: '127.0.0.1', allowedHosts: [host], allowedOrigins: [host], jsonLimit: '32kb' });
+export function createApp(options: AuthOptions & PublicPageConfig & { skillsRoot: string; upstreamFetcher?: Fetch }) {
+  const base = new URL(options.publicUrl), host = base.hostname;
+  // The SDK factory parses JSON immediately. Compose its guards explicitly so signed webhooks retain raw bytes.
+  const app = express();
+  app.use(hostHeaderValidation([host]), originValidation([host]));
   app.disable('x-powered-by');
   app.use((request, response, next) => {
-    response.set({ 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff',
-      'Referrer-Policy': 'no-referrer', 'Content-Security-Policy': "default-src 'none'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'" });
+    response.set(SECURITY_HEADERS);
+    if (request.get('host') !== base.host) { response.status(403).json({ error: 'host_not_allowed' }); return; }
     const origin = request.get('origin');
     if (origin && origin !== new URL(options.publicUrl).origin) { response.status(403).json({ error: 'origin_not_allowed' }); return; }
     next();
   });
+  const auth = new ShopifyOAuth({ ...options, renderAppHome: options.renderAppHome ?? renderAppHome });
+  auth.installWebhooks(app);
   app.use(express.json({ limit: '32kb' }), express.urlencoded({ extended: false, limit: '8kb' }));
-  const auth = new ShopifyOAuth(options);
   auth.install(app);
-  app.get('/health', (_request, response) => response.json({ status: 'ok', name: 'shopify-va-toolkit', mode: 'read-only' }));
-  app.get('/', (_request, response) => response.type('html').send('<!doctype html><html lang="en"><meta charset="utf-8"><title>Shopify VA Toolkit</title><main><h1>Shopify VA Toolkit</h1><p>Independent, read-only Shopify tools and expert workflow skills. Not affiliated with Shopify.</p><p>Connect an MCP client to /mcp. Store access uses OAuth and requires merchant approval.</p></main></html>'));
+  app.get('/health', (_request, response) => response.json({ status: 'ok', name: 'shopify-va-toolkit', mode: 'read-only', version: '0.2.0', authMode: options.mode ?? 'custom', tools: 12, skills: 19 }));
+  if (options.mode === 'public') installAppChecks(app, auth, options.upstreamFetcher);
+  app.get(['/', '/shopify-va', '/shopify-va/', '/help', '/setup', '/privacy', '/shopify-va/setup', '/shopify-va/privacy', '/llms.txt', '/shopify-va/llms.txt', '/llms-full.txt', '/shopify-va/llms-full.txt', '/og-shopify-va.png', '/shopify-va/og-shopify-va.png', '/assets/public.css', '/shopify-va/assets/public.css', '/assets/theme.js', '/shopify-va/assets/theme.js', '/assets/hero.js', '/shopify-va/assets/hero.js', '/assets/sequence.js', '/shopify-va/assets/sequence.js', '/assets/app-home.js'], (request, response) => {
+    const content = publicContent(request.path, options);
+    if (!content) { response.status(404).end(); return; }
+    if (content.cacheControl) response.set('Cache-Control', content.cacheControl);
+    response.type(content.contentType).send(typeof content.body === 'string' ? content.body : Buffer.from(content.body));
+  });
+  app.all('/mcp/shopify-skills', async (request: Request, response) => {
+    response.set({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Accept, MCP-Protocol-Version, Mcp-Session-Id',
+      'Access-Control-Expose-Headers': 'Mcp-Session-Id',
+    });
+    if (request.method === 'OPTIONS') { response.status(204).end(); return; }
+    if (request.method !== 'POST') { response.set('Allow', 'POST, OPTIONS').status(405).end(); return; }
+    const accept = request.get('accept') ?? '';
+    if (!accept.includes('application/json') || !accept.includes('text/event-stream')) {
+      request.headers.accept = 'application/json, text/event-stream';
+    }
+    const server = createSkillsOnlyServer({ skillsRoot: options.skillsRoot });
+    const transport = new NodeStreamableHTTPServerTransport({ sessionIdGenerator: undefined, enableJsonResponse: true });
+    response.on('close', () => { void server.close(); });
+    await server.connect(transport);
+    await transport.handleRequest(request, response, request.body);
+  });
   app.all('/mcp', async (request: Request, response) => {
     const match = /^Bearer ([A-Za-z0-9_-]{43})$/.exec(request.get('authorization') ?? '');
     const connection = match?.[1] ? await auth.connection(match[1]) : undefined;
@@ -52,7 +83,12 @@ async function main() {
   const key = process.env.CONNECTOR_STORAGE_KEY, publicUrl = process.env.PUBLIC_URL;
   if (!clientId || !clientSecret || !key || !publicUrl) throw new Error('Missing OAuth environment configuration.');
   const store = new SecretStore(process.env.CONNECTOR_DATABASE ?? resolve('data/connector.sqlite'), Buffer.from(key, 'base64'));
-  const { app } = createApp({ clientId, clientSecret, publicUrl, store, skillsRoot: await discoverSkillsRoot() });
+  store.startCleanup();
+  const mode = process.env.SHOPIFY_AUTH_MODE ?? 'custom';
+  if (mode !== 'custom' && mode !== 'public') throw new Error('SHOPIFY_AUTH_MODE must be custom or public.');
+  const { app } = createApp({ clientId, clientSecret, publicUrl, store, mode, skillsRoot: await discoverSkillsRoot(),
+    publicAppHandle: process.env.SHOPIFY_PUBLIC_APP_HANDLE, publicInstallUrl: process.env.SHOPIFY_PUBLIC_INSTALL_URL,
+    launchStage: process.env.PUBLIC_LAUNCH_STAGE === 'public' ? 'public' : 'candidate', pluginDownloadUrl: process.env.PLUGIN_DOWNLOAD_URL });
   const port = Number(process.env.PORT ?? '8788');
   if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid PORT.');
   const listener = app.listen(port, process.env.HOST ?? '127.0.0.1', () => console.error(`Shopify VA Toolkit listening on port ${port}; read-only OAuth MCP.`));

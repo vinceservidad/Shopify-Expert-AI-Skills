@@ -39,6 +39,8 @@ Collect VA role, assigned tasks, current SOPs, store and app stack, role permiss
 
 Read [references/sop-framework.md](references/sop-framework.md) for task documentation and QA. Use [references/training-plan.md](references/training-plan.md) for onboarding, simulations, assessment, and access progression. Use [references/store-access.md](references/store-access.md) to request, verify, and remove store access.
 
+For “Train a new VA,” use [references/va-training.md](references/va-training.md) for practical SOPs, sanitized exercises, exception decisions, and a reviewer checklist. Practice completion does not certify expertise or authorize production access.
+
 ## Output contract
 
 Provide the role charter, module plan, SOPs, practice environment, scenarios, knowledge checks, performance rubric, permissions, approval gates, remediation, competency evidence, and review schedule. Do not call a learner production-ready without supervised evidence and owner approval.

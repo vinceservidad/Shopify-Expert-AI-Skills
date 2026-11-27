@@ -15,14 +15,18 @@ escalation_owner:
 
 Customer statements are important evidence of experience, but they do not automatically establish the system or policy state.
 
+Preserve status meaning when using plain language. `PENDING` is payment pending; it does not verify processor activity or payment received. A failed action does not verify the current record stayed unchanged.
+
 ## Response structure
 
 1. Acknowledge the specific issue without admitting an unverified cause.
 2. State only the facts that are useful and safe to share.
-3. Explain the action already verified as complete, or the next action that will be taken after approval.
+3. Explain an action already verified as complete, or a proposed next action that needs approval. Promise a future action only when the approved process and responsible role support that commitment.
 4. Give a truthful timeframe only when supported by policy, carrier, operations, or an authorized owner.
 5. Ask for the minimum additional information needed.
 6. Close with a clear next step.
+
+Before presenting a customer-facing draft, check each sentence against its evidence and approved authority. Remove unsupported wording from the draft itself; an internal caveat does not repair it. A proposed check belongs in the internal note until the approved process supports a customer-facing commitment. Do not invent tracking notifications, status-view features, or a need for bank documents or checkout contact details.
 
 ## Safe language
 

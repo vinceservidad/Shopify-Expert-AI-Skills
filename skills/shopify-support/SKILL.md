@@ -39,6 +39,8 @@ When required evidence is unavailable, write a safe holding response and the exa
 
 Read [references/response-guidelines.md](references/response-guidelines.md) for drafting and risk handling. Read [references/faq-framework.md](references/faq-framework.md) for macros, knowledge-base design, and Shopify Inbox instant answers. Instant answers send automatically, so each needs a live policy source, written owner approval, and a storefront chat test. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read. Use [references/privacy-requests.md](references/privacy-requests.md) for customer data access, correction and deletion requests.
 
+For “Help me answer this customer,” use [references/customer-reply.md](references/customer-reply.md) to produce a policy-grounded reply draft, verification gaps, and an escalation note. The read-only connector cannot send a reply or perform a remedy.
+
 ## Output contract
 
 Provide a response draft, verified facts, unknowns, policy basis, action or escalation needed, authorization state, and internal note. Do not imply that a draft, refund, replacement, cancellation, or message has been executed.

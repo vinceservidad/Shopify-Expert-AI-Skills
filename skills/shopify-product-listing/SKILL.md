@@ -38,6 +38,8 @@ Collect target store, create or update mode, product source, title, description,
 
 Read [references/listing-fields.md](references/listing-fields.md) for the field contract. Read [references/taxonomy-compliance.md](references/taxonomy-compliance.md) for Shopify Standard Product Taxonomy, Category Metafields, GTIN/HS customs fields, and EU GPSR listing disclosures. Use [references/qa-checklist.md](references/qa-checklist.md) before save, activation, publication, and handoff. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read. Use [references/markets-localization.md](references/markets-localization.md) for translated listings, market prices and market availability.
 
+For “Check this product listing,” use [references/product-listing-check.md](references/product-listing-check.md) to compare approved facts with the inspected record, draft corrections, and report evidence gaps. This review makes no store changes.
+
 ## Worked example
 
 Read [references/worked-example.md](references/worked-example.md) for a complete synthetic case, supplied inputs, expected outcome, and acceptance checks. Treat its facts and thresholds as example-specific, not merchant evidence or default policy.

@@ -4,6 +4,96 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide desktop audit fixes (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`, found by mouse and keyboard passes over /shopify-va, /setup and /privacy at 1024x768 to 2560x1440, 125% and 150% zoom and a 1280x650 laptop (the live site serves the same stylesheet and behaved the same): after following a stage gate link and hovering another row, two rows were highlighted (the `:target` row now yields while a hovered or focused row is lit); the search field's clear button was inverted to near-black on the dark field and is now the default light one; the Copied label on the problems table sat centered instead of right-aligned; the /setup and /privacy text sat in a 650px column inside a 1320px page at 1920px and wider, with Copy buttons far from their commands, so doc pages are now one centered 880px column; install-drawer commands wrapped mid-word because the label column took 240px, now 190px.
+- Tests: a responsive test pins the five rules. Tab order, focus rings, hero and example tab keys (arrows, Home, End), panel counts, copy buttons, filters, empty state, Escape, drawer, FAQ, canvas sizing after resize and console output passed unchanged. CSP and markup unchanged; not deployed.
+
+### Shopify VA guide mobile audit fixes (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`, found by tapping through /shopify-va, /setup and /privacy on iPhone SE/13/14 Pro Max, Pixel 7, Galaxy S9+, landscape iPhone 13 and Pixel 7, and a 320x568 phone (local render and the live site behaved the same): the skill search placeholder "Search skills (stock, ads, Flow)" was clipped on 320px phones, so the count now wraps under a full-width field at 360px and below; copy buttons in command rows reserve the width of "Copied" so the button and row no longer grow on tap in landscape and in the install drawer; the /setup jump links and the 01-07 gate links are 44px tall on phones (they were 32px and touching); the last breadcrumb is vertically aligned with the link crumbs.
+- Tests: a responsive test pins the four rules. Header nav, hero and example tabs, gate links, copy buttons, skill filter, drawer and FAQ taps, horizontal overflow and canvas sizing after rotation all passed unchanged. CSP and markup unchanged; not deployed.
+
+### Shopify VA guide all-dark theme (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`: /shopify-va, /setup and /privacy use one dark ladder on every band. The `:root` role tokens now hold the former dark values (ground #031a14, raised #072e23, hairline borders, text #eef8f3 / #b6d1c6 / #89ab9d, lime #b9eb6a accent, dark wells and button shadows) and `color-scheme:dark`; the separate dark scope and the white/mist light tokens are gone. `.band-mist` and `.band-forest` are replaced by `.band-alt`, one very small ground step (#04211a) used on the sequence and setup bands; bands are otherwise separated by the 1px hairline and spacing. Selection colour is lime on dark. The embedded Shopify Admin `/app` page re-declares its light tokens under `.app-home` and keeps its own look.
+- `public-pages.ts`: section classes and `color-scheme` meta (dark; `theme-color` was already #031a14). `sequence-canvas.ts` fallback colours follow the dark tokens (the canvas reads `--accent`, `--muted`, `--raised`, so gates go muted to lime).
+- Tests: new `public-contrast.test.ts` computes WCAG contrast for the token pairs in use and asserts AA; the two light-token shadow pins in `public-pages.test.ts` were removed. CSP and markup structure unchanged; not deployed.
+
+### Shopify VA guide readable type scale (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`: /shopify-va, /setup and /privacy move from a 13/15/18px scale to 14px small (captions, labels, table headers, mono code and URLs, footer), 16px body (paragraphs, lists, table and card text, nav links, buttons, tabs, form fields) and 18-20px lead text. Headings re-balanced (h2 30-40px, h3 20px, doc h1 34-48px) with the letter-spacing tightening kept. Line height 1.55 body, 1.4-1.5 small. The search input is 16px at every width so iOS Safari does not zoom on focus. The embedded /app block shares the same stylesheet and moves with it.
+- Layout fixes for the larger text: the two-row header breakpoint moves from 560px to 680px (one row of 16px links needs 624px), phones at 420px and below stack brand, site links and product tabs, and the hero and example tab strips size to content so "Coding agents" no longer wraps.
+- Tests: the font-size guardrail now allows only 14/16/18/20px, a new test pins 16px body, nothing under 14px and a 16px search input, and the header responsive test follows the new breakpoints. CSP and markup unchanged; not deployed.
+
+### Shopify VA guide design polish (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`: one tonal ladder per band type (ground, raised, border, hover border, three text colours, accent); dark bands now remap the same role tokens instead of a parallel `--forest-*` set. Distinct palette colours 22 to 16 (hex 17 to 14); radii now 6px buttons and 8px boxes only (5px removed).
+- Boxed controls use ring plus top highlight (raised) or inner shadow plus ring (recessed wells for URL, command, prompt and search boxes); solid buttons gain a layered shadow and a 1px press, outline and text buttons stay flat; no gradient fills.
+- Headings -0.04em, intro paragraphs 1.6 line-height at 36em, section padding 96px desktop and 56px phones, 150ms `cubic-bezier(.2,0,0,1)` transitions on paint properties only, broader reduced-motion rule.
+- `sequence-canvas.ts` reads `--raised` instead of `--mist`. CSP, markup and copy unchanged. Tests: updated one landscape padding pin and added a design-polish pin. Not deployed.
+
+### Parent brand display name: Marketing Skills (2026-11-27)
+
+- Changed the human-readable parent brand from "MKT Skills" to "Marketing Skills" in the app home and connect pages (titles, headings, install link text), `connector/shopify.app.public.toml` app name, `USAGE.md`, `docs/getting-started.md`, `docs/plugin-and-connector.md`, `docs/public-release.md` (title), `docs/shopify-review-submission.md` and a code comment. The product is now displayed as "Marketing Skills VA Toolkit".
+- The Organization JSON-LD node (`https://mktskills.com/#organization`) keeps `name` "Marketing Skills" and now adds `alternateName` "MKT Skills" to match the main site; `tests/public-seo.test.ts` pins both.
+- Unchanged on purpose: domains and URLs, Worker, Artifacts and Shopify configuration identifiers (`mkt-skills-*`), the `mkt-theme` key, image file names, plugin and server ids, the CSP, and dated historical entries and records that quote the old name.
+- Not done: the Shopify app name change in `shopify.app.public.toml` takes effect only after a `shopify app deploy`; nothing was deployed or verified live.
+
+### Shopify VA guide search and answer-engine pass (2026-11-27)
+
+- Titles, descriptions and canonicals: each of `/shopify-va`, `/shopify-va/setup` and `/shopify-va/privacy` has its own title (47 to 53 characters, topic first, for example "Shopify Skills for AI Agents | Marketing Skills"), a description under 160 characters and a self-referencing canonical on `https://mktskills.com`. Setup and privacy now carry the same Open Graph and Twitter tags as the guide (1200x630 PNG, alt text, `og:locale`, `og:image:type`); the robots meta adds `max-image-preview:large`. Titles and descriptions come from one table, so the head, social tags and JSON-LD cannot disagree.
+- JSON-LD (schema.org, one `@graph` per page): `Organization` with `@id` `https://mktskills.com/#organization` (shared with the marketing site), `WebPage` (`isPartOf` `https://mktskills.com/#website`), `BreadcrumbList` (Marketing Skills > Shopify VA > Setup or Privacy), and on the guide `SoftwareApplication` (free, price 0, `BusinessApplication`, MIT, feature list from the skill catalog) and `FAQPage` matching the visible FAQ. No ratings, reviews or `HowTo`. The old standalone `WebSite` node was removed so this section does not compete with the marketing site's own. The block is data, not script, so the CSP is unchanged.
+- Page copy: setup and privacy h1s name the topic, both show a visible breadcrumb matching the markup, and the footer links to `llms.txt`.
+- `llms.txt` rewritten to the llmstxt.org shape (H1, blockquote, plain body, H2 link lists, Optional last). Counts (19 skills, 8 workflows) are read from source, it states the last-updated date, free MIT licence and read-only boundary, and the install commands and MCP URL sit in the body. The 24 reference files are now real links. Both llms files are served as `text/plain; charset=utf-8` (browsers download `text/markdown`).
+- New `/shopify-va/llms-full.txt` (also `/llms-full.txt` in the Express app): setup steps, FAQ and the full text of all 19 `SKILL.md` files. The Worker cannot read the filesystem, so `npm run public:docs` generates `src/public-ui/skill-docs.ts` from `skills/` (also run by `worker:catalog`); a test fails if the committed copy drifts. `llms-full.txt` is a common convention, not part of the llmstxt.org specification.
+- Core Web Vitals: measured layout shift is 0 on all three pages at 390px and 1440px (system fonts, no content images, absolutely positioned hero canvas), so no layout change was needed.
+- Tests: `tests/public-seo.test.ts` pins titles, descriptions, canonicals, social tags, heading order, JSON-LD properties, FAQ parity, llms formats and counts, the Express routes and the unchanged CSP.
+- Not verified: Google's Rich Results Test and Search Console (no access); live URLs; indexing or ranking. Google no longer shows FAQ rich results, and SoftwareApplication rich results require a rating or review, which this page does not invent, so BreadcrumbList is the rich result these pages can be eligible for.
+### Example tabs overlap fix (2026-11-27)
+
+- "See what the skills return": choosing "New listing" showed all three examples' bullet lists on top of each other. The panel class `ex-list` was also the bullet-list class, so the selected-panel rule revealed every list. The bullet lists are now `ex-points`, and a test checks only the panel carries `ex-list`.
+
+### Shopify VA guide responsive pass (2026-11-27)
+
+- Audited all three public pages (guide, setup, privacy) on 17 viewports from 320x568 to 2560x1440, landscape phones, 200% zoom and reduced motion. No page scrolled sideways; the fixes below are layout and canvas polish.
+- Header: one row down to 560px (two-row layout between 561 and 720px was wasteful); on 360px phones and narrower the site links span the row.
+- Notched phones: the pages opt in to `viewport-fit=cover` and the content gutter honours the left and right safe-area insets, so landscape content clears the sensor housing; text size no longer inflates when a phone rotates.
+- Landscape phones and 200% zoom: shorter hero and section padding.
+- Phones: the "Common store problems" table stacks each problem with its copy button under 400px; stage rows use the full width; setup page command boxes stack the Copy button under the command, so long commands wrap inside the box.
+- Large screens: layout widens from 1600px (and again from 2200px), the hero headline scales, and skills show four columns.
+- Hero canvas: waves sit between the header and the headline instead of crossing the product tabs on phones. Both canvases render at up to 3x pixel ratio (hero capped near 4 million pixels) and redraw on resize, rotation and pixel-ratio changes.
+- No CSP change, no inline script or style. Tests pin the breakpoints, safe-area insets, code-box wrapping and canvas resize logic, and a rendered-layout check runs when `playwright-core` and Chrome are available (`PLAYWRIGHT_CORE`, `CHROME_PATH`).
+
+### Shopify VA page and setup page usability fixes (2026-11-27)
+
+- Fixed: copy buttons with an icon lost the icon after the first copy. Every copy button now shows "Copied" (or "Copy failed" with a legacy-clipboard retry), restores its icon and label, keeps its width, and is announced to screen readers.
+- Fixed: skills search matched the "Copy prompt" and "Read on GitHub" labels (so "copy" or "github" matched every skill) and ignored the pressed category. It now searches name, summary, category and starter prompt only; typing moves the category buttons back to All, picking a category clears the search, and a no-results message offers "Show all skills". The filter controls stay hidden until the script runs.
+- Fixed: the hero and example tabs showed no keyboard focus ring and carried invalid tablist markup. The markup stays plain radio inputs; the script adds tab roles, a roving tabindex and arrow, Home and End keys. Focus rings are also visible without the script. Tab panels share one grid cell, so switching tabs no longer changes page height.
+- Fixed: focus rings on links and buttons below the hero were lime on light bands; they now use the band accent (lime only on dark bands).
+- "What comes first": the strip's gate numbers are real links to their rows, so the highlight works from the keyboard and a row stays highlighted after you follow its gate. Rows still need no tab stop.
+- Common problems table on phones: "Fix first" and "Check next" were hidden or cramped; they now sit under each problem.
+- Install drawer: OpenAI Codex shows both commands (the marketplace command alone did not install the plugin), and each Copy button names its command.
+- Setup step 1 on the guide no longer only points back to the hero box; it states the Claude, ChatGPT and coding-agent steps.
+- Setup page: every command has a copy button, a jump list sits under the title, and the current page is marked in the header.
+- Footer links are 32px tall (44px on phones); the hero link row stacks on phones instead of breaking the URL mid-word; skill category buttons form an even grid on phones; skill summaries use one voice; hover, pressed and focus states added.
+- No CSP change and no new inline script. Tests cover each fix.
+
+### Shopify VA page sequence strip (2026-11-27)
+
+- "What comes first": a quiet canvas strip above the seven-stage list. One order waits at each numbered gate until it checks, then moves to the next; hovering or focusing a row highlights its gate. The list stays the content, the strip is decorative (`aria-hidden`), hidden without JavaScript, paused offscreen and in hidden tabs, capped at 30 fps, and drawn as one still frame under reduced motion.
+- Served as `/assets/sequence.js` from the guide origin like the hero script; the CSP is unchanged. Tests pin the markup, the script route, reduced-motion handling and the unchanged CSP.
+
+### Shopify VA page design cleanup (2026-11-27)
+
+- The skills grid opens on All (19 skills); the category tabs stay.
+- "Common store problems": the starter-prompt buttons are quiet text buttons with a copy icon instead of outlined boxes.
+- Hero: removed the price-tag and checkmark icons; the wavy lines now sit in the top of the hero, clear of the setup hint text. Headings use `text-wrap: balance`.
+- Removed the "What the skills do, and what happens in Shopify" table. The FAQ now states that someone with store permissions applies approved changes in Shopify Admin.
+- One accent per background: lime links and buttons on dark bands, emerald on light bands, set through CSS variables.
+- Setup steps use plain "01", "02", "03" numbers instead of circles.
+- Tests pin the default All filter, the removed section and the icon-free hero.
+
 ### Plugin 0.2.5: daily store check, change files and new job modes
 
 - `shopify-va`: `references/daily-store-check.md`, the ranked morning check
@@ -17,7 +107,7 @@ All notable changes to this project are documented here.
 - `shopify-product-listing`: `references/markets-localization.md`.
 - `shopify-support`: `references/privacy-requests.md`.
 - Task routing rows for each new job. The catalog stays at 19 skills.
-- Behavioral scenarios 67 to 73, marked `needs-review`.
+- Behavioral scenarios 67 to 73 (numbered 58 to 64 on `main` before the merge with the hosted branch), marked `needs-review`.
 - `docs/case-studies/template.md` for real-store write-ups. No case studies are
   published yet.
 - Bump the six plugin manifests to 0.2.5 and the patch version of the 5 changed
@@ -50,6 +140,28 @@ All notable changes to this project are documented here.
   launch, migration and BFCM readiness, app stack and reviews, and
   subscriptions and multichannel selling.
 - Add Cursor and Antigravity plugin manifests.
+### Store data tools and daily store check (connector)
+
+- Add 8 read-only connector tools: `shopify_daily_store_check`,
+  `shopify_list_collections`, `shopify_get_product_metafields`,
+  `shopify_run_report` (6 fixed ShopifyQL reports over 7, 30, 90 or 365 days),
+  `shopify_list_discounts`, `shopify_list_themes`, `shopify_read_theme_files`
+  and `shopify_customer_summary` (totals only, never names or emails).
+- The 3 required scopes are unchanged. `read_reports`, `read_discounts`,
+  `read_themes` and `read_customers` are optional scopes in
+  `shopify.app.public.toml`; the owner grants them from the app page in Shopify
+  admin. Tools that need a missing optional scope return `MISSING_SCOPE` and
+  send nothing to Shopify.
+- Reports and the daily check build Shopify queries only from named options,
+  never from caller text. `tests/store-tools.test.ts` covers fixed queries,
+  excluded customer fields, input rejection, optional-scope errors and the
+  daily check summary.
+
+### Guide deploy workflow retired
+
+- Remove `.github/workflows/artifacts-deploy.yml`, which deployed the guide on
+  every push to this branch. `main` runs no GitHub Actions; deploy the guide with
+  `npm run guide:deploy`. `docs/artifacts-deploy.md` is marked retired.
 
 ### Plugin 0.2.2 and release packages
 
@@ -213,10 +325,62 @@ All notable changes to this project are documented here.
 - Add an explicit `skills-only` plugin target for hosted environments that
   cannot execute the bundled local stdio connector. The archive omits MCP
   configuration and runtime files instead of claiming an undeployed endpoint.
-- Shorten the OpenAI listing subtitle to the current 30-character limit and add
-  a read-only default prompt.
+- Shorten the OpenAI listing subtitle to the current 30-character limit, add a
+  read-only default prompt and advance the plugin manifests to `0.2.1`.
+
+### Web Analytics and author link on the public guide
+- Allow Cloudflare Web Analytics on the public pages (owner-approved): `script-src` adds only the zone-injected beacon path `https://static.cloudflareinsights.com/beacon.min.js` (and its versioned sub-path), and `connect-src 'self'` lets it report to `/cdn-cgi/rum` on the same origin. Before this the beacon was blocked and the pages logged a CSP error. Sign-in and admin pages keep their own stricter policies. A test pins the directive set.
+- The footer credit links Vince Servidad to https://www.vinceservidad.com/, matching mktskills.com.
+
+### Colour in the public guide
+- The public pages match the colour pass on mktskills.com: green headline accent, eyebrows and primary action; the first-task file tree is a dark terminal with coloured folders and files; job frontmatter is syntax-coloured; the skill tree shows coloured folders with counts and branch lines. Shared `--syn-*` and `--term-*` tokens mirror marketing-skills `/brand/family.css`; reduced motion turns the entrances off.
+
+### Guide deploys through Cloudflare Artifacts
+
+- Read the issued token from Wrangler's `plaintext` field (the first run created the repository but could not read the token), and discard the `repos create` output, which contains a live token, so it never reaches the public Actions log.
+- The workflow now creates the Artifacts repository on its first run and seeds it with the first push, so no local `wrangler` setup is needed. If the namespace differs, the run fails and lists the account's namespaces.
+- After a push to `feat/cloudflare-hosted-mcp`, `.github/workflows/artifacts-deploy.yml` runs typecheck, tests and the guide dry run, then pushes the verified commit to a Cloudflare Artifacts repository using a 10-minute, repo-scoped write token. Workers Builds deploys `mkt-skills-shopify-guide` from that repository, so releases no longer require a manual `npm run guide:deploy`.
+- GitHub remains the source of truth. A failing commit is never mirrored. Until `CLOUDFLARE_ARTIFACTS_TOKEN` is set, the workflow only runs the checks. One-time setup, cost and rollback: [docs/artifacts-deploy.md](docs/artifacts-deploy.md). Artifacts is in open beta, requires Workers Paid and begins billing on October 14, 2026.
+
+### Agent-skills public pages
+
+- Present the toolkit as Shopify skills for AI agents: the first-task file tree in the hero, a `skills/` section listing all 19 skills by area (checked against the repository by `tests/skill-groups.test.ts`), and VA jobs shown as the guide files they come from.
+- Share the MKT Skills header shell with mktskills.com: `marketing/` and `shopify-va/` file tabs with the same container, header height, line height and breakpoints, so switching products no longer shifts the header.
+- Use the MKT app icon as the favicon, inlined at 32 pixels (the public page CSP already allows `img-src data:`).
+
+### MKT Skills family design
+
+- Public pages use the MKT Skills family palette, type scale and layout, with green kept as the VA Toolkit accent. Light and dark themes follow the device and share the saved `mkt-theme` choice with mktskills.com (`/shopify-va/assets/theme.js`, served from the page origin to satisfy the CSP). The embedded Shopify admin page keeps its existing light styling.
+- The header carries the MKT Skills wordmark and a Marketing / Shopify VA switch linking back to the parent site; the footer adds an MKT Skills home link and the theme switch (hidden without JavaScript).
+- The hero now sits beside a "See a VA job" panel built from the workflow catalog: what each of four everyday jobs does, what to have ready and what it returns. No new claims or sample outputs were added.
+
+### Practical VA workflows (source/plugin 0.2.0)
+
+- Add eight original workflow guides and templates within the existing VA,
+  product-listing, catalog, support and training skills. Preserve all 19 names.
+- Add workflow discovery and deterministic task preparation without reading
+  client files, storing context, scheduling work or granting editing permission.
+- Add fixed product-description/media/SEO and privacy-limited order-detail reads
+  using existing permissions and API 2026-07. Preserve existing tools and prompts.
+- Add package, protocol and Workers regression coverage and ungraded behavioral
+  scenarios. Keep client facts in chat/project files and use separate approved
+  editing connections only when supported and authorized.
+- Verify local product-detail reads and a populated unpaid development-store
+  order with line-item pagination. Resolve an actual Order-object denial through
+  the owner's explicitly approved Custom distribution setting for the test app.
+  Preserve the three read scopes and exclude identifying/payment fields.
+- The hosted Worker remains release 0.1.0 with eight tools; this source upgrade
+  does not merge or deploy it.
 
 ### Plugin and read-only MCP connector
+
+- Deploy an HTTPS Cloudflare Workers connector with encrypted SQLite-backed
+  Durable Object OAuth storage, platform rate limits and shared read-only tools.
+- Bundle canonical skill documents for Workers and add runtime integration checks
+  for store isolation, restart persistence, code replay, refresh, revocation and
+  rejected upstream redirects. Keep local Node and stdio modes available.
+- Verify hosted Chrome OAuth and real development-store MCP reads. Record empty
+  order and native hosted-client limitations without expanding merchant scopes.
 
 - Fix the consent page's referrer policy so browser form POSTs preserve their
   same-origin header. Keep null/foreign-origin rejection and CSRF protections.
