@@ -38,7 +38,10 @@ test('the hero animation draws no price-tag or checkmark icons and keeps lines c
   assert.doesNotMatch(body, /makeTag|drawTag|tagPath|checkAt|\.checked/);
   const waves = [...body.matchAll(/wave\(t, (\.\d+),/g)].map(match => Number(match[1]));
   assert.ok(waves.length > 0, 'waves stay in the hero');
-  for (const y of waves) assert.ok(y <= .25, `wave at ${y} must stay in the top of the hero, above the hint text`);
+  // Wave positions are fractions of the gap between the header and the headline, so they never reach the hint text.
+  assert.match(body, /bar\.getBoundingClientRect\(\)\.bottom/);
+  assert.match(body, /h1\.getBoundingClientRect\(\)\.top/);
+  for (const y of waves) assert.ok(y > 0 && y < 1, `wave at ${y} must sit inside the header-to-headline band`);
 });
 
 test('headings balance their line breaks and the setup steps use plain numbers', () => {

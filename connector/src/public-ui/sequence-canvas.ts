@@ -107,7 +107,7 @@ export const SEQUENCE_SCRIPT = `(function () {
 
   function resize() {
     var box = canvas.getBoundingClientRect();
-    ratio = Math.min(window.devicePixelRatio || 1, 2);
+    ratio = Math.min(window.devicePixelRatio || 1, 3);
     width = Math.max(1, box.width); height = Math.max(1, box.height);
     canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
@@ -150,7 +150,12 @@ export const SEQUENCE_SCRIPT = `(function () {
 
   strip.classList.add('is-live');
   resize();
-  if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas); else window.addEventListener('resize', resize);
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
+  window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', resize);
+  (function watchRatio() {
+    try { var mq = matchMedia('(resolution: ' + (window.devicePixelRatio || 1) + 'dppx)'); var on = function () { resize(); watchRatio(); }; if (mq.addEventListener) mq.addEventListener('change', on, { once: true }); } catch (e) {}
+  })();
   if (window.IntersectionObserver) new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; update(); }).observe(canvas);
   document.addEventListener('visibilitychange', update);
   update();

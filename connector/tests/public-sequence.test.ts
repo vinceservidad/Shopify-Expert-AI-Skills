@@ -34,7 +34,7 @@ test('the strip script honors reduced motion, pauses offscreen and hidden, caps 
   assert.match(body, /var should = !reduce && visible && !document\.hidden/);
   assert.match(body, /IntersectionObserver/);
   assert.match(body, /visibilitychange/);
-  assert.match(body, /Math\.min\(window\.devicePixelRatio \|\| 1, 2\)/);
+  assert.match(body, /Math\.min\(window\.devicePixelRatio \|\| 1, 3\)/);
   assert.match(body, /now - lastDraw < 33/);
   assert.match(body, /focusin/);
   assert.match(body, /mouseenter/);
