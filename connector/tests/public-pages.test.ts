@@ -96,9 +96,12 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
   assert.ok(html.includes('releases/download/v0.2.4/shopify-va-toolkit-skills-only.plugin'));
   assert.ok(!html.includes('v0.2.2'), 'landing must not link the old v0.2.2 release');
 
-  // Skills section defaults to Catalog (5 skills) with All available as a tab
-  assert.ok(html.includes('data-skill-cat="Catalog" aria-pressed="true"'));
-  assert.ok(html.includes('data-skill-cat="All" aria-pressed="false"'));
+  // Skills section opens on All (19 skills) with the category tabs still available
+  assert.ok(html.includes('data-skill-cat="All" aria-pressed="true"'));
+  assert.ok(html.includes('data-skill-cat="Catalog" aria-pressed="false"'));
+  assert.equal((html.match(/data-skill-cat="[^"]*" aria-pressed="true"/g) ?? []).length, 1, 'exactly one skill tab is selected');
+  assert.ok(html.includes('<span data-skill-status>19 skills</span>'));
+  assert.ok(!html.includes('5 of 19'));
 
   // Sample outputs and 7-stage sequence sections
   assert.ok(html.includes('id="examples"'));
@@ -117,8 +120,17 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
   assert.ok(html.includes('<th scope="col">Problem</th>'));
   assert.ok(html.includes('Fix first'));
   assert.ok(html.includes('Check next'));
-  assert.ok(html.includes('id="sidekick"'));
-  assert.ok(html.includes('Shopify Sidekick'));
+  // The store-job / plan-and-draft / make-the-change table was removed
+  assert.ok(!html.includes('id="sidekick"'));
+  assert.ok(!html.includes('What the skills do, and what happens in Shopify'));
+  assert.ok(!html.includes('compare-table'));
+  assert.ok(!html.includes('Make the approved change'));
+  assert.ok(html.includes('Someone with store permissions applies each approved change in Shopify Admin'), 'FAQ must keep the apply-in-Admin boundary');
+  // Common-problems copy buttons are quiet text buttons; the skill grid keeps its outlined ones
+  const bottlenecks = html.slice(html.indexOf('id="bottlenecks"'), html.indexOf('id="skills"'));
+  assert.equal((bottlenecks.match(/<button type="button" class="copy-btn copy-btn-text" data-copy=/g) ?? []).length, 10);
+  assert.ok(!bottlenecks.includes('copy-btn-line'));
+  assert.match(bottlenecks, /aria-label="Copy starter prompt: [^"]+"/);
   assert.ok(html.includes('Chargeback'));
   assert.ok(html.includes('BFCM'));
   assert.ok(html.includes('TikTok Shop'));

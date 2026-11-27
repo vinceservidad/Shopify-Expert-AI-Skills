@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA page design cleanup (2026-11-27)
+
+- The skills grid opens on All (19 skills); the category tabs stay.
+- "Common store problems": the starter-prompt buttons are quiet text buttons with a copy icon instead of outlined boxes.
+- Hero: removed the price-tag and checkmark icons; the wavy lines now sit in the top of the hero, clear of the setup hint text. Headings use `text-wrap: balance`.
+- Removed the "What the skills do, and what happens in Shopify" table. The FAQ now states that someone with store permissions applies approved changes in Shopify Admin.
+- One accent per background: lime links and buttons on dark bands, emerald on light bands, set through CSS variables.
+- Setup steps use plain "01", "02", "03" numbers instead of circles.
+- Tests pin the default All filter, the removed section and the icon-free hero.
+
 ### Plugin 0.2.5: daily store check, change files and new job modes
 
 - `shopify-va`: `references/daily-store-check.md`, the ranked morning check
