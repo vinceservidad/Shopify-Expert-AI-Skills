@@ -59,7 +59,7 @@ const PRODUCT_DESCRIPTION =
   '19 free MIT-licensed Shopify skills for ChatGPT, Claude, and coding agents. Your AI app drafts the store work, and you approve every change in Shopify Admin.';
 const HELP_TITLE = 'Shopify Skills Setup for AI Agents | Marketing Skills';
 const HELP_DESCRIPTION =
-  'Add 19 free Shopify skills to ChatGPT, Claude, Claude Code, Codex, or Cursor in four steps. Install commands and fixes for common setup problems.';
+  'Add 19 free Shopify skills to ChatGPT, Claude, or a coding agent in four steps, with every install command and fixes for common setup problems.';
 const PRIVACY_TITLE = 'Shopify Skills Privacy Notice | Marketing Skills';
 const PRIVACY_DESCRIPTION =
   'What the read-only Shopify skills MCP server reads, what it stores, how long it keeps it, and how store owners remove access.';
@@ -138,8 +138,8 @@ const BOTTLENECKS: readonly BottleneckRow[] = [
 ];
 
 const SUPPORTED_APPS: readonly { name: string; mode: string }[] = [
-  { name: 'ChatGPT', mode: 'Paste a link' },
-  { name: 'Claude', mode: 'Paste a link' },
+  { name: 'ChatGPT', mode: 'Paste the connector link' },
+  { name: 'Claude', mode: 'Paste the connector link' },
   { name: 'Claude Code', mode: 'CLI or GitHub plugin' },
   { name: 'OpenAI Codex', mode: 'Plugin or CLI' },
   { name: 'Cursor', mode: 'Plugin or CLI' },
@@ -186,7 +186,7 @@ const SAMPLE_OUTPUTS: readonly SampleOutput[] = [
     inputText: 'Supplier sheet for a 500 ml stainless steel travel mug. Product weight and dishwasher rules are missing.',
     outputPoints: [
       'Drafts the product title, short description, and three bullets from confirmed facts only.',
-      'Lists product weight and care rules as owner questions instead of guessing.',
+      'Lists product weight and care rules as questions for the store owner instead of guessing.',
       'Keeps the draft unsaved until the store owner confirms pricing and stock.',
     ],
   },
@@ -221,7 +221,7 @@ const SKILL_SEQUENCE: readonly { step: string; stage: string; skills: string; ga
     step: '05',
     stage: 'Retention and organic',
     skills: 'Email & SMS Flows, Shopify SEO',
-    gate: 'Turn on welcome, abandoned cart, and post-purchase flows plus collection SEO so traffic stays.',
+    gate: 'Turn on welcome, abandoned cart, and post-purchase flows, and fix collection SEO, before you pay for traffic.',
   },
   {
     step: '06',
@@ -241,7 +241,7 @@ export const FAQ_ITEMS: readonly { question: string; answer: string }[] = [
   {
     question: 'What are Shopify skills for AI agents?',
     answer:
-      'Shopify skills are instruction files that your AI app loads before doing store work. Each one tells your AI app which client facts to ask for first and which Shopify rules to check. Together, the 19 skills cover catalog work, order operations, paid ads, and theme code.',
+      'Shopify skills are instruction files that your AI app loads before doing store work. Each one tells your AI app which facts to ask the store owner for first and which Shopify rules to check. Together, the 19 skills cover catalog work, order operations, paid ads, and theme code.',
   },
   {
     question: 'Are these Shopify skills free?',
@@ -251,22 +251,22 @@ export const FAQ_ITEMS: readonly { question: string; answer: string }[] = [
   {
     question: 'Which AI apps work with Shopify VA Skills?',
     answer:
-      'In ChatGPT and Claude, you paste one link as a custom connector. Most coding agents, including Claude Code, OpenAI Codex, and Cursor, install all 19 skills with a single CLI command.',
+      'In ChatGPT and Claude, you paste the connector link into a new custom connector. Most coding agents, including Claude Code, OpenAI Codex, and Cursor, install all 19 skills with a single CLI command.',
   },
   {
     question: 'Do I need to connect my live Shopify store?',
     answer:
-      'No. Paste product specs, CSV exports, support tickets, or ad reports into the chat, and the skills work from those files. A read-only connection to your live store is optional.',
+      'No. Paste product specs, CSV exports, support tickets, or ad reports into the chat, and the skills work from what you paste. The read-only live store connection is optional.',
   },
   {
     question: 'Can these skills change my store, prices, or orders?',
     answer:
-      'No. The skills and store connection only read data and write drafts. Someone with store permissions applies each approved change in Shopify Admin or the ad platform.',
+      'No. The skills and the live store connection only read data and write drafts. Someone with store permissions applies each approved change in Shopify Admin or the ad platform.',
   },
   {
     question: 'How do I know which skill to use first?',
     answer:
-      'You don\'t need to memorize the skill names. Describe the store problem in plain words, like "our stock counts are wrong," and your AI app picks the right skill.',
+      'Describe the store problem in plain words, like "our stock counts are wrong," and your AI app picks the skill. You don\'t need to know the skill names.',
   },
 ];
 
@@ -446,7 +446,7 @@ function sampleOutputsSection(): string {
   const panels = SAMPLE_OUTPUTS.map(
     item => `<div class="ex-panel ${item.id}" data-tabpanel><p class="ex-label">What you paste <span>(${escape(item.skill)})</span></p><p class="ex-input">${escape(item.inputText)}</p><p class="ex-label">What your AI app returns</p><ul class="ex-points">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div>`,
   ).join('');
-  return `<div class="ex-box" data-tabs="examples">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" data-tablist aria-label="Sample outputs">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
+  return `<div class="ex-box" data-tabs="examples">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" data-tablist aria-label="Sample tasks">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
 }
 
 function sequenceSection(): string {
@@ -509,7 +509,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
 
   const liveStoreNote = install
     ? `<a href="${install}">Install on Shopify</a> or <a href="${pagePath(config, '/setup#store-connection')}">read live store setup</a>.`
-    : `The live store connection is waiting for Shopify App Store review. The link and CLI above work now. <a href="${pagePath(config, '/setup#store-connection')}">Read live store details</a>.`;
+    : `The live store connection is waiting for Shopify App Store review. The connector link and CLI above work now. <a href="${pagePath(config, '/setup#store-connection')}">Read live store details</a>.`;
 
   const releaseNote = plugin
     ? `<a href="${escape(plugin)}">Download skills-only plugin (${RELEASE_VERSION})</a> · <a href="${pagePath(config, '/setup')}">ZIP files and troubleshooting</a>`
@@ -527,12 +527,12 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell hero-grid">
         <div class="hero-main">
           <h1 class="hero-h1">Shopify skills for AI agents</h1>
-          <p class="hero-sub">19 free Shopify skills under the MIT license for product listings, orders, ads, and Liquid themes. Connect them to ChatGPT, Claude, or your coding agent to draft the work, then approve every change in Shopify Admin.</p>
+          <p class="hero-sub">19 free Shopify skills under the MIT license for product listings, orders, ads, and Liquid themes. Connect them to ChatGPT, Claude, or a coding agent. Your AI app drafts the work, and you approve every change in Shopify Admin.</p>
           ${heroWorkbench(openMcpUrl, pagePath(config, '/setup'))}
         </div>
         <div class="hero-aside" id="examples" role="region" aria-labelledby="examples-heading">
-          <h2 class="aside-h" id="examples-heading">See what the skills return</h2>
-          <p class="aside-sub">Paste store specs, exports, or order logs and get back structured checks instead of guessed copy.</p>
+          <h2 class="aside-h" id="examples-heading">Sample tasks</h2>
+          <p class="aside-sub">Paste store specs, exports, or order logs. Your AI app returns structured checks and asks about anything it can't confirm.</p>
           ${sampleOutputsSection()}
         </div>
       </div>
@@ -542,7 +542,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell">
         <div class="section-head">
           <h2 id="sequence-heading">What comes first</h2>
-          <p>Follow this seven-stage order for a new store or launch. For a live store with one clear problem, start at that stage instead.</p>
+          <p>A new store or a launch goes through these seven stages in order. If a live store has one clear problem, start at the stage it belongs to.</p>
         </div>
         ${sequenceSection()}
       </div>
@@ -552,7 +552,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell">
         <div class="section-head">
           <h2 id="bottlenecks-heading">Common store problems</h2>
-          <p>Each row lists a Shopify problem, the skill to run first, what to check next, and a starter prompt.</p>
+          <p>Pick the row that sounds like your store. It names the skill to start with and the ones to check after it, and gives you a starter prompt to copy.</p>
         </div>
         ${bottleneckTable()}
       </div>
@@ -562,7 +562,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell">
         <div class="section-head">
           <h2 id="skills-heading">All ${SKILL_COUNT} Shopify skills</h2>
-          <p>Filter by area or search for a task. Copy a starter prompt, or read the full skill on GitHub.</p>
+          <p>Each skill has a starter prompt you can copy and its full instructions on GitHub. Filter by area or search for a task.</p>
         </div>
         ${skillCatalogSection()}
       </div>
@@ -572,13 +572,13 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell">
         <div class="section-head">
           <h2 id="setup-heading">How to set up</h2>
-          <p>Connect all ${SKILL_COUNT} skills in three steps. No Shopify account or store access is required to start.</p>
+          <p>You can start without a Shopify account or store access. Setup takes three steps.</p>
         </div>
         <ol class="quick-setup">
           <li>
-            <h3>Connect your AI</h3>
-            <p>In Claude, open Settings → Connectors → Add custom connector. In ChatGPT, open Settings → Apps &amp; Connectors and add a custom connector (some plans need Developer mode on). Paste the link from the <a href="#install">setup box at the top of this page</a> and save.</p>
-            <p>In Claude Code, Codex, Cursor, and other coding agents, run the install command from the same box once. No Shopify login is required.</p>
+            <h3>Connect your AI app</h3>
+            <p>In Claude, open Settings → Connectors → Add custom connector. ChatGPT keeps custom connectors under Settings → Apps &amp; Connectors (some plans need Developer mode on). Paste the connector link from the <a href="#install">setup box at the top of this page</a> and save.</p>
+            <p>For Claude Code, Codex, Cursor, and other coding agents, run the install command from the same box once.</p>
           </li>
           <li>
             <h3>Try one product listing</h3>
@@ -588,13 +588,13 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
           </li>
           <li>
             <h3>Review before anything goes live</h3>
-            <p>Paste only what the task needs, and never paste passwords, API keys, or card details. Check each draft against the owner's facts before you or the owner apply changes in Shopify Admin.</p>
+            <p>Paste only what the task needs, and never paste passwords, API keys, or card details. Check each draft against the store owner's facts before anyone applies it in Shopify Admin.</p>
           </li>
         </ol>
         <details class="setup-drawer">
           <summary>Other ways to install (plugins, CLI, ZIP files, and live store)</summary>
           <div class="setup-drawer-body">
-            <p class="setup-intro">Pick your AI app below, or open <a href="${pagePath(config, '/setup')}">the setup guide</a> for ZIP uploads, ChatGPT Projects, and troubleshooting.</p>
+            <p class="setup-intro">The skills work in these AI apps. Each install command is below.</p>
             ${supportedAppsMatrix()}
             <div class="cmd-list">
               ${cmdItem('Agent Skills CLI', `All ${SKILL_COUNT} skills`, CLI_ADD_CMD)}
@@ -604,13 +604,13 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
               ${cmdItem('Antigravity', 'Plugin', AGY_PLUGIN_CMD)}
               ${cmdItem('OpenAI Codex', 'Step 1: add the marketplace', CODEX_MARKETPLACE_CMD)}
               ${cmdItem('OpenAI Codex', 'Step 2: install the plugin', CODEX_PLUGIN_CMD)}
-              ${cmdItem('Live store data (optional)', 'Read-only, owner approves', mcpUrl, 'mcp')}
+              ${cmdItem('Live store data (optional)', 'Read-only, store owner approves', mcpUrl, 'mcp')}
             </div>
             <p class="setup-foot">${liveStoreNote}</p>
             <p class="setup-foot">${releaseNote}</p>
           </div>
         </details>
-        <p class="setup-foot">ZIP files, ChatGPT Projects, and error fixes are in <a href="${pagePath(config, '/setup')}">the setup guide</a> · <a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a> (affiliate link).</p>
+        <p class="setup-foot">ZIP files, ChatGPT Projects, and troubleshooting are in <a href="${pagePath(config, '/setup')}">the setup guide</a> · <a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a> (affiliate link).</p>
       </div>
     </section>
 
@@ -641,13 +641,12 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
       <div class="doc-head">
         ${breadcrumbNav(config, 'setup')}
         <h1>How to set up Shopify skills</h1>
-        <p>Connect all ${SKILL_COUNT} Shopify skills in four steps. Other ways to connect and fixes for common problems are further down.</p>
+        <p>The quick start connects all ${SKILL_COUNT} skills and needs no account or store access. Other ways to connect and fixes for common problems come after it.</p>
         <nav class="doc-jump" aria-label="On this page"><a href="#quick-start">Four steps</a><a href="#install-help">All ways to connect</a><a href="#store-connection">Live store data</a><a href="#fix-issues">Fix common issues</a><a href="#contact">Contact</a></nav>
       </div>
       <section id="quick-start">
         <h2>Set up in four steps</h2>
-        <p>You don't need an account or store access to start.</p>
-        <h3>1. Connect your AI</h3>
+        <h3>1. Connect your AI app</h3>
         <p>Claude: open Settings → Connectors → Add custom connector, paste this link, and save.</p>
         ${cmdRow(openMcpUrl, 'connector link')}
         <p>ChatGPT: open Settings → Apps &amp; Connectors and create a custom connector with the same link. Some plans need Developer mode turned on first.</p>
@@ -657,7 +656,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         <p>Open a new chat and paste this prompt. Fill in the brackets with facts the store owner has confirmed. Your AI app asks about anything missing, then writes the draft.</p>
         <pre class="request" tabindex="0"><code>${escape(firstRequest)}</code></pre>
         <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(firstRequest)}" hidden>Copy prompt</button>
-        <h3>3. Use it for daily tasks</h3>
+        <h3>3. Ask for daily tasks</h3>
         <p>Describe the problem in plain words, and your AI app picks the right skill. For example:</p>
         <ul>
           <li>"Check this product CSV for missing prices and duplicate SKUs."</li>
@@ -669,9 +668,9 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         <ol class="steps">
           <li>Paste only what the task needs. Never paste passwords, API keys, card details, or extra customer data.</li>
           <li>Treat every answer as a draft. Check it against the facts the store owner gave you before you use it.</li>
-          <li>Get approval before any store change. Your AI app only reads and drafts, so you or the owner apply changes in Shopify Admin.</li>
+          <li>Get approval before any store change. Your AI app only reads and drafts, so you or the store owner apply changes in Shopify Admin.</li>
         </ol>
-        <p>Each skill is listed on the <a href="${pagePath(config, '#skills')}">main page</a> with a starter prompt you can copy. Other ways to connect are below.</p>
+        <p>Each skill is listed on the <a href="${pagePath(config, '#skills')}">main page</a> with a starter prompt you can copy.</p>
       </section>
       <section id="install-help">
         <h2>All ways to connect</h2>
@@ -685,9 +684,9 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
           <dt>Claude Code plugin</dt>
           <dd><p>Run this in your terminal, or the second command inside a Claude Code session. To confirm all ${SKILL_COUNT} skills loaded, run <code>claude plugin details shopify-va-toolkit</code>.</p>${cmdRow(CLAUDE_PLUGIN_CMD, 'Claude Code terminal command')}${cmdRow(CLAUDE_SESSION_CMD, 'Claude Code session command')}</dd>
           <dt>Cursor plugin</dt>
-          <dd><p>Run this inside Cursor chat, or use the Agent Skills CLI above.</p>${cmdRow(CURSOR_PLUGIN_CMD, 'Cursor command')}</dd>
+          <dd><p>In Cursor chat, run this, or use the Agent Skills CLI above.</p>${cmdRow(CURSOR_PLUGIN_CMD, 'Cursor command')}</dd>
           <dt>Antigravity plugin</dt>
-          <dd><p>Run this in your terminal to install the plugin.</p>${cmdRow(AGY_PLUGIN_CMD, 'Antigravity command')}</dd>
+          <dd><p>Paste this into your terminal.</p>${cmdRow(AGY_PLUGIN_CMD, 'Antigravity command')}</dd>
           <dt>OpenAI Codex plugin</dt>
           <dd><p>Run these two commands in order.</p>${cmdRow(CODEX_MARKETPLACE_CMD, 'Codex marketplace command')}${cmdRow(CODEX_PLUGIN_CMD, 'Codex plugin command')}<p>${plugin ? `You can also download <a href="${escape(plugin)}">the skills-only plugin file</a>.` : `You can also browse <a href="${RELEASE_TAG_URL}">Release ${RELEASE_VERSION}</a>.`}</p></dd>
           <dt>Claude web or desktop (Skills ZIP)</dt>
@@ -702,10 +701,10 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         ${
           install
             ? `<ol class="steps"><li>The store owner installs <a href="${install}">Marketing Skills VA Toolkit</a> on the target Shopify store.</li><li>In Claude or ChatGPT connectors, enter <code>${escape(connectionUrl)}</code>.</li><li>Sign in, then paste the pairing code in Shopify Admin so the store owner can approve read access.</li><li>Ask your AI app to show the store name first, so you know it's the right store.</li></ol>`
-            : `<p>The live store connection is waiting for Shopify App Store review. Until then, use the link or CLI above. After approval, or on a development store, add this remote MCP server URL:</p>${cmdRow(connectionUrl, 'live store connection link')}`
+            : `<p>The live store connection is waiting for Shopify App Store review. Until then, use the connector link or CLI above. After approval, or on a development store, add this remote MCP server URL:</p>${cmdRow(connectionUrl, 'live store connection link')}`
         }
         <p>This connection is read-only and uses OAuth 2.1 with PKCE. By default it asks for three read scopes (<code>read_products</code>, <code>read_inventory</code>, and <code>read_orders</code>), so it cannot edit products, send customer emails, take payments, or issue refunds.</p>
-        <p>The store owner can also turn on four optional read scopes inside the app: <code>read_reports</code>, <code>read_discounts</code>, <code>read_themes</code>, and <code>read_customers</code>. Even with <code>read_customers</code> enabled, the server reads totals only and never pulls buyer names or emails.</p>
+        <p>The store owner can also turn on four optional read scopes inside the app: <code>read_reports</code>, <code>read_discounts</code>, <code>read_themes</code>, and <code>read_customers</code>. Even with <code>read_customers</code> enabled, the connection reads totals only and never pulls buyer names or emails.</p>
         <p><a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt">ChatGPT connector docs</a> · <a href="https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp">Claude MCP docs</a></p>
       </section>
       <section id="fix-issues" class="related">
@@ -715,7 +714,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
           <dd>Use the connector link instead, or rename copies of the files to <code>.txt</code>.</dd>
           <dt>Sign-in code expired</dt>
           <dd>Start a new sign-in. Old codes can't be reused.</dd>
-          <dt>Owner approval is pending</dt>
+          <dt>Store owner approval is pending</dt>
           <dd>Ask the store owner to approve the code in Shopify Admin. Staff accounts can't approve AI connections.</dd>
           <dt>Results show only one page</dt>
           <dd>Ask your AI app to read the next page, or to tell you which records it checked.</dd>
@@ -825,18 +824,18 @@ export function renderLlmsTxt(config: PublicPageConfig = {}): string {
 
 ${llmsSummary()}
 
-Last updated: ${SKILL_DOCS_UPDATED} (date of the latest change to the skill files). Free under the MIT license, with no account or payment. Read-only by design: the skills and the MCP servers read data and write drafts, and they cannot change a store, prices, orders, or ad accounts. Someone with store permissions applies each approved change in Shopify Admin or the ad platform. Not affiliated with Shopify.
+Last updated: ${SKILL_DOCS_UPDATED} (date of the latest change to the skill files). Free under the MIT license, with no account or payment. The skills and both MCP servers only read data and write drafts. They cannot change a store, prices, orders, or ad accounts. Someone with store permissions applies each approved change in Shopify Admin or the ad platform. Not affiliated with Shopify.
 
-The no-login MCP server (Streamable HTTP) is ${openMcpUrl}. Add it as a custom connector in Claude or ChatGPT. To install in a coding agent, run one of these commands in a terminal (the setup page also lists the Cursor and Claude Code session forms):
+The no-sign-in MCP server (Streamable HTTP) is ${openMcpUrl}. Add it as a custom connector in Claude or ChatGPT. To install in a coding agent, run one of these commands. They run in a terminal, except /add-plugin, which runs in Cursor chat. The setup page also lists the command for inside a Claude Code session.
 
 ${installCommands()}
 
 ## Guide pages
 
-- [Shopify skills for AI agents](${SITE_ORIGIN}/shopify-va): Problem finder, a searchable list of all ${SKILL_COUNT} skills, where each step happens, and an FAQ
+- [Shopify skills for AI agents](${SITE_ORIGIN}/shopify-va): Common store problems with starter prompts, the seven-stage order of work, a searchable list of all ${SKILL_COUNT} skills, and an FAQ
 - [How to set up Shopify skills](${SITE_ORIGIN}/shopify-va/setup): Four-step setup guide, all install options, and troubleshooting
-- [No-login Remote MCP server](${openMcpUrl}): Serves all ${SKILL_COUNT} skills, their reference files, and ${WORKFLOWS.length} VA task workflows read-only; no account or sign-in
-- [Optional signed-in Remote MCP server](${mcpUrl}): OAuth 2.1 with PKCE for read-only Shopify Admin checks, pending Shopify App Store review
+- [No-sign-in MCP server](${openMcpUrl}): Serves all ${SKILL_COUNT} skills, their reference files, and ${WORKFLOWS.length} VA task workflows, with no account
+- [Optional signed-in MCP server](${mcpUrl}): Read-only Shopify Admin checks over OAuth 2.1 with PKCE, pending Shopify App Store review
 
 ## All ${SKILL_COUNT} Shopify skills
 
@@ -882,7 +881,7 @@ Last updated: ${SKILL_DOCS_UPDATED}. This file holds the full text of all ${SKIL
 
 Free under the MIT license; no account or store access is needed to start.
 
-### 1. Connect your AI
+### 1. Connect your AI app
 
 Claude: open Settings, then Connectors, then Add custom connector, paste ${openMcpUrl}, and save. ChatGPT: open Settings, then Apps and Connectors, and create a custom connector with the same link (some plans need Developer mode first). Coding agents such as Claude Code, Codex, and Cursor: run \`${CLI_ADD_CMD}\` once in a terminal.
 

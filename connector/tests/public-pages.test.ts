@@ -84,7 +84,7 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
   const setup = setupMatch[0];
   assert.ok(setup.includes('<h2 id="setup-heading">How to set up</h2>'));
   assert.equal((setup.match(/<ol class="quick-setup">[\s\S]*?<\/ol>/)?.[0].match(/<li>/g) ?? []).length, 3, 'landing quick setup should have 3 steps');
-  for (const step of ['Connect your AI', 'Try one product listing', 'Review before anything goes live']) {
+  for (const step of ['Connect your AI app', 'Try one product listing', 'Review before anything goes live']) {
     assert.ok(setup.includes(`<h3>${step}</h3>`), `Missing setup step: ${step}`);
   }
   assert.ok(!setup.includes('data-copy="https://mktskills.com/mcp/shopify-skills"'), '#setup must not duplicate the hero MCP URL copy button');
@@ -403,4 +403,40 @@ test('example panel classes do not collide with the bullet lists inside them', (
   // element may carry that class (a shared class made every panel's bullet list show at once).
   assert.equal((html.match(/class="[^"]*\bex-list\b[^"]*"/g) ?? []).length, 1);
   assert.equal((html.match(/<ul class="ex-points">/g) ?? []).length, 3);
+});
+
+/* The owner's anti-AI copy check: the full buzzword list, stock phrases and essay connectors, chatbot openers,
+   "it's not X, it's Y", and colon reveals. Applied to the guide copy of every page and to the guide-written part
+   of the text routes (llms-full.txt is cut before the first skill, because the skill library's text is out of scope). */
+const COPY_CHECK_BANNED = [
+  /\bgame[\s-]?changer|\b(?:unlock|leverag|elevat|delv|robust|streamlin|supercharg|harness|transformative|crucial|seamless|empower)\w*/i,
+  /\b(?:it'?s important to note|worth noting|moreover|furthermore|simply|just|in conclusion|overall,)/i,
+  /\b(?:great question|certainly!|absolutely!|I hope this helps|what do you think\?)/i,
+  /\bit'?s not [^.]{1,60}, it'?s\b/i,
+];
+const COLON_REVEAL = /^[A-Z][\w'’&-]*(?: [\w'’&-]+){0,4}: [a-z]/;
+
+test('anti-AI copy check: no buzzwords, stock phrases, chatbot openers or colon reveals in the guide copy', () => {
+  assert.match('A game-changer that will streamline and harness it. Simply put, it is crucial.', COPY_CHECK_BANNED[0]);
+  assert.match('Moreover, just do it.', COPY_CHECK_BANNED[1]);
+  assert.match('The best part: it learns.', COLON_REVEAL, 'the colon-reveal pattern catches "Word word: clause"');
+  assert.doesNotMatch('Fix first: Product Listings.', COLON_REVEAL, 'a label followed by a name is not a reveal');
+  const pages = { '/shopify-va': renderProductPage(candidateConfig), '/shopify-va/setup': renderHelpPage(candidateConfig), '/shopify-va/privacy': renderPrivacyPage(candidateConfig) };
+  const full = publicContent('/shopify-va/llms-full.txt', candidateConfig)!.body as string;
+  const texts: Record<string, string> = {
+    ...Object.fromEntries(Object.entries(pages).map(([path, html]) => [path, stripToVisibleText(html)])),
+    '/shopify-va/llms.txt': renderLlmsTxt(candidateConfig),
+    '/shopify-va/llms-full.txt (guide part)': full.slice(0, full.indexOf('\n## Skill: ')),
+  };
+  for (const [path, text] of Object.entries(texts)) {
+    for (const pattern of COPY_CHECK_BANNED) assert.doesNotMatch(text, pattern, `${path}: ${pattern}`);
+  }
+  for (const [path, html] of Object.entries(pages)) {
+    const headings = [...html.matchAll(/<(h[1-3]|summary|dt)\b[^>]*>([\s\S]*?)<\/\1>/g)].map(m => stripToVisibleText(m[2]));
+    for (const heading of headings) assert.ok(!heading.includes(': '), `${path}: heading uses a colon: ${heading}`);
+    // A lead is the first paragraph under an h1 or h2 (hero subhead, section intros, page intros).
+    const leads = [...html.matchAll(/<\/h[12]>\s*<p\b[^>]*>([\s\S]*?)<\/p>/g)].map(m => stripToVisibleText(m[1]));
+    assert.ok(leads.length >= 1, `${path}: lead sentences found`);
+    for (const lead of leads) assert.doesNotMatch(lead, COLON_REVEAL, `${path}: colon reveal in lead: ${lead}`);
+  }
 });

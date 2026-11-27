@@ -53,7 +53,7 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-merchandising',
     name: 'Merchandising',
     category: 'Catalog',
-    summary: 'Sorts collections, features high-stock winners, and structures simple bundles.',
+    summary: 'Sorts collections, decides which in-stock products to feature, and plans simple bundles.',
     prompt: 'Help me sort my top Shopify collection and plan a simple bundle using our best sellers and stock levels.',
   },
   {
@@ -88,8 +88,8 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-va',
     name: 'Daily Store Coordinator',
     category: 'Orders & Support',
-    summary: 'Ranks the day\'s tasks, lists missing client facts, and drafts the end-of-shift handover.',
-    prompt: 'Sort my Shopify task list for today by priority, list what client facts are missing, and draft a short handover note.',
+    summary: 'Ranks the day\'s tasks, lists facts the store owner still has to confirm, and drafts the end-of-shift handover.',
+    prompt: 'Sort my Shopify task list for today by priority, list which facts I still need from the store owner, and draft a short handover note.',
   },
   {
     slug: 'shopify-va-training',
@@ -123,14 +123,14 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-seo',
     name: 'Shopify SEO',
     category: 'Growth & Ads',
-    summary: 'Targets collection pages, titles, and internal links, where organic search gains come fastest.',
+    summary: 'Works on collection pages, product titles, and internal links for organic search.',
     prompt: 'Review our top Shopify collections and product titles for organic search gaps. List the fixes with the most impact for the least work first.',
   },
   {
     slug: 'shopify-cro',
     name: 'Conversion Rate (CRO)',
     category: 'Growth & Ads',
-    summary: 'Pinpoints where shoppers drop off before checkout and ranks simple tests to fix it.',
+    summary: 'Pinpoints where shoppers drop off before checkout and ranks simple tests to run.',
     prompt: 'Look at our store funnel numbers from product view to checkout. List the biggest drop-off points and simple tests to run.',
   },
   {
@@ -151,7 +151,7 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-analytics',
     name: 'Store Analytics',
     category: 'Store & Theme',
-    summary: 'Puts net sales, refunds, and ad spend in one plain breakdown for faster weekly reporting.',
+    summary: 'Puts net sales, refunds, and ad spend in one plain breakdown for the weekly report.',
     prompt: 'Compare our Shopify net sales, refunds, and ad spend for the last 30 days. Show what changed and what may explain it.',
   },
   {
