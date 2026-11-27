@@ -9,7 +9,7 @@ interface GuideEnv {
   OPEN_MCP_URL?: string;
 }
 
-/** Mount only /shopify-va* on the main brand domain; the existing MKT Skills site keeps its other routes. */
+/** Mount only /shopify-va* on the main brand domain; the existing Marketing Skills site keeps its other routes. */
 export default {
   async fetch(request: Request, env: GuideEnv): Promise<Response> {
     const url = new URL(request.url), site = new URL(env.PUBLIC_SITE_URL);

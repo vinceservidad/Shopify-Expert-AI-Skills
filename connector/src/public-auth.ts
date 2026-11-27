@@ -53,11 +53,11 @@ export class PublicShopifyAuth {
     response.set('Content-Security-Policy', `default-src 'none'; script-src 'nonce-${nonce}'; connect-src 'self'; style-src 'nonce-${nonce}'; form-action 'self' ${record.returnOrigin}; base-uri 'none'; frame-ancestors 'none'`);
     // Navigate-mode POSTs need a same-origin referrer policy to retain their Origin header.
     response.set('Referrer-Policy', 'same-origin');
-    response.type('html').send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Connect MKT Skills VA Toolkit</title>
+    response.type('html').send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Connect Marketing Skills VA Toolkit</title>
       <style nonce="${nonce}">body{font:18px system-ui;margin:3rem auto;padding:0 1.25rem;max-width:40rem;line-height:1.6}code{display:block;font-size:1.2rem;padding:1rem;background:#f4f4f5;overflow-wrap:anywhere}button{font:inherit;padding:.5rem 1rem}button:focus-visible,a:focus-visible{outline:3px solid #6558d3}</style></head><body><main>
       <h1>Connect your Shopify store</h1><p><strong>${escape(clientName)}</strong> requests read-only access. Its return address is <strong>${escape(record.returnOrigin)}</strong>.</p>
       <ol><li>Copy this connection code:<code id="pairing-code">${code.match(/.{1,4}/g)!.join('-')}</code><button id="copy" type="button">Copy code</button></li>
-      <li>${install ? `<a href="${escape(install)}" target="_blank" rel="noopener noreferrer">Install or open the app in Shopify</a>` : 'Open MKT Skills VA Toolkit from your Shopify Apps list. Public installation is awaiting approval.'}</li>
+      <li>${install ? `<a href="${escape(install)}" target="_blank" rel="noopener noreferrer">Install or open the app in Shopify</a>` : 'Open Marketing Skills VA Toolkit from your Shopify Apps list. Public installation is awaiting approval.'}</li>
       <li>The store owner enters the code in the app, checks the client and store, then approves.</li></ol>
       <p>Read permissions: products, inventory and order summaries. The connector cannot edit your store. Codes expire after 10 minutes.</p>
       <p id="status" role="status">Waiting for store owner approval. Keep this window open.</p>

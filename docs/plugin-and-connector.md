@@ -1,6 +1,6 @@
-# MKT Skills VA Toolkit: plugin and MCP connector
+# Marketing Skills VA Toolkit: plugin and MCP connector
 
-The public display name is **MKT Skills VA Toolkit**. Existing plugin and server
+The public display name is **Marketing Skills VA Toolkit**. Existing plugin and server
 identifiers remain **shopify-va-toolkit**. The existing
 `vinceservidad/Shopify-Expert-AI-Skills` repository URL remains the source of truth
 and preserves existing links. It is not a hosted connector URL. This independent
