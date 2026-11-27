@@ -29,7 +29,7 @@ export const SEQUENCE_SCRIPT = `(function () {
       var cs = getComputedStyle(canvas);
       accent = cs.getPropertyValue('--accent').trim() || accent;
       muted = cs.getPropertyValue('--muted').trim() || muted;
-      ground = cs.getPropertyValue('--mist').trim() || ground;
+      ground = cs.getPropertyValue('--raised').trim() || ground;
     } catch (e) {}
   }
 

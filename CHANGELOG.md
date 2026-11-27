@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide design polish (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`: one tonal ladder per band type (ground, raised, border, hover border, three text colours, accent); dark bands now remap the same role tokens instead of a parallel `--forest-*` set. Distinct palette colours 22 to 16 (hex 17 to 14); radii now 6px buttons and 8px boxes only (5px removed).
+- Boxed controls use ring plus top highlight (raised) or inner shadow plus ring (recessed wells for URL, command, prompt and search boxes); solid buttons gain a layered shadow and a 1px press, outline and text buttons stay flat; no gradient fills.
+- Headings -0.04em, intro paragraphs 1.6 line-height at 36em, section padding 96px desktop and 56px phones, 150ms `cubic-bezier(.2,0,0,1)` transitions on paint properties only, broader reduced-motion rule.
+- `sequence-canvas.ts` reads `--raised` instead of `--mist`. CSP, markup and copy unchanged. Tests: updated one landscape padding pin and added a design-polish pin. Not deployed.
+
 ### Parent brand display name: Marketing Skills (2026-11-27)
 
 - Changed the human-readable parent brand from "MKT Skills" to "Marketing Skills" in the app home and connect pages (titles, headings, install link text), `connector/shopify.app.public.toml` app name, `USAGE.md`, `docs/getting-started.md`, `docs/plugin-and-connector.md`, `docs/public-release.md` (title), `docs/shopify-review-submission.md` and a code comment. The product is now displayed as "Marketing Skills VA Toolkit".
