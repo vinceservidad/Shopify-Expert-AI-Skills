@@ -31,7 +31,7 @@ test('the strip script is served from the guide origin and loaded by URL under t
 test('the strip script honors reduced motion, pauses offscreen and hidden, caps pixel ratio and frame rate', () => {
   const body = script();
   assert.match(body, /prefers-reduced-motion: reduce/);
-  assert.match(body, /var should = !reduce && visible && !document\.hidden/);
+  assert.match(body, /var should = !reduce && played && clock < runLength\(target\) && visible && !document\.hidden/);
   assert.match(body, /IntersectionObserver/);
   assert.match(body, /visibilitychange/);
   assert.match(body, /Math\.min\(window\.devicePixelRatio \|\| 1, 3\)/);

@@ -1,6 +1,8 @@
 /** Hero stage animation, served from 'self' so the strict CSP holds.
- *  Decorative only (aria-hidden), stops offscreen/hidden, and honors reduced motion.
- *  Motif: faint, calm waves in the guide accent (#62c597) and a sea-green second wave, with twinkling dots, kept to the
+ *  Decorative only (aria-hidden). It plays once: one slow settle of about 3 seconds (SETTLE), then it rests on a still
+ *  final frame and no requestAnimationFrame loop keeps running (anti-slop v2: no looping animation). The settle pauses
+ *  while the hero is offscreen or the tab is hidden, and reduced motion draws the final frame straight away.
+ *  Motif: faint, calm waves in the guide accent (#62c597) and a sea-green second wave, with dots that fade in, kept to the
  *  band between the header and the headline so nothing crosses the text. No glow, blur or gradient. */
 export const HERO_SCRIPT = `(function () {
   var canvas = document.querySelector('[data-hero-canvas]');
@@ -8,7 +10,9 @@ export const HERO_SCRIPT = `(function () {
   var ctx = canvas.getContext('2d');
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var width = 0, height = 0, ratio = 1, bandTop = 0, bandH = 240, dots = [], running = false, visible = true, last = 0, start = 0;
+  var width = 0, height = 0, ratio = 1, bandTop = 0, bandH = 240, dots = [], running = false, visible = true, last = 0, clock = 0;
+  /* SETTLE: length of the one settle in ms. DRIFT: how far (in seconds of wave travel) the waves move during it. */
+  var SETTLE = 3000, DRIFT = 2.4;
   var EMERALD = [98, 197, 151], SEA = [112, 190, 176], MINT = [150, 214, 186];
 
   function rgba(c, a) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
@@ -34,7 +38,7 @@ export const HERO_SCRIPT = `(function () {
     canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     seed();
-    if (!running) draw(performance.now());
+    if (!running) draw(reduce ? SETTLE : clock);
   }
 
   function wave(t, y0, amp, len, speed, color, alpha, lineWidth) {
@@ -47,12 +51,13 @@ export const HERO_SCRIPT = `(function () {
     ctx.stroke();
   }
 
-  function draw(now) {
-    var t = (now - start) / 1000, dt = last ? Math.min(.05, (now - last) / 1000) : 0;
-    last = now;
+  /* Settle progress at clock time c (ms): the waves decelerate to a stop (ease-out) and the dots fade in to a fixed
+     brightness, so the last frame is the same picture every time, not a frame frozen mid-motion. */
+  function draw(c) {
+    var p = Math.max(0, Math.min(1, c / SETTLE)), e = 1 - Math.pow(1 - p, 3), t = DRIFT * e;
     ctx.clearRect(0, 0, width, height);
     for (var i = 0; i < dots.length; i++) {
-      var dot = dots[i], tw = .3 + .3 * Math.sin(t * dot.sp + dot.tw);
+      var dot = dots[i], tw = (.3 + .3 * Math.sin(t * dot.sp + dot.tw)) * e;
       ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
       ctx.fillStyle = rgba(MINT, tw * .42); ctx.fill();
     }
@@ -62,17 +67,21 @@ export const HERO_SCRIPT = `(function () {
 
   function frame(now) {
     if (!running) return;
-    draw(now);
+    clock += last ? Math.min(50, now - last) : 0;
+    last = now;
+    draw(clock);
+    /* Settled: stop for good. Nothing schedules another frame after this one. */
+    if (clock >= SETTLE) { running = false; canvas.classList.add('is-settled'); return; }
     requestAnimationFrame(frame);
   }
 
   function update() {
-    var should = !reduce && visible && !document.hidden;
+    var should = !reduce && clock < SETTLE && visible && !document.hidden;
     if (should && !running) { running = true; last = 0; requestAnimationFrame(frame); }
     else if (!should) running = false;
   }
 
-  start = performance.now();
+  if (reduce) { clock = SETTLE; canvas.classList.add('is-settled'); }
   resize();
   if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
   /* Rotation, page zoom and moving to another screen can change the pixel ratio without changing the box. */
