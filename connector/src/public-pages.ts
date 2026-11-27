@@ -398,7 +398,7 @@ function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): st
   const ldTag = `<script type="application/ld+json">${pageJsonLd(meta.page)}</script>`;
   const heroScript = meta.hasHero ? `<script src="${pagePath(config, '/assets/hero.js')}" defer></script>` : '';
   const sequenceScript = meta.hasSequence ? `<script src="${pagePath(config, '/assets/sequence.js')}" defer></script>` : '';
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow, max-image-preview:large"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${pagePath(config, '/llms.txt')}">llms.txt</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow, max-image-preview:large"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="dark"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${pagePath(config, '/llms.txt')}">llms.txt</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
 }
 
 function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
@@ -534,7 +534,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="sequence" class="band band-mist" aria-labelledby="sequence-heading">
+    <section id="sequence" class="band band-alt" aria-labelledby="sequence-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
           <h2 id="sequence-heading">What comes first</h2>
@@ -554,7 +554,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="skills" class="band band-forest" aria-labelledby="skills-heading">
+    <section id="skills" class="band" aria-labelledby="skills-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
           <h2 id="skills-heading">All ${SKILL_COUNT} Shopify skills</h2>
@@ -564,7 +564,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="setup" class="band band-mist" aria-labelledby="setup-heading">
+    <section id="setup" class="band band-alt" aria-labelledby="setup-heading">
       <div class="shell" data-reveal>
         <div class="section-head">
           <h2 id="setup-heading">How to set up</h2>

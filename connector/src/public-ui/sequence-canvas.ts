@@ -15,7 +15,7 @@ export const SEQUENCE_SCRIPT = `(function () {
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var width = 0, height = 0, ratio = 1, running = false, visible = true;
   var last = 0, lastDraw = 0, clock = 0, hl = -1, shown = [], shownHl = -2;
-  var accent = '#007a5c', muted = '#4c645a', ground = '#f2f7f5';
+  var accent = '#b9eb6a', muted = '#89ab9d', ground = '#072e23';
   var MOVE = 900, DWELL = 700, CHECK_AT = 280, CHECK_LEN = 320, EXIT = 800, HOLD = 1000, FADE = 600;
   var PERIOD = N * (MOVE + DWELL) + EXIT + HOLD + FADE;
   var STILL = 3 * (MOVE + DWELL) + MOVE + 120;

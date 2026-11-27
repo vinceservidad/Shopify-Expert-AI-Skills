@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide all-dark theme (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`: /shopify-va, /setup and /privacy use one dark ladder on every band. The `:root` role tokens now hold the former dark values (ground #031a14, raised #072e23, hairline borders, text #eef8f3 / #b6d1c6 / #89ab9d, lime #b9eb6a accent, dark wells and button shadows) and `color-scheme:dark`; the separate dark scope and the white/mist light tokens are gone. `.band-mist` and `.band-forest` are replaced by `.band-alt`, one very small ground step (#04211a) used on the sequence and setup bands; bands are otherwise separated by the 1px hairline and spacing. Selection colour is lime on dark. The embedded Shopify Admin `/app` page re-declares its light tokens under `.app-home` and keeps its own look.
+- `public-pages.ts`: section classes and `color-scheme` meta (dark; `theme-color` was already #031a14). `sequence-canvas.ts` fallback colours follow the dark tokens (the canvas reads `--accent`, `--muted`, `--raised`, so gates go muted to lime).
+- Tests: new `public-contrast.test.ts` computes WCAG contrast for the token pairs in use and asserts AA; the two light-token shadow pins in `public-pages.test.ts` were removed. CSP and markup structure unchanged; not deployed.
+
 ### Shopify VA guide readable type scale (2026-11-27)
 
 - `connector/src/public-ui/styles.ts`: /shopify-va, /setup and /privacy move from a 13/15/18px scale to 14px small (captions, labels, table headers, mono code and URLs, footer), 16px body (paragraphs, lists, table and card text, nav links, buttons, tabs, form fields) and 18-20px lead text. Headings re-balanced (h2 30-40px, h3 20px, doc h1 34-48px) with the letter-spacing tightening kept. Line height 1.55 body, 1.4-1.5 small. The search input is 16px at every width so iOS Safari does not zoom on focus. The embedded /app block shares the same stylesheet and moves with it.

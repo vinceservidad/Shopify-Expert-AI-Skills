@@ -1,26 +1,27 @@
 /* Marketing Skills — Shopify VA public design system:
-   - Tonal ladder per band type: one ground, one raised surface, one border, one hover border, three text colours; accent only on actions and active states.
+   - One all-dark tonal ladder for every public band: one ground (plus one very small "alt" step), one raised surface, one border, one hover border, three text colours; lime accent only on actions and active states.
    - Two surface types: raised (ring + top highlight) and recessed wells (inner shadow + ring). 6px buttons, 8px boxes.
    - Native system fonts only (0 @font-face), readable type scale: 14px small, 16px body, 18-20px lead, 16px minimum form fields, 150ms cubic-bezier(.2,0,0,1) motion on paint properties only.
    - Anti-slop: 0 pill badges, 0 eyebrow kickers, 0 nested cards, 0 gradient headings, 0 overflow at 320px/390px. */
 export const PUBLIC_STYLES = `
 :root{
-  color-scheme:light;
+  color-scheme:dark;
   --sans:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-  /* Light bands: ground, raised, border, hover border, three text colours, accent */
-  --ground:#ffffff;
-  --raised:#f2f7f5;
-  --border:#cde0d7;
-  --border-hover:#a9c7b9;
-  --ink:#091713;
-  --ink-2:#2c4239;
-  --muted:#4c645a;
-  --accent:#007a5c;
-  --on-accent:#ffffff;
-  --hl:rgba(255,255,255,.7);
-  --well:inset 0 2px 4px rgba(0,0,0,.08);
-  --btn-shadow:0 1px 2px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.25);
+  /* One dark ladder: ground, alt ground step, raised, border, hover border, three text colours, accent */
+  --ground:#031a14;
+  --ground-alt:#04211a;
+  --raised:#072e23;
+  --border:rgba(142,224,184,.2);
+  --border-hover:rgba(142,224,184,.4);
+  --ink:#eef8f3;
+  --ink-2:#b6d1c6;
+  --muted:#89ab9d;
+  --accent:#b9eb6a;
+  --on-accent:#031a14;
+  --hl:rgba(255,255,255,.05);
+  --well:inset 0 2px 5px rgba(0,0,0,.45);
+  --btn-shadow:0 1px 2px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.18);
   --btn-press:inset 0 0 0 100px rgba(0,0,0,.1);
   --radius-btn:6px;
   --radius-box:8px;
@@ -33,21 +34,7 @@ export const PUBLIC_STYLES = `
   color:var(--ink);
   background:var(--ground);
 }
-/* Dark forest bands (hero, skills, footer, header over the hero): same roles, remapped */
-.hero.stage,.band-forest,.footer-band,body.has-hero .top-bar{
-  --ground:#031a14;
-  --raised:#072e23;
-  --border:rgba(142,224,184,.2);
-  --border-hover:rgba(142,224,184,.4);
-  --ink:#eef8f3;
-  --ink-2:#b6d1c6;
-  --muted:#89ab9d;
-  --accent:#b9eb6a;
-  --on-accent:#031a14;
-  --hl:rgba(255,255,255,.05);
-  --well:inset 0 2px 5px rgba(0,0,0,.45);
-  --btn-shadow:0 1px 2px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.18);
-}
+::selection{background:var(--accent);color:var(--on-accent)}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html,body{margin:0;padding:0;background:var(--ground);color:var(--ink);-webkit-font-smoothing:antialiased;overflow-x:clip}
@@ -116,11 +103,9 @@ body.has-hero .top-bar a:focus-visible,.site-footer a:focus-visible{outline-colo
 .wb-links{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px 20px;margin-top:4px;font-size:16px}
 .wb-links a{display:inline-flex;align-items:center;min-height:44px;padding:0 4px;color:var(--accent);font-weight:500}
 
-/* Alternating editorial bands: gallery white, cool mint-slate, and deep forest */
+/* Bands: all dark. Adjacent sections are separated by the 1px hairline and spacing; .band-alt is one very small ground step. */
 .band{width:100%;padding:var(--section-y) 0;background:var(--ground);border-bottom:1px solid var(--border)}
-.band-mist{background:var(--raised)}
-.band-forest{color:var(--ink);border-bottom:0;background:radial-gradient(100% 90% at 50% 0%,var(--raised) 0%,var(--ground) 62%)}
-.band-forest a{color:var(--accent)}
+.band-alt{background:var(--ground-alt)}
 .will-reveal{opacity:0;transform:translateY(12px);transition:opacity .3s var(--ease),transform .3s var(--ease)}
 .will-reveal.is-in{opacity:1;transform:none}
 .section-head{text-align:center;max-width:68ch;margin:0 auto 40px}
@@ -225,7 +210,6 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .cmd-code{font-family:var(--mono);font-size:14px;line-height:1.5;color:var(--ink);overflow-wrap:anywhere;min-width:0}
 .cmd-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:12px 0 16px;padding:8px 8px 8px 16px;border-radius:var(--radius-box);background:var(--raised);box-shadow:var(--well),0 0 0 1px var(--border);transition:box-shadow var(--dur) var(--ease)}
 .cmd-row:hover{box-shadow:var(--well),0 0 0 1px var(--border-hover)}
-.band-mist .cmd-row,.band-mist .command,.band-mist .request{background:var(--ground)}
 .cmd-row .cmd-code{flex:1}
 .page-body .cmd-row .copy-btn{margin:0}
 .quick-setup{list-style:none;counter-reset:qs;max-width:860px;margin:0 auto;padding:0;border-top:1px solid var(--border)}
@@ -281,7 +265,9 @@ dd{margin:6px 0 0}
 .site-footer nav a{display:inline-flex;align-items:center;min-height:32px}
 .site-footer a:hover{color:var(--accent)}
 
-/* Embedded Shopify Admin (/app) */
+/* Embedded Shopify Admin (/app): keeps its own light Shopify Admin look; re-declare the light role tokens so the dark public ladder never reaches it */
+.app-home{color-scheme:light;--ground:#ffffff;--raised:#f2f7f5;--border:#cde0d7;--border-hover:#a9c7b9;--ink:#091713;--ink-2:#2c4239;--muted:#4c645a;--accent:#007a5c;--on-accent:#ffffff;--hl:rgba(255,255,255,.7);--well:inset 0 2px 4px rgba(0,0,0,.08);--btn-shadow:0 1px 2px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.25)}
+html:has(body.app-home){background:#f6f6f7;color-scheme:light}
 .app-home{background:#f6f6f7;font-size:16px;color:#18181b}.app-home a{color:#00634b}.app-home main{margin:0 auto;max-width:1100px}.app-home p{margin-block:8px;font-size:16px;color:#18181b}.app-home label{display:block;font-weight:600;margin-top:16px}.app-home input{display:block;max-width:100%;width:420px;font:inherit;line-height:1.5;padding:10px 12px;background:#fff;border:1px solid #8a8a8a;border-radius:8px;color:#18181b}.app-home .actions{margin-block:16px}.workflow{border-bottom:1px solid #ddd;padding-block:14px}.workflow summary{cursor:pointer;font-weight:650}.workflow[open] summary{margin-bottom:12px}.workflow li{margin-block:8px;color:#18181b}.evidence-result{overflow-x:auto}.evidence-result table{width:100%;border-collapse:collapse;background:#fff;margin:16px 0}.evidence-result th,.evidence-result td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid #ddd;overflow-wrap:anywhere}.evidence-result th{font-weight:650;background:#f1f2f1}.evidence-result td s-button{display:inline-block;margin:4px}.evidence-meta{font-size:14px;color:#4b5650}.connection-card{padding-block:16px;border-bottom:1px solid #ddd}.connection-card dl,.app-home #pairing-facts{display:grid;grid-template-columns:minmax(110px,180px) 1fr;gap:8px 16px}.connection-card dt,.connection-card dd,.app-home #pairing-facts dt,.app-home #pairing-facts dd{margin:0;color:#18181b}.connection-card dd{overflow-wrap:anywhere}.error-text{color:#a82121;font-weight:550}.success-text{color:#216546;font-weight:550}[hidden]{display:none!important}
 
 @keyframes hero-rise{from{opacity:.5;transform:translateY(8px)}to{opacity:1;transform:none}}
