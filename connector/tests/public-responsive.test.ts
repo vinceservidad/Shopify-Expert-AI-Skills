@@ -38,6 +38,13 @@ test('the header keeps one row until 680px (16px links need 624px), then wraps; 
   assert.match(media('max-width:420px'), /\.family-nav\{order:2;width:100%/);
 });
 
+test('mobile audit fixes: copy buttons reserve the Copied width, the search field keeps its placeholder on 320px phones, jump links and gate links are 44px tall, breadcrumbs align', () => {
+  assert.match(css, /\.cmd-row \.copy-btn,\.cmd-item \.copy-btn\{min-width:88px\}/);
+  assert.match(media('max-width:360px'), /\.skill-filter\{flex-wrap:wrap;[^}]*\}\s*\.skill-filter input\{flex:1 1 100%\}/);
+  assert.match(media('max-width:720px'), /\.doc-jump a,\.seq-gates a\{min-height:44px;line-height:44px\}/);
+  assert.match(css, /\.crumbs li\{display:inline-flex;align-items:center;min-height:32px\}/);
+});
+
 test('setup-page command boxes wrap long commands inside the box and stack the copy button on phones', () => {
   assert.match(css, /\.cmd-code\{[^}]*overflow-wrap:anywhere;min-width:0\}/);
   assert.match(css, /\.command,\.request\{[^}]*white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%\}/);

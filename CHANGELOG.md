@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide mobile audit fixes (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`, found by tapping through /shopify-va, /setup and /privacy on iPhone SE/13/14 Pro Max, Pixel 7, Galaxy S9+, landscape iPhone 13 and Pixel 7, and a 320x568 phone (local render and the live site behaved the same): the skill search placeholder "Search skills (stock, ads, Flow)" was clipped on 320px phones, so the count now wraps under a full-width field at 360px and below; copy buttons in command rows reserve the width of "Copied" so the button and row no longer grow on tap in landscape and in the install drawer; the /setup jump links and the 01-07 gate links are 44px tall on phones (they were 32px and touching); the last breadcrumb is vertically aligned with the link crumbs.
+- Tests: a responsive test pins the four rules. Header nav, hero and example tabs, gate links, copy buttons, skill filter, drawer and FAQ taps, horizontal overflow and canvas sizing after rotation all passed unchanged. CSP and markup unchanged; not deployed.
+
 ### Shopify VA guide all-dark theme (2026-11-27)
 
 - `connector/src/public-ui/styles.ts`: /shopify-va, /setup and /privacy use one dark ladder on every band. The `:root` role tokens now hold the former dark values (ground #031a14, raised #072e23, hairline borders, text #eef8f3 / #b6d1c6 / #89ab9d, lime #b9eb6a accent, dark wells and button shadows) and `color-scheme:dark`; the separate dark scope and the white/mist light tokens are gone. `.band-mist` and `.band-forest` are replaced by `.band-alt`, one very small ground step (#04211a) used on the sequence and setup bands; bands are otherwise separated by the 1px hairline and spacing. Selection colour is lime on dark. The embedded Shopify Admin `/app` page re-declares its light tokens under `.app-home` and keeps its own look.
