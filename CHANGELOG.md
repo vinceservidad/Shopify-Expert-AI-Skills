@@ -4,6 +4,10 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Example tabs overlap fix (2026-11-27)
+
+- "See what the skills return": choosing "New listing" showed all three examples' bullet lists on top of each other. The panel class `ex-list` was also the bullet-list class, so the selected-panel rule revealed every list. The bullet lists are now `ex-points`, and a test checks only the panel carries `ex-list`.
+
 ### Shopify VA guide responsive pass (2026-11-27)
 
 - Audited all three public pages (guide, setup, privacy) on 17 viewports from 320x568 to 2560x1440, landscape phones, 200% zoom and reduced motion. No page scrolled sideways; the fixes below are layout and canvas polish.

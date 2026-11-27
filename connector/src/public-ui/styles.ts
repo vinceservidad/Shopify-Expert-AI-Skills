@@ -147,9 +147,9 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .ex-col{min-width:0}
 .ex-col p{margin:0}
 .ex-label{display:block;font-size:13px;font-weight:650;color:var(--accent);margin-bottom:8px}
-.ex-list{padding-left:18px;margin:0}
-.ex-list li{margin-bottom:8px}
-.ex-list li:last-child{margin-bottom:0}
+.ex-points{padding-left:18px;margin:0}
+.ex-points li{margin-bottom:8px}
+.ex-points li:last-child{margin-bottom:0}
 
 .seq-strip{display:none;margin:0 0 20px}
 .seq-strip.is-live{display:block}
