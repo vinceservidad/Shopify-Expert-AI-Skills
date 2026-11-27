@@ -36,7 +36,7 @@ Collect the decision, primary business outcome, source systems, schemas or expor
 7. QA totals, joins, formulas, denominators, deductions, and source-to-report traceability before delivery. Preserve the cutoff and mark late or pending records for a defined refresh.
 8. Handoff the reconciled report, data-quality limits, calculations, supported recommendation, guardrails, and next evidence/action owner with review time. A report is complete only for its declared evidence boundary; analysis does not execute account changes.
 
-Read [references/reporting-framework.md](references/reporting-framework.md) for metric and report design. Read [references/diagnosis-framework.md](references/diagnosis-framework.md) for root-cause analysis. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
+Read [references/reporting-framework.md](references/reporting-framework.md) for metric and report design. Read [references/diagnosis-framework.md](references/diagnosis-framework.md) for root-cause analysis. Read [references/shopify-analytics-ga4-consent.md](references/shopify-analytics-ga4-consent.md) for ShopifyQL queries, GA4 Web Pixel tracking via the Google and YouTube app, and Consent Mode v2 reconciliation gaps. Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Worked example
 

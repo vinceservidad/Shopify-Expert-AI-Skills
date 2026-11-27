@@ -37,7 +37,7 @@ When source truth is incomplete, create a gap list or clearly marked placeholder
 7. QA the draft for truth, links, policy, and source coverage. After any approved implementation, separately inspect rendered variants, price, availability, mobile controls, accessibility, and tracking in the scoped target.
 8. Deliver final supported copy, unresolved decisions, implementation owner, acceptance checks, and actual state. A copy review cannot establish that the saved or live page works.
 
-For message and page design, read [references/copy-frameworks.md](references/copy-frameworks.md). For reusable briefs and drafts, read [references/templates.md](references/templates.md). Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
+For message and page design, read [references/copy-frameworks.md](references/copy-frameworks.md). For FTC review compliance and mobile UX checks, read [references/proof-compliance-mobile-ux.md](references/proof-compliance-mobile-ux.md). For reusable briefs and drafts, read [references/templates.md](references/templates.md). Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Output contract
 

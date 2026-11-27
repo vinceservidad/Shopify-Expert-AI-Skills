@@ -37,7 +37,7 @@ Confirm that compared rates use compatible numerators, denominators, filters, ti
 7. Obtain implementation and launch approval, then verify the authorized variant, control, event parity, and purchase path before accepting exposure. Stop on invalid data or harm.
 8. Review data quality and guardrails before interpreting the outcome. Report valid, invalid, or inconclusive results honestly; handoff the decision, uncertainty, rollback or follow-up, and owner without claiming lift from publication.
 
-Read [references/conversion-frameworks.md](references/conversion-frameworks.md) for diagnosis and experiment design. Read [references/examples.md](references/examples.md) when drafting a backlog or experiment brief.
+Read [references/conversion-frameworks.md](references/conversion-frameworks.md) for diagnosis and experiment design. Read [references/experiment-validity-friction.md](references/experiment-validity-friction.md) for statistical validity checks and checkout or mobile friction audits. Read [references/examples.md](references/examples.md) when drafting a backlog or experiment brief.
 
 ## Output contract
 
