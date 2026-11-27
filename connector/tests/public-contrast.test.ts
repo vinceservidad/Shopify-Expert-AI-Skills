@@ -34,8 +34,8 @@ const PAIRS: Array<[string, string, string, number]> = [
 
 test('dark theme: root tokens are the dark ladder', () => {
   const t = rootTokens();
-  assert.equal(t.ground, '#031a14');
-  assert.equal(t.raised, '#072e23');
+  assert.equal(t.ground, '#070807');
+  assert.equal(t.raised, '#121412');
   assert.ok(luminance(t['ground-alt']) >= luminance(t.ground) && luminance(t['ground-alt']) <= luminance(t.raised), 'alt band is a small step between ground and raised');
   for (const key of ['ground', 'ground-alt', 'raised']) assert.ok(luminance(t[key]) < 0.05, `${key} is dark`);
   assert.match(PUBLIC_STYLES, /:root\{\s*color-scheme:dark/);

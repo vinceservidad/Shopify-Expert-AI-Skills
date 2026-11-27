@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide moves to a black ground (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`: the deep green ground and surfaces are now neutral near-black (ground #070807, alt band #0b0c0b, raised #121412) with white-alpha borders, so lime (#b9eb6a) is the only green and marks actions, links, active states and the canvas effects. Hovered borders and the hero glow use the lime. Text tokens are neutral greys; every pair passes 7:1 or more (muted on raised is 7.13:1). The sequence canvas ground and the `theme-color` meta match. /app keeps its light look.
+- Tests: the contrast and SEO tests pin the new ground and raised values.
+
 ### Shopify VA guide desktop audit fixes (2026-11-27)
 
 - `connector/src/public-ui/styles.ts`, found by mouse and keyboard passes over /shopify-va, /setup and /privacy at 1024x768 to 2560x1440, 125% and 150% zoom and a 1280x650 laptop (the live site serves the same stylesheet and behaved the same): after following a stage gate link and hovering another row, two rows were highlighted (the `:target` row now yields while a hovered or focused row is lit); the search field's clear button was inverted to near-black on the dark field and is now the default light one; the Copied label on the problems table sat centered instead of right-aligned; the /setup and /privacy text sat in a 650px column inside a 1320px page at 1920px and wider, with Copy buttons far from their commands, so doc pages are now one centered 880px column; install-drawer commands wrapped mid-word because the label column took 240px, now 190px.
