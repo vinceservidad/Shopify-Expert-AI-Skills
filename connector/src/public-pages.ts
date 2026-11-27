@@ -131,40 +131,6 @@ const BOTTLENECKS: readonly BottleneckRow[] = [
   },
 ];
 
-const SIDEKICK_ROWS: readonly { job: string; ours: string; sidekick: string }[] = [
-  // ours: what the skills plan and draft in your AI app. sidekick: where the approved change is made.
-  {
-    job: 'Google, Meta, and email marketing',
-    ours: 'Audit Google Merchant Center feeds, Performance Max, Conversions API, and email flows.',
-    sidekick: 'Fix the product data and settings the audit flags, in Shopify Admin or the ad platform.',
-  },
-  {
-    job: 'Theme code and Web Pixels',
-    ours: 'Plan Liquid edits, Checkout UI extension limits, and Web Pixel checks, with a rollback step.',
-    sidekick: 'Apply the change in a duplicate theme, preview it, then publish.',
-  },
-  {
-    job: 'Approvals and handovers',
-    ours: 'Write owner approval rules, rollback steps, and end-of-shift notes.',
-    sidekick: 'The owner approves, and staff make the change with their own permissions.',
-  },
-  {
-    job: 'Chargebacks, 3PLs, and sales channels',
-    ours: 'Build chargeback evidence, check shipping rates, and trace sync errors.',
-    sidekick: 'Submit the evidence and update settings in Shopify Admin or the channel app.',
-  },
-  {
-    job: 'Several clients or a store not live yet',
-    ours: 'Work from exports and notes in ChatGPT, Claude, Cursor, or Codex without store sign-in.',
-    sidekick: 'Sign in to each store in Shopify Admin when a change is approved.',
-  },
-  {
-    job: 'Quick edits inside Shopify Admin',
-    ours: 'Skills read supplied files and draft changes for review.',
-    sidekick: 'Use Shopify Admin, or Shopify Sidekick inside the admin.',
-  },
-];
-
 const SUPPORTED_APPS: readonly { name: string; mode: string }[] = [
   { name: 'ChatGPT', mode: 'Paste a link' },
   { name: 'Claude', mode: 'Paste a link' },
@@ -289,7 +255,7 @@ export const FAQ_ITEMS: readonly { question: string; answer: string }[] = [
   {
     question: 'Can these skills change my store, prices, or orders?',
     answer:
-      'No. The skills and store connection only read data and write drafts. You still make every approved change yourself in Shopify Admin.',
+      'No. The skills and store connection only read data and write drafts. Someone with store permissions applies each approved change in Shopify Admin or the ad platform.',
   },
   {
     question: 'How do I know which skill to use first?',
@@ -451,15 +417,17 @@ function sequenceSection(): string {
   return `<ol class="sequence-list">${rows}</ol>`;
 }
 
+const COPY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.5"/></svg>';
+
 function bottleneckTable(): string {
   const rows = BOTTLENECKS.map(
-    row => `<tr><td class="bn-problem">${escape(row.problem)}</td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(row.prompt)}">Copy prompt</button></td></tr>`,
+    row => `<tr><td class="bn-problem">${escape(row.problem)}</td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-text" data-copy="${escape(row.prompt)}" aria-label="Copy starter prompt: ${escape(row.problem)}">${COPY_ICON}Copy prompt</button></td></tr>`,
   ).join('');
   return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Problem</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function skillCatalogSection(): string {
-  const tabs = [...SKILL_CATEGORIES, 'All']
+  const tabs = ['All', ...SKILL_CATEGORIES]
     .map(
       (cat, index) =>
         `<button type="button" class="seg-tab" data-skill-cat="${escape(cat)}" aria-pressed="${index === 0 ? 'true' : 'false'}">${escape(cat)}</button>`,
@@ -469,13 +437,6 @@ function skillCatalogSection(): string {
     skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div><h3>${escape(skill.name)}</h3><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}">Read on GitHub</a></div></article>`,
   ).join('');
   return `<div class="catalog-controls" data-skill-filter-wrap><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status>${SKILL_COUNT} skills</span></div></div><div class="skill-index">${items}</div>`;
-}
-
-function sidekickComparisonTable(): string {
-  const rows = SIDEKICK_ROWS.map(
-    row => `<tr><td class="cmp-job">${escape(row.job)}</td><td class="cmp-ours">${escape(row.ours)}</td><td class="cmp-other">${escape(row.sidekick)}</td></tr>`,
-  ).join('');
-  return `<div class="table-wrap"><table class="compare-table"><thead><tr><th scope="col">Store job</th><th scope="col" class="cmp-ours">Plan and draft with the skills</th><th scope="col">Make the approved change</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function supportedAppsMatrix(): string {
@@ -561,16 +522,6 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
           <p>Filter by area or search for a task. Copy a starter prompt, or read the full skill on GitHub.</p>
         </div>
         ${skillCatalogSection()}
-      </div>
-    </section>
-
-    <section id="sidekick" class="band" aria-labelledby="sidekick-heading">
-      <div class="shell" data-reveal>
-        <div class="section-head">
-          <h2 id="sidekick-heading">What the skills do, and what happens in Shopify</h2>
-          <p>The skills plan and draft in your AI app. Someone with store permissions still applies the approved change in Shopify Admin or the ad platform.</p>
-        </div>
-        ${sidekickComparisonTable()}
       </div>
     </section>
 

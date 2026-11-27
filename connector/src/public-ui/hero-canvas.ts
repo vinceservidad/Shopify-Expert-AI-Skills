@@ -1,31 +1,22 @@
 /** Hero stage animation, served from 'self' so the strict CSP holds.
  *  Decorative only (aria-hidden), stops offscreen/hidden, and honors reduced motion.
- *  Motif: Shopify commerce emerald glow waves + price-tag checkmarks drifting upward. */
+ *  Motif: faint emerald glow waves and twinkling dots, kept to the top of the stage so nothing crosses the setup hint text. */
 export const HERO_SCRIPT = `(function () {
   var canvas = document.querySelector('[data-hero-canvas]');
   if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var width = 0, height = 0, ratio = 1, tags = [], dots = [], running = false, visible = true, last = 0, start = 0;
+  var width = 0, height = 0, ratio = 1, dots = [], running = false, visible = true, last = 0, start = 0;
   var EMERALD = [95, 227, 161], LIME = [185, 235, 106], MINT = [142, 224, 184];
 
   function rgba(c, a) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
   function rand(min, max) { return min + Math.random() * (max - min); }
 
-  function makeTag(initial) {
-    var size = rand(24, 48) * Math.min(1, Math.max(.7, width / 1100));
-    return { x: rand(0, width), y: initial ? rand(0, height) : height + size * 2, size: size,
-      speed: rand(8, 18), drift: rand(-5, 5), angle: rand(-.45, .45), spin: rand(-.06, .06),
-      alpha: rand(.08, .22), checkAt: rand(.28, .72), checked: 0 };
-  }
-
   function seed() {
-    var count = Math.round(Math.min(12, Math.max(5, width / 110)));
-    tags = []; dots = [];
-    for (var i = 0; i < count; i++) tags.push(makeTag(true));
+    dots = [];
     for (var j = 0; j < Math.min(64, Math.max(22, Math.round(width / 22))); j++) {
-      dots.push({ x: rand(0, width), y: rand(0, height), r: rand(.6, 1.6), tw: rand(0, Math.PI * 2), sp: rand(.5, 1.4) });
+      dots.push({ x: rand(0, width), y: rand(0, height * .5), r: rand(.6, 1.6), tw: rand(0, Math.PI * 2), sp: rand(.5, 1.4) });
     }
   }
 
@@ -49,43 +40,6 @@ export const HERO_SCRIPT = `(function () {
     ctx.stroke();
   }
 
-  function tagPath(s) {
-    var w = s * 1.25, h = s * .82, r = s * .16, p = s * .42;
-    ctx.beginPath();
-    ctx.moveTo(-w / 2 + r, -h / 2);
-    ctx.lineTo(w / 2 - r, -h / 2); ctx.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
-    ctx.lineTo(w / 2, h / 2 - r); ctx.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2);
-    ctx.lineTo(-w / 2 + r * .4, h / 2);
-    ctx.lineTo(-w / 2 - p, 0);
-    ctx.lineTo(-w / 2 + r * .4, -h / 2);
-    ctx.closePath();
-  }
-
-  function drawTag(tag) {
-    var calm = width > 900 && tag.x > width * .24 && tag.x < width * .76 ? .28 : 1;
-    ctx.save();
-    ctx.globalAlpha = calm;
-    ctx.translate(tag.x, tag.y); ctx.rotate(tag.angle);
-    var s = tag.size;
-    tagPath(s);
-    ctx.fillStyle = rgba(MINT, tag.alpha * .28); ctx.fill();
-    ctx.strokeStyle = rgba(MINT, tag.alpha * 1.45); ctx.lineWidth = 1.2; ctx.stroke();
-    ctx.beginPath(); ctx.arc(-s * .52, 0, s * .08, 0, Math.PI * 2);
-    ctx.strokeStyle = rgba(MINT, tag.alpha * 1.45); ctx.stroke();
-    if (tag.checked > 0) {
-      var k = Math.min(1, tag.checked), c = k < 1 ? MINT : LIME;
-      ctx.beginPath();
-      var a = [-s * .16, s * .02], b = [-s * .02, s * .17], d = [s * .3, -s * .17];
-      ctx.moveTo(a[0], a[1]);
-      if (k < .4) ctx.lineTo(a[0] + (b[0] - a[0]) * k / .4, a[1] + (b[1] - a[1]) * k / .4);
-      else { ctx.lineTo(b[0], b[1]); var q = (k - .4) / .6; ctx.lineTo(b[0] + (d[0] - b[0]) * q, b[1] + (d[1] - b[1]) * q); }
-      ctx.strokeStyle = rgba(c, Math.min(.9, tag.alpha * 3)); ctx.lineWidth = Math.max(1.8, s * .085);
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      ctx.stroke();
-    }
-    ctx.restore();
-  }
-
   function draw(now) {
     var t = (now - start) / 1000, dt = last ? Math.min(.05, (now - last) / 1000) : 0;
     last = now;
@@ -95,19 +49,8 @@ export const HERO_SCRIPT = `(function () {
       ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
       ctx.fillStyle = rgba(MINT, tw * .42); ctx.fill();
     }
-    wave(t, .22, 16, 210, .30, EMERALD, .28, 1.6);
-    wave(t, .80, 20, 240, .25, EMERALD, .26, 1.6);
-    wave(t, .88, 12, 180, -.20, LIME, .18, 1.1);
-    for (var n = 0; n < tags.length; n++) {
-      var tag = tags[n];
-      if (!reduce) {
-        tag.y -= tag.speed * dt; tag.x += tag.drift * dt; tag.angle += tag.spin * dt;
-        var progress = 1 - tag.y / height;
-        if (progress > tag.checkAt && tag.checked < 1.2) tag.checked += dt * 1.5;
-        if (tag.y < -tag.size * 2) tags[n] = makeTag(false);
-      } else if (n % 2 === 0) tag.checked = 1.2;
-      drawTag(tags[n]);
-    }
+    wave(t, .12, 14, 210, .30, EMERALD, .22, 1.4);
+    wave(t, .19, 10, 180, -.20, LIME, .14, 1.1);
   }
 
   function frame(now) {

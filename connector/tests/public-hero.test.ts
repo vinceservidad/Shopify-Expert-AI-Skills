@@ -32,3 +32,21 @@ test('public pages stay inside the CSP: no executable inline scripts, handlers, 
     assert.doesNotMatch(html, /<style\b/, `${path}: inline style element`);
   }
 });
+
+test('the hero animation draws no price-tag or checkmark icons and keeps lines clear of the setup hint', () => {
+  const body = publicContent('/shopify-va/assets/hero.js', config)!.body as string;
+  assert.doesNotMatch(body, /makeTag|drawTag|tagPath|checkAt|\.checked/);
+  const waves = [...body.matchAll(/wave\(t, (\.\d+),/g)].map(match => Number(match[1]));
+  assert.ok(waves.length > 0, 'waves stay in the hero');
+  for (const y of waves) assert.ok(y <= .25, `wave at ${y} must stay in the top of the hero, above the hint text`);
+});
+
+test('headings balance their line breaks and the setup steps use plain numbers', () => {
+  const css = publicContent('/shopify-va/assets/public.css', config)!.body as string;
+  assert.match(css, /\.hero-h1\{text-wrap:balance;/);
+  assert.match(css, /h1,h2\{text-wrap:balance\}/);
+  const before = css.match(/\.quick-setup>li::before\{[^}]*\}/)![0];
+  assert.match(before, /content:'0' counter\(qs\)/);
+  assert.doesNotMatch(before, /border|width:28px/);
+  assert.match(css, /\.copy-btn-text\{[^}]*border:0;[^}]*background:transparent;[^}]*color:var\(--accent\)/);
+});
