@@ -196,9 +196,9 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .skill-entry{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 32px;align-items:center;padding:18px 16px;border-bottom:1px solid var(--line);transition:background-color var(--dur) var(--ease)}
 .skill-entry:hover,.skill-entry:focus-within{background:var(--surface)}
 .skill-text{display:grid;grid-template-columns:minmax(180px,240px) minmax(0,1fr);gap:4px 32px;align-items:baseline}
-.skill-gh::after{content:'';position:absolute;inset:0}
+.skill-link::after{content:'';position:absolute;inset:0}
 .skill-entry .copy-btn{position:relative;z-index:1}
-.skill-entry:hover .skill-gh{text-decoration:underline}
+.skill-entry:hover .skill-link{text-decoration:underline}
 .skill-entry h3{font-size:20px;margin:0;color:var(--ink)}
 .skill-cat{display:block;font-size:14px;color:var(--muted);margin-top:2px}
 .skill-entry p{font-size:16px;line-height:1.5;margin:0;color:var(--ink)}
@@ -276,6 +276,37 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 dt{font-weight:600;font-size:16px;color:var(--ink);margin-top:24px}
 dd{margin:6px 0 0}
 
+/* Skill and reference pages (/shopify-va/skills/...): the setup page's reading column, with the skill file rendered as plain type */
+/* Reference headings run up to 86 characters: they step down in size so they stay at 4 lines or fewer on a 320px phone */
+.doc-head h1.h1-long{font-size:clamp(28px,3.8vw,44px)}
+.doc-head h1.h1-longer{font-size:clamp(24px,3.4vw,40px)}
+.md-body{overflow-wrap:break-word}
+.md-body h2{font-size:clamp(28px,3vw,36px);margin:48px 0 14px}
+.md-body h3{margin:36px 0 10px}
+.md-body h4,.md-body h5,.md-body h6{font-family:var(--display);font-size:16px;line-height:1.4;font-weight:600;color:var(--ink);margin:28px 0 8px}
+.md-body>:first-child{margin-top:0}
+.md-body ul,.md-body ol{padding-left:22px;margin:10px 0 16px;max-width:65ch}
+.md-body li{margin-block:6px}
+.md-body li>ul,.md-body li>ol{margin:6px 0}
+.md-body li>p{margin:0 0 8px}
+.md-body strong{font-weight:600;color:var(--ink)}
+.md-body blockquote{margin:16px 0;padding:0 0 0 20px;color:var(--muted)}
+.md-body blockquote p{color:var(--muted)}
+.md-body hr{border:0;border-top:1px solid var(--line);margin:32px 0}
+.md-code{margin:12px 0 16px;padding:14px 16px;border:1px solid var(--line);border-radius:var(--radius-well);background:var(--surface);color:var(--ink);font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere;max-width:100%}
+.md-code code{font-size:inherit}
+.md-table{margin:12px 0 20px}
+.md-table table{width:100%;border-collapse:collapse;text-align:left;font-size:14px;line-height:1.45}
+.md-table th{padding:0 12px 8px 0;font-weight:600;color:var(--muted);border-bottom:1px solid var(--line);vertical-align:bottom}
+.md-table td{padding:10px 12px 10px 0;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:top;min-width:6ch}
+/* Skill slugs in a table keep their words whole: on a phone the table scrolls inside its own box instead */
+.md-table td code{overflow-wrap:normal;word-break:normal;white-space:nowrap}
+.doc-links{list-style:none;margin:12px 0 0;padding:0}
+.doc-links li{display:grid;gap:2px;padding:12px 0;border-bottom:1px solid var(--line)}
+.doc-links a{font-weight:600;justify-self:start}
+.doc-links span{font-size:14px;color:var(--muted)}
+.doc-source{margin:32px 0 0;font-size:14px}
+
 /* Footer */
 .footer-band{width:100%;background:var(--ground);border-top:1px solid var(--line)}
 .site-footer{display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;padding:32px 0 40px;font-size:14px;color:var(--muted)}
@@ -312,6 +343,7 @@ html:has(body.app-home){background:#f6f6f7;color-scheme:light}
   .ex-tabs{display:flex;width:100%}
   .ex-tabs label{flex:1 1 auto;padding:8px 8px}
   .page-body section{padding:48px 0 40px}
+  .md-table table{min-width:560px}
   .seq-item{grid-template-columns:28px 1fr;gap:4px 12px;padding:16px 12px}
   .seq-skills,.seq-gate{grid-column:2 / -1}
   .apps-matrix{grid-template-columns:1fr}

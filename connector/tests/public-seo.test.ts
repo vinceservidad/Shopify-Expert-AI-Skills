@@ -167,7 +167,9 @@ test('llms.txt follows llmstxt.org: H1, blockquote, plain body, H2 link lists, O
     assert.ok(lines.slice(3, firstH2).some(line => line.startsWith('Last updated: ')), 'body carries the last-updated date');
     assert.ok(text.includes(`Last updated: ${SKILL_DOCS_UPDATED}`));
     for (const line of lines.slice(firstH2).filter(line => line.startsWith('- '))) assert.match(line, /^- \[[^\]]+\]\(https:\/\/[^)\s]+\)(: .+)?$/, `list item must be [name](url): ${line}`);
-    assert.equal(lines.slice(firstH2).filter(line => /^- \[[^\]]+\]\(https:\/\/github\.com\/[^)]*\/skills\/shopify-[a-z-]+\/SKILL\.md\)/.test(line)).length, 19);
+    const skillLines = lines.slice(firstH2).filter(line => /^- \[[^\]]+\]\(https:\/\/mktskills\.com\/shopify-va\/skills\/shopify-[a-z-]+\)/.test(line));
+    assert.equal(skillLines.length, 19, 'each skill links to its page on this site');
+    for (const line of skillLines) assert.match(line, /Source: https:\/\/github\.com\/vinceservidad\/Shopify-Expert-AI-Skills\/blob\/main\/skills\/shopify-[a-z-]+\/SKILL\.md$/, 'and keeps its GitHub source for agents');
     for (const needle of ['https://mktskills.com/mcp/shopify-skills', 'https://shopify-mcp.mktskills.com/mcp', 'npx skills add vinceservidad/Shopify-Expert-AI-Skills', 'claude plugin install shopify-va-toolkit', 'MIT', 'Read-only', 'llms-full.txt', `${WORKFLOWS.length} VA task workflows`]) assert.ok(text.includes(needle), needle);
     assert.doesNotMatch(text, /—|\s–\s/);
   }

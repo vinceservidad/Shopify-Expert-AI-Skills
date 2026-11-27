@@ -3,6 +3,7 @@ import { createServer } from 'node:http';
 import { existsSync } from 'node:fs';
 import { test } from 'node:test';
 import { publicContent } from '../src/public-routes.js';
+import { skillPagePaths } from '../src/public-pages.js';
 
 const config = { publicUrl: 'https://shopify-mcp.mktskills.com', basePath: '/shopify-va', launchStage: 'candidate' as const };
 const css = publicContent('/shopify-va/assets/public.css', config)!.body as string;
@@ -213,4 +214,58 @@ test('rendered headline: every page h1 stays at 4 lines or fewer at every width 
     server.close();
   }
   assert.deepEqual(tooMany, [], lines.join(' '));
+});
+
+/* Skill and reference pages render library Markdown (long code lines, wide tables, long words), so every one of them
+   is checked at the narrowest and widest sizes, and a sample with the widest tables and code at every size. */
+test('rendered skill pages: no skill or reference page scrolls sideways from 320px to 2560px, and every h1 stays at 4 lines or fewer', { skip: !(playwright && chrome) && 'needs playwright-core and a Chrome binary (set CHROME_PATH)' }, async () => {
+  const server = createServer((req, res) => {
+    const content = publicContent((req.url ?? '/').split('?')[0], config);
+    if (!content) { res.writeHead(404).end(); return; }
+    res.writeHead(200, { 'content-type': content.contentType }).end(content.body);
+  });
+  await new Promise<void>(resolve => server.listen(0, resolve));
+  const port = (server.address() as { port: number }).port;
+  const browser = await playwright!.chromium.launch({ executablePath: chrome, args: ['--no-sandbox'] });
+  const { skills, references } = skillPagePaths();
+  const sample = ['/shopify-va/skills/shopify-va', '/shopify-va/skills/shopify-va/references/skill-sequence', '/shopify-va/skills/shopify-va/references/deliverable-templates',
+    '/shopify-va/skills/shopify-catalog-operations/references/high-variant-combined-listings', '/shopify-va/skills/shopify-theme-development/references/worked-example', '/shopify-va/skills/shopify-seo/references/technical-seo-standards'];
+  const runs: Array<[number, number, number, string[]]> = [
+    [320, 568, 2, [...skills, ...references]], [2560, 1440, 1, [...skills, ...references]],
+    ...([[360, 800, 3], [390, 844, 3], [667, 375, 2], [768, 1024, 2], [1024, 768, 2], [1440, 900, 1]] as const).map(([w, h, d]) => [w, h, d, sample] as [number, number, number, string[]]),
+  ];
+  const problems: string[] = [];
+  try {
+    for (const [width, height, deviceScaleFactor, paths] of runs) {
+      const context = await browser.newContext({ viewport: { width, height }, deviceScaleFactor });
+      const page = await context.newPage();
+      for (const path of paths) {
+        await page.goto(`http://127.0.0.1:${port}${path}`);
+        await page.evaluate(() => document.fonts.ready.then(() => 0));
+        // No named inner functions: see the hero test.
+        const found = await page.evaluate(() => {
+          const vw = document.documentElement.clientWidth, out: string[] = [];
+          if (document.documentElement.scrollWidth > vw) out.push(`page scrolls sideways (${document.documentElement.scrollWidth} > ${vw})`);
+          for (const el of document.querySelectorAll('body *')) {
+            const r = el.getBoundingClientRect();
+            if (!r.width || !r.height || el.closest('.sr-only,thead')) continue;
+            let scroller = false;
+            for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) if (/auto|scroll|hidden|clip/.test(getComputedStyle(p).overflowX)) scroller = true;
+            if (!scroller && (r.right > vw + 0.5 || r.left < -0.5)) out.push(`${el.tagName.toLowerCase()}.${el.className} spans ${Math.round(r.left)}..${Math.round(r.right)}`);
+          }
+          const range = document.createRange();
+          range.selectNodeContents(document.querySelector('h1')!);
+          const lines = new Set(Array.from(range.getClientRects()).filter(r => r.width > 1).map(r => Math.round(r.top))).size;
+          if (lines > 4) out.push(`h1 wraps to ${lines} lines`);
+          return out;
+        });
+        for (const f of found.slice(0, 3)) problems.push(`${path} @${width}x${height}: ${f}`);
+      }
+      await context.close();
+    }
+  } finally {
+    await browser.close();
+    server.close();
+  }
+  assert.deepEqual(problems, []);
 });
