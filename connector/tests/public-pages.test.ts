@@ -347,6 +347,26 @@ test('public pages and styles enforce strict design guardrails (0 webfonts, 13/1
   }
 });
 
+test('design polish: two radii, ring surfaces, wells, flat outline buttons and paint-only transitions', () => {
+  const radii = new Set([...PUBLIC_STYLES.matchAll(/border-radius:\s*([^;}]+)/g)].map(m => m[1].trim()).filter(r => r !== '0' && !/^8px$/.test(r)));
+  assert.deepEqual([...radii].sort(), ['var(--radius-box)', 'var(--radius-btn)']);
+  assert.match(PUBLIC_STYLES, /--radius-btn:6px/);
+  assert.match(PUBLIC_STYLES, /--radius-box:8px/);
+  assert.match(PUBLIC_STYLES, /--well:inset 0 2px 4px rgba\(0,0,0,\.08\)/);
+  assert.match(PUBLIC_STYLES, /--well:inset 0 2px 5px rgba\(0,0,0,\.45\)/);
+  assert.match(PUBLIC_STYLES, /--btn-shadow:0 1px 2px rgba\(0,0,0,\.35\),inset 0 1px 0 rgba\(255,255,255,\.25\)/);
+  assert.match(PUBLIC_STYLES, /--btn-shadow:0 1px 2px rgba\(0,0,0,\.75\),inset 0 1px 0 rgba\(255,255,255,\.18\)/);
+  assert.match(PUBLIC_STYLES, /\.copy-btn:active\{transform:translateY\(1px\)\}/);
+  assert.match(PUBLIC_STYLES, /\.copy-btn-line\{[^}]*box-shadow:none/);
+  assert.doesNotMatch(PUBLIC_STYLES, /(?:h1|h2|\.hero-h1)[^{]*\{[^}]*gradient/);
+  for (const m of PUBLIC_STYLES.matchAll(/transition:([^;}]+)/g)) {
+    for (const part of m[1].split(/,(?![^(]*\))/)) {
+      assert.match(part.trim(), /^(?:none|color|background-color|border-color|box-shadow|transform|opacity)\b/, `transition on non-paint property: ${part}`);
+    }
+  }
+  assert.match(PUBLIC_STYLES, /prefers-reduced-motion:reduce/);
+});
+
 test('public pages preserve strict CSP invariants while permitting non-executable JSON-LD', () => {
   for (const path of ['/shopify-va', '/shopify-va/setup', '/shopify-va/privacy']) {
     const content = publicContent(path, candidateConfig);

@@ -53,7 +53,7 @@ test('the problems table becomes stacked rows on small phones and the stage list
 });
 
 test('short landscape screens trim vertical padding and large screens scale the layout up', () => {
-  assert.match(media('max-height:520px) and (orientation:landscape'), /\.hero\.stage\{padding:96px 0 40px\}/);
+  assert.match(media('max-height:520px) and (orientation:landscape'), /\.hero\.stage\{padding:96px 0 var\(--section-y\)\}/);
   assert.match(media('min-width:1600px'), /\.shell\{width:min\(1320px,/);
   assert.match(media('min-width:1600px'), /\.skill-index\{grid-template-columns:repeat\(4,/);
   assert.match(media('min-width:2200px'), /\.shell\{width:min\(1560px,/);
