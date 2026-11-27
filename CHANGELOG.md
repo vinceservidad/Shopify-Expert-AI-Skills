@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide desktop audit fixes (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`, found by mouse and keyboard passes over /shopify-va, /setup and /privacy at 1024x768 to 2560x1440, 125% and 150% zoom and a 1280x650 laptop (the live site serves the same stylesheet and behaved the same): after following a stage gate link and hovering another row, two rows were highlighted (the `:target` row now yields while a hovered or focused row is lit); the search field's clear button was inverted to near-black on the dark field and is now the default light one; the Copied label on the problems table sat centered instead of right-aligned; the /setup and /privacy text sat in a 650px column inside a 1320px page at 1920px and wider, with Copy buttons far from their commands, so doc pages are now one centered 880px column; install-drawer commands wrapped mid-word because the label column took 240px, now 190px.
+- Tests: a responsive test pins the five rules. Tab order, focus rings, hero and example tab keys (arrows, Home, End), panel counts, copy buttons, filters, empty state, Escape, drawer, FAQ, canvas sizing after resize and console output passed unchanged. CSP and markup unchanged; not deployed.
+
 ### Shopify VA guide mobile audit fixes (2026-11-27)
 
 - `connector/src/public-ui/styles.ts`, found by tapping through /shopify-va, /setup and /privacy on iPhone SE/13/14 Pro Max, Pixel 7, Galaxy S9+, landscape iPhone 13 and Pixel 7, and a 320x568 phone (local render and the live site behaved the same): the skill search placeholder "Search skills (stock, ads, Flow)" was clipped on 320px phones, so the count now wraps under a full-width field at 360px and below; copy buttons in command rows reserve the width of "Copied" so the button and row no longer grow on tap in landscape and in the install drawer; the /setup jump links and the 01-07 gate links are 44px tall on phones (they were 32px and touching); the last breadcrumb is vertically aligned with the link crumbs.
