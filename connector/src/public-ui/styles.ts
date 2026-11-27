@@ -212,6 +212,7 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .cmd-row:hover{box-shadow:var(--well),0 0 0 1px var(--border-hover)}
 .cmd-row .cmd-code{flex:1}
 .page-body .cmd-row .copy-btn{margin:0}
+.cmd-row .copy-btn,.cmd-item .copy-btn{min-width:88px}
 .quick-setup{list-style:none;counter-reset:qs;max-width:860px;margin:0 auto;padding:0;border-top:1px solid var(--border)}
 .quick-setup>li{counter-increment:qs;position:relative;padding:24px 0 24px 44px;border-bottom:1px solid var(--border)}
 .quick-setup>li::before{content:'0' counter(qs);position:absolute;left:0;top:27px;font-family:var(--sans);font-size:14px;line-height:1.3;font-weight:700;font-variant-numeric:tabular-nums;color:var(--accent)}
@@ -242,7 +243,7 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .doc-jump{display:flex;flex-wrap:wrap;gap:0 22px;margin-top:18px}
 .doc-jump a{display:inline-flex;align-items:center;min-height:32px;font-size:16px;font-weight:600}
 .doc-head{padding:56px 0 40px;border-bottom:1px solid var(--border)}
-.crumbs{margin:0 0 14px;font-size:14px}.crumbs ol{display:flex;flex-wrap:wrap;gap:2px 0;list-style:none;margin:0;padding:0;color:var(--ink-2)}.crumbs li+li::before{content:"/";margin:0 8px;color:var(--ink-2)}.crumbs a{display:inline-flex;align-items:center;min-height:32px}
+.crumbs{margin:0 0 14px;font-size:14px}.crumbs ol{display:flex;flex-wrap:wrap;gap:2px 0;list-style:none;margin:0;padding:0;color:var(--ink-2)}.crumbs li{display:inline-flex;align-items:center;min-height:32px}.crumbs li+li::before{content:"/";margin:0 8px;color:var(--ink-2)}.crumbs a{display:inline-flex;align-items:center;min-height:32px}
 .doc-head>p{font-size:18px;line-height:1.55}
 .doc-head h1{font-size:clamp(34px,4.6vw,48px);line-height:1.1;font-weight:750;letter-spacing:-.04em;margin:0 0 16px}
 .page-body section{padding:56px 0;border-bottom:1px solid var(--border);scroll-margin-top:20px}
@@ -299,6 +300,8 @@ html:has(body.app-home){background:#f6f6f7;color-scheme:light}
   .skill-index{grid-template-columns:1fr}
   .seg-tabs{width:100%}
   .seg-tab{flex:1 1 auto;min-height:44px;padding:8px 10px}
+  .doc-jump a,.seq-gates a{min-height:44px;line-height:44px}
+  .doc-jump a{line-height:1.5}
   .skill-filter{width:100%}
   .skill-filter input{flex:1;width:auto;min-width:0;min-height:44px}
   .copy-btn,.skill-actions a,.site-footer nav a{min-height:44px}
@@ -354,6 +357,8 @@ html:has(body.app-home){background:#f6f6f7;color-scheme:light}
   .hero.stage{padding-top:172px}
 }
 @media(max-width:360px){
+  .skill-filter{flex-wrap:wrap;gap:8px 12px}
+  .skill-filter input{flex:1 1 100%}
   .shell{--gutter:max(12px,env(safe-area-inset-left,0px),env(safe-area-inset-right,0px))}
   .cmd-item{grid-template-columns:1fr}
   .cmd-item .copy-btn{justify-self:start}
