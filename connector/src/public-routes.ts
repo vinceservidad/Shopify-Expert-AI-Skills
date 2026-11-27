@@ -1,4 +1,4 @@
-import { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, THEME_SCRIPT, renderHelpPage, renderLlmsTxt, renderPrivacyPage, renderProductPage, type PublicPageConfig } from './public-pages.js';
+import { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, SEQUENCE_SCRIPT, THEME_SCRIPT, renderHelpPage, renderLlmsTxt, renderPrivacyPage, renderProductPage, type PublicPageConfig } from './public-pages.js';
 import { ogImageBytes } from './public-ui/og-image.js';
 
 // Cloudflare Web Analytics (owner-approved 2026-10-01): the zone injects its beacon into these pages, served
@@ -18,6 +18,7 @@ export function publicContent(path: string, config: PublicPageConfig): PublicRou
   if (['/assets/public.css', '/shopify-va/assets/public.css'].includes(path)) return { body: PUBLIC_STYLES, contentType: 'text/css; charset=utf-8' };
   if (['/assets/theme.js', '/shopify-va/assets/theme.js'].includes(path)) return { body: THEME_SCRIPT, contentType: 'text/javascript; charset=utf-8' };
   if (['/assets/hero.js', '/shopify-va/assets/hero.js'].includes(path)) return { body: HERO_SCRIPT, contentType: 'text/javascript; charset=utf-8' };
+  if (['/assets/sequence.js', '/shopify-va/assets/sequence.js'].includes(path)) return { body: SEQUENCE_SCRIPT, contentType: 'text/javascript; charset=utf-8' };
   if (path === '/assets/app-home.js') return { body: APP_HOME_SCRIPT, contentType: 'text/javascript; charset=utf-8' };
   if (['/og-shopify-va.png', '/shopify-va/og-shopify-va.png'].includes(path)) {
     return { body: ogImageBytes(), contentType: 'image/png', cacheControl: 'public, max-age=86400' };

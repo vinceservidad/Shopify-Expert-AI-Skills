@@ -4,6 +4,11 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA page sequence strip (2026-11-27)
+
+- "What comes first": a quiet canvas strip above the seven-stage list. One order waits at each numbered gate until it checks, then moves to the next; hovering or focusing a row highlights its gate. The list stays the content, the strip is decorative (`aria-hidden`), hidden without JavaScript, paused offscreen and in hidden tabs, capped at 30 fps, and drawn as one still frame under reduced motion.
+- Served as `/assets/sequence.js` from the guide origin like the hero script; the CSP is unchanged. Tests pin the markup, the script route, reduced-motion handling and the unchanged CSP.
+
 ### Shopify VA page design cleanup (2026-11-27)
 
 - The skills grid opens on All (19 skills); the category tabs stay.
