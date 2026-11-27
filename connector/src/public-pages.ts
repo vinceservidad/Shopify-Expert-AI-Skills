@@ -6,6 +6,7 @@ import { HERO_SCRIPT } from './public-ui/hero-canvas.js';
 import { SEQUENCE_SCRIPT } from './public-ui/sequence-canvas.js';
 import { SKILL_CATALOG, SKILL_CATEGORIES, SKILL_COUNT } from './public-ui/skill-groups.js';
 import { FAVICON_DATA_URI } from './public-ui/favicon.js';
+import { SKILL_DOCS, SKILL_DOCS_UPDATED } from './public-ui/skill-docs.js';
 
 export { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, SEQUENCE_SCRIPT, THEME_SCRIPT };
 
@@ -52,15 +53,19 @@ const escape = (value: string) =>
 const sourceFile = (path: string) => `${REPOSITORY}/blob/main/${path}`;
 const sourceCandidateFile = (path: string) => `${REPOSITORY}/blob/feat/cloudflare-hosted-mcp/${path}`;
 
-const PRODUCT_TITLE = '19 Free Shopify Skills for AI Agents and VAs | Marketing Skills';
+// Titles stay under 60 characters with the topic first; descriptions stay under 160 (pinned by tests/public-seo.test.ts).
+const PRODUCT_TITLE = 'Shopify Skills for AI Agents | Marketing Skills';
 const PRODUCT_DESCRIPTION =
   '19 free MIT-licensed Shopify skills for ChatGPT, Claude, and coding agents. Your AI app drafts the store work, and you approve every change in Shopify Admin.';
-const HELP_TITLE = 'How to Set Up | Shopify VA Skills | Marketing Skills';
+const HELP_TITLE = 'Shopify Skills Setup for AI Agents | Marketing Skills';
 const HELP_DESCRIPTION =
-  'How to add the 19 Shopify VA skills to ChatGPT, Claude, or your coding agent, plus fixes for common setup issues.';
-const PRIVACY_TITLE = 'Privacy Notice | Shopify VA Skills | Marketing Skills';
+  'Add 19 free Shopify skills to ChatGPT, Claude, Claude Code, Codex, or Cursor in four steps. Install commands and fixes for common setup problems.';
+const PRIVACY_TITLE = 'Shopify Skills Privacy Notice | Marketing Skills';
 const PRIVACY_DESCRIPTION =
-  'What the read-only Shopify VA MCP server reads, what it stores, and when it deletes it.';
+  'What the read-only Shopify skills MCP server reads, what it stores, how long it keeps it, and how store owners remove access.';
+const ORGANIZATION_ID = `${SITE_ORIGIN}/#organization`;
+const MARKETING_WEBSITE_ID = `${SITE_ORIGIN}/#website`;
+const OG_IMAGE_ALT = 'Shopify Skills for AI Agents: 19 free MIT-licensed skills for ChatGPT, Claude, and coding agents';
 
 type BottleneckRow = {
   problem: string;
@@ -310,67 +315,90 @@ function safeJsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, '\\u003c');
 }
 
-function productJsonLd(): string {
-  return safeJsonLd({
-    '@context': 'https://schema.org',
-    '@graph': [
+type PageKey = 'guide' | 'setup' | 'privacy';
+const PAGES: Record<PageKey, { path: string; name: string; title: string; description: string; crumb: string }> = {
+  guide: { path: '/shopify-va', name: 'Shopify VA', title: PRODUCT_TITLE, description: PRODUCT_DESCRIPTION, crumb: 'Shopify VA' },
+  setup: { path: '/shopify-va/setup', name: 'Setup', title: HELP_TITLE, description: HELP_DESCRIPTION, crumb: 'Setup' },
+  privacy: { path: '/shopify-va/privacy', name: 'Privacy', title: PRIVACY_TITLE, description: PRIVACY_DESCRIPTION, crumb: 'Privacy' },
+};
+
+/** Breadcrumb trail: Marketing Skills > Shopify VA, then Setup or Privacy on the sub-pages. */
+function breadcrumbTrail(page: PageKey): { name: string; url: string }[] {
+  const trail = [{ name: 'Marketing Skills', url: FAMILY_HOME }, { name: PAGES.guide.crumb, url: `${SITE_ORIGIN}${PAGES.guide.path}` }];
+  if (page !== 'guide') trail.push({ name: PAGES[page].crumb, url: `${SITE_ORIGIN}${PAGES[page].path}` });
+  return trail;
+}
+
+/**
+ * schema.org JSON-LD for each page. Only facts visible on the page or in the repository are used: no ratings,
+ * reviews, counts of users, or dates that are not generated from source. The Organization shares the marketing
+ * site's @id so both sites describe one entity; WebPage points at that site's WebSite by @id.
+ */
+function pageJsonLd(page: PageKey): string {
+  const url = `${SITE_ORIGIN}${PAGES[page].path}`, webPageId = `${url}#webpage`, appId = `${SITE_ORIGIN}/shopify-va#software`;
+  const trail = breadcrumbTrail(page);
+  const graph: Record<string, unknown>[] = [
+    {
+      '@type': 'Organization', '@id': ORGANIZATION_ID, name: 'Marketing Skills', url: FAMILY_HOME, logo: LOGO_URL,
+      founder: { '@type': 'Person', name: 'Vince Servidad', url: AUTHOR }, sameAs: [REPOSITORY],
+    },
+    {
+      '@type': 'WebPage', '@id': webPageId, url, name: PAGES[page].title,
+      description: PAGES[page].description, inLanguage: 'en',
+      isPartOf: { '@id': MARKETING_WEBSITE_ID }, publisher: { '@id': ORGANIZATION_ID },
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+      primaryImageOfPage: { '@type': 'ImageObject', url: OG_IMAGE_URL, width: 1200, height: 630 },
+      ...(page === 'guide' ? { about: { '@id': appId }, mainEntity: { '@id': appId } } : { about: { '@id': appId } }),
+    },
+    {
+      '@type': 'BreadcrumbList', '@id': `${url}#breadcrumb`,
+      itemListElement: trail.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.name, item: item.url })),
+    },
+  ];
+  if (page === 'guide') {
+    graph.push(
       {
-        '@type': 'Organization',
-        name: 'Marketing Skills',
-        url: SITE_ORIGIN,
-        logo: LOGO_URL,
-        founder: { '@type': 'Person', name: 'Vince Servidad', url: AUTHOR },
-        sameAs: [REPOSITORY],
-      },
-      {
-        '@type': 'WebSite',
-        name: 'Marketing Skills: Shopify VA Skills',
-        url: `${SITE_ORIGIN}/shopify-va`,
-        description: PRODUCT_DESCRIPTION,
-        publisher: { '@type': 'Person', name: 'Vince Servidad', url: AUTHOR },
-      },
-      {
-        '@type': 'SoftwareApplication',
-        name: 'Shopify VA Skills',
-        applicationCategory: 'BusinessApplication',
-        operatingSystem: 'Cross-platform',
-        url: `${SITE_ORIGIN}/shopify-va`,
-        description: PRODUCT_DESCRIPTION,
-        license: 'https://opensource.org/licenses/MIT',
+        '@type': 'SoftwareApplication', '@id': appId, name: 'Shopify VA Skills', url,
+        description: PRODUCT_DESCRIPTION, applicationCategory: 'BusinessApplication', operatingSystem: 'Any',
+        isAccessibleForFree: true, license: 'https://opensource.org/licenses/MIT', inLanguage: 'en',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        featureList: SKILL_CATALOG.map(skill => skill.name),
+        author: { '@type': 'Person', name: 'Vince Servidad', url: AUTHOR }, publisher: { '@id': ORGANIZATION_ID },
+        softwareHelp: { '@type': 'WebPage', url: `${SITE_ORIGIN}${PAGES.setup.path}` },
       },
       {
-        '@type': 'FAQPage',
-        mainEntity: FAQ_ITEMS.map(item => ({
-          '@type': 'Question',
-          name: item.question,
-          acceptedAnswer: { '@type': 'Answer', text: item.answer },
-        })),
+        '@type': 'FAQPage', '@id': `${url}#faq`,
+        mainEntity: FAQ_ITEMS.map(item => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } })),
       },
-    ],
-  });
+    );
+  }
+  return safeJsonLd({ '@context': 'https://schema.org', '@graph': graph });
+}
+
+/** Visible trail matching the BreadcrumbList JSON-LD (Marketing Skills > Shopify VA > Setup). */
+function breadcrumbNav(config: PublicPageConfig, page: PageKey): string {
+  const trail = breadcrumbTrail(page);
+  const items = trail.map((item, index) => index === trail.length - 1
+    ? `<li aria-current="page">${escape(item.name)}</li>`
+    : `<li><a href="${index === 0 ? item.url : pagePath(config)}">${escape(item.name)}</a></li>`).join('');
+  return `<nav class="crumbs" aria-label="Breadcrumb"><ol>${items}</ol></nav>`;
 }
 
 type LayoutMeta = {
-  title: string;
-  description: string;
-  canonicalPath: string;
-  includeSocialMeta?: boolean;
-  jsonLd?: string;
+  page: PageKey;
   hasHero?: boolean;
   hasSequence?: boolean;
   currentNav?: 'setup';
 };
 
 function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): string {
-  const canonical = `${SITE_ORIGIN}${meta.canonicalPath}`;
-  const socialTags = meta.includeSocialMeta
-    ? `<meta property="og:title" content="${escape(meta.title)}"><meta property="og:description" content="${escape(meta.description)}"><meta property="og:url" content="${escape(canonical)}"><meta property="og:site_name" content="Marketing Skills"><meta property="og:type" content="website"><meta property="og:image" content="${OG_IMAGE_URL}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${escape(meta.title)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(meta.title)}"><meta name="twitter:description" content="${escape(meta.description)}"><meta name="twitter:image" content="${OG_IMAGE_URL}">`
-    : '';
-  const ldTag = meta.jsonLd ? `<script type="application/ld+json">${meta.jsonLd}</script>` : '';
+  const { title, description } = PAGES[meta.page], canonical = `${SITE_ORIGIN}${PAGES[meta.page].path}`;
+  const socialTags = `<meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(canonical)}"><meta property="og:site_name" content="Marketing Skills"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:image" content="${OG_IMAGE_URL}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${escape(OG_IMAGE_ALT)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}"><meta name="twitter:image" content="${OG_IMAGE_URL}"><meta name="twitter:image:alt" content="${escape(OG_IMAGE_ALT)}">`;
+  // JSON-LD is a data block, not executable script, so script-src is unaffected and no inline script is added.
+  const ldTag = `<script type="application/ld+json">${pageJsonLd(meta.page)}</script>`;
   const heroScript = meta.hasHero ? `<script src="${pagePath(config, '/assets/hero.js')}" defer></script>` : '';
   const sequenceScript = meta.hasSequence ? `<script src="${pagePath(config, '/assets/sequence.js')}" defer></script>` : '';
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(meta.title)}</title><meta name="description" content="${escape(meta.description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow, max-image-preview:large"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${pagePath(config, '/llms.txt')}">llms.txt</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
 }
 
 function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
@@ -482,11 +510,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
 
   return layout(
     {
-      title: PRODUCT_TITLE,
-      description: PRODUCT_DESCRIPTION,
-      canonicalPath: '/shopify-va',
-      includeSocialMeta: true,
-      jsonLd: productJsonLd(),
+      page: 'guide',
       hasHero: true,
       hasSequence: true,
     },
@@ -605,16 +629,14 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
   const openMcpUrl = openMcpEndpoint(config);
   return layout(
     {
-      title: HELP_TITLE,
-      description: HELP_DESCRIPTION,
-      canonicalPath: '/shopify-va/setup',
-      includeSocialMeta: true,
+      page: 'setup',
       currentNav: 'setup',
     },
     `
     <div class="page-body shell">
       <div class="doc-head">
-        <h1>How to set up</h1>
+        ${breadcrumbNav(config, 'setup')}
+        <h1>How to set up Shopify skills</h1>
         <p>Connect all ${SKILL_COUNT} Shopify skills in four steps. Other ways to connect and fixes for common problems are further down.</p>
         <nav class="doc-jump" aria-label="On this page"><a href="#quick-start">Four steps</a><a href="#install-help">All ways to connect</a><a href="#store-connection">Live store data</a><a href="#fix-issues">Fix common issues</a><a href="#contact">Contact</a></nav>
       </div>
@@ -708,14 +730,13 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
 export function renderPrivacyPage(config: PublicPageConfig = {}): string {
   return layout(
     {
-      title: PRIVACY_TITLE,
-      description: PRIVACY_DESCRIPTION,
-      canonicalPath: '/shopify-va/privacy',
+      page: 'privacy',
     },
     `
     <div class="page-body shell">
       <div class="doc-head">
-        <h1>Privacy notice</h1>
+        ${breadcrumbNav(config, 'privacy')}
+        <h1>Shopify skills privacy notice</h1>
         <p>${config.launchStage === 'public' ? 'This notice covers the live read-only Shopify MCP server.' : 'This notice covers the Shopify MCP server while it waits for Shopify App Store review.'}</p>
         <p class="muted">Updated November 25, 2026. Operator: Vince Servidad.</p>
       </div>
@@ -749,64 +770,141 @@ export function renderPrivacyPage(config: PublicPageConfig = {}): string {
   );
 }
 
+const REFERENCE_FILES: readonly { title: string; path: string }[] = [
+  { title: 'Google Merchant Center Next & Performance Max Feed guide', path: 'skills/shopify-google-ads/references/merchant-center-next-pmax.md' },
+  { title: 'Meta Advantage+ Shopping & Conversions API (CAPI) guide', path: 'skills/shopify-meta-ads/references/advantage-plus-capi.md' },
+  { title: 'Checkout Extensibility, Web Pixels & Shopify Functions guide', path: 'skills/shopify-theme-development/references/checkout-extensibility-pixels.md' },
+  { title: 'Shopify Markets & Multi-Location Order Routing guide', path: 'skills/shopify-order-operations/references/multi-location-routing-markets.md' },
+  { title: 'Official Shopify Flow Operational Recipes', path: 'skills/shopify-flow-automation/references/official-flow-recipes.md' },
+  { title: 'Chargeback & Payment Dispute Evidence guide', path: 'skills/shopify-order-operations/references/chargeback-evidence.md' },
+  { title: 'Shipping Profiles, Carrier Rates & 3PL Exceptions guide', path: 'skills/shopify-order-operations/references/shipping-3pl-exceptions.md' },
+  { title: 'Store Launch, Migration & Peak-Sale (BFCM) Readiness guide', path: 'skills/shopify-store-audit/references/launch-migration-bfcm.md' },
+  { title: 'App Stack Hygiene & Product Review Moderation guide', path: 'skills/shopify-store-audit/references/app-stack-reviews.md' },
+  { title: 'Subscriptions & Multi-Channel Sales Sync guide', path: 'skills/shopify-catalog-operations/references/subscriptions-multichannel.md' },
+  { title: 'Cross-Skill Build, Launch & Marketing Sequence guide', path: 'skills/shopify-va/references/skill-sequence.md' },
+  { title: 'Client Deliverable Templates: CSV QA, BFCM, Chargeback & Handover', path: 'skills/shopify-va/references/deliverable-templates.md' },
+  { title: 'Official Meta Ads Experiments, Auction, Catalog & Compliance guide', path: 'skills/shopify-meta-ads/references/official-meta-methods.md' },
+  { title: 'Official Google Ads Enhanced Conversions, Smart Bidding & Merchant Center guide', path: 'skills/shopify-google-ads/references/official-google-methods.md' },
+  { title: 'Email Deliverability & TCPA/CTIA SMS Compliance guide', path: 'skills/shopify-email-marketing/references/deliverability-sms-compliance.md' },
+  { title: 'Technical SEO, Product JSON-LD & Core Web Vitals Standards', path: 'skills/shopify-seo/references/technical-seo-standards.md' },
+  { title: 'CRO Experiment Validity, SRM & Mobile Friction Standards', path: 'skills/shopify-cro/references/experiment-validity-friction.md' },
+  { title: 'FTC Endorsement & Review Compliance guide', path: 'skills/shopify-creative-strategy/references/ftc-endorsement-compliance.md' },
+  { title: 'Product Page Social Proof Compliance & Mobile UX Standards', path: 'skills/shopify-product-page/references/proof-compliance-mobile-ux.md' },
+  { title: 'Shopify Analytics, GA4 & Consent Mode v2 Reconciliation guide', path: 'skills/shopify-analytics/references/shopify-analytics-ga4-consent.md' },
+  { title: 'Theme Performance, Accessibility & App Extensions Standards', path: 'skills/shopify-theme-development/references/performance-accessibility-extensions.md' },
+  { title: 'Shopify Product Taxonomy, GTIN, HS Code & EU GPSR Compliance guide', path: 'skills/shopify-product-listing/references/taxonomy-compliance.md' },
+  { title: 'High-Variant Catalogs, productSet & Combined Listings guide', path: 'skills/shopify-catalog-operations/references/high-variant-combined-listings.md' },
+  { title: 'Shopify Search & Discovery and Native Bundles guide', path: 'skills/shopify-merchandising/references/search-discovery-bundles.md' },
+];
+
+const llmsHeading = '# Marketing Skills: Shopify VA Skills';
+const llmsSummary = () => `> ${SKILL_COUNT} free MIT-licensed Shopify skills for ChatGPT, Claude, and coding agents such as Claude Code, Codex, and Cursor. Your AI app drafts store work, and a person approves every store change. Built by Vince Servidad.`;
+
+function installCommands(): string {
+  return `\`\`\`
+${CLI_ADD_CMD}
+${CTX7_ADD_CMD}
+${CLAUDE_PLUGIN_CMD}
+${CURSOR_PLUGIN_CMD}
+${AGY_PLUGIN_CMD}
+${CODEX_MARKETPLACE_CMD}
+${CODEX_PLUGIN_CMD}
+\`\`\``;
+}
+
+/** llms.txt follows https://llmstxt.org: H1, blockquote, plain body text, H2 link lists, and a final Optional section. */
 export function renderLlmsTxt(config: PublicPageConfig = {}): string {
-  const openMcpUrl = openMcpEndpoint(config);
-  const mcpUrl = mcpEndpoint(config);
-  const skillLines = SKILL_CATALOG.map(
-    skill => `- [${skill.name}](${sourceFile(`skills/${skill.slug}/SKILL.md`)}): ${skill.summary}`,
-  ).join('\n');
-  return `# Marketing Skills: Shopify VA Skills
+  const openMcpUrl = openMcpEndpoint(config), mcpUrl = mcpEndpoint(config);
+  const skillLines = SKILL_CATALOG.map(skill => `- [${skill.name}](${sourceFile(`skills/${skill.slug}/SKILL.md`)}): ${skill.summary}`).join('\n');
+  const referenceLines = REFERENCE_FILES.map(file => `- [${file.title}](${sourceFile(file.path)})`).join('\n');
+  return `${llmsHeading}
 
-> 19 free MIT-licensed Shopify skills for ChatGPT, Claude, and coding agents such as Claude Code, Codex, and Cursor. Your AI app drafts store work, and a person approves every store change. Built by Vince Servidad.
+${llmsSummary()}
 
-## Connect or install
+Last updated: ${SKILL_DOCS_UPDATED} (date of the latest change to the skill files). Free under the MIT license, with no account or payment. Read-only by design: the skills and the MCP servers read data and write drafts, and they cannot change a store, prices, orders, or ad accounts. Someone with store permissions applies each approved change in Shopify Admin or the ad platform. Not affiliated with Shopify.
 
-- [Live guide](${SITE_ORIGIN}/shopify-va): Problem finder, a searchable list of all 19 skills, where each step happens, and an FAQ
-- [How to set up](${SITE_ORIGIN}/shopify-va/setup): Four-step setup guide, all install options, and troubleshooting
-- [No-login Remote MCP server](${openMcpUrl}): Streamable HTTP, no account or sign-in. Serves all ${SKILL_COUNT} Shopify skills, reference files, and 8 VA task workflows read-only
-- [Optional signed-in Remote MCP server](${mcpUrl}): Streamable HTTP with OAuth 2.1 + PKCE for read-only Shopify Admin checks (pending Shopify App Store review)
-- Agent Skills CLI: \`${CLI_ADD_CMD}\`
-- Context7 CLI: \`${CTX7_ADD_CMD}\`
-- Claude Code plugin: \`${CLAUDE_PLUGIN_CMD}\`
-- Cursor plugin: \`${CURSOR_PLUGIN_CMD}\`
-- Antigravity plugin: \`${AGY_PLUGIN_CMD}\`
-- OpenAI Codex plugin: \`${CODEX_MARKETPLACE_CMD}\` then \`${CODEX_PLUGIN_CMD}\`
-- [GitHub repository](${REPOSITORY})
+The no-login MCP server (Streamable HTTP) is ${openMcpUrl}. Add it as a custom connector in Claude or ChatGPT. To install in a coding agent, run one of these commands in a terminal (the setup page also lists the Cursor and Claude Code session forms):
 
-## Official Shopify reference files included
+${installCommands()}
 
-- Google Merchant Center Next & Performance Max Feed guide (\`skills/shopify-google-ads/references/merchant-center-next-pmax.md\`)
-- Meta Advantage+ Shopping & Conversions API (CAPI) guide (\`skills/shopify-meta-ads/references/advantage-plus-capi.md\`)
-- Checkout Extensibility, Web Pixels & Shopify Functions guide (\`skills/shopify-theme-development/references/checkout-extensibility-pixels.md\`)
-- Shopify Markets & Multi-Location Order Routing guide (\`skills/shopify-order-operations/references/multi-location-routing-markets.md\`)
-- Official Shopify Flow Operational Recipes (\`skills/shopify-flow-automation/references/official-flow-recipes.md\`)
-- Chargeback & Payment Dispute Evidence guide (\`skills/shopify-order-operations/references/chargeback-evidence.md\`)
-- Shipping Profiles, Carrier Rates & 3PL Exceptions guide (\`skills/shopify-order-operations/references/shipping-3pl-exceptions.md\`)
-- Store Launch, Migration & Peak-Sale (BFCM) Readiness guide (\`skills/shopify-store-audit/references/launch-migration-bfcm.md\`)
-- App Stack Hygiene & Product Review Moderation guide (\`skills/shopify-store-audit/references/app-stack-reviews.md\`)
-- Subscriptions & Multi-Channel Sales Sync guide (\`skills/shopify-catalog-operations/references/subscriptions-multichannel.md\`)
-- Cross-Skill Build, Launch & Marketing Sequence guide (\`skills/shopify-va/references/skill-sequence.md\`)
-- Client Deliverable Templates: CSV QA, BFCM, Chargeback & Handover (\`skills/shopify-va/references/deliverable-templates.md\`)
-- Official Meta Ads Experiments, Auction, Catalog & Compliance guide (\`skills/shopify-meta-ads/references/official-meta-methods.md\`)
-- Official Google Ads Enhanced Conversions, Smart Bidding & Merchant Center guide (\`skills/shopify-google-ads/references/official-google-methods.md\`)
-- Email Deliverability & TCPA/CTIA SMS Compliance guide (\`skills/shopify-email-marketing/references/deliverability-sms-compliance.md\`)
-- Technical SEO, Product JSON-LD & Core Web Vitals Standards (\`skills/shopify-seo/references/technical-seo-standards.md\`)
-- CRO Experiment Validity, SRM & Mobile Friction Standards (\`skills/shopify-cro/references/experiment-validity-friction.md\`)
-- FTC Endorsement & Review Compliance guide (\`skills/shopify-creative-strategy/references/ftc-endorsement-compliance.md\`)
-- Product Page Social Proof Compliance & Mobile UX Standards (\`skills/shopify-product-page/references/proof-compliance-mobile-ux.md\`)
-- Shopify Analytics, GA4 & Consent Mode v2 Reconciliation guide (\`skills/shopify-analytics/references/shopify-analytics-ga4-consent.md\`)
-- Theme Performance, Accessibility & App Extensions Standards (\`skills/shopify-theme-development/references/performance-accessibility-extensions.md\`)
-- Shopify Product Taxonomy, GTIN, HS Code & EU GPSR Compliance guide (\`skills/shopify-product-listing/references/taxonomy-compliance.md\`)
-- High-Variant Catalogs, productSet & Combined Listings guide (\`skills/shopify-catalog-operations/references/high-variant-combined-listings.md\`)
-- Shopify Search & Discovery and Native Bundles guide (\`skills/shopify-merchandising/references/search-discovery-bundles.md\`)
+## Guide pages
+
+- [Shopify skills for AI agents](${SITE_ORIGIN}/shopify-va): Problem finder, a searchable list of all ${SKILL_COUNT} skills, where each step happens, and an FAQ
+- [How to set up Shopify skills](${SITE_ORIGIN}/shopify-va/setup): Four-step setup guide, all install options, and troubleshooting
+- [No-login Remote MCP server](${openMcpUrl}): Serves all ${SKILL_COUNT} skills, their reference files, and ${WORKFLOWS.length} VA task workflows read-only; no account or sign-in
+- [Optional signed-in Remote MCP server](${mcpUrl}): OAuth 2.1 with PKCE for read-only Shopify Admin checks, pending Shopify App Store review
 
 ## All ${SKILL_COUNT} Shopify skills
 
 ${skillLines}
 
-## Parent library
+## Optional
 
-- [Marketing Skills](${FAMILY_HOME}): 133 free marketing skills for AI agents
+- [Full text of all ${SKILL_COUNT} skills and setup](${SITE_ORIGIN}/shopify-va/llms-full.txt): Plain text, for agents that can read a long file
+- [Privacy notice](${SITE_ORIGIN}/shopify-va/privacy): What the read-only MCP server reads and stores, and for how long
+- [GitHub repository](${REPOSITORY}): Source, issues, and the MIT license
+- [Marketing Skills](${FAMILY_HOME}): The parent library of free marketing skills for AI agents
+${referenceLines}
+`;
+}
+
+/** Push a skill's own headings two levels down (outside code fences) so each skill nests under its "## Skill:" heading. */
+function demoteHeadings(markdown: string): string {
+  let fence = false;
+  return markdown.split('\n').map(line => {
+    if (/^\s*(```|~~~)/.test(line)) fence = !fence;
+    return !fence && /^#{1,4} /.test(line) ? `##${line}` : line;
+  }).join('\n');
+}
+
+/** llms-full.txt (a common companion to llms.txt, not part of the llmstxt.org spec): the complete text of every skill and the setup steps. */
+export function renderLlmsFullTxt(config: PublicPageConfig = {}): string {
+  const openMcpUrl = openMcpEndpoint(config), mcpUrl = mcpEndpoint(config);
+  const names = new Map(SKILL_CATALOG.map(skill => [skill.slug, skill.name]));
+  const skills = SKILL_DOCS.map(doc => `## Skill: ${names.get(doc.slug) ?? doc.slug} (${doc.slug})
+
+Source: ${sourceFile(`skills/${doc.slug}/SKILL.md`)}
+When to use: ${doc.description}
+
+${demoteHeadings(doc.body)}`).join('\n\n');
+  const faq = FAQ_ITEMS.map(item => `### ${item.question}\n\n${item.answer}`).join('\n\n');
+  return `${llmsHeading}
+
+${llmsSummary()}
+
+Last updated: ${SKILL_DOCS_UPDATED}. This file holds the full text of all ${SKILL_COUNT} skills (the SKILL.md files; reference files are linked from ${SITE_ORIGIN}/shopify-va/llms.txt) and the setup steps. Guide: ${SITE_ORIGIN}/shopify-va
+
+## Setup
+
+Free under the MIT license; no account or store access is needed to start.
+
+### 1. Connect your AI
+
+Claude: open Settings, then Connectors, then Add custom connector, paste ${openMcpUrl}, and save. ChatGPT: open Settings, then Apps and Connectors, and create a custom connector with the same link (some plans need Developer mode first). Coding agents such as Claude Code, Codex, and Cursor: run \`${CLI_ADD_CMD}\` once in a terminal.
+
+### 2. Other install commands
+
+${installCommands()}
+
+### 3. Try one product listing
+
+${firstRequest}
+
+### 4. Follow three rules
+
+1. Paste only what the task needs. Never paste passwords, API keys, card details, or extra customer data.
+2. Treat every answer as a draft. Check it against the facts the store owner gave you before you use it.
+3. Get approval before any store change. Your AI app only reads and drafts, so you or the owner apply changes in Shopify Admin.
+
+### Optional live store connection
+
+The signed-in MCP server at ${mcpUrl} is read-only and uses OAuth 2.1 with PKCE. By default it asks for three read scopes (read_products, read_inventory, read_orders); the store owner can enable four more read scopes (read_reports, read_discounts, read_themes, read_customers). It cannot edit products, send emails, take payments, or issue refunds. It is pending Shopify App Store review unless the guide says otherwise.
+
+## FAQ
+
+${faq}
+
+${skills}
 `;
 }
 
