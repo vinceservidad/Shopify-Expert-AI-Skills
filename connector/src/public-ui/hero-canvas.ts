@@ -1,6 +1,7 @@
 /** Hero stage animation, served from 'self' so the strict CSP holds.
  *  Decorative only (aria-hidden), stops offscreen/hidden, and honors reduced motion.
- *  Motif: faint, calm emerald and sea-green waves (no neon) and twinkling dots, kept to the top of the stage so nothing crosses the setup hint text. */
+ *  Motif: faint, calm waves in the guide accent (#62c597) and a sea-green second wave, with twinkling dots, kept to the
+ *  band between the header and the headline so nothing crosses the text. No glow, blur or gradient. */
 export const HERO_SCRIPT = `(function () {
   var canvas = document.querySelector('[data-hero-canvas]');
   if (!canvas || !canvas.getContext) return;
@@ -8,7 +9,7 @@ export const HERO_SCRIPT = `(function () {
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var width = 0, height = 0, ratio = 1, bandTop = 0, bandH = 240, dots = [], running = false, visible = true, last = 0, start = 0;
-  var EMERALD = [96, 204, 154], SEA = [112, 196, 182], MINT = [150, 216, 188];
+  var EMERALD = [98, 197, 151], SEA = [112, 190, 176], MINT = [150, 214, 186];
 
   function rgba(c, a) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
   function rand(min, max) { return min + Math.random() * (max - min); }

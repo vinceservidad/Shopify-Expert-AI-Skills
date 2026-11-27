@@ -282,7 +282,7 @@ test('every command on the setup page has its own copy button and the page has a
   assert.match(html, /<nav class="doc-jump" aria-label="On this page">/);
   for (const id of ['quick-start', 'install-help', 'store-connection', 'fix-issues', 'contact']) {
     assert.match(html, new RegExp(`href="#${id}"`));
-    assert.match(html, new RegExp(`<section id="${id}">`));
+    assert.match(html, new RegExp(`<section id="${id}"(?: class="related")?>`));
   }
   assert.ok((html.match(/class="cmd-row"/g) ?? []).length >= 9);
   assert.match(html, /<a href="\/shopify-va\/setup" aria-current="page">How to set up<\/a>/);

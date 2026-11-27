@@ -391,6 +391,13 @@ type LayoutMeta = {
   currentNav?: 'setup';
 };
 
+/** The heading face and the body 400 face are used above the fold on every page, so they are preloaded.
+ *  Font preloads need crossorigin even on the same origin, or the browser fetches the file twice. */
+export const PRELOADED_FONTS = ['schibsted-grotesk-latin-wght-normal.woff2', 'ibm-plex-sans-latin-400-normal.woff2'] as const;
+function fontPreloads(config: PublicPageConfig): string {
+  return PRELOADED_FONTS.map(file => `<link rel="preload" href="${pagePath(config, `/assets/fonts/${file}`)}" as="font" type="font/woff2" crossorigin>`).join('');
+}
+
 function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): string {
   const { title, description } = PAGES[meta.page], canonical = `${SITE_ORIGIN}${PAGES[meta.page].path}`;
   const socialTags = `<meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(canonical)}"><meta property="og:site_name" content="Marketing Skills"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:image" content="${OG_IMAGE_URL}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${escape(OG_IMAGE_ALT)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}"><meta name="twitter:image" content="${OG_IMAGE_URL}"><meta name="twitter:image:alt" content="${escape(OG_IMAGE_ALT)}">`;
@@ -398,7 +405,7 @@ function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): st
   const ldTag = `<script type="application/ld+json">${pageJsonLd(meta.page)}</script>`;
   const heroScript = meta.hasHero ? `<script src="${pagePath(config, '/assets/hero.js')}" defer></script>` : '';
   const sequenceScript = meta.hasSequence ? `<script src="${pagePath(config, '/assets/sequence.js')}" defer></script>` : '';
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow, max-image-preview:large"><meta name="theme-color" content="#070807"><meta name="color-scheme" content="dark"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${pagePath(config, '/llms.txt')}">llms.txt</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow, max-image-preview:large"><meta name="theme-color" content="#15191a"><meta name="color-scheme" content="dark"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}${fontPreloads(config)}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${pagePath(config, '/llms.txt')}">llms.txt</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
 }
 
 function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
@@ -437,7 +444,7 @@ function sampleOutputsSection(): string {
   ).join('');
   const labels = SAMPLE_OUTPUTS.map(item => `<label for="${item.id}">${escape(item.tab)}</label>`).join('');
   const panels = SAMPLE_OUTPUTS.map(
-    item => `<div class="ex-panel ${item.id}" data-tabpanel><div class="ex-grid" data-stagger><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-points">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
+    item => `<div class="ex-panel ${item.id}" data-tabpanel><p class="ex-label">What you paste <span>(${escape(item.skill)})</span></p><p class="ex-input">${escape(item.inputText)}</p><p class="ex-label">What your AI app returns</p><ul class="ex-points">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div>`,
   ).join('');
   return `<div class="ex-box" data-tabs="examples">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" data-tablist aria-label="Sample outputs">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
 }
@@ -448,7 +455,7 @@ function sequenceSection(): string {
   ).join('');
   const gates = SKILL_SEQUENCE.map((row, index) => `<a href="#seq-${index + 1}" data-seq-label aria-label="Stage ${index + 1}: ${escape(row.stage)}">${row.step}</a>`).join('');
   const strip = `<div class="seq-strip" data-seq-strip><canvas class="seq-canvas" data-seq-canvas aria-hidden="true"></canvas><nav class="seq-gates" aria-label="Jump to a stage">${gates}</nav></div>`;
-  return `${strip}<ol class="sequence-list" data-stagger>${rows}</ol>`;
+  return `${strip}<ol class="sequence-list">${rows}</ol>`;
 }
 
 const COPY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.5"/></svg>';
@@ -457,7 +464,7 @@ function bottleneckTable(): string {
   const rows = BOTTLENECKS.map(
     row => `<tr><td class="bn-problem">${escape(row.problem)}<span class="bn-sub">Fix first: ${escape(row.fixFirst)}. Check next: ${escape(row.checkNext)}.</span></td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-text" data-copy="${escape(row.prompt)}" aria-label="Copy starter prompt: ${escape(row.problem)}">${COPY_ICON}Copy prompt</button></td></tr>`,
   ).join('');
-  return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Problem</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody data-stagger>${rows}</tbody></table></div>`;
+  return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Problem</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function skillCatalogSection(): string {
@@ -468,9 +475,9 @@ function skillCatalogSection(): string {
     )
     .join('');
   const items = SKILL_CATALOG.map(
-    skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div><h3>${escape(skill.name)}</h3><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a class="skill-gh" href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}"><span>Read<span class="sr-only"> ${escape(skill.name)}</span> on GitHub</span></a></div></article>`,
+    skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div class="skill-text"><div><h3>${escape(skill.name)}</h3><span class="skill-cat">${escape(skill.category)}</span></div><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a class="skill-gh" href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}"><span>Read<span class="sr-only"> ${escape(skill.name)}</span> on GitHub</span></a></div></article>`,
   ).join('');
-  return `<div class="catalog-controls" data-skill-filter-wrap hidden><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status role="status">${SKILL_COUNT} skills</span></div></div><div class="skill-index" data-stagger>${items}</div><div class="skill-empty" data-skill-empty hidden><p>No skills match <span class="skill-empty-q" data-skill-empty-query></span>.</p><button type="button" class="copy-btn copy-btn-line" data-skill-reset>Show all skills</button></div>`;
+  return `<div class="catalog-controls" data-skill-filter-wrap hidden><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status role="status">${SKILL_COUNT} skills</span></div></div><div class="skill-index">${items}</div><div class="skill-empty" data-skill-empty hidden><p>No skills match <span class="skill-empty-q" data-skill-empty-query></span>.</p><button type="button" class="copy-btn copy-btn-line" data-skill-reset>Show all skills</button></div>`;
 }
 
 function cmdItem(label: string, note: string, command: string, id?: string): string {
@@ -517,25 +524,22 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
     `
     <section class="hero stage">
       <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
-      <div class="shell hero-inner">
-        <h1 class="hero-h1">Shopify skills for AI agents</h1>
-        <p class="hero-sub">19 free Shopify skills under the MIT license for product listings, orders, ads, and Liquid themes. Connect them to ChatGPT, Claude, or your coding agent to draft the work, then approve every change in Shopify Admin.</p>
-        ${heroWorkbench(openMcpUrl, pagePath(config, '/setup'))}
-      </div>
-    </section>
-
-    <section id="examples" class="band" aria-labelledby="examples-heading">
-      <div class="shell" data-reveal>
-        <div class="section-head">
-          <h2 id="examples-heading">See what the skills return</h2>
-          <p>Paste store specs, exports, or order logs and get back structured checks instead of guessed copy.</p>
+      <div class="shell hero-grid">
+        <div class="hero-main">
+          <h1 class="hero-h1">Shopify skills for AI agents</h1>
+          <p class="hero-sub">19 free Shopify skills under the MIT license for product listings, orders, ads, and Liquid themes. Connect them to ChatGPT, Claude, or your coding agent to draft the work, then approve every change in Shopify Admin.</p>
+          ${heroWorkbench(openMcpUrl, pagePath(config, '/setup'))}
         </div>
-        ${sampleOutputsSection()}
+        <div class="hero-aside" id="examples" role="region" aria-labelledby="examples-heading">
+          <h2 class="aside-h" id="examples-heading">See what the skills return</h2>
+          <p class="aside-sub">Paste store specs, exports, or order logs and get back structured checks instead of guessed copy.</p>
+          ${sampleOutputsSection()}
+        </div>
       </div>
     </section>
 
-    <section id="sequence" class="band band-alt" aria-labelledby="sequence-heading">
-      <div class="shell" data-reveal>
+    <section id="sequence" class="band band-major" aria-labelledby="sequence-heading">
+      <div class="shell">
         <div class="section-head">
           <h2 id="sequence-heading">What comes first</h2>
           <p>Follow this seven-stage order for a new store or launch. For a live store with one clear problem, start at that stage instead.</p>
@@ -544,8 +548,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="bottlenecks" class="band" aria-labelledby="bottlenecks-heading">
-      <div class="shell" data-reveal>
+    <section id="bottlenecks" class="band band-major" aria-labelledby="bottlenecks-heading">
+      <div class="shell">
         <div class="section-head">
           <h2 id="bottlenecks-heading">Common store problems</h2>
           <p>Each row lists a Shopify problem, the skill to run first, what to check next, and a starter prompt.</p>
@@ -554,8 +558,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="skills" class="band" aria-labelledby="skills-heading">
-      <div class="shell" data-reveal>
+    <section id="skills" class="band band-related" aria-labelledby="skills-heading">
+      <div class="shell">
         <div class="section-head">
           <h2 id="skills-heading">All ${SKILL_COUNT} Shopify skills</h2>
           <p>Filter by area or search for a task. Copy a starter prompt, or read the full skill on GitHub.</p>
@@ -564,8 +568,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="setup" class="band band-alt" aria-labelledby="setup-heading">
-      <div class="shell" data-reveal>
+    <section id="setup" class="band band-major" aria-labelledby="setup-heading">
+      <div class="shell">
         <div class="section-head">
           <h2 id="setup-heading">How to set up</h2>
           <p>Connect all ${SKILL_COUNT} skills in three steps. No Shopify account or store access is required to start.</p>
@@ -610,8 +614,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       </div>
     </section>
 
-    <section id="faq" class="band" aria-labelledby="faq-heading">
-      <div class="shell" data-reveal>
+    <section id="faq" class="band band-related band-last" aria-labelledby="faq-heading">
+      <div class="shell">
         <div class="section-head">
           <h2 id="faq-heading">FAQ</h2>
         </div>
@@ -704,7 +708,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         <p>The store owner can also turn on four optional read scopes inside the app: <code>read_reports</code>, <code>read_discounts</code>, <code>read_themes</code>, and <code>read_customers</code>. Even with <code>read_customers</code> enabled, the server reads totals only and never pulls buyer names or emails.</p>
         <p><a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt">ChatGPT connector docs</a> · <a href="https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp">Claude MCP docs</a></p>
       </section>
-      <section id="fix-issues">
+      <section id="fix-issues" class="related">
         <h2>Fix common issues</h2>
         <dl>
           <dt>My AI app won't accept Markdown (.md) files</dt>
@@ -717,7 +721,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
           <dd>Ask your AI app to read the next page, or to tell you which records it checked.</dd>
         </dl>
       </section>
-      <section id="contact">
+      <section id="contact" class="related">
         <h2>Contact and support</h2>
         <p>Email <a href="mailto:${SUPPORT}">${SUPPORT}</a> for help, or open a <a href="${REPOSITORY}/issues">GitHub issue</a> for public questions. Don't post passwords, keys, or private store data in a public issue.</p>
         <p><a href="${pagePath(config, '/privacy')}">Privacy notice</a> · <a href="${pagePath(config, '/llms.txt')}">llms.txt</a> · <a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a></p>
@@ -760,7 +764,7 @@ export function renderPrivacyPage(config: PublicPageConfig = {}): string {
         </ul>
         <p>An hourly job deletes expired records. We don't save client briefs, uploaded files, chats, or query results.</p>
       </section>
-      <section>
+      <section class="related">
         <h2>Your controls and contact</h2>
         <p>Store owners approve every live store connection in Shopify Admin. They can remove access or uninstall the app at any time. We respond to Shopify's customer data request and data deletion webhooks.</p>
         <p>Email <a href="mailto:${SUPPORT}">${SUPPORT}</a> for privacy requests, or open <a href="${REPOSITORY}/issues">GitHub issues</a>. This service is free under the MIT license, with no payments, ad trackers, or data sales.</p>

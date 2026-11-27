@@ -326,24 +326,24 @@ test('public pages exclude AI slop, mid-sentence bold, medical jargon, and stale
   }
 });
 
-test('public pages and styles enforce strict design guardrails (0 webfonts, 14/16px type scale, 0 pills/eyebrows/purple/beige)', () => {
+test('public pages and styles enforce strict design guardrails (self-hosted fonts only, 14/16/20px type scale, 0 pills/eyebrows/purple/beige)', () => {
   for (const html of [
     renderProductPage(candidateConfig),
     renderHelpPage(candidateConfig),
     renderPrivacyPage(candidateConfig),
   ]) {
     assert.doesNotMatch(html, /class="[^"]*\b(?:eyebrow|stage-badge|install-tag|term-dots|callout|install-card|job-card)\b/);
-    assert.doesNotMatch(html, /rel="preload"[^>]*as="font"/i);
+    for (const m of html.matchAll(/rel="preload"[^>]*as="font"[^>]*/gi)) assert.match(m[0], /href="\/shopify-va\/assets\/fonts\/[a-z0-9-]+\.woff2"/, 'fonts are preloaded from this origin only');
     assert.doesNotMatch(html, /fonts\.googleapis\.com|fonts\.gstatic\.com/i);
   }
-  assert.doesNotMatch(PUBLIC_STYLES, /@font-face/i);
+  for (const m of PUBLIC_STYLES.matchAll(/src:url\(([^)]+)\)/g)) assert.match(m[1], /^fonts\/[a-z0-9-]+\.woff2$/, 'every @font-face is served from this origin');
   assert.doesNotMatch(PUBLIC_STYLES, /transition\s*:\s*all\b/i);
   assert.doesNotMatch(PUBLIC_STYLES, /border-radius\s*:\s*999px/);
   assert.doesNotMatch(PUBLIC_STYLES, /#(?:f6f4ee|fffefb|e3dfd3|ebe8df|eeebe1|eeebe3|7e3bd0|c9a7ff)/i);
   for (const match of PUBLIC_STYLES.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)) {
     const px = Number(match[1]);
     assert.ok(px >= 14, `Found font-size < 14px: ${match[0]}`);
-    assert.ok([14, 16, 18, 20].includes(px), `Fixed font sizes must be 14px, 16px, 18px or 20px (got ${match[0]})`);
+    assert.ok([14, 16, 20].includes(px), `Fixed font sizes must be 14px, 16px or 20px (got ${match[0]})`);
   }
 });
 
@@ -358,10 +358,10 @@ test('readable type scale: 16px body, nothing under 14px, 16px form fields', () 
   assert.match(PUBLIC_STYLES, /:root\{[^}]*font-size:16px/);
   assert.ok(size('p,li,dd') >= 16, 'paragraphs, list items and definitions are at least 16px');
   assert.ok(size('.bottleneck-table td') >= 16, 'table cells are at least 16px');
-  assert.ok(size('.skill-entry p') >= 16, 'card text is at least 16px');
+  assert.ok(size('.skill-entry p') >= 16, 'skill summaries are at least 16px');
   assert.ok(size('.skill-filter input') >= 16, 'search input is at least 16px so iOS Safari does not zoom');
   assert.ok(size('.copy-btn') >= 16 && size('.seg-tab') >= 16 && size('.family-nav') >= 16, 'buttons, tabs and nav links are body size');
-  assert.ok(size('.hero-sub') >= 18 && size('.hero-sub') <= 20, 'lead text is 18-20px');
+  assert.equal(size('.hero-sub'), 20, 'lead text is 20px');
   assert.ok(size('.seq-gates a') >= 14 && size('.site-footer') >= 14 && size('.cmd-code') >= 14, 'small and mono text is at least 14px');
   // No narrower breakpoint may shrink the search field or body text.
   assert.doesNotMatch(PUBLIC_STYLES, /\.skill-filter input\{[^}]*font-size:1[0-5]px/);
@@ -369,19 +369,15 @@ test('readable type scale: 16px body, nothing under 14px, 16px form fields', () 
   assert.doesNotMatch(PUBLIC_STYLES, /font-size\s*:\s*[\d.]+(?:rem|em|%)\s*[;}]/, 'no relative sizes that could dip under 14px');
 });
 
-test('design polish: two radii, ring surfaces, wells, flat outline buttons and paint-only transitions', () => {
-  const radii = new Set([...PUBLIC_STYLES.matchAll(/border-radius:\s*([^;}]+)/g)].map(m => m[1].trim()).filter(r => r !== '0' && !/^8px$/.test(r)));
-  assert.deepEqual([...radii].sort(), ['var(--radius-box)', 'var(--radius-btn)']);
+test('design polish: flat buttons, ruled wells and paint-only transitions', () => {
   assert.match(PUBLIC_STYLES, /--radius-btn:6px/);
-  assert.match(PUBLIC_STYLES, /--radius-box:8px/);
-  assert.match(PUBLIC_STYLES, /--well:inset 0 2px 5px rgba\(0,0,0,\.45\)/);
-  assert.match(PUBLIC_STYLES, /--btn-shadow:0 1px 2px rgba\(0,0,0,\.75\),inset 0 1px 0 rgba\(255,255,255,\.18\)/);
-  assert.match(PUBLIC_STYLES, /\.copy-btn:active\{transform:translateY\(1px\)\}/);
-  assert.match(PUBLIC_STYLES, /\.copy-btn-line\{[^}]*box-shadow:none/);
+  assert.match(PUBLIC_STYLES, /\.copy-btn\{[^}]*background:var\(--accent\);color:var\(--on-accent\)/);
+  assert.match(PUBLIC_STYLES, /\.copy-btn-line\{border:1px solid var\(--line\);background:transparent;color:var\(--accent\)\}/);
+  assert.doesNotMatch(PUBLIC_STYLES, /--btn-shadow|--well|inset 0 2px/);
   assert.doesNotMatch(PUBLIC_STYLES, /(?:h1|h2|\.hero-h1)[^{]*\{[^}]*gradient/);
   for (const m of PUBLIC_STYLES.matchAll(/transition:([^;}]+)/g)) {
     for (const part of m[1].split(/,(?![^(]*\))/)) {
-      assert.match(part.trim(), /^(?:none|color|background-color|border-color|box-shadow|transform|translate|opacity)\b/, `transition on non-paint property: ${part}`);
+      assert.match(part.trim(), /^(?:none|color|background-color|border-color)\b/, `transition on non-paint property: ${part}`);
     }
   }
   assert.match(PUBLIC_STYLES, /prefers-reduced-motion:reduce/);

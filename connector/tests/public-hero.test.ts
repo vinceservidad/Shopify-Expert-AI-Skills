@@ -44,12 +44,31 @@ test('the hero animation draws no price-tag or checkmark icons and keeps lines c
   for (const y of waves) assert.ok(y > 0 && y < 1, `wave at ${y} must sit inside the header-to-headline band`);
 });
 
-test('headings balance their line breaks and the setup steps use plain numbers', () => {
+test('headings balance their line breaks and the setup steps use plain ordinals, not 01-style markers', () => {
   const css = publicContent('/shopify-va/assets/public.css', config)!.body as string;
   assert.match(css, /\.hero-h1\{text-wrap:balance;/);
   assert.match(css, /h1,h2\{text-wrap:balance\}/);
   const before = css.match(/\.quick-setup>li::before\{[^}]*\}/)![0];
-  assert.match(before, /content:'0' counter\(qs\)/);
+  assert.match(before, /content:counter\(qs\) '\.'/);
   assert.doesNotMatch(before, /border|width:28px/);
   assert.match(css, /\.copy-btn-text\{[^}]*border:0;[^}]*background:transparent;[^}]*color:var\(--accent\)/);
+});
+
+test('the hero is a left-aligned split: copy, connector tabs and setup links left, the paste-and-return example right', () => {
+  const html = publicContent('/shopify-va', config)!.body as string;
+  const hero = html.match(/<section class="hero stage">[\s\S]*?<\/section>/)![0];
+  const main = hero.indexOf('class="hero-main"'), aside = hero.indexOf('class="hero-aside"');
+  assert.ok(main > 0 && aside > main, 'main column, then aside');
+  const left = hero.slice(main, aside), right = hero.slice(aside);
+  for (const part of ['class="hero-h1"', 'class="hero-sub"', 'class="workbench" id="install"', 'class="wb-note"', 'class="wb-links"']) assert.ok(left.includes(part), part);
+  assert.ok(right.includes('id="examples"') && right.includes('data-tabs="examples"'), 'the example tabs moved into the hero');
+  for (const tab of ['Messy CSV', 'Chargeback', 'New listing']) assert.ok(right.includes(`>${tab}</label>`), tab);
+  assert.equal((html.match(/id="examples"/g) ?? []).length, 1, 'the old examples section is gone');
+  assert.ok(!html.includes('<section id="examples"'));
+  const css = publicContent('/shopify-va/assets/public.css', config)!.body as string;
+  assert.match(css, /\.hero-grid\{display:grid;grid-template-columns:minmax\(0,1fr\);[^}]*text-align:left\}/);
+  assert.match(css, /@media\(min-width:1024px\)\{\s*\.hero-grid\{grid-template-columns:minmax\(0,7fr\) minmax\(0,5fr\);/);
+  assert.match(css, /@media\(min-width:1024px\)\{[^@]*\.hero-h1\{font-size:clamp\(52px,4\.4vw,64px\)\}/);
+  assert.match(css, /\.hero-sub\{[^}]*max-width:56ch/);
+  assert.doesNotMatch(css, /\.hero-inner|\.hero-h1\{[^}]*text-align:center/);
 });
