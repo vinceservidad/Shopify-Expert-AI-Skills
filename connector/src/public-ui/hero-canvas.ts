@@ -1,6 +1,6 @@
 /** Hero stage animation, served from 'self' so the strict CSP holds.
  *  Decorative only (aria-hidden), stops offscreen/hidden, and honors reduced motion.
- *  Motif: faint emerald glow waves and twinkling dots, kept to the top of the stage so nothing crosses the setup hint text. */
+ *  Motif: faint, calm emerald and sea-green waves (no neon) and twinkling dots, kept to the top of the stage so nothing crosses the setup hint text. */
 export const HERO_SCRIPT = `(function () {
   var canvas = document.querySelector('[data-hero-canvas]');
   if (!canvas || !canvas.getContext) return;
@@ -8,7 +8,7 @@ export const HERO_SCRIPT = `(function () {
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var width = 0, height = 0, ratio = 1, bandTop = 0, bandH = 240, dots = [], running = false, visible = true, last = 0, start = 0;
-  var EMERALD = [95, 227, 161], LIME = [185, 235, 106], MINT = [142, 224, 184];
+  var EMERALD = [96, 204, 154], SEA = [112, 196, 182], MINT = [150, 216, 188];
 
   function rgba(c, a) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
   function rand(min, max) { return min + Math.random() * (max - min); }
@@ -56,7 +56,7 @@ export const HERO_SCRIPT = `(function () {
       ctx.fillStyle = rgba(MINT, tw * .42); ctx.fill();
     }
     wave(t, .3, 14, 210, .30, EMERALD, .22, 1.4);
-    wave(t, .68, 10, 180, -.20, LIME, .14, 1.1);
+    wave(t, .68, 10, 180, -.20, SEA, .14, 1.1);
   }
 
   function frame(now) {

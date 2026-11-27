@@ -1,6 +1,7 @@
 /* Marketing Skills — Shopify VA public design system:
-   - One all-dark tonal ladder for every public band: one ground (plus one very small "alt" step), one raised surface, one border, one hover border, three text colours; lime accent only on actions and active states.
+   - One all-dark tonal ladder for every public band: one ground (plus one very small "alt" step), one raised surface, one border, one hover border, three text colours; soft mint accent (#6cc9a0) only on actions, active states and card hover.
    - Two surface types: raised (ring + top highlight) and recessed wells (inner shadow + ring). 6px buttons, 8px boxes.
+   - Live cards (skills, example columns, sequence rows, problem rows): raised surface; on hover/focus-within the ring turns mint, the card lifts 2px and casts a soft mint glow; they fade up in a stagger as they scroll in. Reduced motion drops the lift and the reveal.
    - Native system fonts only (0 @font-face), readable type scale: 14px small, 16px body, 18-20px lead, 16px minimum form fields, 150ms cubic-bezier(.2,0,0,1) motion on paint properties only.
    - Anti-slop: 0 pill badges, 0 eyebrow kickers, 0 nested cards, 0 gradient headings, 0 overflow at 320px/390px. */
 export const PUBLIC_STYLES = `
@@ -13,13 +14,16 @@ export const PUBLIC_STYLES = `
   --ground-alt:#0b0c0b;
   --raised:#121412;
   --border:rgba(255,255,255,.12);
-  --border-hover:rgba(185,235,106,.45);
+  --border-hover:rgba(108,201,160,.5);
   --ink:#f2f4f1;
   --ink-2:#c8cec6;
   --muted:#9ba398;
-  --accent:#b9eb6a;
+  --accent:#6cc9a0;
+  --accent-glow:rgba(108,201,160,.16);
   --on-accent:#070807;
   --hl:rgba(255,255,255,.05);
+  --card:inset 0 1px 0 var(--hl),0 0 0 1px var(--border);
+  --card-hot:inset 0 1px 0 var(--hl),0 0 0 1px var(--border-hover),0 16px 32px -18px rgba(108,201,160,.5),0 0 28px -10px var(--accent-glow);
   --well:inset 0 2px 5px rgba(0,0,0,.45);
   --btn-shadow:0 1px 2px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.18);
   --btn-press:inset 0 0 0 100px rgba(0,0,0,.1);
@@ -65,7 +69,7 @@ body.has-hero .top-bar{position:absolute;inset:0 0 auto 0;border-bottom:0;backgr
 body.has-hero .top-bar a:focus-visible,.site-footer a:focus-visible{outline-color:var(--accent)}
 
 /* Full-bleed Shopify emerald-forest hero bleeding to y = 0, centered monumental layout */
-.hero.stage{position:relative;isolation:isolate;overflow:hidden;width:100%;padding:124px 0 var(--section-y);color:var(--ink);background:radial-gradient(90% 80% at 50% 0%,rgba(185,235,106,.09) 0%,var(--ground) 60%)}
+.hero.stage{position:relative;isolation:isolate;overflow:hidden;width:100%;padding:124px 0 var(--section-y);color:var(--ink);background:radial-gradient(90% 80% at 50% 0%,rgba(108,201,160,.08) 0%,var(--ground) 60%)}
 .hero-canvas{position:absolute;inset:0;z-index:-1;width:100%;height:100%;display:block;opacity:0;transition:opacity .4s var(--ease)}
 .hero-canvas.is-live{opacity:1}
 .hero-inner{max-width:860px;margin-inline:auto;text-align:center;animation:hero-rise 260ms var(--ease)}
@@ -108,6 +112,9 @@ body.has-hero .top-bar a:focus-visible,.site-footer a:focus-visible{outline-colo
 .band-alt{background:var(--ground-alt)}
 .will-reveal{opacity:0;transform:translateY(12px);transition:opacity .3s var(--ease),transform .3s var(--ease)}
 .will-reveal.is-in{opacity:1;transform:none}
+/* Staggered card reveal: theme.js marks each child of [data-stagger] and sets a short per-card delay as a batch scrolls in */
+.will-rise{opacity:0;translate:0 16px;transition:opacity .45s var(--ease),translate .45s var(--ease)}
+.will-rise.is-in{opacity:1;translate:none}
 .section-head{text-align:center;max-width:68ch;margin:0 auto 40px}
 .section-head p{margin:0 auto;max-width:36em;font-size:18px;line-height:1.55}
 h1,h2,h3{color:var(--ink);margin-top:0}
@@ -128,8 +135,9 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .ex-tabs label:hover{color:var(--ink)}
 #ex-csv:checked ~ .ex-tabs-wrap label[for=ex-csv],#ex-cb:checked ~ .ex-tabs-wrap label[for=ex-cb],#ex-list:checked ~ .ex-tabs-wrap label[for=ex-list]{background:var(--accent);color:var(--on-accent)}
 #ex-csv:checked ~ .ex-panels .ex-csv,#ex-cb:checked ~ .ex-panels .ex-cb,#ex-list:checked ~ .ex-panels .ex-list{visibility:visible;animation:fade-in 150ms var(--ease)}
-.ex-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:32px 40px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:32px 0;text-align:left}
-.ex-col{min-width:0}
+.ex-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:16px;padding:4px 0;text-align:left}
+.ex-col{min-width:0;padding:24px 28px;border-radius:var(--radius-box);background:var(--raised);box-shadow:var(--card);transition:box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease),opacity .45s var(--ease),translate .45s var(--ease)}
+.ex-col:hover{box-shadow:var(--card-hot);transform:translateY(-2px)}
 .ex-col p{margin:0}
 .ex-label{display:block;font-size:14px;font-weight:650;color:var(--accent);margin-bottom:8px}
 .ex-points{padding-left:18px;margin:0}
@@ -144,25 +152,27 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .seq-gates a.is-passed,.seq-gates a.is-focus{color:var(--accent)}
 .seq-gates a.is-focus{font-weight:800}
 .seq-gates a:hover{color:var(--ink);text-decoration:none}
-.sequence-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--border)}
-.seq-item{display:grid;grid-template-columns:36px minmax(150px,190px) minmax(180px,240px) 1fr;gap:8px 20px;align-items:baseline;padding:16px 12px;scroll-margin-top:16px;border-bottom:1px solid var(--border);transition:background-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
-.seq-item.is-lit,.seq-item:target{background:var(--ground);box-shadow:inset 3px 0 0 var(--accent)}
-.sequence-list:has(.is-lit) .seq-item:target:not(.is-lit){background:transparent;box-shadow:none}
+.sequence-list{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.seq-item{display:grid;grid-template-columns:36px minmax(150px,190px) minmax(180px,240px) 1fr;gap:8px 20px;align-items:baseline;padding:16px 20px;scroll-margin-top:16px;border-radius:var(--radius-box);background:var(--raised);box-shadow:var(--card);transition:box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease),opacity .45s var(--ease),translate .45s var(--ease)}
+.seq-item.is-lit,.seq-item:target,.seq-item:hover{box-shadow:inset 3px 0 0 var(--accent),var(--card-hot);transform:translateY(-2px)}
+.sequence-list:has(.is-lit) .seq-item:target:not(.is-lit){box-shadow:var(--card);transform:none}
 .seq-num{font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:14px;font-weight:700;color:var(--accent)}
 .seq-stage{font-size:16px;font-weight:650;color:var(--ink)}
 .seq-skills{font-size:14px;font-weight:600;color:var(--accent)}
 .seq-gate{font-size:16px;line-height:1.5;color:var(--ink-2)}
 
-.table-wrap{width:100%;overflow-x:auto;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.bottleneck-table{width:100%;border-collapse:collapse;text-align:left}
-.bottleneck-table th{padding:14px 12px;font-size:14px;font-weight:650;color:var(--muted);border-bottom:1px solid var(--border);white-space:nowrap}
-.bottleneck-table th:first-child,.bottleneck-table td:first-child{padding-left:0}
-.bottleneck-table th:last-child,.bottleneck-table td:last-child{padding-right:0}
+/* Problem rows are separated raised cards: the table keeps its semantics, each cell paints its slice of the ring */
+.table-wrap{width:100%;overflow-x:auto}
+.bottleneck-table{width:100%;border-collapse:separate;border-spacing:0 8px;text-align:left}
+.bottleneck-table th{padding:4px 16px 0;font-size:14px;font-weight:650;color:var(--muted);white-space:nowrap}
+.bottleneck-table th:first-child,.bottleneck-table td:first-child{padding-left:20px}
+.bottleneck-table th:last-child,.bottleneck-table td:last-child{padding-right:16px}
 .bottleneck-table th:last-child{text-align:right}
-.bottleneck-table td{padding:15px 12px;font-size:16px;line-height:1.45;color:var(--ink-2);border-bottom:1px solid var(--border);vertical-align:middle}
-.bottleneck-table tbody tr:last-child td{border-bottom:0}
-.bottleneck-table tbody tr{transition:background-color var(--dur) var(--ease)}
-.bottleneck-table tbody tr:hover{background:var(--raised)}
+.bottleneck-table tbody tr{--ring:var(--border);--bar:transparent;transition:transform var(--dur) var(--ease),opacity .45s var(--ease),translate .45s var(--ease)}
+.bottleneck-table td{padding:14px 16px;font-size:16px;line-height:1.45;color:var(--ink-2);vertical-align:middle;background:var(--raised);box-shadow:inset 0 1px 0 var(--hl),inset 0 1px 0 var(--ring),inset 0 -1px 0 var(--ring);transition:box-shadow var(--dur) var(--ease)}
+.bottleneck-table td:first-child{border-top-left-radius:var(--radius-box);border-bottom-left-radius:var(--radius-box);box-shadow:inset 3px 0 0 var(--bar),inset 1px 0 0 var(--ring),inset 0 1px 0 var(--hl),inset 0 1px 0 var(--ring),inset 0 -1px 0 var(--ring)}
+.bottleneck-table td:last-child{border-top-right-radius:var(--radius-box);border-bottom-right-radius:var(--radius-box);box-shadow:inset -1px 0 0 var(--ring),inset 0 1px 0 var(--hl),inset 0 1px 0 var(--ring),inset 0 -1px 0 var(--ring)}
+.bottleneck-table tbody tr:hover,.bottleneck-table tbody tr:focus-within{--ring:var(--border-hover);--bar:var(--accent);transform:translateY(-2px)}
 .bn-sub{display:none}
 .bottleneck-table td.bn-problem{font-weight:600;color:var(--ink)}
 .bottleneck-table td.bn-first{color:var(--accent);font-weight:650;white-space:nowrap}
@@ -185,21 +195,30 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .skill-filter input::-webkit-search-cancel-button{cursor:pointer}
 .skill-filter span{font-family:var(--sans);font-variant-numeric:tabular-nums;font-size:14px;font-weight:600;color:var(--accent);white-space:nowrap}
 
-.skill-index{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:32px;row-gap:0;border-top:1px solid var(--border)}
-.skill-entry{display:flex;flex-direction:column;justify-content:space-between;gap:12px;padding:24px 0;border-bottom:1px solid var(--border)}
+/* Skill cards: raised surface with a 2px group-coloured top bar; the GitHub link stretches over the card, Copy prompt stays on top */
+.skill-index{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.skill-entry{--cat:var(--accent);position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:16px;padding:24px 24px 16px;border-radius:var(--radius-box);background:var(--raised);box-shadow:inset 0 1px 0 var(--hl),0 0 0 1px var(--border),inset 0 2px 0 var(--cat);transition:box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease),opacity .45s var(--ease),translate .45s var(--ease)}
+.skill-entry[data-cat="Orders & Support"]{--cat:#7fa9cc}
+.skill-entry[data-cat="Growth & Ads"]{--cat:#cfae7a}
+.skill-entry[data-cat="Store & Theme"]{--cat:#a59ad2}
+.skill-entry:hover,.skill-entry:focus-within{box-shadow:inset 0 1px 0 var(--hl),0 0 0 1px var(--border-hover),inset 0 2px 0 var(--cat),0 16px 32px -18px rgba(108,201,160,.5),0 0 28px -10px var(--accent-glow);transform:translateY(-2px)}
+.skill-gh::after{content:'';position:absolute;inset:0;border-radius:var(--radius-box)}
+.skill-entry .copy-btn{position:relative;z-index:1}
+.skill-entry:hover .skill-gh{text-decoration:underline}
 .skill-entry h3{font-size:20px;margin:0 0 6px;color:var(--ink)}
 .skill-entry p{font-size:16px;line-height:1.5;margin:0;color:var(--ink-2)}
-.skill-empty{padding:40px 0;text-align:center;border-bottom:1px solid var(--border)}
+.skill-empty{padding:40px 0;text-align:center}
 .skill-empty p{margin:0 auto 16px;max-width:none}
 .skill-empty-q{color:var(--ink)}
 .seg-tab:active{transform:translateY(1px)}
-.skill-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:4px}
+.skill-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;border-top:1px solid var(--border)}
 .skill-actions a{display:inline-flex;align-items:center;min-height:40px;font-size:16px;font-weight:600;color:var(--accent);white-space:nowrap}
 .skill-actions a:hover{text-decoration:underline}
 
 /* Unified 1px hairline matrix for the 4x2 (desktop) / 2x4 (mobile) supported AI apps */
 .apps-matrix{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--border);border-radius:var(--radius-box);overflow:hidden;box-shadow:0 0 0 1px var(--border);margin:24px 0 32px}
-.app-cell{padding:16px 18px;background:var(--ground)}
+.app-cell{padding:16px 18px;background:var(--ground);transition:background-color var(--dur) var(--ease)}
+.app-cell:hover{background:var(--raised)}
 .app-name{display:block;font-size:16px;font-weight:650;color:var(--ink);margin-bottom:4px}
 .app-mode{display:block;font-size:14px;color:var(--muted)}
 
@@ -293,8 +312,8 @@ html:has(body.app-home){background:#f6f6f7;color-scheme:light}
   .hero-sub{font-size:18px}
   .ex-tabs{display:flex;width:100%}
   .ex-tabs label{flex:1 1 auto;padding:8px 8px}
-  .ex-grid{grid-template-columns:1fr;gap:20px}
-  .ex-col+.ex-col{padding-top:20px;border-top:1px solid var(--border)}
+  .ex-grid{grid-template-columns:1fr;gap:12px}
+  .ex-col{padding:20px}
   .page-body section{padding:40px 0}
   .seq-item{grid-template-columns:28px 1fr;gap:4px 12px}
   .seq-skills,.seq-gate{grid-column:2 / -1}
@@ -319,7 +338,7 @@ html:has(body.app-home){background:#f6f6f7;color-scheme:light}
   .seg-tab+.seg-tab{border-left:0}
   .seg-tab:hover{background:var(--ground)}
   .seg-tab[aria-pressed=true]{background:var(--accent)}
-  .seq-item{padding:14px 10px}
+  .seq-item{padding:14px 16px}
   .app-home input{width:100%}
   .connection-card dl,.app-home #pairing-facts{grid-template-columns:1fr;gap:4px}
 }
@@ -340,9 +359,8 @@ html:has(body.app-home){background:#f6f6f7;color-scheme:light}
 @media(max-width:400px){
   .bottleneck-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);clip-path:inset(50%)}
   .bottleneck-table,.bottleneck-table tbody{display:block}
-  .bottleneck-table tr{display:block;padding:14px 0;border-bottom:1px solid var(--border)}
-  .bottleneck-table tbody tr:last-child{border-bottom:0}
-  .bottleneck-table td,.bottleneck-table td:first-child,.bottleneck-table td:last-child{display:block;padding:0;border:0}
+  .bottleneck-table tr{display:block;margin-bottom:8px;padding:14px 16px;border-radius:var(--radius-box);background:var(--raised);box-shadow:inset 3px 0 0 var(--bar),inset 0 1px 0 var(--hl),0 0 0 1px var(--ring)}
+  .bottleneck-table td,.bottleneck-table td:first-child,.bottleneck-table td:last-child{display:block;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
   .bottleneck-table td.bn-action{text-align:left;margin-top:2px}
   .bottleneck-table td.bn-action .copy-btn-text{padding-left:0}
   .seq-item{grid-template-columns:28px 1fr}
@@ -402,6 +420,8 @@ html:has(body.app-home){background:#f6f6f7;color-scheme:light}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
   .hero-inner,.wb-panel,.ex-panel,.will-reveal{animation:none;transition:none;opacity:1;transform:none}
-  .seq-gates span,.hero-canvas,.family-tabs a,.family-nav a,.wb-tabs label,.ex-tabs label,.seg-tab,.copy-btn,.site-footer a,.seq-item,.seq-gates a{transition:none}
+  .will-rise{opacity:1;translate:none}
+  .skill-entry:hover,.skill-entry:focus-within,.ex-col:hover,.seq-item.is-lit,.seq-item:target,.seq-item:hover,.bottleneck-table tbody tr:hover,.bottleneck-table tbody tr:focus-within{transform:none}
+  .seq-gates span,.hero-canvas,.family-tabs a,.family-nav a,.wb-tabs label,.ex-tabs label,.seg-tab,.copy-btn,.site-footer a,.seq-item,.seq-gates a,.skill-entry,.ex-col,.bottleneck-table tbody tr,.bottleneck-table td,.app-cell{transition:none}
 }
 `;
