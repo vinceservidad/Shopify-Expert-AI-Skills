@@ -4,6 +4,17 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide responsive pass (2026-11-27)
+
+- Audited all three public pages (guide, setup, privacy) on 17 viewports from 320x568 to 2560x1440, landscape phones, 200% zoom and reduced motion. No page scrolled sideways; the fixes below are layout and canvas polish.
+- Header: one row down to 560px (two-row layout between 561 and 720px was wasteful); on 360px phones and narrower the site links span the row.
+- Notched phones: the pages opt in to `viewport-fit=cover` and the content gutter honours the left and right safe-area insets, so landscape content clears the sensor housing; text size no longer inflates when a phone rotates.
+- Landscape phones and 200% zoom: shorter hero and section padding.
+- Phones: the "Common store problems" table stacks each problem with its copy button under 400px; stage rows use the full width; setup page command boxes stack the Copy button under the command, so long commands wrap inside the box.
+- Large screens: layout widens from 1600px (and again from 2200px), the hero headline scales, and skills show four columns.
+- Hero canvas: waves sit between the header and the headline instead of crossing the product tabs on phones. Both canvases render at up to 3x pixel ratio (hero capped near 4 million pixels) and redraw on resize, rotation and pixel-ratio changes.
+- No CSP change, no inline script or style. Tests pin the breakpoints, safe-area insets, code-box wrapping and canvas resize logic, and a rendered-layout check runs when `playwright-core` and Chrome are available (`PLAYWRIGHT_CORE`, `CHROME_PATH`).
+
 ### Shopify VA page and setup page usability fixes (2026-11-27)
 
 - Fixed: copy buttons with an icon lost the icon after the first copy. Every copy button now shows "Copied" (or "Copy failed" with a legacy-clipboard retry), restores its icon and label, keeps its width, and is announced to screen readers.

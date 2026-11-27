@@ -7,7 +7,7 @@ export const HERO_SCRIPT = `(function () {
   var ctx = canvas.getContext('2d');
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var width = 0, height = 0, ratio = 1, dots = [], running = false, visible = true, last = 0, start = 0;
+  var width = 0, height = 0, ratio = 1, bandTop = 0, bandH = 240, dots = [], running = false, visible = true, last = 0, start = 0;
   var EMERALD = [95, 227, 161], LIME = [185, 235, 106], MINT = [142, 224, 184];
 
   function rgba(c, a) { return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
@@ -16,14 +16,20 @@ export const HERO_SCRIPT = `(function () {
   function seed() {
     dots = [];
     for (var j = 0; j < Math.min(64, Math.max(22, Math.round(width / 22))); j++) {
-      dots.push({ x: rand(0, width), y: rand(0, height * .5), r: rand(.6, 1.6), tw: rand(0, Math.PI * 2), sp: rand(.5, 1.4) });
+      dots.push({ x: rand(0, width), y: rand(0, Math.min(height * .5, bandTop + bandH)), r: rand(.6, 1.6), tw: rand(0, Math.PI * 2), sp: rand(.5, 1.4) });
     }
   }
 
   function resize() {
     var box = canvas.getBoundingClientRect();
-    ratio = Math.min(window.devicePixelRatio || 1, 2);
+    /* Crisp up to 3x, but cap the backing store so a tall phone hero stays under about 4 million pixels. */
+    ratio = Math.min(window.devicePixelRatio || 1, 3);
+    while (ratio > 1 && box.width * box.height * ratio * ratio > 4e6) ratio -= .5;
     width = Math.max(1, box.width); height = Math.max(1, box.height);
+    /* Waves live in the gap between the header and the headline, so they never cross the tabs or the text. */
+    var bar = document.querySelector('.top-bar'), h1 = document.querySelector('.hero-h1');
+    bandTop = bar ? Math.max(0, bar.getBoundingClientRect().bottom - box.top) : 56;
+    bandH = h1 ? Math.max(12, h1.getBoundingClientRect().top - box.top - bandTop - 8) : 120;
     canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     seed();
@@ -33,7 +39,7 @@ export const HERO_SCRIPT = `(function () {
   function wave(t, y0, amp, len, speed, color, alpha, lineWidth) {
     ctx.beginPath();
     for (var x = 0; x <= width + 10; x += 10) {
-      var y = y0 * height + Math.sin(x / len + t * speed) * amp + Math.sin(x / (len * .54) - t * speed * .68) * amp * .35;
+      var a = Math.min(amp, bandH * .22), y = bandTop + y0 * bandH + Math.sin(x / len + t * speed) * a + Math.sin(x / (len * .54) - t * speed * .68) * a * .35;
       if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     }
     ctx.strokeStyle = rgba(color, alpha); ctx.lineWidth = lineWidth;
@@ -49,8 +55,8 @@ export const HERO_SCRIPT = `(function () {
       ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
       ctx.fillStyle = rgba(MINT, tw * .42); ctx.fill();
     }
-    wave(t, .12, 14, 210, .30, EMERALD, .22, 1.4);
-    wave(t, .19, 10, 180, -.20, LIME, .14, 1.1);
+    wave(t, .3, 14, 210, .30, EMERALD, .22, 1.4);
+    wave(t, .68, 10, 180, -.20, LIME, .14, 1.1);
   }
 
   function frame(now) {
@@ -67,7 +73,13 @@ export const HERO_SCRIPT = `(function () {
 
   start = performance.now();
   resize();
-  if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas); else window.addEventListener('resize', resize);
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
+  /* Rotation, page zoom and moving to another screen can change the pixel ratio without changing the box. */
+  window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', resize);
+  (function watchRatio() {
+    try { var mq = matchMedia('(resolution: ' + (window.devicePixelRatio || 1) + 'dppx)'); var on = function () { resize(); watchRatio(); }; if (mq.addEventListener) mq.addEventListener('change', on, { once: true }); } catch (e) {}
+  })();
   if (window.IntersectionObserver) new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; update(); }).observe(canvas);
   document.addEventListener('visibilitychange', update);
   canvas.classList.add('is-live');
