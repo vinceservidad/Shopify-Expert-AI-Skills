@@ -239,6 +239,19 @@ test('OG image and llms.txt discovery routes return valid payloads', () => {
     assert.ok(llms.body.includes('subscriptions-multichannel.md'));
     assert.ok(llms.body.includes('skill-sequence.md'));
     assert.ok(llms.body.includes('deliverable-templates.md'));
+    assert.ok(llms.body.includes('official-meta-methods.md'));
+    assert.ok(llms.body.includes('official-google-methods.md'));
+    assert.ok(llms.body.includes('deliverability-sms-compliance.md'));
+    assert.ok(llms.body.includes('technical-seo-standards.md'));
+    assert.ok(llms.body.includes('experiment-validity-friction.md'));
+    assert.ok(llms.body.includes('ftc-endorsement-compliance.md'));
+    assert.ok(llms.body.includes('proof-compliance-mobile-ux.md'));
+    assert.ok(llms.body.includes('shopify-analytics-ga4-consent.md'));
+    assert.ok(llms.body.includes('performance-accessibility-extensions.md'));
+    assert.ok(llms.body.includes('taxonomy-compliance.md'));
+    assert.ok(llms.body.includes('high-variant-combined-listings.md'));
+    assert.ok(llms.body.includes('search-discovery-bundles.md'));
+    assert.doesNotMatch(llms.body, /—|\s–\s/, 'llms.txt must contain zero em-dashes or spaced en-dashes');
   }
   assert.ok(renderLlmsTxt(candidateConfig).includes('npx ctx7 skills install /vinceservidad/Shopify-Expert-AI-Skills'));
 });

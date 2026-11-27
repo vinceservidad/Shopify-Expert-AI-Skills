@@ -845,6 +845,18 @@ export function renderLlmsTxt(config: PublicPageConfig = {}): string {
 - Subscriptions & Multi-Channel Sales Sync guide (\`skills/shopify-catalog-operations/references/subscriptions-multichannel.md\`)
 - Cross-Skill Build, Launch & Marketing Sequence guide (\`skills/shopify-va/references/skill-sequence.md\`)
 - Client Deliverable Templates: CSV QA, BFCM, Chargeback & Handover (\`skills/shopify-va/references/deliverable-templates.md\`)
+- Official Meta Ads Experiments, Auction, Catalog & Compliance guide (\`skills/shopify-meta-ads/references/official-meta-methods.md\`)
+- Official Google Ads Enhanced Conversions, Smart Bidding & Merchant Center guide (\`skills/shopify-google-ads/references/official-google-methods.md\`)
+- Email Deliverability & TCPA/CTIA SMS Compliance guide (\`skills/shopify-email-marketing/references/deliverability-sms-compliance.md\`)
+- Technical SEO, Product JSON-LD & Core Web Vitals Standards (\`skills/shopify-seo/references/technical-seo-standards.md\`)
+- CRO Experiment Validity, SRM & Mobile Friction Standards (\`skills/shopify-cro/references/experiment-validity-friction.md\`)
+- FTC Endorsement & Review Compliance guide (\`skills/shopify-creative-strategy/references/ftc-endorsement-compliance.md\`)
+- Product Page Social Proof Compliance & Mobile UX Standards (\`skills/shopify-product-page/references/proof-compliance-mobile-ux.md\`)
+- Shopify Analytics, GA4 & Consent Mode v2 Reconciliation guide (\`skills/shopify-analytics/references/shopify-analytics-ga4-consent.md\`)
+- Theme Performance, Accessibility & App Extensions Standards (\`skills/shopify-theme-development/references/performance-accessibility-extensions.md\`)
+- Shopify Product Taxonomy, GTIN, HS Code & EU GPSR Compliance guide (\`skills/shopify-product-listing/references/taxonomy-compliance.md\`)
+- High-Variant Catalogs, productSet & Combined Listings guide (\`skills/shopify-catalog-operations/references/high-variant-combined-listings.md\`)
+- Shopify Search & Discovery and Native Bundles guide (\`skills/shopify-merchandising/references/search-discovery-bundles.md\`)
 
 ## All ${SKILL_COUNT} Shopify skills
 
