@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide: soft mint accent and live cards (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`, `hero-canvas.ts`, `sequence-canvas.ts`: the harsh lime accent (#b9eb6a) is replaced by a calmer, less saturated mint (#6cc9a0). Contrast: 10.03:1 on ground, 9.80:1 on the alt band, 9.25:1 on raised, and 10.03:1 for `--on-accent` (#070807) on the accent. `--border-hover`, the hero glow, the sequence canvas fallback and the hero waves (emerald plus a sea-green second wave instead of lime, softer dots) use the new hue. The contrast tests now require 7:1 for every text pair. The /app light theme is unchanged.
+- `connector/src/public-ui/styles.ts`, `connector/src/public-pages.ts`, `connector/src/public-ui/theme.ts`: the skill catalog, example columns, "What comes first" rows and "Common store problems" rows are now raised cards (`--raised` fill, ring plus top highlight, 8px radius) instead of hairline-ruled text. On hover or focus-within their ring turns mint and they lift 2px; skill cards also cast a soft mint glow. Each skill card has a 2px top bar in its group colour. The GitHub link stretches over the whole skill card, and Copy prompt stays clickable above it; the link now names the skill for screen readers. Cards inside `[data-stagger]` fade up in a 70ms stagger as they scroll in (served `theme.js`; no inline script or style, CSP unchanged). Reduced motion turns off the lift and the reveal. The problems table keeps its table markup at every width. The supported-apps cells lighten on hover.
+- `connector/tests/public-cards.test.ts` (new) pins the card surface, hover, top bar, stretched link, stagger timing and reduced-motion rules; `public-contrast.test.ts` pins the new accent and checks no lime remains; `public-pages.test.ts` now accepts `translate` as a compositor-only transition.
+
 ### Shopify VA guide moves to a black ground (2026-11-27)
 
 - `connector/src/public-ui/styles.ts`: the deep green ground and surfaces are now neutral near-black (ground #070807, alt band #0b0c0b, raised #121412) with white-alpha borders, so lime (#b9eb6a) is the only green and marks actions, links, active states and the canvas effects. Hovered borders and the hero glow use the lime. Text tokens are neutral greys; every pair passes 7:1 or more (muted on raised is 7.13:1). The sequence canvas ground and the `theme-color` meta match. /app keeps its light look.

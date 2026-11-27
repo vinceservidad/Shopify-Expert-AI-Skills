@@ -437,7 +437,7 @@ function sampleOutputsSection(): string {
   ).join('');
   const labels = SAMPLE_OUTPUTS.map(item => `<label for="${item.id}">${escape(item.tab)}</label>`).join('');
   const panels = SAMPLE_OUTPUTS.map(
-    item => `<div class="ex-panel ${item.id}" data-tabpanel><div class="ex-grid"><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-points">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
+    item => `<div class="ex-panel ${item.id}" data-tabpanel><div class="ex-grid" data-stagger><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-points">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
   ).join('');
   return `<div class="ex-box" data-tabs="examples">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" data-tablist aria-label="Sample outputs">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
 }
@@ -448,7 +448,7 @@ function sequenceSection(): string {
   ).join('');
   const gates = SKILL_SEQUENCE.map((row, index) => `<a href="#seq-${index + 1}" data-seq-label aria-label="Stage ${index + 1}: ${escape(row.stage)}">${row.step}</a>`).join('');
   const strip = `<div class="seq-strip" data-seq-strip><canvas class="seq-canvas" data-seq-canvas aria-hidden="true"></canvas><nav class="seq-gates" aria-label="Jump to a stage">${gates}</nav></div>`;
-  return `${strip}<ol class="sequence-list">${rows}</ol>`;
+  return `${strip}<ol class="sequence-list" data-stagger>${rows}</ol>`;
 }
 
 const COPY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.5"/></svg>';
@@ -457,7 +457,7 @@ function bottleneckTable(): string {
   const rows = BOTTLENECKS.map(
     row => `<tr><td class="bn-problem">${escape(row.problem)}<span class="bn-sub">Fix first: ${escape(row.fixFirst)}. Check next: ${escape(row.checkNext)}.</span></td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-text" data-copy="${escape(row.prompt)}" aria-label="Copy starter prompt: ${escape(row.problem)}">${COPY_ICON}Copy prompt</button></td></tr>`,
   ).join('');
-  return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Problem</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Problem</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody data-stagger>${rows}</tbody></table></div>`;
 }
 
 function skillCatalogSection(): string {
@@ -468,9 +468,9 @@ function skillCatalogSection(): string {
     )
     .join('');
   const items = SKILL_CATALOG.map(
-    skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div><h3>${escape(skill.name)}</h3><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}">Read on GitHub</a></div></article>`,
+    skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div><h3>${escape(skill.name)}</h3><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a class="skill-gh" href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}"><span>Read<span class="sr-only"> ${escape(skill.name)}</span> on GitHub</span></a></div></article>`,
   ).join('');
-  return `<div class="catalog-controls" data-skill-filter-wrap hidden><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status role="status">${SKILL_COUNT} skills</span></div></div><div class="skill-index">${items}</div><div class="skill-empty" data-skill-empty hidden><p>No skills match <span class="skill-empty-q" data-skill-empty-query></span>.</p><button type="button" class="copy-btn copy-btn-line" data-skill-reset>Show all skills</button></div>`;
+  return `<div class="catalog-controls" data-skill-filter-wrap hidden><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status role="status">${SKILL_COUNT} skills</span></div></div><div class="skill-index" data-stagger>${items}</div><div class="skill-empty" data-skill-empty hidden><p>No skills match <span class="skill-empty-q" data-skill-empty-query></span>.</p><button type="button" class="copy-btn copy-btn-line" data-skill-reset>Show all skills</button></div>`;
 }
 
 function cmdItem(label: string, note: string, command: string, id?: string): string {

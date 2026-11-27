@@ -15,21 +15,21 @@ export function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-// Every public band is dark: text, links and button labels must meet WCAG AA on the surfaces they sit on.
+// Every public band is dark: text, links and button labels must meet 7:1 (WCAG AAA) on the surfaces they sit on.
 const PAIRS: Array<[string, string, string, number]> = [
-  ['ink', 'ground', 'headings and body on ground', 4.5],
-  ['ink-2', 'ground', 'paragraphs on ground', 4.5],
-  ['muted', 'ground', '14px captions on ground', 4.5],
-  ['accent', 'ground', 'links and active marks on ground', 4.5],
-  ['ink', 'ground-alt', 'headings on the alt band', 4.5],
-  ['ink-2', 'ground-alt', 'paragraphs on the alt band', 4.5],
-  ['muted', 'ground-alt', 'captions on the alt band', 4.5],
-  ['accent', 'ground-alt', 'links on the alt band', 4.5],
-  ['ink', 'raised', 'text on cards, boxes and tab strips', 4.5],
-  ['ink-2', 'raised', 'secondary text on raised surfaces', 4.5],
-  ['muted', 'raised', 'captions on raised surfaces', 4.5],
-  ['accent', 'raised', 'links on raised surfaces', 4.5],
-  ['on-accent', 'accent', 'button and active tab labels on lime', 4.5],
+  ['ink', 'ground', 'headings and body on ground', 7],
+  ['ink-2', 'ground', 'paragraphs on ground', 7],
+  ['muted', 'ground', '14px captions on ground', 7],
+  ['accent', 'ground', 'links and active marks on ground', 7],
+  ['ink', 'ground-alt', 'headings on the alt band', 7],
+  ['ink-2', 'ground-alt', 'paragraphs on the alt band', 7],
+  ['muted', 'ground-alt', 'captions on the alt band', 7],
+  ['accent', 'ground-alt', 'links on the alt band', 7],
+  ['ink', 'raised', 'text on cards, boxes and tab strips', 7],
+  ['ink-2', 'raised', 'secondary text on raised surfaces', 7],
+  ['muted', 'raised', 'captions on raised surfaces', 7],
+  ['accent', 'raised', 'links on raised surfaces', 7],
+  ['on-accent', 'accent', 'button and active tab labels on the mint accent', 7],
 ];
 
 test('dark theme: root tokens are the dark ladder', () => {
@@ -43,7 +43,7 @@ test('dark theme: root tokens are the dark ladder', () => {
 });
 
 for (const [fg, bg, use, min] of PAIRS) {
-  test(`WCAG AA: ${fg} on ${bg} (${use})`, () => {
+  test(`WCAG AAA 7:1: ${fg} on ${bg} (${use})`, () => {
     const t = rootTokens();
     const ratio = contrast(t[fg], t[bg]);
     assert.ok(ratio >= min, `${fg} ${t[fg]} on ${bg} ${t[bg]} = ${ratio.toFixed(2)}:1, needs ${min}:1`);
@@ -53,4 +53,22 @@ for (const [fg, bg, use, min] of PAIRS) {
 test('contrast table', () => {
   const t = rootTokens();
   console.log(PAIRS.map(([f, b]) => `${f} ${t[f]} on ${b} ${t[b]} = ${contrast(t[f], t[b]).toFixed(2)}:1`).join('\n'));
+});
+
+test('accent is the soft mint, not the old lime, everywhere it is painted', async () => {
+  const t = rootTokens();
+  assert.equal(t.accent, '#6cc9a0');
+  assert.equal(t['on-accent'], '#070807');
+  assert.ok(contrast(t.accent, t.raised) >= 7, 'accent on raised is 7:1 or better');
+  assert.ok(contrast(t['on-accent'], t.accent) >= 7, 'on-accent on accent is 7:1 or better');
+  assert.match(PUBLIC_STYLES, /--border-hover:rgba\(108,201,160,\.5\)/);
+  assert.match(PUBLIC_STYLES, /radial-gradient\(90% 80% at 50% 0%,rgba\(108,201,160,\.08\)/);
+  const { HERO_SCRIPT } = await import('../src/public-ui/hero-canvas.js');
+  const { SEQUENCE_SCRIPT } = await import('../src/public-ui/sequence-canvas.js');
+  for (const source of [PUBLIC_STYLES, HERO_SCRIPT, SEQUENCE_SCRIPT]) {
+    assert.doesNotMatch(source, /b9eb6a|185, ?235, ?106|LIME/i, 'no lime left');
+  }
+  assert.match(SEQUENCE_SCRIPT, /var accent = '#6cc9a0'/);
+  // The embedded /app keeps its own light accent.
+  assert.match(PUBLIC_STYLES, /\.app-home\{[^}]*--accent:#007a5c/);
 });

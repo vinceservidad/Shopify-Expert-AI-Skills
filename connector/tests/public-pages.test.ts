@@ -381,7 +381,7 @@ test('design polish: two radii, ring surfaces, wells, flat outline buttons and p
   assert.doesNotMatch(PUBLIC_STYLES, /(?:h1|h2|\.hero-h1)[^{]*\{[^}]*gradient/);
   for (const m of PUBLIC_STYLES.matchAll(/transition:([^;}]+)/g)) {
     for (const part of m[1].split(/,(?![^(]*\))/)) {
-      assert.match(part.trim(), /^(?:none|color|background-color|border-color|box-shadow|transform|opacity)\b/, `transition on non-paint property: ${part}`);
+      assert.match(part.trim(), /^(?:none|color|background-color|border-color|box-shadow|transform|translate|opacity)\b/, `transition on non-paint property: ${part}`);
     }
   }
   assert.match(PUBLIC_STYLES, /prefers-reduced-motion:reduce/);

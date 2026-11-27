@@ -125,7 +125,7 @@ test('rendered layout: no page scrolls sideways or has an element wider than the
 });
 
 test('desktop audit fixes: one lit stage row, readable search clear, aligned Copied label, readable doc column, roomy install commands', () => {
-  assert.match(css, /\.sequence-list:has\(\.is-lit\) \.seq-item:target:not\(\.is-lit\)\{background:transparent;box-shadow:none\}/);
+  assert.match(css, /\.sequence-list:has\(\.is-lit\) \.seq-item:target:not\(\.is-lit\)\{box-shadow:var\(--card\);transform:none\}/);
   assert.ok(!/search-cancel-button\{[^}]*invert/.test(css), 'the clear button keeps its light dark-scheme colour');
   assert.match(css, /\.copy-btn-text\{[^}]*text-align:inherit/);
   assert.match(css, /\.page-body\.shell\{width:min\(880px,calc\(100% - 2\*var\(--gutter\)\)\)\}/);
