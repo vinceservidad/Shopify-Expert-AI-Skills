@@ -4,9 +4,10 @@ import { PUBLIC_STYLES } from './public-ui/styles.js';
 import { THEME_SCRIPT } from './public-ui/theme.js';
 import { HERO_SCRIPT } from './public-ui/hero-canvas.js';
 import { SEQUENCE_SCRIPT } from './public-ui/sequence-canvas.js';
-import { SKILL_CATALOG, SKILL_CATEGORIES, SKILL_COUNT } from './public-ui/skill-groups.js';
+import { SKILL_CATALOG, SKILL_CATEGORIES, SKILL_COUNT, type SkillCatalogEntry } from './public-ui/skill-groups.js';
 import { FAVICON_DATA_URI } from './public-ui/favicon.js';
-import { SKILL_DOCS, SKILL_DOCS_UPDATED } from './public-ui/skill-docs.js';
+import { SKILL_DOCS, SKILL_DOCS_UPDATED, SKILL_REFERENCES } from './public-ui/skill-docs.js';
+import { escapeHtml, firstParagraph, markdownTitle, renderMarkdown } from './public-ui/markdown.js';
 
 export { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, SEQUENCE_SCRIPT, THEME_SCRIPT };
 
@@ -48,8 +49,7 @@ const PRODUCT_LISTING_ZIP_URL = `${RELEASE_DOWNLOAD_BASE}/shopify-product-listin
 const SOURCE_ZIP = `${REPOSITORY}/archive/refs/heads/main.zip`;
 const SUPPORT = 'support@mktskills.com';
 
-const escape = (value: string) =>
-  value.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]!));
+const escape = escapeHtml;
 const sourceFile = (path: string) => `${REPOSITORY}/blob/main/${path}`;
 const sourceCandidateFile = (path: string) => `${REPOSITORY}/blob/feat/cloudflare-hosted-mcp/${path}`;
 
@@ -384,11 +384,15 @@ function breadcrumbNav(config: PublicPageConfig, page: PageKey): string {
   return `<nav class="crumbs" aria-label="Breadcrumb"><ol>${items}</ol></nav>`;
 }
 
+/** A generated page (a skill or one of its reference files): its own path, title, trail and JSON-LD. */
+type DocPageMeta = { path: string; title: string; description: string; trail: { name: string; url: string }[]; jsonLd: string; canonicalPath?: string };
+
 type LayoutMeta = {
   page: PageKey;
   hasHero?: boolean;
   hasSequence?: boolean;
   currentNav?: 'setup';
+  doc?: DocPageMeta;
 };
 
 /** The heading face and the body 400 face are used above the fold on every page, so they are preloaded.
@@ -399,13 +403,15 @@ function fontPreloads(config: PublicPageConfig): string {
 }
 
 function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): string {
-  const { title, description } = PAGES[meta.page], canonical = `${SITE_ORIGIN}${PAGES[meta.page].path}`;
+  const { title, description } = meta.doc ?? PAGES[meta.page], canonical = `${SITE_ORIGIN}${meta.doc?.canonicalPath ?? meta.doc?.path ?? PAGES[meta.page].path}`;
   const socialTags = `<meta property="og:title" content="${escape(title)}"><meta property="og:description" content="${escape(description)}"><meta property="og:url" content="${escape(canonical)}"><meta property="og:site_name" content="Marketing Skills"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:image" content="${OG_IMAGE_URL}"><meta property="og:image:type" content="image/png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="${escape(OG_IMAGE_ALT)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escape(title)}"><meta name="twitter:description" content="${escape(description)}"><meta name="twitter:image" content="${OG_IMAGE_URL}"><meta name="twitter:image:alt" content="${escape(OG_IMAGE_ALT)}">`;
   // JSON-LD is a data block, not executable script, so script-src is unaffected and no inline script is added.
-  const ldTag = `<script type="application/ld+json">${pageJsonLd(meta.page)}</script>`;
+  const ldTag = `<script type="application/ld+json">${meta.doc?.jsonLd ?? pageJsonLd(meta.page)}</script>`;
+  // Skill and reference pages carry one GitHub link of their own ("Source on GitHub"), so the footer leaves its two out.
+  const sourceLinks = meta.doc ? '' : `<a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a>`;
   const heroScript = meta.hasHero ? `<script src="${pagePath(config, '/assets/hero.js')}" defer></script>` : '';
   const sequenceScript = meta.hasSequence ? `<script src="${pagePath(config, '/assets/sequence.js')}" defer></script>` : '';
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow, max-image-preview:large"><meta name="theme-color" content="#15191a"><meta name="color-scheme" content="dark"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}${fontPreloads(config)}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${pagePath(config, '/llms.txt')}">llms.txt</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>${escape(title)}</title><meta name="description" content="${escape(description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow, max-image-preview:large"><meta name="theme-color" content="#15191a"><meta name="color-scheme" content="dark"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}${fontPreloads(config)}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${pagePath(config, '/llms.txt')}">llms.txt</a>${sourceLinks}</nav></footer></div></body></html>`;
 }
 
 function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
@@ -449,25 +455,35 @@ function sampleOutputsSection(): string {
   return `<div class="ex-box" data-tabs="examples">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" data-tablist aria-label="Sample tasks">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
 }
 
-function sequenceSection(): string {
+function sequenceSection(config: PublicPageConfig): string {
   const rows = SKILL_SEQUENCE.map(
-    (row, index) => `<li class="seq-item" id="seq-${index + 1}"><span class="seq-num">${row.step}</span><span class="seq-stage">${escape(row.stage)}</span><span class="seq-skills">${escape(row.skills)}</span><span class="seq-gate">${escape(row.gate)}</span></li>`,
+    (row, index) => `<li class="seq-item" id="seq-${index + 1}"><span class="seq-num">${row.step}</span><span class="seq-stage">${escape(row.stage)}</span><span class="seq-skills">${skillNameLinks(row.skills, config)}</span><span class="seq-gate">${escape(row.gate)}</span></li>`,
   ).join('');
   const gates = SKILL_SEQUENCE.map((row, index) => `<a href="#seq-${index + 1}" data-seq-label aria-label="Stage ${index + 1}: ${escape(row.stage)}">${row.step}</a>`).join('');
   const strip = `<div class="seq-strip" data-seq-strip><canvas class="seq-canvas" data-seq-canvas aria-hidden="true"></canvas><nav class="seq-gates" aria-label="Jump to a stage">${gates}</nav></div>`;
   return `${strip}<ol class="sequence-list">${rows}</ol>`;
 }
 
+const SKILL_BY_NAME = new Map(SKILL_CATALOG.map(skill => [skill.name, skill]));
+
+/** A comma-separated list of skill display names, each linked to its skill page (unknown names stay plain text). */
+function skillNameLinks(names: string, config: PublicPageConfig): string {
+  return names.split(', ').map(name => {
+    const skill = SKILL_BY_NAME.get(name);
+    return skill ? `<a href="${skillPath(config, skill.slug)}">${escape(name)}</a>` : escape(name);
+  }).join(', ');
+}
+
 const COPY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5A1.5 1.5 0 0 0 9 1.5H3A1.5 1.5 0 0 0 1.5 3v6A1.5 1.5 0 0 0 3 10.5h.5"/></svg>';
 
-function bottleneckTable(): string {
+function bottleneckTable(config: PublicPageConfig): string {
   const rows = BOTTLENECKS.map(
-    row => `<tr><td class="bn-problem">${escape(row.problem)}<span class="bn-sub">Fix first: ${escape(row.fixFirst)}. Check next: ${escape(row.checkNext)}.</span></td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-text" data-copy="${escape(row.prompt)}" aria-label="Copy starter prompt: ${escape(row.problem)}">${COPY_ICON}Copy prompt</button></td></tr>`,
+    row => `<tr><td class="bn-problem">${escape(row.problem)}<span class="bn-sub">Fix first: ${skillNameLinks(row.fixFirst, config)}. Check next: ${skillNameLinks(row.checkNext, config)}.</span></td><td class="bn-first">${skillNameLinks(row.fixFirst, config)}</td><td class="bn-next">${skillNameLinks(row.checkNext, config)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-text" data-copy="${escape(row.prompt)}" aria-label="Copy starter prompt: ${escape(row.problem)}">${COPY_ICON}Copy prompt</button></td></tr>`,
   ).join('');
   return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Problem</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
-function skillCatalogSection(): string {
+function skillCatalogSection(config: PublicPageConfig): string {
   const tabs = ['All', ...SKILL_CATEGORIES]
     .map(
       (cat, index) =>
@@ -475,7 +491,7 @@ function skillCatalogSection(): string {
     )
     .join('');
   const items = SKILL_CATALOG.map(
-    skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div class="skill-text"><div><h3>${escape(skill.name)}</h3><span class="skill-cat">${escape(skill.category)}</span></div><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a class="skill-gh" href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}"><span>Read<span class="sr-only"> ${escape(skill.name)}</span> on GitHub</span></a></div></article>`,
+    skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div class="skill-text"><div><h3>${escape(skill.name)}</h3><span class="skill-cat">${escape(skill.category)}</span></div><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a class="skill-link" href="${skillPath(config, skill.slug)}"><span>Read the<span class="sr-only"> ${escape(skill.name)}</span> skill</span></a></div></article>`,
   ).join('');
   return `<div class="catalog-controls" data-skill-filter-wrap hidden><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status role="status">${SKILL_COUNT} skills</span></div></div><div class="skill-index">${items}</div><div class="skill-empty" data-skill-empty hidden><p>No skills match <span class="skill-empty-q" data-skill-empty-query></span>.</p><button type="button" class="copy-btn copy-btn-line" data-skill-reset>Show all skills</button></div>`;
 }
@@ -544,7 +560,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
           <h2 id="sequence-heading">What comes first</h2>
           <p>A new store or a launch goes through these seven stages in order. If a live store has one clear problem, start at the stage it belongs to.</p>
         </div>
-        ${sequenceSection()}
+        ${sequenceSection(config)}
       </div>
     </section>
 
@@ -554,7 +570,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
           <h2 id="bottlenecks-heading">Common store problems</h2>
           <p>Pick the row that sounds like your store. It names the skill to start with and the ones to check after it, and gives you a starter prompt to copy.</p>
         </div>
-        ${bottleneckTable()}
+        ${bottleneckTable(config)}
       </div>
     </section>
 
@@ -562,9 +578,9 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell">
         <div class="section-head">
           <h2 id="skills-heading">All ${SKILL_COUNT} Shopify skills</h2>
-          <p>Each skill has a starter prompt you can copy and its full instructions on GitHub. Filter by area or search for a task.</p>
+          <p>Each skill has a starter prompt you can copy and a page with its full instructions. Filter by area or search for a task.</p>
         </div>
-        ${skillCatalogSection()}
+        ${skillCatalogSection(config)}
       </div>
     </section>
 
@@ -773,6 +789,201 @@ export function renderPrivacyPage(config: PublicPageConfig = {}): string {
   );
 }
 
+/* Skill pages: /shopify-va/skills/<slug> renders a skill's SKILL.md, and /shopify-va/skills/<slug>/references/<file>
+   renders one of its reference files. The Markdown comes from the generated skill-docs.ts (no filesystem at runtime). */
+type SkillPage = { skill: SkillCatalogEntry; doc: { slug: string; description: string; body: string } };
+type ReferencePage = { skill: SkillCatalogEntry; file: string; title: string; body: string };
+
+const SKILL_PAGES = new Map<string, SkillPage>(SKILL_CATALOG.flatMap(skill => {
+  const doc = SKILL_DOCS.find(entry => entry.slug === skill.slug);
+  return doc ? [[skill.slug, { skill, doc }] as const] : [];
+}));
+const REFERENCE_PAGES = new Map<string, ReferencePage>(SKILL_REFERENCES.flatMap(reference => {
+  const skill = SKILL_PAGES.get(reference.slug)?.skill;
+  return skill ? [[`${reference.slug}/${reference.file}`, { skill, file: reference.file, title: markdownTitle(reference.body) ?? reference.file, body: reference.body }] as const] : [];
+}));
+
+function skillPath(config: PublicPageConfig, slug: string): string {
+  return pagePath(config, `/skills/${slug}`);
+}
+function referencePath(config: PublicPageConfig, slug: string, file: string): string {
+  return pagePath(config, `/skills/${slug}/references/${file}`);
+}
+const skillUrl = (slug: string) => `${SITE_ORIGIN}/shopify-va/skills/${slug}`;
+const referenceUrl = (slug: string, file: string) => `${SITE_ORIGIN}/shopify-va/skills/${slug}/references/${file}`;
+
+/** Every skill and reference page path (canonical form, no trailing slash), for the sitemap and tests. */
+export function skillPagePaths(): { skills: string[]; references: string[] } {
+  return {
+    skills: [...SKILL_PAGES.keys()].map(slug => `/shopify-va/skills/${slug}`),
+    references: [...REFERENCE_PAGES.values()].map(page => `/shopify-va/skills/${page.skill.slug}/references/${page.file}`),
+  };
+}
+
+/** The pages the sitemap lists: every skill page and every reference page that is its own canonical. */
+function canonicalSkillPagePaths(): string[] {
+  const { skills, references } = skillPagePaths();
+  return [...skills, ...references.filter(path => { const [, slug, file] = /^\/shopify-va\/skills\/([a-z0-9-]+)\/references\/([a-z0-9-]+)$/.exec(path)!; return canonicalReferencePath(slug!, file!) === path; })];
+}
+
+/** Whole sentences of `text` that fit in `max` characters; one long sentence is cut at a word and ends with an ellipsis. */
+function clipSentences(text: string, max = 158): string {
+  let out = '';
+  for (const sentence of text.split(/(?<=[.!?])\s+/)) {
+    const next = out ? `${out} ${sentence}` : sentence;
+    if (next.length > max) break;
+    out = next;
+  }
+  if (out.length >= 80 || out === text) return out;
+  const cut = text.slice(0, max - 1);
+  return `${cut.slice(0, cut.lastIndexOf(' ') > 40 ? cut.lastIndexOf(' ') : cut.length).replace(/[,;:]$/, '')}…`;
+}
+
+const BRAND_SUFFIX = ' | Marketing Skills';
+function skillTitle(name: string): string {
+  const full = `${name}: Shopify skill for AI agents${BRAND_SUFFIX}`;
+  return full.length < 60 ? full : `${name}: Shopify skill${BRAND_SUFFIX}`;
+}
+const DUPLICATE_REFERENCE_TITLES = new Set([...REFERENCE_PAGES.values()].map(page => page.title).filter((title, index, all) => all.indexOf(title) !== index));
+function referenceHeading(page: ReferencePage): string {
+  return DUPLICATE_REFERENCE_TITLES.has(page.title) ? `${page.title} for ${page.skill.name}` : page.title;
+}
+function referenceTitle(page: ReferencePage): string {
+  const heading = referenceHeading(page);
+  return `${heading}${BRAND_SUFFIX}`.length < 60 ? `${heading}${BRAND_SUFFIX}` : heading;
+}
+/** A reference file copied word for word into several skills (copy-quality-check.md) is one document: each copy
+ *  points its canonical at the Daily Store Coordinator copy (or the first one), and only that copy is in the sitemap. */
+const PRIMARY_REFERENCE = new Map<string, string>();
+for (const [key, page] of REFERENCE_PAGES) {
+  const twins = [...REFERENCE_PAGES.entries()].filter(([, other]) => other.body === page.body).map(([twin]) => twin);
+  if (twins.length > 1) PRIMARY_REFERENCE.set(key, twins.find(twin => twin.startsWith('shopify-va/')) ?? twins[0]!);
+}
+function canonicalReferencePath(slug: string, file: string): string {
+  const [primarySlug, primaryFile] = (PRIMARY_REFERENCE.get(`${slug}/${file}`) ?? `${slug}/${file}`).split('/');
+  return `/shopify-va/skills/${primarySlug}/references/${primaryFile}`;
+}
+function referenceDescription(page: ReferencePage): string {
+  // A first paragraph that only introduces a list ("Examples:") says nothing on its own, so it is left out.
+  const first = firstParagraph(page.body.replace(/^#\s.*$/m, '')), lead = first && !first.endsWith(':') ? first : undefined;
+  if (PRIMARY_REFERENCE.has(`${page.skill.slug}/${page.file}`)) return clipSentences(`${referenceHeading(page)}. ${lead ?? ''}`.trim());
+  // A short or missing first paragraph is led by the file's own heading and skill, so the description stays specific.
+  return clipSentences(lead && lead.length >= 80 ? lead : `${page.title}, a reference file of the ${page.skill.name} Shopify skill.${lead ? ` ${lead}` : ''}`);
+}
+
+function skillsTrail(): { name: string; url: string }[] {
+  return [...breadcrumbTrail('guide'), { name: 'Skills', url: `${SITE_ORIGIN}/shopify-va#skills` }];
+}
+
+function docJsonLd(url: string, title: string, description: string, trail: { name: string; url: string }[]): string {
+  return safeJsonLd({ '@context': 'https://schema.org', '@graph': [
+    { '@type': 'Organization', '@id': ORGANIZATION_ID, name: 'Marketing Skills', alternateName: 'MKT Skills', url: FAMILY_HOME, logo: LOGO_URL, sameAs: [REPOSITORY] },
+    {
+      '@type': 'WebPage', '@id': `${url}#webpage`, url, name: title, description, inLanguage: 'en',
+      isPartOf: { '@id': MARKETING_WEBSITE_ID }, publisher: { '@id': ORGANIZATION_ID }, breadcrumb: { '@id': `${url}#breadcrumb` },
+      about: { '@id': `${SITE_ORIGIN}/shopify-va#software` }, dateModified: SKILL_DOCS_UPDATED,
+      primaryImageOfPage: { '@type': 'ImageObject', url: OG_IMAGE_URL, width: 1200, height: 630 },
+    },
+    { '@type': 'BreadcrumbList', '@id': `${url}#breadcrumb`, itemListElement: trail.map((item, index) => ({ '@type': 'ListItem', position: index + 1, name: item.name, item: item.url })) },
+  ] });
+}
+
+/** Visible breadcrumb for generated pages: same markup as breadcrumbNav, with on-site hrefs for every link. */
+function docCrumbs(config: PublicPageConfig, trail: { name: string; href: string }[]): string {
+  const items = trail.map((item, index) => index === trail.length - 1
+    ? `<li aria-current="page">${escape(item.name)}</li>`
+    : `<li><a href="${item.href}">${escape(item.name)}</a></li>`).join('');
+  return `<nav class="crumbs" aria-label="Breadcrumb"><ol>${items}</ol></nav>`;
+}
+
+/** Link targets inside a skill file: SKILL.md and references/*.md become on-site pages, other repository files open
+ *  their GitHub source, and absolute http(s) links stay as written. `from` is the file's folder in the repository. */
+function skillLinkResolver(config: PublicPageConfig, from: string) {
+  return (href: string): string | undefined => {
+    if (/^(?:https?:|mailto:)/i.test(href) || href.startsWith('#')) return href;
+    let resolved: URL;
+    try { resolved = new URL(href, `https://repo.invalid/${from}/`); } catch { return undefined; }
+    if (resolved.origin !== 'https://repo.invalid') return undefined;
+    const path = decodeURIComponent(resolved.pathname.slice(1)), hash = resolved.hash;
+    const skillFile = /^skills\/([a-z0-9-]+)\/SKILL\.md$/.exec(path);
+    if (skillFile && SKILL_PAGES.has(skillFile[1]!)) return `${skillPath(config, skillFile[1]!)}${hash}`;
+    const reference = /^skills\/([a-z0-9-]+)\/references\/([a-z0-9-]+)\.md$/.exec(path);
+    if (reference && REFERENCE_PAGES.has(`${reference[1]}/${reference[2]}`)) return `${referencePath(config, reference[1]!, reference[2]!)}${hash}`;
+    return /^[\w./-]+$/.test(path) && !path.includes('..') ? `${sourceFile(path)}${hash}` : undefined;
+  };
+}
+
+function relatedSkills(config: PublicPageConfig, skill: SkillCatalogEntry): string {
+  const others = SKILL_CATALOG.filter(entry => entry.category === skill.category && entry.slug !== skill.slug);
+  return others.length ? `<section id="related" class="related"><h2>More ${escape(skill.category)} skills</h2><ul class="doc-links">${others.map(entry => `<li><a href="${skillPath(config, entry.slug)}">${escape(entry.name)}</a><span>${escape(entry.summary)}</span></li>`).join('')}</ul></section>` : '';
+}
+
+function referenceList(config: PublicPageConfig, skill: SkillCatalogEntry, heading: string, except?: string): string {
+  const files = [...REFERENCE_PAGES.values()].filter(page => page.skill.slug === skill.slug && page.file !== except);
+  return files.length ? `<section id="references" class="related"><h2>${escape(heading)}</h2><ul class="doc-links">${files.map(page => `<li><a href="${referencePath(config, skill.slug, page.file)}">${escape(page.title)}</a></li>`).join('')}</ul></section>` : '';
+}
+
+export function renderSkillPage(slug: string, config: PublicPageConfig = {}): string | undefined {
+  const entry = SKILL_PAGES.get(slug);
+  if (!entry) return undefined;
+  const { skill, doc } = entry, url = skillUrl(slug), title = skillTitle(skill.name), description = clipSentences(doc.description);
+  const trail = [...skillsTrail(), { name: skill.name, url }];
+  const body = renderMarkdown(doc.body, { dropTitle: true, baseLevel: 3, resolveLink: skillLinkResolver(config, `skills/${slug}`) });
+  return layout({ page: 'guide', doc: { path: `/shopify-va/skills/${slug}`, title, description, trail, jsonLd: docJsonLd(url, title, description, trail) } }, `
+    <div class="page-body shell skill-page">
+      <div class="doc-head">
+        ${docCrumbs(config, [{ name: 'Marketing Skills', href: FAMILY_HOME }, { name: 'Shopify VA', href: pagePath(config) }, { name: 'Skills', href: pagePath(config, '#skills') }, { name: skill.name, href: '' }])}
+        <h1>${escape(skill.name)}</h1>
+        <p>${escape(skill.summary)}</p>
+        <p class="muted">Category: ${escape(skill.category)}</p>
+      </div>
+      <section id="starter-prompt" class="related">
+        <h2>Starter prompt</h2>
+        <p>Paste this into your AI app with the skills connected, then add your own store facts.</p>
+        <pre class="request" tabindex="0"><code>${escape(skill.prompt)}</code></pre>
+        <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}" hidden>Copy prompt</button>
+      </section>
+      <section id="instructions">
+        <h2>The skill instructions</h2>
+        <p>This is the full text your AI app loads when it uses ${escape(skill.name)}.</p>
+        <div class="md-body">${body}</div>
+      </section>
+      ${referenceList(config, skill, 'Reference files')}
+      ${relatedSkills(config, skill)}
+      <p class="doc-source"><a href="${sourceFile(`skills/${slug}/SKILL.md`)}">Source on GitHub</a></p>
+    </div>`, config);
+}
+
+export function renderReferencePage(slug: string, file: string, config: PublicPageConfig = {}): string | undefined {
+  const page = REFERENCE_PAGES.get(`${slug}/${file}`);
+  if (!page) return undefined;
+  const { skill } = page, url = referenceUrl(slug, file), heading = referenceHeading(page), title = referenceTitle(page), description = referenceDescription(page);
+  const trail = [...skillsTrail(), { name: skill.name, url: skillUrl(slug) }, { name: heading, url }];
+  const body = renderMarkdown(page.body, { dropTitle: true, baseLevel: 2, resolveLink: skillLinkResolver(config, `skills/${slug}/references`) });
+  const canonicalPath = canonicalReferencePath(slug, file);
+  return layout({ page: 'guide', doc: { path: `/shopify-va/skills/${slug}/references/${file}`, canonicalPath, title, description, trail, jsonLd: docJsonLd(url, title, description, trail) } }, `
+    <div class="page-body shell skill-page">
+      <div class="doc-head">
+        ${docCrumbs(config, [{ name: 'Marketing Skills', href: FAMILY_HOME }, { name: 'Shopify VA', href: pagePath(config) }, { name: 'Skills', href: pagePath(config, '#skills') }, { name: skill.name, href: skillPath(config, slug) }, { name: heading, href: '' }])}
+        <h1${heading.length > 64 ? ' class="h1-longer"' : heading.length > 40 ? ' class="h1-long"' : ''}>${escape(heading)}</h1>
+        <p>A reference file of the <a href="${skillPath(config, slug)}">${escape(skill.name)}</a> skill. Your AI app reads it when the skill points to it.</p>
+      </div>
+      <section id="reference" class="md-body">${body}</section>
+      ${referenceList(config, skill, `More ${skill.name} reference files`, file)}
+      <p class="doc-source"><a href="${sourceFile(`skills/${slug}/references/${file}.md`)}">Source on GitHub</a></p>
+    </div>`, config);
+}
+
+/** The guide's own sitemap: every indexable, self-canonical /shopify-va page. Skill pages carry the skill files' date. */
+export function renderSitemap(): string {
+  const url = (path: string, lastmod?: string) => `  <url><loc>${SITE_ORIGIN}${path}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`;
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${[...Object.values(PAGES).map(page => url(page.path)), ...canonicalSkillPagePaths().map(path => url(path, SKILL_DOCS_UPDATED))].join('\n')}
+</urlset>
+`;
+}
+
 const REFERENCE_FILES: readonly { title: string; path: string }[] = [
   { title: 'Google Merchant Center Next & Performance Max Feed guide', path: 'skills/shopify-google-ads/references/merchant-center-next-pmax.md' },
   { title: 'Meta Advantage+ Shopping & Conversions API (CAPI) guide', path: 'skills/shopify-meta-ads/references/advantage-plus-capi.md' },
@@ -818,8 +1029,12 @@ ${CODEX_PLUGIN_CMD}
 /** llms.txt follows https://llmstxt.org: H1, blockquote, plain body text, H2 link lists, and a final Optional section. */
 export function renderLlmsTxt(config: PublicPageConfig = {}): string {
   const openMcpUrl = openMcpEndpoint(config), mcpUrl = mcpEndpoint(config);
-  const skillLines = SKILL_CATALOG.map(skill => `- [${skill.name}](${sourceFile(`skills/${skill.slug}/SKILL.md`)}): ${skill.summary}`).join('\n');
-  const referenceLines = REFERENCE_FILES.map(file => `- [${file.title}](${sourceFile(file.path)})`).join('\n');
+  // Each skill links to its page on this site first; the raw SKILL.md source stays on the same line for agents.
+  const skillLines = SKILL_CATALOG.map(skill => `- [${skill.name}](${skillUrl(skill.slug)}): ${skill.summary} Source: ${sourceFile(`skills/${skill.slug}/SKILL.md`)}`).join('\n');
+  const referenceLines = REFERENCE_FILES.map(file => {
+    const [, slug, name] = /^skills\/([a-z0-9-]+)\/references\/([a-z0-9-]+)\.md$/.exec(file.path)!;
+    return `- [${file.title}](${referenceUrl(slug!, name!)}): Source: ${sourceFile(file.path)}`;
+  }).join('\n');
   return `${llmsHeading}
 
 ${llmsSummary()}
@@ -834,6 +1049,7 @@ ${installCommands()}
 
 - [Shopify skills for AI agents](${SITE_ORIGIN}/shopify-va): Common store problems with starter prompts, the seven-stage order of work, a searchable list of all ${SKILL_COUNT} skills, and an FAQ
 - [How to set up Shopify skills](${SITE_ORIGIN}/shopify-va/setup): Four-step setup guide, all install options, and troubleshooting
+- [Sitemap](${SITE_ORIGIN}/shopify-va/sitemap.xml): Every guide page, with one page per skill and per reference file
 - [No-sign-in MCP server](${openMcpUrl}): Serves all ${SKILL_COUNT} skills, their reference files, and ${WORKFLOWS.length} VA task workflows, with no account
 - [Optional signed-in MCP server](${mcpUrl}): Read-only Shopify Admin checks over OAuth 2.1 with PKCE, pending Shopify App Store review
 
@@ -866,6 +1082,7 @@ export function renderLlmsFullTxt(config: PublicPageConfig = {}): string {
   const names = new Map(SKILL_CATALOG.map(skill => [skill.slug, skill.name]));
   const skills = SKILL_DOCS.map(doc => `## Skill: ${names.get(doc.slug) ?? doc.slug} (${doc.slug})
 
+Page: ${skillUrl(doc.slug)}
 Source: ${sourceFile(`skills/${doc.slug}/SKILL.md`)}
 When to use: ${doc.description}
 

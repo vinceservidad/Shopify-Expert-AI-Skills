@@ -164,10 +164,19 @@ test('radius by role: 6px buttons and tabs, 12px panels, 4px wells, code and inp
   assert.deepEqual([...used].sort(), ['0', 'var(--radius-btn)', 'var(--radius-panel)', 'var(--radius-well)']);
 });
 
-test('the whole skill row opens its GitHub page while Copy prompt keeps working', () => {
-  assert.match(rule('.skill-gh::after'), /content:'';position:absolute;inset:0/);
+test('the whole skill row opens its page on this site while Copy prompt keeps working, and no row links to GitHub', () => {
+  assert.match(rule('.skill-link::after'), /content:'';position:absolute;inset:0/);
   assert.match(rule('.skill-entry .copy-btn'), /position:relative;z-index:1/);
-  assert.match(html, /<a class="skill-gh" href="[^"]+\/skills\/shopify-product-listing\/SKILL\.md"><span>Read<span class="sr-only"> Product Listings<\/span> on GitHub<\/span><\/a>/);
+  assert.match(html, /<a class="skill-link" href="\/shopify-va\/skills\/shopify-product-listing"><span>Read the<span class="sr-only"> Product Listings<\/span> skill<\/span><\/a>/);
+  const entries = [...html.matchAll(/<article class="skill-entry"[\s\S]*?<\/article>/g)].map(m => m[0]);
+  assert.equal(entries.length, 19);
+  for (const entry of entries) {
+    const links = [...entry.matchAll(/<a\b[^>]*href="([^"]*)"/g)].map(m => m[1]!);
+    assert.equal(links.length, 1, 'one link per row: the stretched "Read the skill" link');
+    assert.match(links[0]!, /^\/shopify-va\/skills\/shopify-[a-z-]+$/);
+    assert.doesNotMatch(entry, /github\.com|on GitHub/i);
+    assert.match(entry, /data-copy="[^"]+">Copy prompt<\/button>/);
+  }
   assert.match(rule('.section-head'), /text-align:center/, 'section headings outside the hero stay centred');
 });
 

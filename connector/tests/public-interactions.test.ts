@@ -171,7 +171,7 @@ function catalog() {
     const h3 = new El('h3'); h3.textContent = name;
     const p = new El('p'); p.textContent = summary;
     const copy = new El('button', { 'data-copy': prompt }); copy.textContent = 'Copy prompt';
-    const link = new El('a'); link.textContent = 'Read on GitHub';
+    const link = new El('a'); link.textContent = 'Read the skill';
     card.append(h3, p, copy, link);
     return card;
   });
@@ -187,8 +187,8 @@ test('the skill search ignores button labels and covers names, summaries and sta
   assert.equal(f.wrap.hidden, false, 'controls appear once the script runs');
   f.input.value = 'copy'; f.input.fire('input');
   assert.equal(visible(f.cards), 0, '"copy" only appears in the button label');
-  f.input.value = 'github'; f.input.fire('input');
-  assert.equal(visible(f.cards), 0, '"github" only appears in the link label');
+  f.input.value = 'read the skill'; f.input.fire('input');
+  assert.equal(visible(f.cards), 0, '"Read the skill" only appears in the link label');
   f.input.value = 'ads'; f.input.fire('input');
   assert.equal(visible(f.cards), 2);
   assert.equal(f.status.textContent, '2 of 3 skills');
@@ -263,7 +263,9 @@ test('the stage strip links each gate to its row so the highlight works from the
 
 test('the common-problems table repeats fix first and check next on phones instead of dropping them', () => {
   const html = renderProductPage(config);
-  assert.equal((html.match(/<span class="bn-sub">Fix first: [^<]+ Check next: [^<]+<\/span>/g) ?? []).length, 10);
+  const subs = html.match(/<span class="bn-sub">Fix first: [\s\S]*?<\/span>/g) ?? [];
+  assert.equal(subs.length, 10);
+  for (const sub of subs) assert.match(sub, /^<span class="bn-sub">Fix first: <a href="\/shopify-va\/skills\/shopify-[a-z-]+">[^<]+<\/a>\. Check next: <a href="\/shopify-va\/skills\//, sub);
   const css = publicContent('/shopify-va/assets/public.css', config)!.body as string;
   assert.match(css, /\.bn-sub\{display:none\}/);
   assert.match(css, /@media\(max-width:720px\)\{[\s\S]*?\.bn-sub\{display:block/);

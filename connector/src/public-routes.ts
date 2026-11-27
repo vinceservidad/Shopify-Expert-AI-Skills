@@ -1,4 +1,4 @@
-import { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, SEQUENCE_SCRIPT, THEME_SCRIPT, renderHelpPage, renderLlmsFullTxt, renderLlmsTxt, renderPrivacyPage, renderProductPage, type PublicPageConfig } from './public-pages.js';
+import { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, SEQUENCE_SCRIPT, THEME_SCRIPT, renderHelpPage, renderLlmsFullTxt, renderLlmsTxt, renderPrivacyPage, renderProductPage, renderReferencePage, renderSitemap, renderSkillPage, type PublicPageConfig } from './public-pages.js';
 import { ogImageBytes } from './public-ui/og-image.js';
 import { FONT_LICENSES, fontBytes } from './public-ui/fonts.js';
 
@@ -48,5 +48,12 @@ export function publicContent(path: string, config: PublicPageConfig): PublicRou
   if (['/', '/shopify-va', '/shopify-va/'].includes(path)) return { body: renderProductPage(config), contentType: 'text/html; charset=utf-8' };
   if (['/help', '/setup', '/shopify-va/setup', '/shopify-va/setup/'].includes(path)) return { body: renderHelpPage(config), contentType: 'text/html; charset=utf-8' };
   if (['/privacy', '/shopify-va/privacy', '/shopify-va/privacy/'].includes(path)) return { body: renderPrivacyPage(config), contentType: 'text/html; charset=utf-8' };
+  if (path === '/shopify-va/sitemap.xml') return { body: renderSitemap(), contentType: 'application/xml; charset=utf-8' };
+  // One page per skill and per reference file; an unknown slug or file name falls through to the caller's 404.
+  const skillPage = /^\/shopify-va\/skills\/([a-z0-9-]+)(?:\/references\/([a-z0-9-]+))?\/?$/.exec(path);
+  if (skillPage) {
+    const body = skillPage[2] ? renderReferencePage(skillPage[1]!, skillPage[2], config) : renderSkillPage(skillPage[1]!, config);
+    return body ? { body, contentType: 'text/html; charset=utf-8' } : undefined;
+  }
   return undefined;
 }
