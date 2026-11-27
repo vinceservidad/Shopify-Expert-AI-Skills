@@ -15,60 +15,53 @@ export function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-// Every public band is dark: text, links and button labels must meet 7:1 (WCAG AAA) on the surfaces they sit on.
-const PAIRS: Array<[string, string, string, number]> = [
-  ['ink', 'ground', 'headings and body on ground', 7],
-  ['ink-2', 'ground', 'paragraphs on ground', 7],
-  ['muted', 'ground', '14px captions on ground', 7],
-  ['accent', 'ground', 'links and active marks on ground', 7],
-  ['ink', 'ground-alt', 'headings on the alt band', 7],
-  ['ink-2', 'ground-alt', 'paragraphs on the alt band', 7],
-  ['muted', 'ground-alt', 'captions on the alt band', 7],
-  ['accent', 'ground-alt', 'links on the alt band', 7],
-  ['ink', 'raised', 'text on cards, boxes and tab strips', 7],
-  ['ink-2', 'raised', 'secondary text on raised surfaces', 7],
-  ['muted', 'raised', 'captions on raised surfaces', 7],
-  ['accent', 'raised', 'links on raised surfaces', 7],
-  ['on-accent', 'accent', 'button and active tab labels on the mint accent', 7],
-];
+// The owner's Shopify VA palette (anti-slop spec, 2026-11-27). /app keeps its own light tokens under .app-home.
+const PALETTE = {
+  ground: '#15191a', surface: '#1d2223', line: '#343c3d', ink: '#eff2f0', muted: '#b2bbb6', accent: '#62c597', signal: '#eab04f',
+};
+const SURFACES = ['ground', 'surface'] as const;
 
-test('dark theme: root tokens are the dark ladder', () => {
+test('root tokens are exactly the owner palette', () => {
   const t = rootTokens();
-  assert.equal(t.ground, '#070807');
-  assert.equal(t.raised, '#121412');
-  assert.ok(luminance(t['ground-alt']) >= luminance(t.ground) && luminance(t['ground-alt']) <= luminance(t.raised), 'alt band is a small step between ground and raised');
-  for (const key of ['ground', 'ground-alt', 'raised']) assert.ok(luminance(t[key]) < 0.05, `${key} is dark`);
+  for (const [name, hex] of Object.entries(PALETTE)) assert.equal(t[name], hex, `--${name}`);
+  assert.equal(t['on-accent'], PALETTE.ground, 'button and selected-tab labels use the ground colour');
   assert.match(PUBLIC_STYLES, /:root\{\s*color-scheme:dark/);
-  assert.doesNotMatch(PUBLIC_STYLES, /band-mist|band-forest/);
+  assert.doesNotMatch(PUBLIC_STYLES, /--(?:raised|ground-alt|border|ink-2|hl|well|btn-shadow)\s*:/, 'no leftover tokens from the old ladder');
+  assert.ok(luminance(t.ground) > luminance('#070807'), 'charcoal, not near-black');
 });
 
-for (const [fg, bg, use, min] of PAIRS) {
-  test(`WCAG AAA 7:1: ${fg} on ${bg} (${use})`, () => {
-    const t = rootTokens();
-    const ratio = contrast(t[fg], t[bg]);
-    assert.ok(ratio >= min, `${fg} ${t[fg]} on ${bg} ${t[bg]} = ${ratio.toFixed(2)}:1, needs ${min}:1`);
-  });
+// Text (ink, muted) needs 7:1 and accents (accent, signal) 4.5:1 on every surface they sit on.
+for (const surface of SURFACES) {
+  for (const [fg, min] of [['ink', 7], ['muted', 7], ['accent', 4.5], ['signal', 4.5]] as const) {
+    test(`${fg} on ${surface} meets ${min}:1`, () => {
+      const t = rootTokens();
+      const ratio = contrast(t[fg], t[surface]);
+      assert.ok(ratio >= min, `${fg} ${t[fg]} on ${surface} ${t[surface]} = ${ratio.toFixed(2)}:1, needs ${min}:1`);
+    });
+  }
 }
+
+test('labels on the accent (primary button, selected tab) meet 7:1, and so does the accent hover fill', () => {
+  const t = rootTokens();
+  assert.ok(contrast(t['on-accent'], t.accent) >= 7, `on-accent on accent = ${contrast(t['on-accent'], t.accent).toFixed(2)}:1`);
+  assert.ok(contrast(t['on-accent'], t['accent-hover']) >= 7, `on-accent on accent-hover = ${contrast(t['on-accent'], t['accent-hover']).toFixed(2)}:1`);
+});
 
 test('contrast table', () => {
   const t = rootTokens();
-  console.log(PAIRS.map(([f, b]) => `${f} ${t[f]} on ${b} ${t[b]} = ${contrast(t[f], t[b]).toFixed(2)}:1`).join('\n'));
+  const rows = SURFACES.flatMap(s => ['ink', 'muted', 'accent', 'signal'].map(f => `${f} ${t[f]} on ${s} ${t[s]} = ${contrast(t[f], t[s]).toFixed(2)}:1`));
+  console.log([...rows, `on-accent ${t['on-accent']} on accent ${t.accent} = ${contrast(t['on-accent'], t.accent).toFixed(2)}:1`].join('\n'));
 });
 
-test('accent is the soft mint, not the old lime, everywhere it is painted', async () => {
-  const t = rootTokens();
-  assert.equal(t.accent, '#6cc9a0');
-  assert.equal(t['on-accent'], '#070807');
-  assert.ok(contrast(t.accent, t.raised) >= 7, 'accent on raised is 7:1 or better');
-  assert.ok(contrast(t['on-accent'], t.accent) >= 7, 'on-accent on accent is 7:1 or better');
-  assert.match(PUBLIC_STYLES, /--border-hover:rgba\(108,201,160,\.5\)/);
-  assert.match(PUBLIC_STYLES, /radial-gradient\(90% 80% at 50% 0%,rgba\(108,201,160,\.08\)/);
-  const { HERO_SCRIPT } = await import('../src/public-ui/hero-canvas.js');
+test('two accents with separate roles: signal marks only the lit stage', async () => {
+  const signalRules = [...PUBLIC_STYLES.matchAll(/([^{}]+)\{[^}]*var\(--signal\)[^}]*\}/g)].map(m => m[1].trim());
+  assert.deepEqual(signalRules, ['.seq-gates a.is-focus', '.seq-item.is-lit .seq-num,.seq-item:target .seq-num']);
   const { SEQUENCE_SCRIPT } = await import('../src/public-ui/sequence-canvas.js');
-  for (const source of [PUBLIC_STYLES, HERO_SCRIPT, SEQUENCE_SCRIPT]) {
-    assert.doesNotMatch(source, /b9eb6a|185, ?235, ?106|LIME/i, 'no lime left');
-  }
-  assert.match(SEQUENCE_SCRIPT, /var accent = '#6cc9a0'/);
+  const { HERO_SCRIPT } = await import('../src/public-ui/hero-canvas.js');
+  assert.match(SEQUENCE_SCRIPT, /var accent = '#62c597', muted = '#b2bbb6', ground = '#15191a', signal = '#eab04f'/);
+  assert.match(SEQUENCE_SCRIPT, /ctx\.strokeStyle = on \? signal : c > 0 \? accent : muted/, 'only the lit gate is drawn in the signal colour');
+  assert.match(HERO_SCRIPT, /EMERALD = \[98, 197, 151\]/, 'hero waves use the accent hue');
+  for (const source of [PUBLIC_STYLES, HERO_SCRIPT, SEQUENCE_SCRIPT]) assert.doesNotMatch(source, /6cc9a0|108, ?201, ?160|b9eb6a|#070807/i, 'no old mint, lime or near-black left');
   // The embedded /app keeps its own light accent.
   assert.match(PUBLIC_STYLES, /\.app-home\{[^}]*--accent:#007a5c/);
 });

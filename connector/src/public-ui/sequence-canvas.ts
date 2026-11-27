@@ -2,7 +2,8 @@
  *  Decorative only (aria-hidden); the ordered list below it stays the content.
  *  Idea: one order moves through seven stages in order and waits at each gate until it checks.
  *  Stateless timeline (a pure function of the clock), 30 fps cap, paused offscreen/hidden,
- *  one still frame under prefers-reduced-motion. Hovering or focusing a row or a gate link highlights both; a gate link jumps to its row. */
+ *  one still frame under prefers-reduced-motion. Hovering or focusing a row or a gate link highlights both; a gate link jumps to its row.
+ *  Colours: accent for the moving order and checked gates, signal (#eab04f) only for the lit step's gate. */
 export const SEQUENCE_SCRIPT = `(function () {
   var strip = document.querySelector('[data-seq-strip]');
   var canvas = strip && strip.querySelector('[data-seq-canvas]');
@@ -15,7 +16,7 @@ export const SEQUENCE_SCRIPT = `(function () {
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var width = 0, height = 0, ratio = 1, running = false, visible = true;
   var last = 0, lastDraw = 0, clock = 0, hl = -1, shown = [], shownHl = -2;
-  var accent = '#6cc9a0', muted = '#9ba398', ground = '#121412';
+  var accent = '#62c597', muted = '#b2bbb6', ground = '#15191a', signal = '#eab04f';
   var MOVE = 900, DWELL = 700, CHECK_AT = 280, CHECK_LEN = 320, EXIT = 800, HOLD = 1000, FADE = 600;
   var PERIOD = N * (MOVE + DWELL) + EXIT + HOLD + FADE;
   var STILL = 3 * (MOVE + DWELL) + MOVE + 120;
@@ -29,7 +30,8 @@ export const SEQUENCE_SCRIPT = `(function () {
       var cs = getComputedStyle(canvas);
       accent = cs.getPropertyValue('--accent').trim() || accent;
       muted = cs.getPropertyValue('--muted').trim() || muted;
-      ground = cs.getPropertyValue('--raised').trim() || ground;
+      ground = cs.getPropertyValue('--ground').trim() || ground;
+      signal = cs.getPropertyValue('--signal').trim() || signal;
     } catch (e) {}
   }
 
@@ -87,7 +89,7 @@ export const SEQUENCE_SCRIPT = `(function () {
     for (i = 0; i < N; i++) {
       var gx = Math.round(gateX(i)) + .5, c = s.checks[i], on = i === hl;
       ctx.globalAlpha = on ? 1 : .4 + .6 * c;
-      ctx.strokeStyle = c > 0 || on ? accent : muted;
+      ctx.strokeStyle = on ? signal : c > 0 ? accent : muted;
       ctx.lineWidth = on ? 2.5 : 1.5;
       ctx.beginPath(); ctx.moveTo(gx, top); ctx.lineTo(gx, bottom); ctx.stroke();
       if (c > 0) {

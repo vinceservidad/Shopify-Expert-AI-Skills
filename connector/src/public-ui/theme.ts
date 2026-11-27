@@ -3,7 +3,7 @@
  *  - Tab groups: the markup works without JavaScript as radio inputs; this adds tab roles,
  *    roving tabindex and arrow, Home and End keys
  *  - Search + category filter for the 19-playbook catalog, with an empty state
- *  - Subtle scroll reveal and a staggered card fade-up ([data-stagger]), both off under prefers-reduced-motion */
+ *  Nothing here animates: sections and rows do not fade or rise in. Only the hero and sequence canvases move. */
 export const THEME_SCRIPT = `(function () {
   var live = null;
   function announce(message) {
@@ -190,54 +190,7 @@ export const THEME_SCRIPT = `(function () {
     applyFilter();
   }
 
-  function wireReveal() {
-    var reduced = false;
-    try { reduced = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-    var reveals = document.querySelectorAll('[data-reveal]');
-    if (!reduced && 'IntersectionObserver' in window && reveals.length) {
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-in');
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.06, rootMargin: '0px 0px -24px 0px' });
-      Array.prototype.forEach.call(reveals, function (el) {
-        el.classList.add('will-reveal');
-        io.observe(el);
-      });
-    }
-    wireStagger(reduced);
-  }
-
-  /* Cards inside [data-stagger] fade up one after another as they scroll in. Cards that enter in the
-     same batch get a 70ms step (capped) so a grid ripples in; the delay is cleared once the card is in,
-     so hover never waits on it. Skipped entirely under reduced motion or without IntersectionObserver. */
-  function wireStagger(reduced) {
-    var groups = document.querySelectorAll('[data-stagger]');
-    if (reduced || !('IntersectionObserver' in window) || !groups.length) return;
-    var io = new IntersectionObserver(function (entries) {
-      var step = 0;
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        io.unobserve(el);
-        el.style.transitionDelay = Math.min(step, 6) * 70 + 'ms';
-        step++;
-        el.classList.add('is-in');
-        setTimeout(function () { el.style.transitionDelay = ''; }, 900);
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -32px 0px' });
-    Array.prototype.forEach.call(groups, function (group) {
-      Array.prototype.forEach.call(group.children, function (el) {
-        el.classList.add('will-rise');
-        io.observe(el);
-      });
-    });
-  }
-
-  function wire() { wireCopy(); wireTabs(); wireFilter(); wireReveal(); }
+  function wire() { wireCopy(); wireTabs(); wireFilter(); }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire); else wire();
 })();

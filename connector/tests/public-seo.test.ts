@@ -48,7 +48,7 @@ test('every page pins its own title, description, canonical, language, theme col
     assert.equal(meta(page, 'name', 'description'), expected.description);
     assert.equal([...page.matchAll(/<link rel="canonical" href="([^"]*)"/g)].map(m => m[1]).join(), expected.canonical);
     assert.match(page, /<html lang="en"/);
-    assert.equal(meta(page, 'name', 'theme-color'), '#070807');
+    assert.equal(meta(page, 'name', 'theme-color'), '#15191a');
     assert.equal(meta(page, 'property', 'og:title'), expected.title);
     assert.equal(meta(page, 'property', 'og:description'), expected.description);
     assert.equal(meta(page, 'property', 'og:url'), expected.canonical);
@@ -128,12 +128,12 @@ test('FAQPage JSON-LD matches the visible FAQ text exactly', () => {
   for (const other of ['/shopify-va/setup', '/shopify-va/privacy']) assert.ok(!graph(html(other)).some(node => node['@type'] === 'FAQPage'), `${other} has no FAQ markup without a visible FAQ`);
 });
 
-test('JSON-LD cannot break out of its script tag and adds no executable script; CSP is unchanged', () => {
+test('JSON-LD cannot break out of its script tag and adds no executable script; the CSP only adds self-hosted fonts', () => {
   for (const { path } of PAGES) {
     const scripts = [...html(path).matchAll(/<script\b([^>]*)>/g)].map(m => m[1]!);
     for (const attributes of scripts) assert.ok(/type="application\/ld\+json"/.test(attributes) || /\bsrc="/.test(attributes), `inline script on ${path}: ${attributes}`);
   }
-  assert.equal(PUBLIC_PAGE_CSP, `default-src 'none'; style-src 'self'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`);
+  assert.equal(PUBLIC_PAGE_CSP, `default-src 'none'; style-src 'self'; script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/; connect-src 'self'; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`);
 });
 
 test('skill count is read from source: 19 skills in skills/, the catalog, the generated docs and every count in the copy', () => {
