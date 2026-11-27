@@ -286,7 +286,7 @@ dd{margin:6px 0 0}
   .wb-tabs label{flex:1;text-align:center;padding:8px 8px}
   .bottleneck-table th:nth-child(3),.bottleneck-table td:nth-child(3){display:none}
   .bottleneck-table td.bn-first{white-space:normal}
-      .app-home input{width:100%}
+  .app-home input{width:100%}
   .connection-card dl,.app-home #pairing-facts{grid-template-columns:1fr;gap:4px}
 }
 @media(max-width:360px){
