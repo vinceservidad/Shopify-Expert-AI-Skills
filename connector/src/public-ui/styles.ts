@@ -9,16 +9,16 @@ export const PUBLIC_STYLES = `
   --sans:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
   /* One dark ladder: ground, alt ground step, raised, border, hover border, three text colours, accent */
-  --ground:#031a14;
-  --ground-alt:#04211a;
-  --raised:#072e23;
-  --border:rgba(142,224,184,.2);
-  --border-hover:rgba(142,224,184,.4);
-  --ink:#eef8f3;
-  --ink-2:#b6d1c6;
-  --muted:#89ab9d;
+  --ground:#070807;
+  --ground-alt:#0b0c0b;
+  --raised:#121412;
+  --border:rgba(255,255,255,.12);
+  --border-hover:rgba(185,235,106,.45);
+  --ink:#f2f4f1;
+  --ink-2:#c8cec6;
+  --muted:#9ba398;
   --accent:#b9eb6a;
-  --on-accent:#031a14;
+  --on-accent:#070807;
   --hl:rgba(255,255,255,.05);
   --well:inset 0 2px 5px rgba(0,0,0,.45);
   --btn-shadow:0 1px 2px rgba(0,0,0,.75),inset 0 1px 0 rgba(255,255,255,.18);
@@ -65,7 +65,7 @@ body.has-hero .top-bar{position:absolute;inset:0 0 auto 0;border-bottom:0;backgr
 body.has-hero .top-bar a:focus-visible,.site-footer a:focus-visible{outline-color:var(--accent)}
 
 /* Full-bleed Shopify emerald-forest hero bleeding to y = 0, centered monumental layout */
-.hero.stage{position:relative;isolation:isolate;overflow:hidden;width:100%;padding:124px 0 var(--section-y);color:var(--ink);background:radial-gradient(110% 95% at 50% 0%,var(--raised) 0%,var(--ground) 62%)}
+.hero.stage{position:relative;isolation:isolate;overflow:hidden;width:100%;padding:124px 0 var(--section-y);color:var(--ink);background:radial-gradient(90% 80% at 50% 0%,rgba(185,235,106,.09) 0%,var(--ground) 60%)}
 .hero-canvas{position:absolute;inset:0;z-index:-1;width:100%;height:100%;display:block;opacity:0;transition:opacity .4s var(--ease)}
 .hero-canvas.is-live{opacity:1}
 .hero-inner{max-width:860px;margin-inline:auto;text-align:center;animation:hero-rise 260ms var(--ease)}

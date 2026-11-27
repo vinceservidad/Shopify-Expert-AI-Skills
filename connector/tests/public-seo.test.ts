@@ -48,7 +48,7 @@ test('every page pins its own title, description, canonical, language, theme col
     assert.equal(meta(page, 'name', 'description'), expected.description);
     assert.equal([...page.matchAll(/<link rel="canonical" href="([^"]*)"/g)].map(m => m[1]).join(), expected.canonical);
     assert.match(page, /<html lang="en"/);
-    assert.equal(meta(page, 'name', 'theme-color'), '#031a14');
+    assert.equal(meta(page, 'name', 'theme-color'), '#070807');
     assert.equal(meta(page, 'property', 'og:title'), expected.title);
     assert.equal(meta(page, 'property', 'og:description'), expected.description);
     assert.equal(meta(page, 'property', 'og:url'), expected.canonical);
