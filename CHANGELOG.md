@@ -4,6 +4,12 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide readable type scale (2026-11-27)
+
+- `connector/src/public-ui/styles.ts`: /shopify-va, /setup and /privacy move from a 13/15/18px scale to 14px small (captions, labels, table headers, mono code and URLs, footer), 16px body (paragraphs, lists, table and card text, nav links, buttons, tabs, form fields) and 18-20px lead text. Headings re-balanced (h2 30-40px, h3 20px, doc h1 34-48px) with the letter-spacing tightening kept. Line height 1.55 body, 1.4-1.5 small. The search input is 16px at every width so iOS Safari does not zoom on focus. The embedded /app block shares the same stylesheet and moves with it.
+- Layout fixes for the larger text: the two-row header breakpoint moves from 560px to 680px (one row of 16px links needs 624px), phones at 420px and below stack brand, site links and product tabs, and the hero and example tab strips size to content so "Coding agents" no longer wraps.
+- Tests: the font-size guardrail now allows only 14/16/18/20px, a new test pins 16px body, nothing under 14px and a 16px search input, and the header responsive test follows the new breakpoints. CSP and markup unchanged; not deployed.
+
 ### Shopify VA guide design polish (2026-11-27)
 
 - `connector/src/public-ui/styles.ts`: one tonal ladder per band type (ground, raised, border, hover border, three text colours, accent); dark bands now remap the same role tokens instead of a parallel `--forest-*` set. Distinct palette colours 22 to 16 (hex 17 to 14); radii now 6px buttons and 8px boxes only (5px removed).

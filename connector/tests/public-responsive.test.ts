@@ -31,11 +31,11 @@ test('content stays clear of notches: the shell gutter honours the left and righ
   assert.match(css, /safe-area-inset-bottom/);
 });
 
-test('the header keeps one row until 560px, then wraps; very narrow phones stack the site links', () => {
+test('the header keeps one row until 680px (16px links need 624px), then wraps; narrow phones stack the site links', () => {
   assert.doesNotMatch(media('max-width:720px'), /family-tabs\{order:3/);
-  assert.match(media('max-width:560px'), /\.family-header\{flex-wrap:wrap;/);
-  assert.match(media('max-width:560px'), /\.family-tabs\{order:3;width:100%/);
-  assert.match(media('max-width:360px'), /\.family-nav\{width:100%/);
+  assert.match(media('max-width:680px'), /\.family-header\{flex-wrap:wrap;/);
+  assert.match(media('max-width:680px'), /\.family-tabs\{order:3;width:100%/);
+  assert.match(media('max-width:420px'), /\.family-nav\{order:2;width:100%/);
 });
 
 test('setup-page command boxes wrap long commands inside the box and stack the copy button on phones', () => {
