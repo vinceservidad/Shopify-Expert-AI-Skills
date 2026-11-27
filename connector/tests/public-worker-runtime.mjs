@@ -246,6 +246,10 @@ try {
   const llmsRes = await send('/shopify-va/llms.txt');
   assert.equal(llmsRes.status, 200);
   assert.match(await llmsRes.text(), /merchant-center-next-pmax\.md/);
+  const fullRes = await send('/shopify-va/llms-full.txt');
+  assert.equal(fullRes.status, 200);
+  assert.match(fullRes.headers.get('content-type') ?? '', /^text\/plain/);
+  assert.match(await fullRes.text(), /## Skill: Product Listings/);
   const appPage = await send('/app?shop=' + shopA);
   assert.equal(appPage.status, 200);
   const appHtml = await appPage.text();

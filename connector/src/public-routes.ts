@@ -1,4 +1,4 @@
-import { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, SEQUENCE_SCRIPT, THEME_SCRIPT, renderHelpPage, renderLlmsTxt, renderPrivacyPage, renderProductPage, type PublicPageConfig } from './public-pages.js';
+import { APP_HOME_SCRIPT, HERO_SCRIPT, PUBLIC_STYLES, SEQUENCE_SCRIPT, THEME_SCRIPT, renderHelpPage, renderLlmsFullTxt, renderLlmsTxt, renderPrivacyPage, renderProductPage, type PublicPageConfig } from './public-pages.js';
 import { ogImageBytes } from './public-ui/og-image.js';
 
 // Cloudflare Web Analytics (owner-approved 2026-10-01): the zone injects its beacon into these pages, served
@@ -6,6 +6,9 @@ import { ogImageBytes } from './public-ui/og-image.js';
 export const WEB_ANALYTICS_BEACON = 'https://static.cloudflareinsights.com/beacon.min.js';
 export const PUBLIC_PAGE_CSP = `default-src 'none'; style-src 'self'; script-src 'self' ${WEB_ANALYTICS_BEACON} ${WEB_ANALYTICS_BEACON}/; connect-src 'self'; img-src 'self' data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'`;
 export const SECURITY_HEADERS = { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer', 'Content-Security-Policy': PUBLIC_PAGE_CSP };
+
+// Plain text displays inline in browsers (text/markdown is downloaded) and is read by every agent and crawler.
+export const LLMS_CONTENT_TYPE = 'text/plain; charset=utf-8';
 
 export type PublicRouteResponse = {
   body: string | Uint8Array<ArrayBuffer>;
@@ -24,7 +27,10 @@ export function publicContent(path: string, config: PublicPageConfig): PublicRou
     return { body: ogImageBytes(), contentType: 'image/png', cacheControl: 'public, max-age=86400' };
   }
   if (['/llms.txt', '/shopify-va/llms.txt'].includes(path)) {
-    return { body: renderLlmsTxt(config), contentType: 'text/markdown; charset=utf-8' };
+    return { body: renderLlmsTxt(config), contentType: LLMS_CONTENT_TYPE };
+  }
+  if (['/llms-full.txt', '/shopify-va/llms-full.txt'].includes(path)) {
+    return { body: renderLlmsFullTxt(config), contentType: LLMS_CONTENT_TYPE };
   }
   if (['/', '/shopify-va', '/shopify-va/'].includes(path)) return { body: renderProductPage(config), contentType: 'text/html; charset=utf-8' };
   if (['/help', '/setup', '/shopify-va/setup', '/shopify-va/setup/'].includes(path)) return { body: renderHelpPage(config), contentType: 'text/html; charset=utf-8' };

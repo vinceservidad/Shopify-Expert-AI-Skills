@@ -254,6 +254,7 @@ p{margin:0 0 14px;max-width:65ch;text-wrap:pretty}
 .doc-jump{display:flex;flex-wrap:wrap;gap:0 22px;margin-top:18px}
 .doc-jump a{display:inline-flex;align-items:center;min-height:32px;font-size:13px;font-weight:600}
 .doc-head{padding:52px 0 32px;border-bottom:1px solid var(--border)}
+.crumbs{margin:0 0 14px;font-size:13px}.crumbs ol{display:flex;flex-wrap:wrap;gap:2px 0;list-style:none;margin:0;padding:0;color:var(--ink-2)}.crumbs li+li::before{content:"/";margin:0 8px;color:var(--ink-2)}.crumbs a{display:inline-flex;align-items:center;min-height:32px}
 .doc-head h1{font-size:clamp(30px,4.5vw,44px);line-height:1.08;font-weight:750;letter-spacing:-.035em;margin:0 0 12px}
 .page-body section{padding:44px 0;border-bottom:1px solid var(--hair);scroll-margin-top:20px}
 .page-body section:last-child{border-bottom:0}

@@ -206,7 +206,7 @@ test('product page and help page emit full Open Graph, Twitter Card, and valid J
   assert.ok(ldMatch, 'JSON-LD script missing on product page');
   const parsed = JSON.parse(ldMatch[1]) as { '@graph': Array<Record<string, unknown>> };
   const types = parsed['@graph'].map(node => node['@type']);
-  assert.deepEqual(types, ['Organization', 'WebSite', 'SoftwareApplication', 'FAQPage']);
+  assert.deepEqual(types, ['Organization', 'WebPage', 'BreadcrumbList', 'SoftwareApplication', 'FAQPage']);
 
   const appNode = parsed['@graph'].find(node => node['@type'] === 'SoftwareApplication')!;
   assert.equal(appNode.license, 'https://opensource.org/licenses/MIT');
@@ -237,7 +237,7 @@ test('OG image and llms.txt discovery routes return valid payloads', () => {
   for (const path of ['/llms.txt', '/shopify-va/llms.txt']) {
     const llms = publicContent(path, candidateConfig);
     assert.ok(llms && typeof llms.body === 'string', path);
-    assert.equal(llms.contentType, 'text/markdown; charset=utf-8');
+    assert.equal(llms.contentType, 'text/plain; charset=utf-8');
     assert.ok(llms.body.includes('https://mktskills.com/mcp/shopify-skills'));
     assert.ok(llms.body.includes('merchant-center-next-pmax.md'));
     assert.ok(llms.body.includes('advantage-plus-capi.md'));
