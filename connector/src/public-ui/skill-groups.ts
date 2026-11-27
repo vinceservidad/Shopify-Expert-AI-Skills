@@ -53,7 +53,7 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-merchandising',
     name: 'Merchandising',
     category: 'Catalog',
-    summary: 'Sorts collections, decides which in-stock products to feature, and plans simple bundles.',
+    summary: 'Sorts collections, picks in-stock products to feature, and plans simple bundles.',
     prompt: 'Help me sort my top Shopify collection and plan a simple bundle using our best sellers and stock levels.',
   },
   {
@@ -81,14 +81,14 @@ export const SKILL_CATALOG: readonly SkillCatalogEntry[] = [
     slug: 'shopify-flow-automation',
     name: 'Shopify Flow',
     category: 'Orders & Support',
-    summary: 'Designs fraud holds, low-stock alerts, and VIP tags with a safe test step before going live.',
+    summary: 'Designs fraud holds, low-stock alerts, and VIP tags with a test step before going live.',
     prompt: 'Design a Shopify Flow rule that holds high-risk orders and sends a low-stock alert to our team without duplicate messages.',
   },
   {
     slug: 'shopify-va',
     name: 'Daily Store Coordinator',
     category: 'Orders & Support',
-    summary: 'Ranks the day\'s tasks, lists facts the store owner still has to confirm, and drafts the end-of-shift handover.',
+    summary: 'Ranks the day\'s tasks, lists unconfirmed facts, and drafts the end-of-shift handover.',
     prompt: 'Sort my Shopify task list for today by priority, list which facts I still need from the store owner, and draft a short handover note.',
   },
   {

@@ -4,6 +4,16 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA guide: anti-AI copy check v2 (2026-11-27)
+
+- Applies the owner's copy check v2 to /shopify-va, /shopify-va/setup, /shopify-va/privacy, the chrome and guide-written leads of every skill and reference page, the skills list, the meta, OG and JSON-LD text, `llms.txt` and the guide part of `llms-full.txt`. The skill library's own text, commands, exact names and the privacy page's legal wording are unchanged (the privacy page had nothing to fix). Facts, counts, layout, behaviour, the CSP and the h1 are unchanged.
+- Intro lines that restated the heading or the list below are cut: "Setup takes three steps", "Each install command is below", the setup page's "Other ways to connect and fixes for common problems come after it" (the jump links already list them), and the problem table's description of its own columns. The FAQ drops "You don't need to know the skill names", which restated the sentence before it.
+- Unbacked reassurance is gone: "safe rows" is now "clean rows" and the Shopify Flow summary drops "safe" from its test step.
+- Phrases the first pass expanded from a word are shortened again: "as questions for the store owner" is now "Asks the store owner for...", "facts the store owner still has to confirm" is "unconfirmed facts", and "decides which in-stock products to feature" is "picks in-stock products to feature".
+- Glosses are gone: the BFCM starter prompt no longer spells out "Black Friday Cyber Monday (BFCM)", and `llms.txt` now says the no-sign-in MCP server is served "over Streamable HTTP" instead of "MCP server (Streamable HTTP)". The setup page keeps "custom connector (remote MCP server)", the field label in that setup step.
+- Rewritten from scratch: the setup page's live store paragraph (it read like a spec sheet), and the skill and reference page leads ("Your AI app loads all of this text when it uses...", "Your AI app reads this file when the ... skill points to it").
+- Tests: new `tests/public-copy-v2.test.ts` pins a list of reassurance, unbacked-promise, restating-intro and sign-off phrases, and fails on a parenthetical gloss after MCP, OAuth or PKCE outside the numbered setup steps. Both run on the three guide pages, every skill and reference page (without the rendered skill file), their title, meta, OG, aria-label and JSON-LD text, `llms.txt` and the guide part of `llms-full.txt`.
+
 ### Shopify VA guide: one page per skill and per reference file (2026-11-27)
 
 - New pages at `/shopify-va/skills/<slug>` (19) and `/shopify-va/skills/<slug>/references/<file>` (98), served by the guide Worker through `publicContent`, with the trailing-slash variant accepted like the other pages. Unknown slugs and file names fall through to the existing 404. Each skill page has the setup page's breadcrumb (Marketing Skills / Shopify VA / Skills / name), the display name, summary and category from `skill-groups.ts`, the starter prompt with the existing Copy prompt button, the full SKILL.md rendered on the server without its own h1, its reference files, the other skills in the same category, and one "Source on GitHub" link at the bottom. Skill and reference pages leave the footer's GitHub and MIT License links out, so that link is the page's only GitHub link.

@@ -115,7 +115,7 @@ const BOTTLENECKS: readonly BottleneckRow[] = [
     problem: 'A launch, migration, or Black Friday sale is coming up',
     fixFirst: 'Store Audit',
     checkNext: 'Merchandising, Theme Development',
-    prompt: 'Run a launch and Black Friday Cyber Monday (BFCM) readiness check on our Shopify store. Cover URL redirects, discount combinations, safety stock, and mobile checkout.',
+    prompt: 'Run a launch and BFCM readiness check on our Shopify store. Cover URL redirects, discount combinations, safety stock, and mobile checkout.',
   },
   {
     problem: 'Too many apps, a slow mobile store, or TikTok Shop sync errors',
@@ -163,7 +163,7 @@ const SAMPLE_OUTPUTS: readonly SampleOutput[] = [
     skill: 'Catalog & Inventory',
     inputText: 'Product export CSV with 4 rows: 2 price updates, 1 blank inventory count, and 1 variant missing a SKU.',
     outputPoints: [
-      'Splits the file into 2 safe rows for a pilot test and 2 blocked rows.',
+      'Splits the file into 2 clean rows for a pilot test and 2 blocked rows.',
       'Prevents the blank inventory cell from resetting live stock to 0.',
       'Returns a before-and-after rollback table you review before importing.',
     ],
@@ -186,7 +186,7 @@ const SAMPLE_OUTPUTS: readonly SampleOutput[] = [
     inputText: 'Supplier sheet for a 500 ml stainless steel travel mug. Product weight and dishwasher rules are missing.',
     outputPoints: [
       'Drafts the product title, short description, and three bullets from confirmed facts only.',
-      'Lists product weight and care rules as questions for the store owner instead of guessing.',
+      'Asks the store owner for product weight and care rules instead of guessing.',
       'Keeps the draft unsaved until the store owner confirms pricing and stock.',
     ],
   },
@@ -266,7 +266,7 @@ export const FAQ_ITEMS: readonly { question: string; answer: string }[] = [
   {
     question: 'How do I know which skill to use first?',
     answer:
-      'Describe the store problem in plain words, like "our stock counts are wrong," and your AI app picks the skill. You don\'t need to know the skill names.',
+      'Describe the store problem in plain words, like "our stock counts are wrong," and your AI app picks the skill.',
   },
 ];
 
@@ -568,7 +568,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell">
         <div class="section-head">
           <h2 id="bottlenecks-heading">Common store problems</h2>
-          <p>Pick the row that sounds like your store. It names the skill to start with and the ones to check after it, and gives you a starter prompt to copy.</p>
+          <p>Pick the row that sounds like your store and copy its starter prompt.</p>
         </div>
         ${bottleneckTable(config)}
       </div>
@@ -588,7 +588,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
       <div class="shell">
         <div class="section-head">
           <h2 id="setup-heading">How to set up</h2>
-          <p>You can start without a Shopify account or store access. Setup takes three steps.</p>
+          <p>You can start without a Shopify account or store access.</p>
         </div>
         <ol class="quick-setup">
           <li>
@@ -610,7 +610,7 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
         <details class="setup-drawer">
           <summary>Other ways to install (plugins, CLI, ZIP files, and live store)</summary>
           <div class="setup-drawer-body">
-            <p class="setup-intro">The skills work in these AI apps. Each install command is below.</p>
+            <p class="setup-intro">The skills work in these AI apps.</p>
             ${supportedAppsMatrix()}
             <div class="cmd-list">
               ${cmdItem('Agent Skills CLI', `All ${SKILL_COUNT} skills`, CLI_ADD_CMD)}
@@ -657,7 +657,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
       <div class="doc-head">
         ${breadcrumbNav(config, 'setup')}
         <h1>How to set up Shopify skills</h1>
-        <p>The quick start connects all ${SKILL_COUNT} skills and needs no account or store access. Other ways to connect and fixes for common problems come after it.</p>
+        <p>The quick start connects all ${SKILL_COUNT} skills and needs no account or store access.</p>
         <nav class="doc-jump" aria-label="On this page"><a href="#quick-start">Four steps</a><a href="#install-help">All ways to connect</a><a href="#store-connection">Live store data</a><a href="#fix-issues">Fix common issues</a><a href="#contact">Contact</a></nav>
       </div>
       <section id="quick-start">
@@ -719,7 +719,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
             ? `<ol class="steps"><li>The store owner installs <a href="${install}">Marketing Skills VA Toolkit</a> on the target Shopify store.</li><li>In Claude or ChatGPT connectors, enter <code>${escape(connectionUrl)}</code>.</li><li>Sign in, then paste the pairing code in Shopify Admin so the store owner can approve read access.</li><li>Ask your AI app to show the store name first, so you know it's the right store.</li></ol>`
             : `<p>The live store connection is waiting for Shopify App Store review. Until then, use the connector link or CLI above. After approval, or on a development store, add this remote MCP server URL:</p>${cmdRow(connectionUrl, 'live store connection link')}`
         }
-        <p>This connection is read-only and uses OAuth 2.1 with PKCE. By default it asks for three read scopes (<code>read_products</code>, <code>read_inventory</code>, and <code>read_orders</code>), so it cannot edit products, send customer emails, take payments, or issue refunds.</p>
+        <p>This connection can only read the store. By default it asks for three read scopes: <code>read_products</code>, <code>read_inventory</code>, and <code>read_orders</code>. It cannot edit products, send customer emails, take payments, or issue refunds. Sign-in uses OAuth 2.1 with PKCE.</p>
         <p>The store owner can also turn on four optional read scopes inside the app: <code>read_reports</code>, <code>read_discounts</code>, <code>read_themes</code>, and <code>read_customers</code>. Even with <code>read_customers</code> enabled, the connection reads totals only and never pulls buyer names or emails.</p>
         <p><a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt">ChatGPT connector docs</a> · <a href="https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp">Claude MCP docs</a></p>
       </section>
@@ -945,7 +945,7 @@ export function renderSkillPage(slug: string, config: PublicPageConfig = {}): st
       </section>
       <section id="instructions">
         <h2>The skill instructions</h2>
-        <p>This is the full text your AI app loads when it uses ${escape(skill.name)}.</p>
+        <p>Your AI app loads all of this text when it uses ${escape(skill.name)}.</p>
         <div class="md-body">${body}</div>
       </section>
       ${referenceList(config, skill, 'Reference files')}
@@ -966,7 +966,7 @@ export function renderReferencePage(slug: string, file: string, config: PublicPa
       <div class="doc-head">
         ${docCrumbs(config, [{ name: 'Marketing Skills', href: FAMILY_HOME }, { name: 'Shopify VA', href: pagePath(config) }, { name: 'Skills', href: pagePath(config, '#skills') }, { name: skill.name, href: skillPath(config, slug) }, { name: heading, href: '' }])}
         <h1${heading.length > 64 ? ' class="h1-longer"' : heading.length > 40 ? ' class="h1-long"' : ''}>${escape(heading)}</h1>
-        <p>A reference file of the <a href="${skillPath(config, slug)}">${escape(skill.name)}</a> skill. Your AI app reads it when the skill points to it.</p>
+        <p>Your AI app reads this file when the <a href="${skillPath(config, slug)}">${escape(skill.name)}</a> skill points to it.</p>
       </div>
       <section id="reference" class="md-body">${body}</section>
       ${referenceList(config, skill, `More ${skill.name} reference files`, file)}
@@ -1041,7 +1041,7 @@ ${llmsSummary()}
 
 Last updated: ${SKILL_DOCS_UPDATED} (date of the latest change to the skill files). Free under the MIT license, with no account or payment. The skills and both MCP servers only read data and write drafts. They cannot change a store, prices, orders, or ad accounts. Someone with store permissions applies each approved change in Shopify Admin or the ad platform. Not affiliated with Shopify.
 
-The no-sign-in MCP server (Streamable HTTP) is ${openMcpUrl}. Add it as a custom connector in Claude or ChatGPT. To install in a coding agent, run one of these commands. They run in a terminal, except /add-plugin, which runs in Cursor chat. The setup page also lists the command for inside a Claude Code session.
+The no-sign-in MCP server is ${openMcpUrl}, over Streamable HTTP. Add it as a custom connector in Claude or ChatGPT. To install in a coding agent, run one of these commands. They run in a terminal, except /add-plugin, which runs in Cursor chat. The setup page also lists the command for inside a Claude Code session.
 
 ${installCommands()}
 
