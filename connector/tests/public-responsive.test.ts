@@ -179,3 +179,38 @@ test('rendered hero: a left-aligned split at 1280px and one stacked, left-aligne
     server.close();
   }
 });
+
+test('rendered headline: every page h1 stays at 4 lines or fewer at every width from 320px up (anti-slop v2)', { skip: !(playwright && chrome) && 'needs playwright-core and a Chrome binary (set CHROME_PATH)' }, async () => {
+  const server = createServer((req, res) => {
+    const content = publicContent((req.url ?? '/').split('?')[0], config);
+    if (!content) { res.writeHead(404).end(); return; }
+    res.writeHead(200, { 'content-type': content.contentType }).end(content.body);
+  });
+  await new Promise<void>(resolve => server.listen(0, resolve));
+  const port = (server.address() as { port: number }).port;
+  const browser = await playwright!.chromium.launch({ executablePath: chrome, args: ['--no-sandbox'] });
+  const lines: string[] = [], tooMany: string[] = [];
+  try {
+    for (const width of [320, 340, 360, 375, 390, 414, 480, 600, 768, 900, 1023, 1024, 1180, 1280, 1440, 1920, 2560]) {
+      const context = await browser.newContext({ viewport: { width, height: 900 }, deviceScaleFactor: 1 });
+      for (const path of ['/shopify-va', '/shopify-va/setup', '/shopify-va/privacy']) {
+        const page = await context.newPage();
+        await page.goto(`http://127.0.0.1:${port}${path}`);
+        await page.evaluate(() => document.fonts.ready.then(() => 0));
+        // Count the distinct line boxes of the headline text (no named inner functions: see the hero test).
+        const count = await page.evaluate(() => {
+          const range = document.createRange();
+          range.selectNodeContents(document.querySelector('h1')!);
+          return new Set(Array.from(range.getClientRects()).filter(r => r.width > 1).map(r => Math.round(r.top))).size;
+        });
+        lines.push(`${path}@${width}:${count}`);
+        if (count > 4 || count < 1) tooMany.push(`${path} @${width}px wraps to ${count} lines`);
+      }
+      await context.close();
+    }
+  } finally {
+    await browser.close();
+    server.close();
+  }
+  assert.deepEqual(tooMany, [], lines.join(' '));
+});

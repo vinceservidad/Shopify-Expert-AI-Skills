@@ -3,9 +3,11 @@ import { test } from 'node:test';
 import { runInNewContext } from 'node:vm';
 import { publicContent } from '../src/public-routes.js';
 import { THEME_SCRIPT } from '../src/public-ui/theme.js';
+import { SKILL_DOCS } from '../src/public-ui/skill-docs.js';
 
 /* Anti-slop rules (owner spec, 2026-11-27): no cards, no glow, no gradients, no lift or reveal, no uppercase,
-   no one-sided coloured borders, no arrows in link text, no banned marketing words. */
+   no one-sided coloured borders, no arrows in link text, no banned marketing words.
+   v2 additions (owner, 2026-11-27): no em dashes, and Leverage and game-changer join the banned words. */
 const config = { publicUrl: 'https://shopify-mcp.mktskills.com', basePath: '/shopify-va', launchStage: 'candidate' as const };
 const css = publicContent('/shopify-va/assets/public.css', config)!.body as string;
 const html = publicContent('/shopify-va', config)!.body as string;
@@ -94,14 +96,46 @@ test('no arrow glyphs added to link or button text (UI paths such as Settings �
   assert.doesNotMatch(css, /content:\s*['"][^'"]*[→↗↓›»⟶➜➔][^'"]*['"]/, 'no arrow pseudo-elements');
 });
 
-test('banned marketing words are absent from visible copy and meta', () => {
+/* Owner list, v1 plus v2 (Leverage in any form, game-changer). Case-insensitive, any word form. */
+const BANNED = /\b(?:elevat|unlock|seamless|supercharg|transform|empower|unleash|leverag)\w*|\bgame[\s-]?changer/i;
+/* Guide text routes with the skill library's own text taken out: SKILL.md bodies and front-matter descriptions are
+   the skills' content, not guide copy (two skills use "transformation" for data mapping; reported, not rewritten). */
+const TEXT_ROUTES = ['/shopify-va/llms.txt', '/shopify-va/llms-full.txt', '/llms.txt', '/llms-full.txt'];
+const guideText = (path: string) => {
+  let text = page(path);
+  for (const doc of SKILL_DOCS) {
+    // llms-full.txt: drop each skill's "When to use: <description>" and its (heading-demoted) body, up to the next "## " section.
+    const start = text.indexOf(`When to use: ${doc.description}`);
+    if (start >= 0) { const end = text.indexOf('\n## ', start); text = text.slice(0, start) + (end >= 0 ? text.slice(end) : ''); }
+    text = text.split(doc.description).join(' ');
+  }
+  return text;
+};
+
+test('banned marketing words, including v2 Leverage and game-changer, are absent from copy, meta, JSON-LD, titles, labels and text routes', () => {
+  assert.match('We leverage it. Leveraging. A game-changer, a game changer.', BANNED, 'the pattern catches the v2 words');
+  for (const word of ['Leverage', 'leveraged', 'LEVERAGING', 'game-changer', 'Game changers', 'gamechanger']) assert.match(word, BANNED, word);
   for (const path of PAGES) {
     const markup = page(path);
     const meta = [...markup.matchAll(/<(?:title>([^<]*)<\/title|meta [^>]*content="([^"]*)")/g)].map(m => m[1] ?? m[2]).join(' ');
-    for (const text of [visibleText(markup), meta]) {
-      assert.doesNotMatch(text, /\b(?:elevat|unlock|seamless|supercharg|transform|empower|unleash)\w*/i, path);
+    const jsonLd = [...markup.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => m[1]).join(' ');
+    const attrs = [...markup.matchAll(/\s(?:title|aria-label|alt|placeholder)="([^"]*)"/g)].map(m => m[1]).join(' ');
+    for (const [part, text] of Object.entries({ visible: visibleText(markup), meta, jsonLd, attrs })) {
+      assert.doesNotMatch(text, BANNED, `${path} ${part}`);
     }
   }
+  for (const path of TEXT_ROUTES) assert.doesNotMatch(guideText(path), BANNED, path);
+});
+
+test('no em dash (U+2014) anywhere in the rendered pages, their attributes, JSON-LD, or the text routes; no en dash or spaced hyphen stands in for one', () => {
+  const dash = /\u2014|&mdash;|&#8212;|&#x2014;|\\u2014/i;
+  for (const path of [...PAGES, ...TEXT_ROUTES, '/shopify-va/assets/public.css', '/shopify-va/assets/hero.js', '/shopify-va/assets/sequence.js', '/shopify-va/assets/theme.js']) {
+    const body = page(path);
+    assert.doesNotMatch(body, dash, path);
+    if (!path.includes('/assets/')) assert.doesNotMatch(path.endsWith('.txt') ? guideText(path) : visibleText(body), /\u2013|&ndash;| -- | - /, `${path}: an en dash or spaced hyphen used as a dash`);
+  }
+  // The skill library itself carries none either, so llms-full.txt is clean end to end.
+  for (const doc of SKILL_DOCS) assert.doesNotMatch(doc.body + doc.description, /\u2014/, doc.slug);
 });
 
 test('01-07 markers appear only in the real stage sequence; setup steps use plain ordinals', () => {

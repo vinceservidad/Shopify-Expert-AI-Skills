@@ -1,8 +1,12 @@
 /** "What comes first" strip, served from 'self' so the strict CSP holds (same mechanism as hero-canvas.ts).
  *  Decorative only (aria-hidden); the ordered list below it stays the content.
  *  Idea: one order moves through seven stages in order and waits at each gate until it checks.
+ *  It plays once (anti-slop v2: no looping animation, no auto-cycling): one pass when the strip first enters view, about
+ *  5 seconds, then it rests on a still final frame (all seven gates checked, the order at the last gate) and no
+ *  requestAnimationFrame loop keeps running. Picking or hovering a stage (a row or a gate link) replays the run up to
+ *  that stage and rests there; leaving it redraws the final frame without motion.
  *  Stateless timeline (a pure function of the clock), 30 fps cap, paused offscreen/hidden,
- *  one still frame under prefers-reduced-motion. Hovering or focusing a row or a gate link highlights both; a gate link jumps to its row.
+ *  reduced motion draws each end frame straight away. A gate link jumps to its row.
  *  Colours: accent for the moving order and checked gates, signal (#eab04f) only for the lit step's gate. */
 export const SEQUENCE_SCRIPT = `(function () {
   var strip = document.querySelector('[data-seq-strip]');
@@ -14,12 +18,12 @@ export const SEQUENCE_SCRIPT = `(function () {
   var N = 7;
   var reduce = false;
   try { reduce = matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var width = 0, height = 0, ratio = 1, running = false, visible = true;
-  var last = 0, lastDraw = 0, clock = 0, hl = -1, shown = [], shownHl = -2;
+  var width = 0, height = 0, ratio = 1, running = false, visible = true, played = false;
+  var last = 0, lastDraw = 0, clock = 0, target = N - 1, hl = -1, shown = [], shownHl = -2;
   var accent = '#62c597', muted = '#b2bbb6', ground = '#15191a', signal = '#eab04f';
-  var MOVE = 900, DWELL = 700, CHECK_AT = 280, CHECK_LEN = 320, EXIT = 800, HOLD = 1000, FADE = 600;
-  var PERIOD = N * (MOVE + DWELL) + EXIT + HOLD + FADE;
-  var STILL = 3 * (MOVE + DWELL) + MOVE + 120;
+  var MOVE = 420, DWELL = 280, CHECK_AT = 90, CHECK_LEN = 180;
+  /* A run to stage k (0-based) ends once the order has checked gate k: the full pass (k = N - 1) takes N * 700 ms. */
+  function runLength(k) { return (k + 1) * (MOVE + DWELL); }
 
   function ease(p) { return p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2; }
   function clamp(v) { return Math.max(0, Math.min(1, v)); }
@@ -35,29 +39,21 @@ export const SEQUENCE_SCRIPT = `(function () {
     } catch (e) {}
   }
 
-  /* Timeline at time t (ms): lead x and how far each gate has checked (0..1). */
-  function state(t) {
-    var checks = [], x = 0, i;
+  /* Timeline at time t (ms) of a run to stage k: lead x, how far each gate has checked (0..1), and how fast the
+     order is moving (0 at rest), which sets its trail. At t >= runLength(k) this is the still end frame. */
+  function state(t, k) {
+    var checks = [], i;
     for (i = 0; i < N; i++) checks.push(0);
-    var cursor = 0, fade = 0;
-    for (i = 0; i < N; i++) {
+    var cursor = 0;
+    for (i = 0; i <= k; i++) {
       var from = i === 0 ? 0 : gateX(i - 1), to = gateX(i);
-      if (t < cursor + MOVE) { x = from + (to - from) * ease(clamp((t - cursor) / MOVE)); return { x: x, checks: checks, fade: 0 }; }
+      if (t < cursor + MOVE) { var p = clamp((t - cursor) / MOVE); return { x: from + (to - from) * ease(p), checks: checks, speed: Math.sin(Math.PI * p) }; }
       cursor += MOVE;
-      x = to;
       checks[i] = clamp((t - cursor - CHECK_AT) / CHECK_LEN);
-      if (t < cursor + DWELL) return { x: x, checks: checks, fade: 0 };
+      if (t < cursor + DWELL) return { x: to, checks: checks, speed: 0 };
       cursor += DWELL;
     }
-    for (i = 0; i < N; i++) checks[i] = 1;
-    if (t < cursor + EXIT) return { x: gateX(N - 1) + (width + 12 - gateX(N - 1)) * ease(clamp((t - cursor) / EXIT)), checks: checks, fade: 0 };
-    cursor += EXIT;
-    x = width + 12;
-    if (t < cursor + HOLD) return { x: x, checks: checks, fade: 0 };
-    cursor += HOLD;
-    fade = clamp((t - cursor) / FADE);
-    for (i = 0; i < N; i++) checks[i] = 1 - fade;
-    return { x: -12, checks: checks, fade: fade };
+    return { x: gateX(k), checks: checks, speed: 0 };
   }
 
   function parcel(x, y, alpha) {
@@ -81,7 +77,7 @@ export const SEQUENCE_SCRIPT = `(function () {
   }
 
   function draw(t) {
-    var s = state(t % PERIOD), midY = height - 22, top = 14, bottom = height - 2, i;
+    var s = state(t, target), midY = height - 22, top = 14, bottom = height - 2, i;
     ctx.clearRect(0, 0, width, height);
     ctx.lineCap = 'round';
     ctx.strokeStyle = muted; ctx.globalAlpha = .35; ctx.lineWidth = 1;
@@ -103,7 +99,9 @@ export const SEQUENCE_SCRIPT = `(function () {
       }
     }
     ctx.globalAlpha = 1;
-    parcel(s.x - 28, midY, .3); parcel(s.x - 14, midY, .55); parcel(s.x, midY, 1);
+    /* The trail exists only while the order moves, so a resting frame shows one order, not a frozen streak. */
+    if (s.speed > 0) { parcel(s.x - 28 * s.speed, midY, .3 * s.speed); parcel(s.x - 14 * s.speed, midY, .55 * s.speed); }
+    parcel(s.x, midY, 1);
     syncLabels(s.checks);
   }
 
@@ -114,29 +112,48 @@ export const SEQUENCE_SCRIPT = `(function () {
     canvas.width = Math.round(width * ratio); canvas.height = Math.round(height * ratio);
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     readColors();
-    draw(reduce ? STILL : clock);
+    draw(clock);
   }
 
   function frame(now) {
     if (!running) return;
-    requestAnimationFrame(frame);
-    if (now - lastDraw < 33) return;
+    if (now - lastDraw < 33) { requestAnimationFrame(frame); return; }
     clock += last ? Math.min(100, now - last) : 0;
     last = now; lastDraw = now;
     draw(clock);
+    /* Run finished: rest on this frame and stop for good until a stage is picked or hovered. */
+    if (clock >= runLength(target)) { running = false; strip.classList.add('is-settled'); return; }
+    requestAnimationFrame(frame);
   }
 
   function update() {
-    var should = !reduce && visible && !document.hidden;
-    if (should && !running) { running = true; last = 0; requestAnimationFrame(frame); }
+    var should = !reduce && played && clock < runLength(target) && visible && !document.hidden;
+    if (should && !running) { running = true; last = 0; lastDraw = 0; requestAnimationFrame(frame); }
     else if (!should) running = false;
+  }
+
+  /* Start a run to stage k from the beginning. Reduced motion jumps to its end frame. */
+  function play(k) {
+    target = k; played = true;
+    clock = reduce ? runLength(k) : 0;
+    strip.classList.remove('is-settled');
+    draw(clock);
+    if (reduce) strip.classList.add('is-settled');
+    update();
+  }
+
+  /* Back to the full pass's still end frame, drawn once without motion. */
+  function rest() {
+    target = N - 1; clock = runLength(target); running = false;
+    draw(clock);
+    strip.classList.add('is-settled');
   }
 
   function highlight(i) {
     if (hl === i) return;
     hl = i;
     Array.prototype.forEach.call(rows, function (row, j) { row.classList.toggle('is-lit', j === i); });
-    if (!running) draw(reduce ? STILL : clock);
+    if (i >= 0) play(i); else if (played) rest(); else draw(clock);
   }
 
   /* Hovering or focusing a gate link or a row lights both. The gate links are real anchors to the rows,
@@ -151,6 +168,8 @@ export const SEQUENCE_SCRIPT = `(function () {
   Array.prototype.forEach.call(labels, bind);
 
   strip.classList.add('is-live');
+  /* Reduced motion: the final still frame straight away, and no pass to play. */
+  if (reduce) { played = true; clock = runLength(N - 1); strip.classList.add('is-settled'); }
   resize();
   if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas);
   window.addEventListener('resize', resize);
@@ -158,8 +177,12 @@ export const SEQUENCE_SCRIPT = `(function () {
   (function watchRatio() {
     try { var mq = matchMedia('(resolution: ' + (window.devicePixelRatio || 1) + 'dppx)'); var on = function () { resize(); watchRatio(); }; if (mq.addEventListener) mq.addEventListener('change', on, { once: true }); } catch (e) {}
   })();
-  if (window.IntersectionObserver) new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; update(); }).observe(canvas);
+  /* The one pass starts the first time the strip enters view (straight away without IntersectionObserver). */
+  if (window.IntersectionObserver) new IntersectionObserver(function (entries) {
+    visible = entries[0].isIntersecting;
+    if (visible && !played) play(N - 1); else update();
+  }).observe(canvas);
+  else play(N - 1);
   document.addEventListener('visibilitychange', update);
-  update();
 })();
 `;

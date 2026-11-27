@@ -1,4 +1,4 @@
-/* Marketing Skills — Shopify VA public design system (anti-slop spec, 2026-11-27):
+/* Marketing Skills, Shopify VA public design system (anti-slop spec, 2026-11-27):
    - Dark charcoal ladder: ground #15191a, surface #1d2223 (wells, inputs, code, the open drawer), line #343c3d,
      ink #eff2f0, muted #b2bbb6. Two accents with separate roles: accent #62c597 for links, the primary button and
      selected state; signal #eab04f for one thing only, the lit "What comes first" step (row number and gate).
@@ -8,7 +8,8 @@
    - Radius by role: 6px buttons and tabs, 12px panels (the install drawer), 4px code, inputs and wells, 0 on rows.
    - Hierarchy comes from type size, weight, whitespace and 1px dividers: no cards, no glow, no gradients, no lift,
      no reveal on scroll, no uppercase labels, no one-sided coloured borders, no shadows except the open drawer.
-   - Motion: only the hero canvas and the sequence canvas animate. Interactive rows change background on hover.
+   - Motion: only the hero canvas and the sequence canvas animate, and each plays once then rests still (no loops).
+     Interactive rows change background on hover.
    - Type scale 14/16/20px and up, 16px form fields. The /app light theme (.app-home) keeps its own look. */
 export const PUBLIC_STYLES = `
 @font-face{font-family:"Schibsted Grotesk";font-style:normal;font-weight:400 900;font-display:swap;src:url(fonts/schibsted-grotesk-latin-wght-normal.woff2) format("woff2")}
