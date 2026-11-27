@@ -359,6 +359,7 @@ type LayoutMeta = {
   jsonLd?: string;
   hasHero?: boolean;
   hasSequence?: boolean;
+  currentNav?: 'setup';
 };
 
 function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): string {
@@ -369,31 +370,31 @@ function layout(meta: LayoutMeta, content: string, config: PublicPageConfig): st
   const ldTag = meta.jsonLd ? `<script type="application/ld+json">${meta.jsonLd}</script>` : '';
   const heroScript = meta.hasHero ? `<script src="${pagePath(config, '/assets/hero.js')}" defer></script>` : '';
   const sequenceScript = meta.hasSequence ? `<script src="${pagePath(config, '/assets/sequence.js')}" defer></script>` : '';
-  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(meta.title)}</title><meta name="description" content="${escape(meta.description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}">How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
+  return `<!doctype html><html lang="en" class="site"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escape(meta.title)}</title><meta name="description" content="${escape(meta.description)}"><meta name="author" content="Vince Servidad"><meta name="robots" content="index, follow"><meta name="theme-color" content="#031a14"><meta name="color-scheme" content="light"><link rel="canonical" href="${escape(canonical)}">${socialTags}<link rel="icon" href="${FAVICON_DATA_URI}" type="image/png" sizes="32x32">${ldTag}<script src="${pagePath(config, '/assets/theme.js')}" defer></script>${heroScript}${sequenceScript}<link rel="stylesheet" href="${pagePath(config, '/assets/public.css')}"></head><body${meta.hasHero ? ' class="has-hero"' : ''}><a class="skip-link" href="#main">Skip to content</a><div class="top-bar"><header class="family-header shell"><a class="setup-brand" href="${FAMILY_HOME}">Marketing Skills</a><nav class="family-tabs" aria-label="Marketing Skills products"><a href="${FAMILY_HOME}">marketing/</a><a href="${pagePath(config)}" data-product="va" aria-current="page">shopify-va/</a></nav><nav class="family-nav" aria-label="Site"><a href="${pagePath(config, '#bottlenecks')}">Problems</a><a href="${pagePath(config, '#skills')}">Skills</a><a href="${pagePath(config, '/setup')}"${meta.currentNav === 'setup' ? ' aria-current="page"' : ''}>How to set up</a></nav></header></div><main id="main">${content}</main><div class="footer-band"><footer class="site-footer shell"><p>Independent open-source project by <a href="${AUTHOR}">Vince Servidad</a>. Not affiliated with Shopify. We may earn a commission if you sign up for Shopify through our links.</p><nav aria-label="Footer navigation"><a href="${FAMILY_HOME}">Marketing Skills</a><a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a><a href="${pagePath(config, '/setup')}">How to set up</a><a href="${pagePath(config, '/privacy')}">Privacy</a><a href="${REPOSITORY}">GitHub</a><a href="${REPOSITORY}/blob/main/LICENSE">MIT License</a></nav></footer></div></body></html>`;
 }
 
 function heroWorkbench(openMcpUrl: string, guideUrl: string): string {
-  return `<div class="workbench" id="install">
+  return `<div class="workbench" id="install" data-tabs="setup">
     <input class="wb-radio" type="radio" name="wb" id="wb-claude" checked>
     <input class="wb-radio" type="radio" name="wb" id="wb-chatgpt">
     <input class="wb-radio" type="radio" name="wb" id="wb-cli">
-    <div class="wb-tabs" role="tablist" aria-label="Quick setup">
+    <div class="wb-tabs" data-tablist aria-label="Quick setup">
       <label for="wb-claude">Claude</label>
       <label for="wb-chatgpt">ChatGPT</label>
       <label for="wb-cli">Coding agents</label>
     </div>
     <div class="wb-panels">
-      <div class="wb-panel wb-claude">
+      <div class="wb-panel wb-claude" data-tabpanel>
         <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
         <p class="wb-note">Open Settings → Connectors → Add custom connector, paste this link, and save.</p>
         <div class="wb-links"><a href="#setup">Step-by-step setup</a><a href="${guideUrl}">Troubleshooting</a></div>
       </div>
-      <div class="wb-panel wb-chatgpt">
+      <div class="wb-panel wb-chatgpt" data-tabpanel>
         <div class="wb-row"><code>${escape(openMcpUrl)}</code><button type="button" class="copy-btn" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button></div>
         <p class="wb-note">Open Settings → Apps &amp; Connectors and add a custom connector with this link (some plans need Developer mode on).</p>
         <div class="wb-links"><a href="#setup">Step-by-step setup</a><a href="${guideUrl}">Troubleshooting</a></div>
       </div>
-      <div class="wb-panel wb-cli">
+      <div class="wb-panel wb-cli" data-tabpanel>
         <div class="wb-row"><code>${CLI_ADD_CMD}</code><button type="button" class="copy-btn" data-copy="${CLI_ADD_CMD}" hidden>Copy command</button></div>
         <p class="wb-note">Installs all ${SKILL_COUNT} skills in Claude Code, Codex, Cursor, and other coding agents.</p>
         <div class="wb-links"><a href="#setup">Step-by-step setup</a><a href="${guideUrl}">Troubleshooting</a></div>
@@ -408,17 +409,17 @@ function sampleOutputsSection(): string {
   ).join('');
   const labels = SAMPLE_OUTPUTS.map(item => `<label for="${item.id}">${escape(item.tab)}</label>`).join('');
   const panels = SAMPLE_OUTPUTS.map(
-    item => `<div class="ex-panel ${item.id}"><div class="ex-grid"><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-list">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
+    item => `<div class="ex-panel ${item.id}" data-tabpanel><div class="ex-grid"><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-list">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
   ).join('');
-  return `<div class="ex-box">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" role="tablist" aria-label="Sample outputs">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
+  return `<div class="ex-box" data-tabs="examples">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" data-tablist aria-label="Sample outputs">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
 }
 
 function sequenceSection(): string {
   const rows = SKILL_SEQUENCE.map(
-    row => `<li class="seq-item"><span class="seq-num">${row.step}</span><span class="seq-stage">${escape(row.stage)}</span><span class="seq-skills">${escape(row.skills)}</span><span class="seq-gate">${escape(row.gate)}</span></li>`,
+    (row, index) => `<li class="seq-item" id="seq-${index + 1}"><span class="seq-num">${row.step}</span><span class="seq-stage">${escape(row.stage)}</span><span class="seq-skills">${escape(row.skills)}</span><span class="seq-gate">${escape(row.gate)}</span></li>`,
   ).join('');
-  const gates = SKILL_SEQUENCE.map(row => `<span data-seq-label>${row.step}</span>`).join('');
-  const strip = `<div class="seq-strip" data-seq-strip aria-hidden="true"><canvas class="seq-canvas" data-seq-canvas></canvas><div class="seq-gates">${gates}</div></div>`;
+  const gates = SKILL_SEQUENCE.map((row, index) => `<a href="#seq-${index + 1}" data-seq-label aria-label="Stage ${index + 1}: ${escape(row.stage)}">${row.step}</a>`).join('');
+  const strip = `<div class="seq-strip" data-seq-strip><canvas class="seq-canvas" data-seq-canvas aria-hidden="true"></canvas><nav class="seq-gates" aria-label="Jump to a stage">${gates}</nav></div>`;
   return `${strip}<ol class="sequence-list">${rows}</ol>`;
 }
 
@@ -426,7 +427,7 @@ const COPY_ICON = '<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"
 
 function bottleneckTable(): string {
   const rows = BOTTLENECKS.map(
-    row => `<tr><td class="bn-problem">${escape(row.problem)}</td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-text" data-copy="${escape(row.prompt)}" aria-label="Copy starter prompt: ${escape(row.problem)}">${COPY_ICON}Copy prompt</button></td></tr>`,
+    row => `<tr><td class="bn-problem">${escape(row.problem)}<span class="bn-sub">Fix first: ${escape(row.fixFirst)}. Check next: ${escape(row.checkNext)}.</span></td><td class="bn-first">${escape(row.fixFirst)}</td><td class="bn-next">${escape(row.checkNext)}</td><td class="bn-action"><button type="button" class="copy-btn copy-btn-text" data-copy="${escape(row.prompt)}" aria-label="Copy starter prompt: ${escape(row.problem)}">${COPY_ICON}Copy prompt</button></td></tr>`,
   ).join('');
   return `<div class="table-wrap"><table class="bottleneck-table"><thead><tr><th scope="col">Problem</th><th scope="col">Fix first</th><th scope="col">Check next</th><th scope="col">Starter prompt</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
@@ -441,7 +442,15 @@ function skillCatalogSection(): string {
   const items = SKILL_CATALOG.map(
     skill => `<article class="skill-entry" data-skill-card data-cat="${escape(skill.category)}"><div><h3>${escape(skill.name)}</h3><p>${escape(skill.summary)}</p></div><div class="skill-actions"><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(skill.prompt)}">Copy prompt</button><a href="${sourceFile(`skills/${skill.slug}/SKILL.md`)}">Read on GitHub</a></div></article>`,
   ).join('');
-  return `<div class="catalog-controls" data-skill-filter-wrap><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status>${SKILL_COUNT} skills</span></div></div><div class="skill-index">${items}</div>`;
+  return `<div class="catalog-controls" data-skill-filter-wrap hidden><div class="seg-tabs" role="group" aria-label="Filter skills by category">${tabs}</div><div class="skill-filter"><input type="search" data-skill-filter placeholder="Search skills (stock, ads, Flow)" aria-label="Search Shopify skills"><span data-skill-status role="status">${SKILL_COUNT} skills</span></div></div><div class="skill-index">${items}</div><div class="skill-empty" data-skill-empty hidden><p>No skills match <span class="skill-empty-q" data-skill-empty-query></span>.</p><button type="button" class="copy-btn copy-btn-line" data-skill-reset>Show all skills</button></div>`;
+}
+
+function cmdItem(label: string, note: string, command: string, id?: string): string {
+  return `<div class="cmd-item"${id ? ` id="${id}"` : ''}><div class="cmd-label"><strong>${escape(label)}</strong><span>${escape(note)}</span></div><code class="cmd-code">${escape(command)}</code><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(command)}" aria-label="Copy ${escape(label)} command: ${escape(note)}" hidden>Copy</button></div>`;
+}
+
+function cmdRow(command: string, label: string): string {
+  return `<div class="cmd-row"><code class="cmd-code">${escape(command)}</code><button type="button" class="copy-btn copy-btn-line" data-copy="${escape(command)}" aria-label="Copy ${escape(label)}" hidden>Copy</button></div>`;
 }
 
 function supportedAppsMatrix(): string {
@@ -540,7 +549,8 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
         <ol class="quick-setup">
           <li>
             <h3>Connect your AI</h3>
-            <p>Choose Claude, ChatGPT, or Coding agents in the <a href="#install">setup box at the top of this page</a> and follow the one-line step under your copy button. No Shopify login is required.</p>
+            <p>In Claude, open Settings → Connectors → Add custom connector. In ChatGPT, open Settings → Apps &amp; Connectors and add a custom connector (some plans need Developer mode on). Paste the link from the <a href="#install">setup box at the top of this page</a> and save.</p>
+            <p>In Claude Code, Codex, Cursor, and other coding agents, run the install command from the same box once. No Shopify login is required.</p>
           </li>
           <li>
             <h3>Try one product listing</h3>
@@ -559,41 +569,14 @@ export function renderProductPage(config: PublicPageConfig = {}): string {
             <p class="setup-intro">Pick your AI app below, or open <a href="${pagePath(config, '/setup')}">the setup guide</a> for ZIP uploads, ChatGPT Projects, and troubleshooting.</p>
             ${supportedAppsMatrix()}
             <div class="cmd-list">
-              <div class="cmd-item">
-                <div class="cmd-label"><strong>Agent Skills CLI</strong><span>All ${SKILL_COUNT} skills</span></div>
-                <code class="cmd-code">${CLI_ADD_CMD}</code>
-                <button type="button" class="copy-btn copy-btn-line" data-copy="${CLI_ADD_CMD}" hidden>Copy</button>
-              </div>
-              <div class="cmd-item">
-                <div class="cmd-label"><strong>Context7 CLI</strong><span>All ${SKILL_COUNT} skills</span></div>
-                <code class="cmd-code">${CTX7_ADD_CMD}</code>
-                <button type="button" class="copy-btn copy-btn-line" data-copy="${CTX7_ADD_CMD}" hidden>Copy</button>
-              </div>
-              <div class="cmd-item">
-                <div class="cmd-label"><strong>Claude Code</strong><span>GitHub plugin</span></div>
-                <code class="cmd-code">${CLAUDE_PLUGIN_CMD}</code>
-                <button type="button" class="copy-btn copy-btn-line" data-copy="${CLAUDE_PLUGIN_CMD}" hidden>Copy</button>
-              </div>
-              <div class="cmd-item">
-                <div class="cmd-label"><strong>Cursor</strong><span>Run in Cursor chat</span></div>
-                <code class="cmd-code">${CURSOR_PLUGIN_CMD}</code>
-                <button type="button" class="copy-btn copy-btn-line" data-copy="${CURSOR_PLUGIN_CMD}" hidden>Copy</button>
-              </div>
-              <div class="cmd-item">
-                <div class="cmd-label"><strong>Antigravity</strong><span>Plugin</span></div>
-                <code class="cmd-code">${AGY_PLUGIN_CMD}</code>
-                <button type="button" class="copy-btn copy-btn-line" data-copy="${AGY_PLUGIN_CMD}" hidden>Copy</button>
-              </div>
-              <div class="cmd-item">
-                <div class="cmd-label"><strong>OpenAI Codex</strong><span>Marketplace plugin</span></div>
-                <code class="cmd-code">${CODEX_MARKETPLACE_CMD}</code>
-                <button type="button" class="copy-btn copy-btn-line" data-copy="${CODEX_MARKETPLACE_CMD}" hidden>Copy</button>
-              </div>
-              <div class="cmd-item" id="mcp">
-                <div class="cmd-label"><strong>Live store data (optional)</strong><span>Read-only, owner approves</span></div>
-                <code class="cmd-code">${escape(mcpUrl)}</code>
-                <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(mcpUrl)}" hidden>Copy</button>
-              </div>
+              ${cmdItem('Agent Skills CLI', `All ${SKILL_COUNT} skills`, CLI_ADD_CMD)}
+              ${cmdItem('Context7 CLI', `All ${SKILL_COUNT} skills`, CTX7_ADD_CMD)}
+              ${cmdItem('Claude Code', 'GitHub plugin', CLAUDE_PLUGIN_CMD)}
+              ${cmdItem('Cursor', 'Run in Cursor chat', CURSOR_PLUGIN_CMD)}
+              ${cmdItem('Antigravity', 'Plugin', AGY_PLUGIN_CMD)}
+              ${cmdItem('OpenAI Codex', 'Step 1: add the marketplace', CODEX_MARKETPLACE_CMD)}
+              ${cmdItem('OpenAI Codex', 'Step 2: install the plugin', CODEX_PLUGIN_CMD)}
+              ${cmdItem('Live store data (optional)', 'Read-only, owner approves', mcpUrl, 'mcp')}
             </div>
             <p class="setup-foot">${liveStoreNote}</p>
             <p class="setup-foot">${releaseNote}</p>
@@ -626,22 +609,24 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
       description: HELP_DESCRIPTION,
       canonicalPath: '/shopify-va/setup',
       includeSocialMeta: true,
+      currentNav: 'setup',
     },
     `
     <div class="page-body shell">
       <div class="doc-head">
         <h1>How to set up</h1>
         <p>Connect all ${SKILL_COUNT} Shopify skills in four steps. Other ways to connect and fixes for common problems are further down.</p>
+        <nav class="doc-jump" aria-label="On this page"><a href="#quick-start">Four steps</a><a href="#install-help">All ways to connect</a><a href="#store-connection">Live store data</a><a href="#fix-issues">Fix common issues</a><a href="#contact">Contact</a></nav>
       </div>
       <section id="quick-start">
         <h2>Set up in four steps</h2>
         <p>You don't need an account or store access to start.</p>
         <h3>1. Connect your AI</h3>
         <p>Claude: open Settings → Connectors → Add custom connector, paste this link, and save.</p>
-        <pre class="command" tabindex="0"><code>${escape(openMcpUrl)}</code></pre>
-        <button type="button" class="copy-btn copy-btn-line" data-copy="${escape(openMcpUrl)}" hidden>Copy link</button>
+        ${cmdRow(openMcpUrl, 'connector link')}
         <p>ChatGPT: open Settings → Apps &amp; Connectors and create a custom connector with the same link. Some plans need Developer mode turned on first.</p>
-        <p>Coding agents (Claude Code, Codex, Cursor, and others): run <code>${CLI_ADD_CMD}</code> once.</p>
+        <p>Coding agents (Claude Code, Codex, Cursor, and others): run this once in your terminal.</p>
+        ${cmdRow(CLI_ADD_CMD, 'install command')}
         <h3>2. Try one product listing</h3>
         <p>Open a new chat and paste this prompt. Fill in the brackets with facts the store owner has confirmed. Your AI app asks about anything missing, then writes the draft.</p>
         <pre class="request" tabindex="0"><code>${escape(firstRequest)}</code></pre>
@@ -666,19 +651,19 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         <h2>All ways to connect</h2>
         <dl>
           <dt>ChatGPT and Claude (custom connector)</dt>
-          <dd><p>Add <code>${escape(openMcpUrl)}</code> as a custom connector (remote MCP server). It gives your AI app all ${SKILL_COUNT} skills and 8 VA task workflows.</p></dd>
+          <dd><p>Add this link as a custom connector (remote MCP server). It gives your AI app all ${SKILL_COUNT} skills and 8 VA task workflows.</p>${cmdRow(openMcpUrl, 'connector link')}</dd>
           <dt>Agent Skills CLI (most coding agents)</dt>
-          <dd><p>Run <code>${CLI_ADD_CMD}</code>. To see the list before you install, run <code>${CLI_ADD_CMD} --list</code>.</p></dd>
+          <dd><p>Run this once. To see the list before you install, add <code>--list</code> to the end.</p>${cmdRow(CLI_ADD_CMD, 'Agent Skills CLI command')}</dd>
           <dt>Context7 CLI</dt>
-          <dd><p>Run <code>${CTX7_ADD_CMD}</code> to install all ${SKILL_COUNT} skills through Context7.</p></dd>
+          <dd><p>Install all ${SKILL_COUNT} skills through Context7.</p>${cmdRow(CTX7_ADD_CMD, 'Context7 CLI command')}</dd>
           <dt>Claude Code plugin</dt>
-          <dd><p>Run <code>${CLAUDE_PLUGIN_CMD}</code> in your terminal, or <code>${CLAUDE_SESSION_CMD}</code> inside a session. To confirm all ${SKILL_COUNT} skills loaded, run <code>claude plugin details shopify-va-toolkit</code>.</p></dd>
+          <dd><p>Run this in your terminal, or the second command inside a Claude Code session. To confirm all ${SKILL_COUNT} skills loaded, run <code>claude plugin details shopify-va-toolkit</code>.</p>${cmdRow(CLAUDE_PLUGIN_CMD, 'Claude Code terminal command')}${cmdRow(CLAUDE_SESSION_CMD, 'Claude Code session command')}</dd>
           <dt>Cursor plugin</dt>
-          <dd><p>Run <code>${CURSOR_PLUGIN_CMD}</code> inside Cursor chat, or use the Agent Skills CLI above.</p></dd>
+          <dd><p>Run this inside Cursor chat, or use the Agent Skills CLI above.</p>${cmdRow(CURSOR_PLUGIN_CMD, 'Cursor command')}</dd>
           <dt>Antigravity plugin</dt>
-          <dd><p>Run <code>${AGY_PLUGIN_CMD}</code> in your terminal to install the plugin.</p></dd>
+          <dd><p>Run this in your terminal to install the plugin.</p>${cmdRow(AGY_PLUGIN_CMD, 'Antigravity command')}</dd>
           <dt>OpenAI Codex plugin</dt>
-          <dd><p>Run <code>${CODEX_MARKETPLACE_CMD}</code>, then <code>${CODEX_PLUGIN_CMD}</code>. ${plugin ? `Or download <a href="${escape(plugin)}">the skills-only plugin file</a>.` : `Or browse <a href="${RELEASE_TAG_URL}">Release ${RELEASE_VERSION}</a>.`}</p></dd>
+          <dd><p>Run these two commands in order.</p>${cmdRow(CODEX_MARKETPLACE_CMD, 'Codex marketplace command')}${cmdRow(CODEX_PLUGIN_CMD, 'Codex plugin command')}<p>${plugin ? `You can also download <a href="${escape(plugin)}">the skills-only plugin file</a>.` : `You can also browse <a href="${RELEASE_TAG_URL}">Release ${RELEASE_VERSION}</a>.`}</p></dd>
           <dt>Claude web or desktop (Skills ZIP)</dt>
           <dd><p>Download <a href="${STARTER_SKILL_ZIP_URL}"><code>shopify-va.zip</code></a> or <a href="${PRODUCT_LISTING_ZIP_URL}"><code>shopify-product-listing.zip</code></a> from <a href="${RELEASE_TAG_URL}">Release ${RELEASE_VERSION}</a>. Upload the ZIP without unzipping it under Customize → Skills, then turn it on. The Anthropic Plugin Directory listing is under review.</p></dd>
           <dt>ChatGPT Projects (manual setup)</dt>
@@ -691,13 +676,13 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
         ${
           install
             ? `<ol class="steps"><li>The store owner installs <a href="${install}">MKT Skills VA Toolkit</a> on the target Shopify store.</li><li>In Claude or ChatGPT connectors, enter <code>${escape(connectionUrl)}</code>.</li><li>Sign in, then paste the pairing code in Shopify Admin so the store owner can approve read access.</li><li>Ask your AI app to show the store name first, so you know it's the right store.</li></ol>`
-            : `<p>The live store connection is waiting for Shopify App Store review. Until then, use the link or CLI above. After approval, or on a development store, add this remote MCP server URL:</p><pre class="command" tabindex="0"><code>${escape(connectionUrl)}</code></pre>`
+            : `<p>The live store connection is waiting for Shopify App Store review. Until then, use the link or CLI above. After approval, or on a development store, add this remote MCP server URL:</p>${cmdRow(connectionUrl, 'live store connection link')}`
         }
         <p>This connection is read-only and uses OAuth 2.1 with PKCE. By default it asks for three read scopes (<code>read_products</code>, <code>read_inventory</code>, and <code>read_orders</code>), so it cannot edit products, send customer emails, take payments, or issue refunds.</p>
         <p>The store owner can also turn on four optional read scopes inside the app: <code>read_reports</code>, <code>read_discounts</code>, <code>read_themes</code>, and <code>read_customers</code>. Even with <code>read_customers</code> enabled, the server reads totals only and never pulls buyer names or emails.</p>
         <p><a href="https://help.openai.com/en/articles/11487775-connectors-in-chatgpt">ChatGPT connector docs</a> · <a href="https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp">Claude MCP docs</a></p>
       </section>
-      <section>
+      <section id="fix-issues">
         <h2>Fix common issues</h2>
         <dl>
           <dt>My AI app won't accept Markdown (.md) files</dt>
@@ -710,7 +695,7 @@ export function renderHelpPage(config: PublicPageConfig = {}): string {
           <dd>Ask your AI app to read the next page, or to tell you which records it checked.</dd>
         </dl>
       </section>
-      <section>
+      <section id="contact">
         <h2>Contact and support</h2>
         <p>Email <a href="mailto:${SUPPORT}">${SUPPORT}</a> for help, or open a <a href="${REPOSITORY}/issues">GitHub issue</a> for public questions. Don't post passwords, keys, or private store data in a public issue.</p>
         <p><a href="${pagePath(config, '/privacy')}">Privacy notice</a> · <a href="${pagePath(config, '/llms.txt')}">llms.txt</a> · <a href="${SHOPIFY_AFFILIATE}" target="_blank" rel="sponsored noopener noreferrer">Start a free Shopify trial</a></p>

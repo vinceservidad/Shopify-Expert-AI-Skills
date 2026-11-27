@@ -4,6 +4,20 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Shopify VA page and setup page usability fixes (2026-11-27)
+
+- Fixed: copy buttons with an icon lost the icon after the first copy. Every copy button now shows "Copied" (or "Copy failed" with a legacy-clipboard retry), restores its icon and label, keeps its width, and is announced to screen readers.
+- Fixed: skills search matched the "Copy prompt" and "Read on GitHub" labels (so "copy" or "github" matched every skill) and ignored the pressed category. It now searches name, summary, category and starter prompt only; typing moves the category buttons back to All, picking a category clears the search, and a no-results message offers "Show all skills". The filter controls stay hidden until the script runs.
+- Fixed: the hero and example tabs showed no keyboard focus ring and carried invalid tablist markup. The markup stays plain radio inputs; the script adds tab roles, a roving tabindex and arrow, Home and End keys. Focus rings are also visible without the script. Tab panels share one grid cell, so switching tabs no longer changes page height.
+- Fixed: focus rings on links and buttons below the hero were lime on light bands; they now use the band accent (lime only on dark bands).
+- "What comes first": the strip's gate numbers are real links to their rows, so the highlight works from the keyboard and a row stays highlighted after you follow its gate. Rows still need no tab stop.
+- Common problems table on phones: "Fix first" and "Check next" were hidden or cramped; they now sit under each problem.
+- Install drawer: OpenAI Codex shows both commands (the marketplace command alone did not install the plugin), and each Copy button names its command.
+- Setup step 1 on the guide no longer only points back to the hero box; it states the Claude, ChatGPT and coding-agent steps.
+- Setup page: every command has a copy button, a jump list sits under the title, and the current page is marked in the header.
+- Footer links are 32px tall (44px on phones); the hero link row stacks on phones instead of breaking the URL mid-word; skill category buttons form an even grid on phones; skill summaries use one voice; hover, pressed and focus states added.
+- No CSP change and no new inline script. Tests cover each fix.
+
 ### Shopify VA page sequence strip (2026-11-27)
 
 - "What comes first": a quiet canvas strip above the seven-stage list. One order waits at each numbered gate until it checks, then moves to the next; hovering or focusing a row highlights its gate. The list stays the content, the strip is decorative (`aria-hidden`), hidden without JavaScript, paused offscreen and in hidden tabs, capped at 30 fps, and drawn as one still frame under reduced motion.

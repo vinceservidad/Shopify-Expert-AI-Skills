@@ -68,7 +68,7 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
 
   // Duplicate #how-it-works band removed; 3-tab hero workbench shows click paths above the fold
   assert.ok(!html.includes('id="how-it-works"'), 'duplicate #how-it-works section must be removed');
-  const heroInstallMatch = /<div class="workbench" id="install">[\s\S]*?<\/section>/.exec(html);
+  const heroInstallMatch = /<div class="workbench" id="install" data-tabs="setup">[\s\S]*?<\/section>/.exec(html);
   assert.ok(heroInstallMatch, 'hero workbench missing');
   const heroInstall = heroInstallMatch[0];
   assert.ok(heroInstall.includes('for="wb-claude">Claude</label>'));
@@ -100,7 +100,7 @@ test('product page brand, 4-item header, 3-tab hero setup, bottleneck table, 19-
   assert.ok(html.includes('data-skill-cat="All" aria-pressed="true"'));
   assert.ok(html.includes('data-skill-cat="Catalog" aria-pressed="false"'));
   assert.equal((html.match(/data-skill-cat="[^"]*" aria-pressed="true"/g) ?? []).length, 1, 'exactly one skill tab is selected');
-  assert.ok(html.includes('<span data-skill-status>19 skills</span>'));
+  assert.ok(html.includes('<span data-skill-status role="status">19 skills</span>'));
   assert.ok(!html.includes('5 of 19'));
 
   // Sample outputs and 7-stage sequence sections

@@ -2,7 +2,7 @@
  *  Decorative only (aria-hidden); the ordered list below it stays the content.
  *  Idea: one order moves through seven stages in order and waits at each gate until it checks.
  *  Stateless timeline (a pure function of the clock), 30 fps cap, paused offscreen/hidden,
- *  one still frame under prefers-reduced-motion. Hovering or focusing a row highlights its gate. */
+ *  one still frame under prefers-reduced-motion. Hovering or focusing a row or a gate link highlights both; a gate link jumps to its row. */
 export const SEQUENCE_SCRIPT = `(function () {
   var strip = document.querySelector('[data-seq-strip]');
   var canvas = strip && strip.querySelector('[data-seq-canvas]');
@@ -133,15 +133,20 @@ export const SEQUENCE_SCRIPT = `(function () {
   function highlight(i) {
     if (hl === i) return;
     hl = i;
+    Array.prototype.forEach.call(rows, function (row, j) { row.classList.toggle('is-lit', j === i); });
     if (!running) draw(reduce ? STILL : clock);
   }
 
-  Array.prototype.forEach.call(rows, function (row, i) {
-    row.addEventListener('mouseenter', function () { highlight(i); });
-    row.addEventListener('mouseleave', function () { highlight(-1); });
-    row.addEventListener('focusin', function () { highlight(i); });
-    row.addEventListener('focusout', function () { highlight(-1); });
-  });
+  /* Hovering or focusing a gate link or a row lights both. The gate links are real anchors to the rows,
+     so keyboard users reach the highlight without the rows being focusable. */
+  function bind(el, i) {
+    el.addEventListener('mouseenter', function () { highlight(i); });
+    el.addEventListener('mouseleave', function () { highlight(-1); });
+    el.addEventListener('focusin', function () { highlight(i); });
+    el.addEventListener('focusout', function () { highlight(-1); });
+  }
+  Array.prototype.forEach.call(rows, bind);
+  Array.prototype.forEach.call(labels, bind);
 
   strip.classList.add('is-live');
   resize();

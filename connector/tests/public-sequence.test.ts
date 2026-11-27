@@ -6,13 +6,13 @@ const config = { publicUrl: 'https://shopify-mcp.mktskills.com', basePath: '/sho
 const page = () => publicContent('/shopify-va', config)!.body as string;
 const script = () => publicContent('/shopify-va/assets/sequence.js', config)!.body as string;
 
-test('the sequence section holds a decorative strip above the ordered list', () => {
+test('the sequence section holds the strip, whose canvas is decorative and whose gates are links, above the ordered list', () => {
   const section = page().match(/<section id="sequence"[\s\S]*?<\/section>/)![0];
-  const strip = section.match(/<div class="seq-strip" data-seq-strip aria-hidden="true">[\s\S]*?<\/div><\/div>/)![0];
-  assert.match(strip, /<canvas class="seq-canvas" data-seq-canvas><\/canvas>/);
-  assert.deepEqual([...strip.matchAll(/<span data-seq-label>(\d\d)<\/span>/g)].map(m => m[1]), ['01', '02', '03', '04', '05', '06', '07']);
+  const strip = section.match(/<div class="seq-strip" data-seq-strip>[\s\S]*?<\/nav><\/div>/)![0];
+  assert.match(strip, /<canvas class="seq-canvas" data-seq-canvas aria-hidden="true"><\/canvas>/);
+  assert.deepEqual([...strip.matchAll(/data-seq-label aria-label="[^"]+">(\d\d)<\/a>/g)].map(m => m[1]), ['01', '02', '03', '04', '05', '06', '07']);
   assert.ok(section.indexOf('seq-strip') < section.indexOf('class="sequence-list"'), 'strip sits above the list');
-  assert.equal([...section.matchAll(/class="seq-item"/g)].length, 7, 'the list stays the content');
+  assert.equal([...section.matchAll(/class="seq-item" id="seq-\d"/g)].length, 7, 'the list stays the content');
 });
 
 test('the strip script is served from the guide origin and loaded by URL under the same CSP mechanism', () => {
