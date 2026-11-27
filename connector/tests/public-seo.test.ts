@@ -94,6 +94,8 @@ test('JSON-LD parses, shares the marketing Organization @id, and has the require
     const org = byType('Organization')[0]!;
     assert.equal(org['@id'], 'https://mktskills.com/#organization');
     assert.ok(org.name && org.url && org.logo);
+    assert.equal(org.name, 'Marketing Skills');
+    assert.equal(org.alternateName, 'MKT Skills');
     const webPage = byType('WebPage')[0]!;
     assert.equal(webPage.url, expected.canonical);
     assert.deepEqual(webPage.publisher, { '@id': org['@id'] });

@@ -111,7 +111,7 @@ After release, the steps will be:
 
 1. The owner opens the app's verified Shopify App Store page and installs it on the intended store. Shopify handles store selection.
 2. In **ChatGPT or Claude**, add a custom connection using the verified address. Your account must support that option.
-3. Follow sign-in and copy its connection request code into **MKT Skills VA Toolkit** inside Shopify.
+3. Follow sign-in and copy its connection request code into **Marketing Skills VA Toolkit** inside Shopify.
 4. The owner checks the store, requesting app, return destination and read permissions, then approves the request.
 5. Return to the original sign-in tab to finish. Ask the AI to confirm which store is connected before reading it.
 

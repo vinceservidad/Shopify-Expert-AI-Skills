@@ -4,6 +4,13 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
+### Parent brand display name: Marketing Skills (2026-11-27)
+
+- Changed the human-readable parent brand from "MKT Skills" to "Marketing Skills" in the app home and connect pages (titles, headings, install link text), `connector/shopify.app.public.toml` app name, `USAGE.md`, `docs/getting-started.md`, `docs/plugin-and-connector.md`, `docs/public-release.md` (title), `docs/shopify-review-submission.md` and a code comment. The product is now displayed as "Marketing Skills VA Toolkit".
+- The Organization JSON-LD node (`https://mktskills.com/#organization`) keeps `name` "Marketing Skills" and now adds `alternateName` "MKT Skills" to match the main site; `tests/public-seo.test.ts` pins both.
+- Unchanged on purpose: domains and URLs, Worker, Artifacts and Shopify configuration identifiers (`mkt-skills-*`), the `mkt-theme` key, image file names, plugin and server ids, the CSP, and dated historical entries and records that quote the old name.
+- Not done: the Shopify app name change in `shopify.app.public.toml` takes effect only after a `shopify app deploy`; nothing was deployed or verified live.
+
 ### Shopify VA guide search and answer-engine pass (2026-11-27)
 
 - Titles, descriptions and canonicals: each of `/shopify-va`, `/shopify-va/setup` and `/shopify-va/privacy` has its own title (47 to 53 characters, topic first, for example "Shopify Skills for AI Agents | Marketing Skills"), a description under 160 characters and a self-referencing canonical on `https://mktskills.com`. Setup and privacy now carry the same Open Graph and Twitter tags as the guide (1200x630 PNG, alt text, `og:locale`, `og:image:type`); the robots meta adds `max-image-preview:large`. Titles and descriptions come from one table, so the head, social tags and JSON-LD cannot disagree.

@@ -4,8 +4,8 @@ Prepared September 30, 2026. **Deployed candidate; not submitted or approved.** 
 
 ## App information
 
-- Name: MKT Skills VA Toolkit.
-- Operator: Vince Servidad. Do not describe MKT Skills as a registered legal entity unless that is verified.
+- Name: Marketing Skills VA Toolkit.
+- Operator: Vince Servidad. Do not describe Marketing Skills as a registered legal entity unless that is verified.
 - Pricing: free initial release; no in-app billing or app payments.
 - Audience: Shopify store owners and their approved VAs.
 - Purpose: supply read-only store evidence and practical task instructions for use with the merchant's own ChatGPT, Claude or other supported MCP client.
@@ -13,7 +13,7 @@ Prepared September 30, 2026. **Deployed candidate; not submitted or approved.** 
 - Privacy notice: `https://mktskills.com/shopify-va/privacy` (HTTP 200).
 - Support: `support@mktskills.com` — Cloudflare Email Routing forwarding rule `514a72c4bf03416fbbd8a939b82477d2` (`enabled: true`) is configured to the owner's verified Gmail address; one live test email receipt must still be confirmed.
 - Candidate App Home: `https://shopify-mcp.mktskills.com/app` (HTTP 200 on deployed Worker `mkt-skills-shopify-preview`, version `8c382457-65a0-4b88-ab38-967abf0f0990` at 100% traffic; earlier Sep 30 preview URL was `https://mkt-skills-shopify-preview.vinceluxxe.workers.dev/app`). A successful live embedded Shopify session is still unverified.
-- Earlier preview guide URL: [MKT Skills VA Toolkit preview](https://mkt-skills-shopify-guide.vinceluxxe.workers.dev/shopify-va) (Sep 30 `workers.dev` preview).
+- Earlier preview guide URL: [Marketing Skills VA Toolkit preview](https://mkt-skills-shopify-guide.vinceluxxe.workers.dev/shopify-va) (Sep 30 `workers.dev` preview).
 - App ID: `429932052481`, Public distribution.
 - Active app configuration: **`mkt-skills-va-toolkit-3`** (`1260777537537`, active `2026-11-21T16:08:21Z`, superseding Sep 30 `public-candidate-webhooks-v1` / `1149628088321`), releasing `https://shopify-mcp.mktskills.com/app` and `https://shopify-mcp.mktskills.com/webhooks/shopify`. Development-store installation and saving/approving Protected Customer Data Level 1 Order-data settings remain pending.
 

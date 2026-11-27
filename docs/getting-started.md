@@ -1,4 +1,4 @@
-# MKT Skills VA Toolkit: Your First Product Draft
+# Marketing Skills VA Toolkit: Your First Product Draft
 
 Use [the usage guide](../USAGE.md) for installation, your first assignment, and
 troubleshooting. This page is a short route to the supporting references.
@@ -46,7 +46,7 @@ For a repeatable VA job, use [Practical VA jobs](va-workflows.md). Attach the ma
 
 ## Optional public connection
 
-The public MKT Skills connection is being prepared for `shopify-mcp.mktskills.com/mcp`. The domain, Shopify app approval and live ChatGPT/Claude sign-in still need verification. Do not treat that planned address as live. [Check release status](public-release.md).
+The public Marketing Skills connection is being prepared for `shopify-mcp.mktskills.com/mcp`. The domain, Shopify app approval and live ChatGPT/Claude sign-in still need verification. Do not treat that planned address as live. [Check release status](public-release.md).
 
 After release, install through the app's verified Shopify page. Add the connection in ChatGPT or Claude, then have the owner review its request code inside the Shopify app. That approval enables supported reads, not store editing. The app also shows connection status and lets the owner disconnect a client.
 
