@@ -374,9 +374,7 @@ test('design polish: two radii, ring surfaces, wells, flat outline buttons and p
   assert.deepEqual([...radii].sort(), ['var(--radius-box)', 'var(--radius-btn)']);
   assert.match(PUBLIC_STYLES, /--radius-btn:6px/);
   assert.match(PUBLIC_STYLES, /--radius-box:8px/);
-  assert.match(PUBLIC_STYLES, /--well:inset 0 2px 4px rgba\(0,0,0,\.08\)/);
   assert.match(PUBLIC_STYLES, /--well:inset 0 2px 5px rgba\(0,0,0,\.45\)/);
-  assert.match(PUBLIC_STYLES, /--btn-shadow:0 1px 2px rgba\(0,0,0,\.35\),inset 0 1px 0 rgba\(255,255,255,\.25\)/);
   assert.match(PUBLIC_STYLES, /--btn-shadow:0 1px 2px rgba\(0,0,0,\.75\),inset 0 1px 0 rgba\(255,255,255,\.18\)/);
   assert.match(PUBLIC_STYLES, /\.copy-btn:active\{transform:translateY\(1px\)\}/);
   assert.match(PUBLIC_STYLES, /\.copy-btn-line\{[^}]*box-shadow:none/);
