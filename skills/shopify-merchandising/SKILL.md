@@ -36,7 +36,7 @@ Collect business objective, customer and shopping task, markets, assortment, pro
 7. Capture prior rules and order, then implement only the approved admin or theme scope through available tools. Route code changes to theme development rather than assuming an admin sort controls every surface.
 8. Verify saved membership and scoped live order, cards, links, markets, devices, and relevant feeds. Handoff the plan or verified result, exceptions, sellout/expiry actions, rollback, measurement window, and next owner.
 
-Read [references/merchandising-framework.md](references/merchandising-framework.md) for diagnosis and decision rules. Use [references/planning-template.md](references/planning-template.md) for collection, campaign, and recommendation plans. For a discount code or automatic discount, follow [references/discount-setup.md](references/discount-setup.md): written approval of value, scope, and dates, combinations off by default, a checkout test plan with non-qualifying carts, and separate approval for activation.
+Read [references/merchandising-framework.md](references/merchandising-framework.md) for diagnosis and decision rules. Read [references/search-discovery-bundles.md](references/search-discovery-bundles.md) for Shopify Search and Discovery filter/boost/recommendation limits and native Shopify Bundles rules. Use [references/planning-template.md](references/planning-template.md) for collection, campaign, and recommendation plans. For a discount code or automatic discount, follow [references/discount-setup.md](references/discount-setup.md): written approval of value, scope, and dates, combinations off by default, a checkout test plan with non-qualifying carts, and separate approval for activation.
 
 ## Output contract
 

@@ -36,7 +36,7 @@ Collect objective, audience, awareness and intent evidence, product truth, appro
 7. Define leading indicators, primary business outcome, commercial guardrails, review window, stopping conditions, and learning log. Creative approval alone does not authorize media launch or budget changes.
 8. Handoff versioned briefs or reviewed assets, rights and claim evidence, unresolved production needs, approval state, test owner, and acceptance criteria. Label unproduced concepts and untested assets explicitly.
 
-For hook development, read [references/hooks.md](references/hooks.md). For test design and briefs, read [references/testing-framework.md](references/testing-framework.md). Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
+For hook development, read [references/hooks.md](references/hooks.md). For test design and briefs, read [references/testing-framework.md](references/testing-framework.md). For FTC endorsement and UGC disclosure compliance, read [references/ftc-endorsement-compliance.md](references/ftc-endorsement-compliance.md). Before handoff, run [references/copy-quality-check.md](references/copy-quality-check.md) as a separate pass on every draft that a customer or client will read.
 
 ## Output contract
 

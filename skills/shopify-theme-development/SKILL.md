@@ -35,7 +35,7 @@ Collect the exact problem, affected templates and markets, reproduction steps, e
 7. After an approved upload, verify the exact theme preview, editor re-rendering, apps, and affected purchase path as scoped. Label unavailable hosted checks and local adapters explicitly.
 8. Publish only when explicitly approved, then verify the canonical live storefront after processing. Handoff changed files, test evidence, uploaded/published state, failures, rollback, and next owner; technical QA does not establish conversion impact.
 
-Read [references/liquid-patterns.md](references/liquid-patterns.md) for architecture and implementation rules. Read [references/debugging.md](references/debugging.md) for diagnosis and verification. Read [references/checkout-extensibility-pixels.md](references/checkout-extensibility-pixels.md) for Checkout Extensibility, Web Pixels, and Shopify Functions boundaries.
+Read [references/liquid-patterns.md](references/liquid-patterns.md) for architecture and implementation rules. Read [references/debugging.md](references/debugging.md) for diagnosis and verification. Read [references/checkout-extensibility-pixels.md](references/checkout-extensibility-pixels.md) for Checkout Extensibility, Web Pixels, and Shopify Functions boundaries. Read [references/performance-accessibility-extensions.md](references/performance-accessibility-extensions.md) for Theme Check, Core Web Vitals, Theme App Extensions vs legacy `ScriptTag` cleanup, and WCAG 2.2 AA accessibility checks.
 
 For variant-picker work, read the high-variant guidance in `references/liquid-patterns.md` before assuming a Liquid variant array contains every variant.
 
