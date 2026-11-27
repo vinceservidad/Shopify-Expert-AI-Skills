@@ -326,7 +326,7 @@ test('public pages exclude AI slop, mid-sentence bold, medical jargon, and stale
   }
 });
 
-test('public pages and styles enforce strict design guardrails (0 webfonts, 13/15/18px body scale, 0 pills/eyebrows/purple/beige)', () => {
+test('public pages and styles enforce strict design guardrails (0 webfonts, 14/16px type scale, 0 pills/eyebrows/purple/beige)', () => {
   for (const html of [
     renderProductPage(candidateConfig),
     renderHelpPage(candidateConfig),
@@ -342,9 +342,31 @@ test('public pages and styles enforce strict design guardrails (0 webfonts, 13/1
   assert.doesNotMatch(PUBLIC_STYLES, /#(?:f6f4ee|fffefb|e3dfd3|ebe8df|eeebe1|eeebe3|7e3bd0|c9a7ff)/i);
   for (const match of PUBLIC_STYLES.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)) {
     const px = Number(match[1]);
-    assert.ok(px >= 13, `Found font-size < 13px: ${match[0]}`);
-    assert.ok([13, 15, 18].includes(px), `Body font-size must be strictly 13px, 15px, or 18px (got ${match[0]})`);
+    assert.ok(px >= 14, `Found font-size < 14px: ${match[0]}`);
+    assert.ok([14, 16, 18, 20].includes(px), `Fixed font sizes must be 14px, 16px, 18px or 20px (got ${match[0]})`);
   }
+});
+
+test('readable type scale: 16px body, nothing under 14px, 16px form fields', () => {
+  const rule = (selector: string) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const m = PUBLIC_STYLES.match(new RegExp(`(?:^|\\n|\\})${escaped}\\{([^}]*)\\}`));
+    assert.ok(m, `missing rule ${selector}`);
+    return m[1];
+  };
+  const size = (selector: string) => Number(rule(selector).match(/font-size:(\d+(?:\.\d+)?)px/)?.[1]);
+  assert.match(PUBLIC_STYLES, /:root\{[^}]*font-size:16px/);
+  assert.ok(size('p,li,dd') >= 16, 'paragraphs, list items and definitions are at least 16px');
+  assert.ok(size('.bottleneck-table td') >= 16, 'table cells are at least 16px');
+  assert.ok(size('.skill-entry p') >= 16, 'card text is at least 16px');
+  assert.ok(size('.skill-filter input') >= 16, 'search input is at least 16px so iOS Safari does not zoom');
+  assert.ok(size('.copy-btn') >= 16 && size('.seg-tab') >= 16 && size('.family-nav') >= 16, 'buttons, tabs and nav links are body size');
+  assert.ok(size('.hero-sub') >= 18 && size('.hero-sub') <= 20, 'lead text is 18-20px');
+  assert.ok(size('.seq-gates a') >= 14 && size('.site-footer') >= 14 && size('.cmd-code') >= 14, 'small and mono text is at least 14px');
+  // No narrower breakpoint may shrink the search field or body text.
+  assert.doesNotMatch(PUBLIC_STYLES, /\.skill-filter input\{[^}]*font-size:1[0-5]px/);
+  for (const m of PUBLIC_STYLES.matchAll(/font-size\s*:\s*(\d+(?:\.\d+)?)px/g)) assert.ok(Number(m[1]) >= 14, m[0]);
+  assert.doesNotMatch(PUBLIC_STYLES, /font-size\s*:\s*[\d.]+(?:rem|em|%)\s*[;}]/, 'no relative sizes that could dip under 14px');
 });
 
 test('design polish: two radii, ring surfaces, wells, flat outline buttons and paint-only transitions', () => {
