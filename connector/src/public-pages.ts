@@ -437,7 +437,7 @@ function sampleOutputsSection(): string {
   ).join('');
   const labels = SAMPLE_OUTPUTS.map(item => `<label for="${item.id}">${escape(item.tab)}</label>`).join('');
   const panels = SAMPLE_OUTPUTS.map(
-    item => `<div class="ex-panel ${item.id}" data-tabpanel><div class="ex-grid"><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-list">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
+    item => `<div class="ex-panel ${item.id}" data-tabpanel><div class="ex-grid"><div class="ex-col"><span class="ex-label">What you paste (${escape(item.skill)})</span><p>${escape(item.inputText)}</p></div><div class="ex-col"><span class="ex-label">What your AI app returns</span><ul class="ex-points">${item.outputPoints.map(point => `<li>${escape(point)}</li>`).join('')}</ul></div></div></div>`,
   ).join('');
   return `<div class="ex-box" data-tabs="examples">${radios}<div class="ex-tabs-wrap"><div class="ex-tabs" data-tablist aria-label="Sample outputs">${labels}</div></div><div class="ex-panels">${panels}</div></div>`;
 }

@@ -14,6 +14,9 @@ All notable changes to this project are documented here.
 - Core Web Vitals: measured layout shift is 0 on all three pages at 390px and 1440px (system fonts, no content images, absolutely positioned hero canvas), so no layout change was needed.
 - Tests: `tests/public-seo.test.ts` pins titles, descriptions, canonicals, social tags, heading order, JSON-LD properties, FAQ parity, llms formats and counts, the Express routes and the unchanged CSP.
 - Not verified: Google's Rich Results Test and Search Console (no access); live URLs; indexing or ranking. Google no longer shows FAQ rich results, and SoftwareApplication rich results require a rating or review, which this page does not invent, so BreadcrumbList is the rich result these pages can be eligible for.
+### Example tabs overlap fix (2026-11-27)
+
+- "See what the skills return": choosing "New listing" showed all three examples' bullet lists on top of each other. The panel class `ex-list` was also the bullet-list class, so the selected-panel rule revealed every list. The bullet lists are now `ex-points`, and a test checks only the panel carries `ex-list`.
 
 ### Shopify VA guide responsive pass (2026-11-27)
 

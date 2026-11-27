@@ -360,3 +360,11 @@ test('public pages preserve strict CSP invariants while permitting non-executabl
     assert.doesNotMatch(content.body, /<style\b/, `${path}: inline style element`);
   }
 });
+
+test('example panel classes do not collide with the bullet lists inside them', () => {
+  const html = renderProductPage(candidateConfig);
+  // "New listing" uses the panel class ex-list; selecting it must reveal only its own panel, so no other
+  // element may carry that class (a shared class made every panel's bullet list show at once).
+  assert.equal((html.match(/class="[^"]*\bex-list\b[^"]*"/g) ?? []).length, 1);
+  assert.equal((html.match(/<ul class="ex-points">/g) ?? []).length, 3);
+});
