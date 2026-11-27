@@ -20,7 +20,7 @@ const PAGES = [
     description: '19 free MIT-licensed Shopify skills for ChatGPT, Claude, and coding agents. Your AI app drafts the store work, and you approve every change in Shopify Admin.',
     crumbs: ['Marketing Skills', 'Shopify VA'] },
   { path: '/shopify-va/setup', canonical: 'https://mktskills.com/shopify-va/setup', title: 'Shopify Skills Setup for AI Agents | Marketing Skills',
-    description: 'Add 19 free Shopify skills to ChatGPT, Claude, Claude Code, Codex, or Cursor in four steps. Install commands and fixes for common setup problems.',
+    description: 'Add 19 free Shopify skills to ChatGPT, Claude, or a coding agent in four steps, with every install command and fixes for common setup problems.',
     crumbs: ['Marketing Skills', 'Shopify VA', 'Setup'] },
   { path: '/shopify-va/privacy', canonical: 'https://mktskills.com/shopify-va/privacy', title: 'Shopify Skills Privacy Notice | Marketing Skills',
     description: 'What the read-only Shopify skills MCP server reads, what it stores, how long it keeps it, and how store owners remove access.',
